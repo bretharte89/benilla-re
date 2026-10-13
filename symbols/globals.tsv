@@ -12,6 +12,17 @@ address	type	name	name_from	system	meaning	confidence	proof	finding
 0x42dafc	uint8_t[138]	s_virtualKeyIndex		core	Holds the case index of the virtual key translation for keys 8 to 0x91	verified	one	core/input#key-codes
 0x42dce0	void *[4]	s_mouseButtonCases		core	Holds the case addresses of the mouse button mapping 0x42dc00 for messages 0x204 to 0x20c	verified	one	core/input#buttons-and-capture
 0x42dcf0	uint8_t[9]	s_mouseButtonIndex		core	Holds the case index of 0x42dc00 for messages 0x204 to 0x20c: right 4, middle 2, X 8 or 0x10	verified	one	core/input#buttons-and-capture
+0x464e98	void *[7]	s_watcherFreeJumpTable		objectlayer	Holds the cases of 0x464c40 for type ids 1 to 7, each walking its sections' watcher lists	verified	one	objectlayer/manager#releasing-an-object
+0x465314	void *[6]	s_updateNotifyJumpTable		objectlayer	Holds the notify pass's six cases for block types 0 to 5	verified	one	objectlayer/update#block-types
+0x4656b4	void *[8]	s_sectionOffsetJumpTable		objectlayer	Holds the cases of 0x465690, one per section, returning each section's byte offset	verified	one	objectlayer/fields#field-counts-and-sections
+0x465748	void *[6]	s_nextSectionJumpTable		objectlayer	Holds the cases of 0x4656e0 that give the section after a section for each class chain	verified	one	objectlayer/fields#field-counts-and-sections
+0x465760	uint8_t[127]	s_nextSectionIndexTable		objectlayer	Maps a type mask minus 3 to its case in 0x465748	verified	one	objectlayer/fields#field-counts-and-sections
+0x46594c	void *[8]	s_objectWatcherListJumpTable		objectlayer	Holds the cases of 0x465850, one per section, each locating the object's own watcher list for a field	verified	one	objectlayer/fields#registering-a-watcher
+0x465b08	void *[9]	s_fieldCountJumpTable		objectlayer	Holds the field count cases of 0x465a80 for the eight types and the default	verified	one	objectlayer/update#values-block
+0x465b2c	uint8_t[129]	s_fieldCountIndexTable		objectlayer	Maps a type mask minus 1 to its case in 0x465b08	verified	one	objectlayer/update#values-block
+0x465e78	void *[8]	s_createHookJumpTable		objectlayer	Holds the create notify's cases for type ids 0 to 7, each calling the type's create hook	verified	one	objectlayer/update#notify-pass
+0x466084	void *[6]	s_createPassJumpTable		objectlayer	Holds the create pass's six cases for block types 0 to 5	verified	one	objectlayer/update#block-types
+0x46767c	uint8_t[129]	s_destroyIndexTable		objectlayer	Maps a type mask minus 1 to the destroy handler's case: the eight masks to the destructor call	verified	one	objectlayer/update#destroy-object
 0x46aaac	void *[4]	s_glueSignatureJumpTable		glue	Holds the four case addresses of the glue build's switch on the signature check's answer	verified	one	glue/manager#signature-and-digest-check
 0x46b7a8	void *[12]	s_statusDialogClickCases		glue	Holds the case addresses of the status-dialog click 0x46b720 for screen states 0 to 11	verified	one	glue/flow#screen-states
 0x46c2ac	void *[5]	s_logonStateCases		glue	Holds the case addresses of the per-frame update's logon arm for logon states 5 to 9	verified	one	glue/flow#logon-arm
@@ -33,12 +44,42 @@ address	type	name	name_from	system	meaning	confidence	proof	finding
 0x5b2ea4	uint8_t[253]	s_logonResultIndexTable		net	Maps a logon server result less 3 to its case in the eleven-entry switch	verified	one	net/login#logon-results
 0x5b3fd0	void *[6]	s_realmMessageJumpTable		net	Holds the realm connection handler's cases for opcodes 0x3a to 0x4c	verified	one	net/dispatch#realm-connection-messages
 0x5b3fe8	uint8_t[19]	s_realmMessageIndexTable		net	Maps opcodes 0x3a to 0x4c to their case in the realm connection handler	verified	one	net/dispatch#realm-connection-messages
+0x5d494c	void *[8]	s_tradeStatusJumpTable		objectlayer	Holds the trade status handler's eight cases	verified	one	objectlayer/trade#trade-status-message
+0x5d496c	uint8_t[23]	s_tradeStatusIndexTable		objectlayer	Maps trade statuses 0 to 22 to their case in 0x5d494c	verified	one	objectlayer/trade#trade-status-message
+0x5e6a14	void *[8]	s_opcode7fJumpTable		objectlayer	Holds the 8 case addresses of the switch in 0x5e68b0	verified	one	objectlayer/overview#switch-tables
+0x5e74dc	void *[14]	s_opcode92JumpTable		objectlayer	Holds the 14 case addresses of the switch in 0x5e7180	verified	one	objectlayer/overview#switch-tables
+0x5ebc64	void *[11]	s_switch5ebc64		objectlayer	Holds the 11 case addresses of the switch in 0x5eb900	verified	one	objectlayer/overview#switch-tables
+0x5f3b40	void *[4]	s_switch5f3b40		objectlayer	Holds the 4 case addresses of the switch in 0x5f3930	verified	one	objectlayer/overview#switch-tables
+0x5f41e4	void *[12]	s_switch5f41e4		objectlayer	Holds the 12 case addresses of the switch in 0x5f4120	verified	one	objectlayer/overview#switch-tables
+0x5f76cc	void *[31]	s_switch5f76cc		objectlayer	Holds the 31 case addresses of the switch in 0x5f6f30	verified	one	objectlayer/overview#switch-tables
+0x5fc7ec	void *[23]	s_switch5fc7ec		objectlayer	Holds the 23 case addresses of the switch in 0x5fc3f0	verified	one	objectlayer/overview#indexed-switch-tables
+0x5fc848	uint8_t[201]	s_switchIndex5fc848		objectlayer	Maps the switch value of 0x5fc3f0 to its case in 0x5fc7ec	verified	one	objectlayer/overview#indexed-switch-tables
+0x5fd51c	void *[5]	s_switch5fd51c		objectlayer	Holds the 5 case addresses of the switch in 0x5fd460	verified	one	objectlayer/overview#indexed-switch-tables
+0x5fd530	uint8_t[18]	s_switchIndex5fd530		objectlayer	Maps the switch value of 0x5fd460 to its case in 0x5fd51c	verified	one	objectlayer/overview#indexed-switch-tables
+0x5fdd7c	void *[5]	s_switch5fdd7c		objectlayer	Holds the 5 case addresses of the switch in 0x5fdba0	verified	one	objectlayer/overview#indexed-switch-tables
+0x5fdd90	uint8_t[162]	s_switchIndex5fdd90		objectlayer	Maps the switch value of 0x5fdba0 to its case in 0x5fdd7c	verified	one	objectlayer/overview#indexed-switch-tables
+0x602114	void *[4]	s_switch602114		objectlayer	Holds the 4 case addresses of the switch in 0x6018f0	verified	one	objectlayer/overview#switch-tables
+0x60dbfc	void *[9]	s_kitCharProcJumpTable		objectlayer	Holds the 9 case addresses of the switch in 0x60d7c0	verified	one	objectlayer/overview#indexed-switch-tables
 0x60dc20	uint8_t[16]	s_kitCharProcIndexTable		objectlayer	Maps kit procedure kinds 0 to 15 to the cases of 0x60d7c0's switch	verified	one	spell/visuals#chain-effect-creation
+0x60ec84	void *[5]	s_switch60ec84		objectlayer	Holds the 5 case addresses of the switch in 0x60ec00	verified	one	objectlayer/overview#indexed-switch-tables
+0x60ec98	uint8_t[18]	s_switchIndex60ec98		objectlayer	Maps the switch value of 0x60ec00 to its case in 0x60ec84	verified	one	objectlayer/overview#indexed-switch-tables
+0x60f4f8	void *[5]	s_unitSpellVisualKitJumpTable		objectlayer	Holds the 5 case addresses of the switch in 0x60edf0	verified	one	objectlayer/overview#switch-tables
+0x612ca0	void *[6]	s_powerCostBaseJumpTable		objectlayer	Holds the 6 case addresses of the switch in 0x612c50	verified	one	objectlayer/overview#switch-tables
+0x613908	void *[8]	s_typeMaskJumpTable		objectlayer	Holds the cases of 0x613880 for type ids 0 to 7, each storing the type mask in field 2	verified	one	objectlayer/classes#type-id-and-mask
 0x616580	void *[39]	s_replayCases		collision	Holds the 39 case addresses of the event replay 0x615c30, for event types 0 to 38	verified	one	collision/replay#replay-cases-0-to-19
 0x61804c	void *[2]	s_rootFilterCases		collision	Holds the two cases of 0x618030: 0x618043, which returns 0, and 0x618046, which returns 1	verified	one	collision/events#root-filter
 0x618054	uint8_t[29]	s_rootFilterIndex		collision	Holds the case index of 0x618030 for tags 0 to 28: 0 for 0 to 7, 18, 19 and 28, else 1	verified	one	collision/events#root-filter
 0x618528	void *[19]	s_flushDispatchCases		collision	Holds the 19 case addresses of the switch in 0x618080, the last one the no-action exit 0x61851e	verified	one	collision/eventapply#flush-dispatcher
 0x618574	uint8_t[33]	s_flushDispatchIndex		collision	Holds the case index of 0x618080 for tags 6 to 38; 18 selects no action	verified	one	collision/eventapply#flush-dispatcher
+0x61d76c	void *[6]	s_switch61d76c		objectlayer	Holds the 6 case addresses of the switch in 0x61d720	verified	one	objectlayer/overview#indexed-switch-tables
+0x61d784	uint8_t[11]	s_switchIndex61d784		objectlayer	Maps the switch value of 0x61d720 to its case in 0x61d76c	verified	one	objectlayer/overview#indexed-switch-tables
+0x622794	void *[67]	s_switch622794		objectlayer	Holds the 67 case addresses of the switch in 0x622630	verified	one	objectlayer/overview#switch-tables
+0x623afc	void *[5]	s_switch623afc		objectlayer	Holds the 5 case addresses of the switch in 0x623a40	verified	one	objectlayer/overview#switch-tables
+0x62a8ec	void *[7]	s_switch62a8ec		objectlayer	Holds the 7 case addresses of the switch in 0x62a710	verified	one	objectlayer/overview#switch-tables
+0x62bde8	void *[10]	s_spellMissLogJumpTable		objectlayer	Holds the 10 case addresses of the switch in 0x62bab0	verified	one	objectlayer/overview#switch-tables
+0x62be10	void *[10]	s_spellMissLogJumpTable2		objectlayer	Holds the 10 case addresses of the switch in 0x62bab0	verified	one	objectlayer/overview#switch-tables
+0x62c318	void *[2]	s_switch62c318		objectlayer	Holds the 2 case addresses of the switch in 0x62c2d0	verified	one	objectlayer/overview#indexed-switch-tables
+0x62c320	uint8_t[58]	s_switchIndex62c320		objectlayer	Maps the switch value of 0x62c2d0 to its case in 0x62c318	verified	one	objectlayer/overview#indexed-switch-tables
 0x63679c	void *[4]	s_bevelCountCases		collision	Holds the case addresses of 0x636610 for one to four planes	verified	one	collision/walking#bevel-contact-direction
 0x6e225c	void *[3]	s_castFailureCleanupJumpTable		spell	Holds the failure reporter's three cleanup cases for reasons 0x2f to 0x7c	verified	one	spell/failures#player-unit-cleanup
 0x6e2268	uint8_t[78]	s_castFailureCleanupIndexTable		spell	Maps reasons 0x2f to 0x7c to their cleanup case in the failure reporter	verified	one	spell/failures#player-unit-cleanup
@@ -98,6 +139,8 @@ address	type	name	name_from	system	meaning	confidence	proof	finding
 0x801628	float	s_mouseSpeedMax		core	Holds 2.0, the highest mouse speed setting	verified	one	core/input#mouse-speed-and-num-lock
 0x802700	uint32_t[64]	NTempest::gnoise32_	idb	random	Holds the 64 dwords the state advance and the hashes read	verified	two	random#state-advance
 0x802800	float[16]	s_noiseGradients		random	Holds -1 + 2k/15 for k = 0 to 15, the gradient components of the noise	inferred	none	random#unreached-functions
+0x803600	void *	s_guidHashTableVtable		objectlayer	Holds the vtable the manager's two GUID hash tables carry	inferred	none	objectlayer/manager#manager-block
+0x803640	void *[31]	CGObject_C::vftable		objectlayer	Holds the base object vtable, 31 slots	verified	one	objectlayer/classes#constructors-and-final-vtables
 0x803740	uint8_t[180]	s_authUrlKeys		glue	Holds five 36-byte rows of a status code and its URL key, AUTH_BANNED (28) to AUTH_PARENTAL_CONTROL (33)	verified	one	glue/flow#world-connect-failure
 0x8037f4	void *[5]	s_logStatusVtable		glue	Holds the vtable of the load-log status: 0x46aac0, then the four later slots of CStatus	verified	one	glue/manager#load-log-status
 0x803808	void *[6]	s_loginListenerVftable		net	Holds the vtable of the session's login listener, whose slot 4 takes the session key	inferred	none	net/session#session-key
@@ -117,6 +160,18 @@ address	type	name	name_from	system	meaning	confidence	proof	finding
 0x80a77c	void *[1]	s_serverLinkPendingVftable		net	Holds the vtable of ServerLink's pending requests, stored only by the unreached ServerLink code	verified	one	net/layout#unreached-functions
 0x80a780	void *[10]	s_serverLinkVftable		net	Holds ServerLink's vtable, stored only by its unreached constructor and destructor	verified	one	net/layout#unreached-functions
 0x80a7dc	void *[9]	ClientLink::vftable		net	Holds ClientLink's vtable: the connection callbacks, slot 7 the raw data hook	verified	one	net/login#logon-commands
+0x80aa80	void *[31]	s_dynamicObjectVtable		objectlayer	Holds the dynamic object vtable, 31 slots	verified	one	objectlayer/classes#constructors-and-final-vtables
+0x80ab80	void *[31]	CGCorpse_C::vftable		objectlayer	Holds the corpse vtable, 31 slots	verified	one	objectlayer/classes#constructors-and-final-vtables
+0x80ac84	void *	s_containerSecondaryVtable		objectlayer	Holds the container's one-slot vtable at +0x110	verified	one	objectlayer/classes#constructors-and-final-vtables
+0x80ac88	void *[31]	s_containerVtable		objectlayer	Holds the container vtable, 31 slots	verified	one	objectlayer/classes#constructors-and-final-vtables
+0x80ada0	void *	s_itemSecondaryVtable		objectlayer	Holds the item's one-slot vtable at +0x110	verified	one	objectlayer/classes#constructors-and-final-vtables
+0x80ada8	void *[31]	CGItem_C::vftable		objectlayer	Holds the item vtable, 31 slots	verified	one	objectlayer/classes#constructors-and-final-vtables
+0x80ae24	void *	s_itemPureVtable		objectlayer	Holds the one-slot pure-call vtable the item constructor stores at +0x110 first	verified	one	objectlayer/classes#secondary-and-member-vtables
+0x80af78	void *[47]	CGPlayer_C::vftable		objectlayer	Holds the player vtable, 47 slots	verified	one	objectlayer/classes#constructors-and-final-vtables
+0x80b034	void *[4]	s_playerMemberVtableA		objectlayer	Holds a four-slot vtable the player constructor stores at +0x1c9c	verified	one	objectlayer/classes#secondary-and-member-vtables
+0x80b044	void *[4]	s_playerMemberVtableB		objectlayer	Holds a four-slot vtable the player constructor stores at +0x1c74	verified	one	objectlayer/classes#secondary-and-member-vtables
+0x80c330	void *[34]	CGGameObject_C::vftable		objectlayer	Holds the game object vtable, 34 slots	verified	one	objectlayer/classes#constructors-and-final-vtables
+0x80c4f8	void *[46]	CGUnit_C::vftable		objectlayer	Holds the unit vtable, 46 slots	verified	one	objectlayer/classes#constructors-and-final-vtables
 0x80c5c4	float	s_facetFacingBound		collision	Holds -1e-5 (0xb727c5ac), the n·dir at or below which a facet faces against the motion	verified	one	collision/contact#nearest-facet-per-face
 0x80c734	float	s_splineWarpSpeedSquared		collision	Holds 3600.0 (0x45610000), the squared horizontal speed in yd/s above which a spline step skips collision	verified	one	collision/mover#spline-warp-gate
 0x80c738	float	s_mapCoordinateSpan		collision	Holds 34131.332 (0x47055355), the bound on 17066.666 minus a coordinate	verified	one	collision/mover#position-validity
@@ -180,6 +235,8 @@ address	type	name	name_from	system	meaning	confidence	proof	finding
 0x833838	uint32_t[256]	s_cp1251Chars		core	Holds the characters for code page 1251 bytes, indexed by the byte	verified	one	core/input#character-codes
 0x833c38	uint32_t[256]	s_cp1254Chars		core	Holds the characters for code page 1254 bytes, indexed by the byte	verified	one	core/input#character-codes
 0x834038	uint32_t[256]	s_cp874Chars		core	Holds the characters for code page 874 bytes, indexed by the byte	verified	one	core/input#character-codes
+0x836708	char *[8]	s_objectPoolNames		objectlayer	Holds the class name of each type's object pool	verified	one	objectlayer/classes#class-sizes-and-pools
+0x836728	uint32_t[8]	s_objectPoolBlockCounts		objectlayer	Holds each type's object pool block count	verified	one	objectlayer/classes#class-sizes-and-pools
 0x836b24	int32_t	s_logonResult		glue	Holds the last reported logon result, default -1; written by 0x46afb0 and 0x46b0f0	verified	one	glue/flow#logon-state-dialogs
 0x836b28	int32_t	s_logonState		glue	Holds the last reported logon state, default -1; written by 0x46afb0, 0x46b0f0 and the PIN arm of 0x46b930	verified	one	glue/flow#logon-state-dialogs
 0x836b2c	int32_t	s_shownLogonResult		glue	Holds the logon result the dialog last showed, default -1; written by 0x46afb0 and 0x46b140	verified	one	glue/flow#logon-state-dialogs
@@ -259,6 +316,10 @@ address	type	name	name_from	system	meaning	confidence	proof	finding
 0x8387f0	char[36]	s_usageRenameCharacter		glue	Holds the usage error of RenameCharacter	verified	one	glue/select#script-functions
 0x838814	char[41]	s_usageSetCharacterSelectFacing		glue	Holds the usage error of SetCharacterSelectFacing	verified	one	glue/select#script-functions
 0x838848	uint8_t[256]	s_surveyArchiveKey		glue	Holds the 256-byte public key the survey archive's signature is checked with	verified	one	glue/downloads#running-the-survey
+0x838f50	uint32_t[3]	s_corpseWatchedFields		objectlayer	Holds the corpse's watched field indices, 29, 30 and 32	verified	one	objectlayer/fields#watched-fields
+0x838f6c	uint32_t[5]	s_gameObjectWatchedFields		objectlayer	Holds the game object's watched field indices, 3, 8, 17, 18 and 20	verified	one	objectlayer/fields#watched-fields
+0x838f90	uint32_t[295]	s_playerWatchedFields		objectlayer	Holds the 295 player field indices every player watches	verified	one	objectlayer/fields#watched-fields
+0x839430	uint32_t[643]	s_activePlayerWatchedFields		objectlayer	Holds the 643 further player field indices only the active player watches	verified	one	objectlayer/fields#watched-fields
 0x8500b8	void *[52]	s_bindingCommands		input	Pairs the 26 movement and mouse binding commands' names with their handlers	verified	one	input#mouse-commands
 0x850340	char[53]	s_inputControlSourcePath		input	Holds the source path the object file asserts with, ending InputControl.cpp	verified	one	input#input-state
 0x850378	char[51]	s_inputControlTag		input	Holds the path ending InputControl.h, the allocation tag of CInputControl	verified	one	input#input-state
@@ -352,7 +413,12 @@ address	type	name	name_from	system	meaning	confidence	proof	finding
 0xb05d70	float	s_randomTwoPi		random	Holds 2π, set at startup; read only by unreached noise	verified	one	random#static-initializers
 0xb05d74	float	s_gaussianSpareFloat		random	Holds the spare deviate of 0x44f9b0, 0 when empty; one for every state	inferred	none	random#unreached-functions
 0xb05d78	double	s_gaussianSpareDouble		random	Holds the spare deviate of 0x44fa70, 0 when empty; one for every state	inferred	none	random#unreached-functions
-0xb41414	void *	s_objectManager		objectmgr	Holds the client object manager; its +0xd4 holds the movement manager	inferred	none	collision/mover#movement-manager
+0xb232e8	void *[7]	s_objectPools		objectlayer	Holds the object pools of types 1 to 7, created at start-up	verified	one	objectlayer/classes#class-sizes-and-pools
+0xb23310	uint32_t[30768]	s_fieldWatcherLists		objectlayer	Holds 10,256 field watcher list heads of 12 bytes, one per type section and field index	verified	one	objectlayer/initializers#object-tables
+0xb41414	void *	s_objectManager		objectlayer	Holds the client object manager; its +0xd4 holds the movement manager	inferred	none	collision/mover#movement-manager
+0xb41418	void *	s_savedObjectManager		objectlayer	Holds the object manager 0x464fb0 swapped out, until 0x464fd0 restores it	verified	one	objectlayer/manager#accessors-and-enumeration
+0xb4141c	uint32_t[8]	s_objectSizes		objectlayer	Holds each object type's allocation size, set at start-up	verified	one	objectlayer/initializers#object-tables
+0xb4143c	uint32_t[8]	s_fieldCounts		objectlayer	Holds each object type's field count, 6 to 1282, set at start-up	verified	one	objectlayer/initializers#object-tables
 0xb41468	void *	s_glueFfxDeath		glue	Holds the glue's death effect, null until 0x46a6f0 builds it; 0x46a770 deletes it	verified	one	glue/manager#glue-effect-pair
 0xb41478	char[64]	s_currentScreen		glue	Holds the current glue screen's name, empty at load, written only by 0x46b860 for SetCurrentScreen	verified	one	glue/script#screens-build-and-quitting
 0xb414c0	float	s_patchDownloadProgress		glue	Holds the patch download progress, 0 at load, written in 0x474b70 and returned by PatchDownloadProgress	verified	one	glue/script#screenshot-patch-and-survey
@@ -479,6 +545,15 @@ address	type	name	name_from	system	meaning	confidence	proof	finding
 0xc2a3bc	uint32_t	s_latencyMax		net	Holds the greatest simulated delay in milliseconds; zero-filled and never written	verified	one	net/wire#simulated-latency
 0xc2a3c4	uint32_t	s_initUnitCount		net	Counts the object files whose static initializers ran the shared unit count	inferred	none	net/layout#shared-helpers
 0xc2a428	uint8_t[64]	s_randomPool		net	Holds the SHA-1 random pool SRP6 draws from, seeded at startup with the client clock	verified	one	net/login#random-pool
+0xc4bab8	uint8_t[896]	s_tradeSlots		objectlayer	Holds 14 64-byte trade item records, the client's 0 to 6 and the partner's 7 to 13	verified	one	objectlayer/trade#trade-state
+0xc4be70	uint32_t[2]	s_tradeMoney		objectlayer	Holds the money offered by the client and by the partner	verified	one	objectlayer/trade#trade-state
+0xc4be78	uint32_t[2]	s_tradeExtendedFlag		objectlayer	Holds the second header dword of each side's last extended trade status	verified	one	objectlayer/trade#trade-state
+0xc4bea8	uint32_t	s_tradeOfferCounter		objectlayer	Holds the client's offer counter, 1 at trade start and one more per send	verified	one	objectlayer/trade#trade-state
+0xc4bec8	uint32_t	s_tradePending		objectlayer	Holds 1 while a trade this client asked for is pending	verified	one	objectlayer/trade#trade-state
+0xc4becc	uint32_t	s_tradeInitiateFlag		objectlayer	Holds the flag the caller gave the trade request	verified	one	objectlayer/trade#trade-state
+0xc4bed0	uint64_t	s_tradeTarget		objectlayer	Holds the trade partner's GUID	verified	one	objectlayer/trade#trade-state
+0xc4bed8	int32_t[2]	s_tradeExtendedHeader		objectlayer	Holds the third header dword of each side's last extended trade status	verified	one	objectlayer/trade#trade-state
+0xc4c28c	float	s_playerFileConstant		objectlayer	Holds a float a Player_C.cpp initializer computes, read by Player_C.cpp code	inferred	none	objectlayer/initializers#float-constants
 0xc4da98	uint64_t	s_activeMoverGuid		objectlayer	Holds the GUID of the unit this client moves	inferred	none	collision/events#mode-toggle-tags
 0xc4db88	uint32_t[3]	s_movementStaticList		collision	Holds the free list of move-event nodes, an intrusive list with link offset 0	verified	one	collision/overview#movementcpp-initializers
 0xc4e4b4	uint32_t[3]	s_movementCStaticList		collision	Holds an intrusive list head with link offset 0x208, empty at start-up	verified	one	collision/overview#movement_ccpp-initializers

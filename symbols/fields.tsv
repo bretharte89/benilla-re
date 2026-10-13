@@ -48,6 +48,18 @@ CCamera	0x0148	28	CBaseManaged	m_yawProperty	camera	Holds the yaw angle property
 CCamera	0x0164	4	float	m_yaw	camera	Holds the yaw angle	inferred	none	camera#properties
 CCamera	0x0168	4	float	m_yawCos	camera	Holds the cosine of the yaw angle, recomputed on every store	inferred	none	camera#angle-properties
 CCamera	0x016c	4	float	m_yawSin	camera	Holds the sine of the yaw angle, recomputed on every store	inferred	none	camera#angle-properties
+CGObject_C	0x0000	4	void *	__vfptr	objectlayer	Holds the type's vtable, stored last by each constructor	verified	one	objectlayer/classes#constructors-and-final-vtables
+CGObject_C	0x0008	4	uint32_t *	m_fields	objectlayer	Holds the field array, written by 0x613980	verified	one	objectlayer/classes#field-storage
+CGObject_C	0x000c	4	uint32_t *	m_watchCopy	objectlayer	Holds the copy array of the watched fields, written by 0x613980	verified	one	objectlayer/classes#field-storage
+CGObject_C	0x0010	4	uint32_t	m_poolHandle	objectlayer	Holds the handle of the pool block the object came from, written by 0x466e00	verified	one	objectlayer/manager#allocating-and-reusing
+CGObject_C	0x0014	4	uint32_t	m_typeId	objectlayer	Holds the type id 0 to 7, written by 0x613880	verified	one	objectlayer/classes#type-id-and-mask
+CGObject_C	0x0030	8	uint64_t	m_guidKey	objectlayer	Holds the GUID the manager's tables key the object by, written on each table insert	verified	one	objectlayer/manager#finding-an-object
+CGObject_C	0x00e4	4	uint32_t	m_objectFlags	objectlayer	Holds object flags; 0x614f50 sets and clears bit 0x10, release pending	verified	one	objectlayer/manager#releasing-an-object
+CGObject_C	0x00e8	4	uint32_t	m_holdCount	objectlayer	Holds the count of holds that keep the object from release, stepped by 0x614f10	verified	one	objectlayer/manager#holding-an-object
+CGPlayer_C	0x0e68	4	uint32_t *	m_playerFields	objectlayer	Points at field 188, the player section, written by 0x5dd2a0	verified	one	objectlayer/classes#field-storage
+CGPlayer_C	0x0e6c	4	uint32_t *	m_playerWatchCopy	objectlayer	Points at the player section's watch copy, past the unit's 170, written by 0x5dd2a0	verified	one	objectlayer/classes#field-storage
+CGUnit_C	0x0110	4	uint32_t *	m_unitFields	objectlayer	Points at field 6, the unit section, written by 0x5fad10	verified	one	objectlayer/classes#field-storage
+CGUnit_C	0x0114	4	uint32_t *	m_unitWatchCopy	objectlayer	Points at the unit section's watch copy, past the object's 3, written by 0x5fad10	verified	one	objectlayer/classes#field-storage
 CInputControl	0x0000	4	uint32_t	m_createTime	input	Holds the client clock when the object was built	inferred	none	input#input-state
 CInputControl	0x0004	4	uint32_t	m_held	input	Holds the held command bits; 0x1 and 0x2 are the two primary mouse commands	verified	one	input#mouse-commands
 CInputControl	0x0008	4	float	m_travelX	input	Holds the sum of scaled |dx| since the first primary press	verified	two	input#click-versus-drag
@@ -55,6 +67,15 @@ CInputControl	0x000c	4	float	m_travelY	input	Holds the sum of scaled |dy| since 
 CInputControl	0x0010	4	uint32_t	m_motionStamp	input	Holds a graphics device counter read at the last mouse motion while a command was held	inferred	none	input#click-versus-drag
 CInputControl	0x0014	4	uint32_t	m_pressTime	input	Holds the clock time of the first primary press	verified	two	input#click-versus-drag
 CInputControl	0x0018	4	uint32_t	m_clickMode	input	Holds the armed click action, 1 or 2, set to 0 when a release is a drag	verified	one	input#click-versus-drag
+CMirrorHandler	0x0010	4	void *	m_callback	objectlayer	Holds the function called when the watched bytes change, written by 0x467f00	verified	one	objectlayer/fields#watcher-records
+CMirrorHandler	0x0014	4	uint32_t	m_argument	objectlayer	Holds the argument passed to the callback, written by 0x467f00	verified	one	objectlayer/fields#watcher-records
+CMirrorHandler	0x0018	4	uint32_t	m_countdown	objectlayer	Holds the field steps left before the record is checked, written by 0x465970 and 0x465570	verified	one	objectlayer/fields#when-a-watcher-runs
+CMirrorHandler	0x001c	4	uint32_t	m_offset	objectlayer	Holds the watched range's byte offset in the field array, written by 0x467f00	verified	one	objectlayer/fields#watcher-records
+CMirrorHandler	0x0020	4	uint32_t	m_copyOffset	objectlayer	Holds the range's byte offset in the watch copy, written by 0x467f00	verified	one	objectlayer/fields#watcher-records
+CMirrorHandler	0x0024	4	uint32_t	m_length	objectlayer	Holds the watched range's length in bytes, written by 0x467f00	verified	one	objectlayer/fields#watcher-records
+CMirrorHandler	0x0028	4	uint32_t	m_kind	objectlayer	Holds the kind its registration passes, written by 0x467f00	verified	one	objectlayer/fields#watcher-records
+CMirrorHandler	0x002c	1	uint8_t	m_busy	objectlayer	Holds a flag the removal reads as the callback running; 0x467f00 clears it	inferred	none	objectlayer/fields#watcher-records
+CMirrorHandler	0x002d	1	uint8_t	m_deletePending	objectlayer	Holds 1 when a removal came during the callback, written by 0x467ff0 and read by 0x465570	verified	one	objectlayer/fields#watcher-records
 CMovement	0x0000	8	void *[2]	m_link	collision	Holds a list link, zeroed by the constructor and unlinked by 0x7c5950	verified	one	collision/kinematics#teardown
 CMovement	0x0008	8	void *[2]	m_transportLink	collision	Holds the transport passenger link; linked when its second dword is not 0	inferred	none	collision/kinematics#teardown
 CMovement	0x0010	12	float[3]	m_position	collision	Holds the live position, in transport space while a transport GUID is set	verified	one	collision/kinematics#anchors-and-elapsed-time
@@ -212,6 +233,15 @@ NETEVENTQUEUENODE	0x0010	4	void *	m_data	net	Holds the node's own copy of the pa
 NETEVENTQUEUENODE	0x0014	4	uint32_t	m_length	net	Holds the length of the copied bytes	verified	one	net/dispatch#network-thread-handoff
 NTempest::CRndSeed	0x0000	4	uint32_t	m_accumulator	random	Holds the sum the advance returns; the seed after seeding	verified	two	random#state-and-seeding
 NTempest::CRndSeed	0x0004	4	uint32_t	m_lanes	random	Holds four lane indices, byte k a byte offset into the table	verified	two	random#state-and-seeding
+ObjectManager	0x0000	40	uint8_t[40]	m_liveObjects	objectlayer	Holds the GUID hash table of live objects: buckets at +0x1c, mask at +0x24	verified	one	objectlayer/manager#manager-block
+ObjectManager	0x0028	40	uint8_t[40]	m_releasedObjects	objectlayer	Holds the GUID hash table of released objects: buckets at +0x44, mask at +0x4c	verified	one	objectlayer/manager#manager-block
+ObjectManager	0x0050	84	uint32_t[21]	m_reuseLists	objectlayer	Holds seven 12-byte reuse lists of released objects, one per type 1 to 7	verified	one	objectlayer/manager#manager-block
+ObjectManager	0x00a4	12	uint32_t[3]	m_objects	objectlayer	Holds the list of every live object, link offset 0x38	verified	one	objectlayer/manager#manager-block
+ObjectManager	0x00b0	12	uint32_t[3]	m_reactivated	objectlayer	Holds the list of objects reactivated during the current update packet	verified	one	objectlayer/manager#manager-block
+ObjectManager	0x00c0	8	uint64_t	m_activePlayerGuid	objectlayer	Holds the active player's GUID, written by 0x4660a0 for a new object with create flag 1	verified	one	objectlayer/update#create-block
+ObjectManager	0x00cc	4	uint32_t	m_mapId	objectlayer	Holds the map id, written by 0x4685a0	verified	one	objectlayer/manager#manager-block
+ObjectManager	0x00d0	4	ClientConnection *	m_client	objectlayer	Holds the client connection the update handlers are registered on, written by 0x4685b0	verified	one	objectlayer/manager#manager-block
+ObjectManager	0x00d4	4	MovementGlobals *	m_movementGlobals	objectlayer	Holds the movement manager, written by 0x468600	verified	one	objectlayer/manager#accessors-and-enumeration
 RACECLASSINFO	0x0000	4	uint32_t	m_hashVal	spell	Holds the hash, the skill line of the run	verified	one	spell/tables#startup-build-of-the-indexes
 RACECLASSINFO	0x0004	8	void *[2]	m_linkToSlot	spell	Holds the link in the node's slot list, offset 4	verified	one	spell/tables#hash-table-layout
 RACECLASSINFO	0x000c	8	void *[2]	m_linkToFull	spell	Holds the link in the table's node list, offset 0x0c	verified	one	spell/tables#hash-table-layout

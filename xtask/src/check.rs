@@ -40,9 +40,11 @@ pattern!(OFFSET, r"^0x[0-9a-f]{4}$");
 pattern!(DECIMAL, r"^[1-9][0-9]*$");
 pattern!(SYSTEM, r"^[a-z][a-z0-9]*$");
 pattern!(TEST, r"^[a-z][a-z0-9_]*::[a-z][a-z0-9_]*$");
+// A class name keeps the client's own suffix, as its tags give it (`.?AVCGObject_C@@` is
+// `CGObject_C`); a method's own part takes none (`method_name`).
 pattern!(
     METHOD_NAME,
-    r"^(?:[A-Z][A-Za-z0-9]*::)+~?[A-Z][A-Za-z0-9]*$"
+    r"^(?:[A-Z][A-Za-z0-9]*(?:_[A-Z][A-Za-z0-9]*)*::)+~?[A-Z][A-Za-z0-9]*$"
 );
 pattern!(FREE_NAME, r"^[A-Z][A-Za-z0-9]*$");
 pattern!(
@@ -51,10 +53,13 @@ pattern!(
 );
 pattern!(
     GLOBAL_NAME,
-    r"^(?:s_[a-z][A-Za-z0-9]*|(?:[A-Z][A-Za-z0-9]*::)+vftable)$"
+    r"^(?:s_[a-z][A-Za-z0-9]*|(?:[A-Z][A-Za-z0-9]*(?:_[A-Z][A-Za-z0-9]*)*::)+vftable)$"
 );
 pattern!(FIELD_NAME, r"^(?:m_[a-z][A-Za-z0-9]*|__vfptr)$");
-pattern!(STRUCT_NAME, r"^[A-Z][A-Za-z0-9]*(?:::[A-Z][A-Za-z0-9]*)*$");
+pattern!(
+    STRUCT_NAME,
+    r"^[A-Z][A-Za-z0-9]*(?:_[A-Z][A-Za-z0-9]*)*(?:::[A-Z][A-Za-z0-9]*(?:_[A-Z][A-Za-z0-9]*)*)*$"
+);
 pattern!(VERB, r"^[A-Z][A-Za-z]*s\b");
 pattern!(
     MEANING_BANNED,
@@ -410,7 +415,7 @@ pub fn run(tree: &dyn Tree) -> io::Result<Checked> {
             let size = if kind == Kind::Functions {
                 check_name(
                     row,
-                    |n| METHOD_NAME.is_match(n) || FREE_NAME.is_match(n),
+                    |n| method_name(n) || FREE_NAME.is_match(n),
                     "functions",
                     &mut p,
                 );
@@ -881,6 +886,22 @@ fn check_name(row: &Row, rule: impl Fn(&str) -> bool, what: &str, p: &mut Proble
             format!("name '{name}' breaks the naming rule for {what}"),
         );
     }
+}
+
+/// A method name: `Class::Method`, where only the class carries a `_X` suffix, or a constructor
+/// or destructor, whose own part repeats its class, suffix and all (`CGObject_C::~CGObject_C`).
+fn method_name(name: &str) -> bool {
+    if METHOD_NAME.is_match(name) {
+        return true;
+    }
+    let mut parts = name.rsplitn(2, "::");
+    let (Some(own), Some(scope)) = (parts.next(), parts.next()) else {
+        return false;
+    };
+    let class = scope.rsplit("::").next().unwrap_or(scope);
+    own.strip_prefix('~').unwrap_or(own) == class
+        && STRUCT_NAME.is_match(scope)
+        && METHOD_NAME.is_match(&format!("{scope}::X"))
 }
 
 fn check_doc(

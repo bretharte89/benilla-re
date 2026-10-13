@@ -29,9 +29,10 @@ One convention, the client's own C++ style:
 
 - **Methods.** `Class::Method` where the class is established: a vtable, an allocation or type
   tag, or consistent use of one object as `this`. The class name comes from a tag or string in
-  the image (`HCAMERA` gives `CCamera`, `.PAVCBaseManaged@@` gives `CBaseManaged`) or from the
-  community database; it is never guessed. Constructors and destructors are `Class::Class` and
-  `Class::~Class`, and the deleting destructor a vtable holds is `Class::DeletingDestructor`.
+  the image (`HCAMERA` gives `CCamera`, `.PAVCBaseManaged@@` gives `CBaseManaged`,
+  `.?AVCGObject_C@@` gives `CGObject_C`, suffix kept) or from the community database; it is never
+  guessed. Only the class carries such a suffix; a method's own part does not, except that
+  constructors and destructors are `Class::Class` and `Class::~Class`, and the deleting destructor a vtable holds is `Class::DeletingDestructor`.
 - **Free functions.** A PascalCase name that says what the function does to its inputs:
   `RandomSeedFromString`, `NormalizeAngle`. This covers methods of a class the image does not
   name.
@@ -55,7 +56,7 @@ Exports use `FUN_00514ae0` for a function with no name.
 | `address` | `0x` and exactly six lowercase hex digits: `0x514ae0`. The virtual address in the exe, never a file offset or an RVA. |
 | `name` | As above. Empty only when the meaning is unknown. |
 | `name_from` | `idb` for a community name; empty for a name given here. |
-| `system` | The owning system, a lowercase word naming a doc under `../systems/`, or a library. |
+| `system` | The owning system, a lowercase word naming a doc under `../systems/`, or a library. `unassigned` when the row's object file is not yet identified; ownership is never guessed. |
 | `meaning` | One line starting with a verb: what the thing does or holds. |
 | `confidence` | `verified`: read at the bytes, the derivation recorded in `finding`. `inferred`: a lead, not settled. |
 | `proof` | For `verified`: `one` (one reading), `two` (two independent readings reconciled) or `test` (a bit-exact test against the exe passes). For `inferred`: `none`. |

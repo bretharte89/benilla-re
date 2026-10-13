@@ -2,7 +2,11 @@ name	size	vtable	system	meaning	confidence	proof	finding
 BlizzardObject	324		spell	Holds an area shard emitter: link, model path, world object, position, radius, accumulator, rate and shard list	verified	one	spell/visuals#area-shard-emitter-creation
 CBaseManaged	28	0x81d7f0	camera	Holds a property's header: vtable, update-list link, type, flags and producer	verified	one	camera#property-updates
 CCamera	368	0x81d7c0	camera	Holds a camera: the property slots and update list, then nine properties	verified	one	camera#lifetime
+CGObject_C	308	0x803640	objectlayer	Holds an object the server described: its storage, pool handle, type, GUID key, hold count and flags	verified	one	objectlayer/classes#class-sizes-and-pools
+CGPlayer_C	11340	0x80af78	objectlayer	Holds a player other than the active one, whose heap block is 26648 bytes; the unit plus the player section	verified	one	objectlayer/classes#class-sizes-and-pools
+CGUnit_C	5120	0x80c4f8	objectlayer	Holds a unit: the object, the unit members with their field pointers, the unit fields and watch copy	verified	one	objectlayer/classes#class-sizes-and-pools
 CInputControl	28		input	Holds the world input state: held commands, travel sums, times and the armed click	verified	one	input#input-state
+CMirrorHandler	48		objectlayer	Holds one field watcher: the watched byte range, its copy offset, the callback and its argument	verified	one	objectlayer/fields#watcher-records
 CMovement	352		collision	Holds a unit's movement: the shared kinematics to +0xab, then collision size, relay timing, event queue and unit	verified	one	collision/mover#construction
 CPlayerMoveEvent	80		collision	Holds one queued movement event: list link, time, tag, pose, status snapshot, payload and flags	verified	one	collision/events#event-node
 CSimpleModelFFX	988	0x803960	glue	Holds a ModelFFX frame: a CSimpleModel whose show hook and layer-2 draw add the current full-screen effect	verified	one	glue/select#the-modelffx-frame
@@ -18,6 +22,7 @@ LightningObject::Bolt	16		spell	Holds one hop of a chain: endpoint indices, star
 MovementGlobals	312		collision	Holds the movement manager: log path and files, the mover list, the tick clock and the heartbeat deadline	verified	one	collision/mover#movement-manager
 NETEVENTQUEUENODE	24		net	Holds one queued network event: link, type, time, data copy and length	verified	one	net/dispatch#network-thread-handoff
 NTempest::CRndSeed	8		random	Holds a random state: an accumulator and four lane indices	verified	two	random#state-and-seeding
+ObjectManager	224		objectlayer	Holds the object manager: the live and released GUID tables, the reuse and object lists, the active player	verified	one	objectlayer/manager#manager-block
 RACECLASSINFO	32		spell	Holds a race-class index node: skill line, two links, and a run of SkillRaceClassInfo rows	verified	one	spell/tables#startup-build-of-the-indexes
 RealmCategory	28		glue	Holds a realm category: its Cfg_Categories id and row and the holder indices of its realms	verified	one	glue/realms#the-category-set
 RealmInfo	308		net	Holds one realm of the logon server's realm list: type, flags, name, address, population and counts	verified	one	glue/realms#the-realm-record

@@ -558,6 +558,37 @@ fn the_clean_fixture_passes() {
 }
 
 #[test]
+fn a_class_name_keeps_the_client_suffix() {
+    let mut files = clean();
+    for file in [S, D, F, G] {
+        let text = files.get_mut(file).expect("in the fixture");
+        *text = text.replace("CDemo", "CDemo_C");
+    }
+    swap(&mut files, DOC, "`CDemo`", "`CDemo_C`");
+    assert_eq!(problems(files), Vec::<String>::new());
+}
+
+#[test]
+fn a_suffix_belongs_to_the_class_alone() {
+    for good in [
+        "CDemo_C::Run",
+        "CDemo_C::CDemo_C",
+        "CDemo_C::~CDemo_C",
+        "A::B_C::B_C",
+    ] {
+        assert!(super::method_name(good), "{good} is refused");
+    }
+    for bad in [
+        "CDemo::Run_Fast",
+        "CDemo_C::Run_C",
+        "CDemo_C::Other_C",
+        "CDemo_C::~Other_C",
+    ] {
+        assert!(!super::method_name(bad), "{bad} is accepted");
+    }
+}
+
+#[test]
 fn each_planted_violation_is_caught_alone() {
     let mut failures = Vec::new();
     for plant in plants() {
