@@ -45,6 +45,10 @@ CInputControl	0x000c	4	float	m_travelY	input	Holds the sum of scaled |dy| since 
 CInputControl	0x0010	4	uint32_t	m_motionStamp	input	Holds a graphics device counter read at the last mouse motion while a command was held	inferred	none	input#click-versus-drag
 CInputControl	0x0014	4	uint32_t	m_pressTime	input	Holds the clock time of the first primary press	verified	two	input#click-versus-drag
 CInputControl	0x0018	4	uint32_t	m_clickMode	input	Holds the armed click action, 1 or 2, set to 0 when a release is a drag	verified	one	input#click-versus-drag
+ClientConnection	0x1b08	4	uint32_t	m_statusDone	net	Holds 1 once the current operation's status is set	verified	one	net/session#session-status
+ClientConnection	0x1b0c	4	uint32_t	m_statusResult	net	Holds the status's result flag, 1 for success	verified	one	net/session#session-status
+ClientConnection	0x1b10	4	uint32_t	m_operation	net	Holds the operation the status belongs to	verified	one	net/session#session-status
+ClientConnection	0x1b14	4	uint32_t	m_statusCode	net	Holds the status code, an index into the 83 status names	verified	one	net/session#session-status
 EvtContext	0x0000	4	void **	__vfptr	core	Holds the vtable 0x801364	verified	one	core/loop#start-and-stop
 EvtContext	0x0004	8	void *[2]	m_tableLink	core	Holds the context's link in its context table bucket	verified	one	core/loop#contexts
 EvtContext	0x000c	4	uint32_t	m_handle	core	Holds the context's handle, its key in the context table	verified	one	core/loop#contexts
@@ -71,5 +75,22 @@ EvtHandler	0x0008	4	void *	m_handler	core	Holds the function, called as fastcall
 EvtHandler	0x000c	4	void *	m_argument	core	Holds the argument passed in edx	verified	two	core/events#handler-records
 EvtHandler	0x0010	4	float	m_priority	core	Holds the priority; higher runs first	verified	two	core/events#handler-order
 EvtHandler	0x0014	4	uint32_t	m_skip	core	Holds nonzero for a record the dispatch and registration pass over	verified	two	core/events#handler-order
+NETEVENTQUEUENODE	0x0008	4	uint32_t	m_type	net	Holds the event type, 0x12 to 0x16	verified	one	net/dispatch#network-thread-handoff
+NETEVENTQUEUENODE	0x000c	4	uint32_t	m_time	net	Holds the client clock when the node was queued	verified	one	net/dispatch#network-thread-handoff
+NETEVENTQUEUENODE	0x0010	4	void *	m_data	net	Holds the node's own copy of the packet bytes	verified	one	net/dispatch#network-thread-handoff
+NETEVENTQUEUENODE	0x0014	4	uint32_t	m_length	net	Holds the length of the copied bytes	verified	one	net/dispatch#network-thread-handoff
 NTempest::CRndSeed	0x0000	4	uint32_t	m_accumulator	random	Holds the sum the advance returns; the seed after seeding	verified	two	random#state-and-seeding
 NTempest::CRndSeed	0x0004	4	uint32_t	m_lanes	random	Holds four lane indices, byte k a byte offset into the table	verified	two	random#state-and-seeding
+WowConnection	0x0010	4	uint32_t	m_state	net	Holds the socket state: 5 connected, 6 closed, 7 closing	verified	one	net/wire#sending
+WowConnection	0x001c	4	uint8_t *	m_recvBuffer	net	Holds the receive buffer	verified	one	net/wire#receive-loop
+WowConnection	0x0020	4	uint32_t	m_recvFill	net	Holds the count of bytes in the receive buffer	verified	one	net/wire#receive-loop
+WowConnection	0x0024	4	uint32_t	m_recvCapacity	net	Holds the receive buffer's size, grown by 1024	verified	one	net/wire#receive-loop
+WowConnection	0x0120	1	uint8_t	m_cipherArmed	net	Holds 1 while the header cipher is armed	verified	one	net/wire#header-cipher
+WowConnection	0x0121	1	uint8_t	m_sendIndex	net	Holds the send key index, 0 to 39	verified	one	net/wire#header-cipher
+WowConnection	0x0122	1	uint8_t	m_sendFeedback	net	Holds the last ciphertext byte sent	verified	one	net/wire#header-cipher
+WowConnection	0x0123	1	uint8_t	m_sendSpan	net	Holds the bytes after the size header that are ciphered on send, 4	verified	one	net/wire#header-cipher
+WowConnection	0x0124	1	uint8_t	m_recvIndex	net	Holds the receive key index, 0 to 39	verified	one	net/wire#header-cipher
+WowConnection	0x0125	1	uint8_t	m_recvFeedback	net	Holds the last ciphertext byte received	verified	one	net/wire#header-cipher
+WowConnection	0x0126	1	uint8_t	m_recvSpan	net	Holds the bytes after the size header that are deciphered on receive, 2	verified	one	net/wire#header-cipher
+WowConnection	0x0127	1	uint8_t	m_keyLength	net	Holds the key length, 40	verified	one	net/wire#header-cipher
+WowConnection	0x0128	4	uint8_t *	m_key	net	Holds the key, the NetClient's 40 bytes at +0x48	verified	one	net/wire#header-cipher
