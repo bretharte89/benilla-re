@@ -33,6 +33,7 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x40a2e0	45	__cinit	idb	crt	boundary	void __cdecl (void)	Runs the C and C++ static initializer tables through __initterm	verified	one	random#static-initializers	
 0x40a404	26	__initterm	idb	crt	boundary	void __cdecl (void (**begin)(void), void (**end)(void))	Calls every non-null pointer in [begin, end) in ascending order	verified	one	random#static-initializers	
 0x40acbb	103	__getptd	idb	crt	boundary		Returns the C runtime's per-thread data	inferred	none	random#the-c-runtime-rand	
+0x40f92b	111	tolower		crt			Returns the lower-case form of a character in the C locale	inferred	none	models/cache#shared-model-lookup	
 0x4134e3	27			crt	boundary		Formats a broken-down time with a format string into a buffer	inferred	none	core/time#calendar-time	
 0x418070	82	CDataStore::PutInt8	idb	base			Appends one byte to a data store	verified	one	spell/cast#cast-request-packets	
 0x418130	85	CDataStore::PutUInt16		base			Appends two bytes to a data store	verified	one	spell/cast#cast-request-packets	
@@ -59,6 +60,7 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x41ae70	16	NDCToDDCHeight		screencoord			Returns the float at 0x832a48 times a float argument, in st0	inferred	none		
 0x41aed0	19	HandleClose	idb	base			Closes a handle	inferred	none	spell/visuals#chain-lifetime	
 0x41af10	20	CreateHandle		base			Returns a handle for an object, or 0 with error 0x57 for a null object	inferred	none	camera#lifetime	
+0x41af70	8	CompareHandles		base			Returns the difference of two handles shifted right by 2	inferred	none	models/scene#element-sort-orders	
 0x41db50	13	SetThreadPropContext		base			Stores a value in the calling thread's property slot through 0x436db0	verified	one	core/loop#one-tick	
 0x41db90	27	PropGet	idb	base			Returns an entry of the calling thread's property array, read through TlsGetValue	inferred	none	core/loop#one-tick	
 0x41dbb0	27	SetThreadProp		base			Stores a value in an entry of the calling thread's property array	verified	one	core/loop#one-tick	
@@ -460,6 +462,7 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x4298e0	204	ReadCpuid		os			Fills a block with CPUID's vendor, leaves 1 and 4 and extended leaves; returns 0 without them	inferred	none	core/time#multi-core-gate	
 0x429b90	350	GetCpuCapabilities		os			Returns the processor capability word from CPUID; 0x40 marks more than one core	verified	one	core/time#multi-core-gate	
 0x429d10	16	OsGetCpuCapabilities		os			Returns the processor capability word through 0x429b90	verified	one	core/time#multi-core-gate	
+0x429d20	46	OsGetProcessorCount		os			Returns the number of processors	inferred	none	models/cache#feature-mask	
 0x429d50	8	OsSleep	idb	os			Sleeps for a number of milliseconds	inferred	none	core/input#the-pump	
 0x429d60	6	OsGetIdleSleepEnabled		os			Returns the flag that lets the pump sleep while the window is inactive	inferred	none	core/input#the-pump	
 0x429d80	6	OsGetIdleSleepTime		os			Returns the time the pump sleeps while the window is inactive	inferred	none	core/input#the-pump	
@@ -2426,6 +2429,8 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x589e60	27	GxRsSet	idb	gx			Sets one of the device's render states, rejecting a state index of 0x46 or more	inferred	none		
 0x58a080	18	GxBufLock		gx		void * __fastcall (void *buffer)	Locks a buffer through the device's slot 0xa8 and returns its memory	inferred	none		
 0x58a0a0	27	GxBufUnlock		gx		void __fastcall (void *buffer, uint32_t count)	Unlocks a buffer through the device	inferred	none		
+0x58a1a0	21	GxBufferRelease		gx			Releases a device buffer through the device	inferred	none		
+0x58a230	11	GxCapsGet		gx			Returns the device capability record	inferred	none	models/cache#feature-mask	
 0x58a240	15	GxCapsWindowSize		gx			Writes the window rectangle as four floats	inferred	none		
 0x58a250	15	GxCapsScreenSize	idb	gx	host		Writes the screen rectangle as four floats	inferred	none	camera#orthographic-setup	
 0x58ac70	62	GxTexUpdateRect		gx		void __fastcall (void *texture, uint32_t b, uint32_t a, uint32_t d, uint32_t c, uint32_t flag)	Packs its arguments as the rectangle (a, b, c, d) and asks the device to refill that part of a texture	inferred	none		
@@ -2433,9 +2438,12 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x58b050	15	SetDeviceView		gx	host	void __fastcall (const float *matrix)	Passes a matrix to device vtable slot +0x74	verified	one	camera#view-and-projection	
 0x58b090	13	GetDeviceProjection		gx	host	void __fastcall (float *out)	Copies the device matrix at +0xf50	verified	one	camera#unprojection	
 0x58b0b0	13	GetDeviceView		gx	host	void __fastcall (float *out)	Copies the top of the device matrix stack at +0x1ac8	verified	one	camera#unprojection	
+0x58b240	14	GxXformSetTexture		gx			Sets a texture stage matrix on the device	inferred	none		
+0x58b310	22	GxShaderRelease		gx			Releases a device shader handle through the device	inferred	none		
 0x58b590	18	SetCursorShown		gx			Calls slot +0xec of the device object with a show flag	inferred	none		
 0x58b5c0	21			gx			Calls slot 61 of a global device object with its two register arguments	inferred	none		
 0x592120	7	ReadDevice1fc		gx	host	uint32_t __thiscall (void *device)	Returns the dword at +0x1fc of the device	verified	one	camera#orthographic-setup	
+0x5923d0	7	GxDeviceGetCaps		gx			Returns the address of a device's capability record	inferred	none		
 0x597ac0	16	CopyColor		gx			Copies a colour dword into this	inferred	none	spell/visuals#screen-tint	
 0x597ad0	38	SetPlane		cmath		float * __thiscall (float *plane, const float *normal, float d)	Stores a normal and a distance as a plane	verified	one	collision/contact#facet-gather	
 0x5995c0	335	CreateD3dDevice		gx			Creates the Direct3D 9 device with behaviour flags 0x22 or 0x52, both with FPU_PRESERVE	verified	one	METHOD#the-harness	
@@ -7265,6 +7273,7 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x646320	261	SMemReAlloc		storm	boundary		Reallocates tagged memory	inferred	none		
 0x646430	34	SMemFree	idb	storm	boundary		Frees tagged memory	inferred	none		
 0x648460	373	SFile::Read	idb	storm	boundary		Reads bytes from an open archive file	inferred	none		
+0x6487b0	59	SFileGetFileName		storm			Copies an open file's name into a buffer	inferred	none	models/cache#shared-model-lookup	
 0x64a450	43	SStr::sub_64A450	idb	storm	boundary		Returns the last occurrence of a character in a string	inferred	none		
 0x64a4c0	56	SStrCmpI	idb	storm			Compares two strings ignoring case up to a length	inferred	none	spell/cooldowns#spell-id-by-name	
 0x64a5a0	123	SStrCopy	idb	storm	boundary		Copies a string up to a length	inferred	none	collision/mover#initialisation-and-teardown	
@@ -8218,6 +8227,57 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x692b50	19	InitTerrainSquare90		terrain	primitive	void __cdecl (void)	Stores 10 squared as a float in a global	verified	one	terrain/statics#static-initializers	
 0x692b70	5	InitTerrainQuotient11Thunk		terrain	orchestration	void __cdecl (void)	Jumps to 0x692b80; a static initializer	verified	one	terrain/statics#static-initializers	
 0x692b80	19	InitTerrainQuotient11		terrain	primitive	void __cdecl (void)	Stores 0.5 divided by 10 as a float in a global	verified	one	terrain/statics#static-initializers	
+0x692ba0	5	InitAaBspInfinityThunk		models	orchestration		Jumps to 0x692bb0; a static initializer	verified	one	models/overview#object-files	
+0x692bb0	11	InitAaBspInfinity		models	orchestration		Copies +inf into the object file's infinity global	verified	one	models/overview#shared-header-constants	
+0x692bc0	5	InitAaBspTwoPiThunk		models	orchestration		Jumps to 0x692bd0; a static initializer	verified	one	models/overview#shared-header-constants	
+0x692bd0	15	InitAaBspTwoPi		models	primitive		Stores π + π as a float in the object file's 2π global	verified	one	models/overview#shared-header-constants	
+0x692be0	5	InitAaBspInvTwoPiThunk		models	orchestration		Jumps to 0x692bf0; a static initializer	verified	one	models/overview#shared-header-constants	
+0x692bf0	19	InitAaBspInvTwoPi		models	primitive		Stores 1 / 2π as a float in the object file's 1/2π global	verified	one	models/overview#shared-header-constants	
+0x692c10	5	InitAaBspScratchThunk		models	orchestration		Jumps to 0x692c20; a static initializer	verified	one	models/overview#shared-header-constants	
+0x692c20	32	InitAaBspScratch		models	orchestration		Zeroes the BSP object file's three counters and its 2048-dword visited bitset	verified	one	models/overview#shared-header-constants	
+0x692c40	10	InitAaBspIdentity		models	orchestration		Stores the BSP object file's 3x3 identity and registers its exit hook; a static initializer	verified	one	models/overview#static-objects	
+0x692c50	91	InitAaBspIdentityMatrix		models	orchestration		Stores a 3x3 identity matrix in the BSP object file's global	verified	one	models/overview#static-objects	
+0x692cb0	12	InitAaBspIdentityAtexit		models	orchestration		Registers the 3x3 identity's exit hook with _atexit	verified	one	models/overview#static-objects	
+0x692cc0	21	AaBspIdentityAtexit		models	primitive		Sets the 3x3 identity's guard bit at exit	verified	one	models/overview#static-objects	
+0x692ce0	185	AaBspCopy		models	unreached		Copies a BSP tree's nodes and face index array into new allocations; nothing reaches it	inferred	none	models/overview#unreached-code	
+0x692da0	35	AaBspConstruct		models	orchestration		Zeroes a BSP tree record	inferred	none		
+0x692dd0	5	AaBspFreeThunk		models	orchestration		Jumps to the BSP tree free	inferred	none		
+0x692de0	16	AaBspDestruct		models	orchestration		Frees a BSP tree and zeroes its record	inferred	none		
+0x692df0	295	AaBspBuild		models	unreached		Builds a BSP tree over a mesh's faces in scratch pools; nothing reaches it	inferred	none	models/overview#unreached-code	
+0x692f20	57	AaBspSetMesh		models	orchestration		Points a BSP tree at a group's vertices, faces and node arrays	inferred	none		
+0x692f60	86	AaBspQuerySegment		models	unreached		Collects the faces a segment's BSP walk visits; nothing reaches it	inferred	none	models/overview#unreached-code	
+0x692fc0	86	AaBspQueryBox		models	unreached		Collects the faces of the BSP leaves a box touches; nothing reaches it	inferred	none	models/overview#unreached-code	
+0x693020	19	AaBspSetCounts		models	unreached		Stores two counts in a BSP tree record; nothing reaches it	inferred	none	models/overview#unreached-code	
+0x693040	63	AaBspClear		models	orchestration		Zeroes a BSP tree's arrays and counts	inferred	none		
+0x693080	154	AaBspFree		models	host		Frees a BSP tree's leaf caches, nodes and face indices	inferred	none	models/overview#object-files	
+0x693120	26	AaBspScratchPush		models	unreached		Advances a BSP build scratch pool by a count; nothing reaches it	inferred	none	models/overview#unreached-code	
+0x693140	18	AaBspScratchPop		models	unreached		Rewinds a BSP build scratch pool by a count; nothing reaches it	inferred	none	models/overview#unreached-code	
+0x693160	15	AaBspScratchNext		models	unreached		Returns the next free entry of a BSP build pool; nothing reaches it	inferred	none	models/overview#unreached-code	
+0x693170	24	AaBspScratchAdd		models	unreached		Adds a count to a BSP build pool's top; nothing reaches it	inferred	none	models/overview#unreached-code	
+0x693190	378	AaBspBuildNode		models	unreached		Splits a face set recursively into BSP nodes, stopping at depth 8 or 32 faces; nothing reaches it	inferred	none	models/overview#unreached-code	
+0x693310	385	AaBspFaceBounds		models	unreached		Computes the box bounding a subset of a mesh's faces; nothing reaches it	inferred	none	models/overview#unreached-code	
+0x6934a0	600	AaBspChooseSplit		models	unreached		Chooses a BSP node's split axis and distance from the face bounds; nothing reaches it	inferred	none	models/overview#unreached-code	
+0x693700	298	AaBspPartition		models	unreached		Sorts a node's faces to the sides of its split plane; nothing reaches it	inferred	none	models/overview#unreached-code	
+0x693830	100	AaBspGatherLeafFaces		models	unreached		Appends a leaf's faces not yet visited to the query result; nothing reaches it	inferred	none	models/overview#unreached-code	
+0x6938a0	553	AaBspWalkSegment		models	unreached		Walks a segment down a BSP tree, gathering the leaves it crosses; nothing reaches it	inferred	none	models/overview#unreached-code	
+0x693ad0	218	AaBspWalkBox		models	unreached		Walks a box down a BSP tree, gathering the leaves it touches; nothing reaches it	inferred	none	models/overview#unreached-code	
+0x693bb0	5	InitAaBspNegTwentyOneOverThirtySixThunk		models	orchestration		Jumps to 0x693bc0; a static initializer	verified	one	models/overview#shared-header-constants	
+0x693bc0	19	InitAaBspNegTwentyOneOverThirtySix		models	primitive		Stores -21.0 · -0.02777778 as a float in an object-file global	verified	one	models/overview#shared-header-constants	
+0x693be0	5	InitAaBspScaledNeg255Thunk		models	orchestration		Jumps to 0x693bf0; a static initializer	verified	one	models/overview#shared-header-constants	
+0x693bf0	19	InitAaBspScaledNeg255		models	primitive		Stores another of the object file's globals · -255.0 as a float	verified	one	models/overview#shared-header-constants	
+0x693c10	5	InitAaBspEighteenOverThirtySixThunk		models	orchestration		Jumps to 0x693c20; a static initializer	verified	one	models/overview#shared-header-constants	
+0x693c20	19	InitAaBspEighteenOverThirtySix		models	primitive		Stores 18.0 · 0.02777778 as a float in an object-file global	verified	one	models/overview#shared-header-constants	
+0x693c40	5	InitAaBspScaled256Thunk		models	orchestration		Jumps to 0x693c50; a static initializer	verified	one	models/overview#shared-header-constants	
+0x693c50	19	InitAaBspScaled256		models	primitive		Stores another of the object file's globals · 256.0 as a float	verified	one	models/overview#shared-header-constants	
+0x693c70	5	InitAaBspInvTileSizeThunk		models	orchestration		Jumps to 0x693c80; a static initializer	verified	one	models/overview#shared-header-constants	
+0x693c80	19	InitAaBspInvTileSize		models	primitive		Stores 1.0 / 4.166667 as a float in an object-file global	verified	one	models/overview#shared-header-constants	
+0x693ca0	56	AaBspLeafCacheConstruct		models	orchestration		Constructs a BSP leaf cache's slot array	inferred	none	models/overview#object-files	
+0x693ce0	50	AaBspLeafCacheDestruct		models	orchestration		Destroys a BSP leaf cache's slot array	inferred	none		
+0x693d20	29	AaBspLeafCacheClear		models	orchestration		Zeroes a BSP leaf cache slot	inferred	none		
+0x693d40	26	AaBspLeafCacheHash		models	primitive		Hashes a BSP node and leaf index to a leaf cache bucket	inferred	none		
+0x693d60	178	AaBspLeafCacheGet		models	primitive		Finds or builds the welded mesh of a BSP leaf in the leaf cache	inferred	none	models/wmo#queries	
+0x693e20	89	AaBspLeafCacheRemove		models	orchestration		Removes a BSP leaf's welded mesh from the leaf cache	inferred	none		
+0x693e80	481	AaBspWeldLeaf		models	primitive		Builds a BSP leaf's welded vertex and index lists with a 1024-entry hash	inferred	none	models/overview#object-files	
 0x694070	5	InitTerrainInfinity6Thunk		terrain	orchestration	void __cdecl (void)	Jumps to 0x694080; a static initializer	verified	one	terrain/statics#static-initializers	
 0x694080	11	InitTerrainInfinity6		terrain	orchestration	void __cdecl (void)	Copies the constant +inf into a global	verified	one	terrain/statics#static-initializers	
 0x694090	10	InitTerrainZero24Thunk		terrain	orchestration	void __cdecl (void)	Calls 0x6940a0, then jumps to 0x6940c0; a static initializer	verified	one	terrain/statics#static-initializers	
@@ -8988,6 +9048,150 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x6a2c20	19	InitTerrainSquare252		terrain	primitive	void __cdecl (void)	Stores 10 squared as a float in a global	verified	one	terrain/statics#static-initializers	
 0x6a2c40	5	InitTerrainQuotient29Thunk		terrain	orchestration	void __cdecl (void)	Jumps to 0x6a2c50; a static initializer	verified	one	terrain/statics#static-initializers	
 0x6a2c50	19	InitTerrainQuotient29		terrain	primitive	void __cdecl (void)	Stores 0.5 divided by 10 as a float in a global	verified	one	terrain/statics#static-initializers	
+0x6a2c90	10	InitMapObjStatic1		models	orchestration		Runs 0x6a2ca0, then registers an exit hook through 0x6a2d60; a static initializer	verified	one	models/overview#object-files	
+0x6a2ca0	190	InitMapObjPool		models	primitive		Initializes the map object pool's free list and vtable	inferred	none	models/overview#static-objects	
+0x6a2d60	12	InitMapObjStatic1Atexit		models	orchestration		Registers 0x6a2d70 with _atexit	verified	one	models/overview#static-objects	
+0x6a2d70	375	MapObjPoolAtexit		models	primitive		Frees the map object pool's lists once at exit	inferred	none	models/overview#static-objects	
+0x6a2ef0	10	InitMapObjStatic2		models	orchestration		Runs 0x6a2f00, then registers an exit hook through 0x6a2f20; a static initializer	verified	one	models/overview#static-objects	
+0x6a2f00	31	InitMapObjVectorA		models	orchestration		Zeroes a three-float map object global	verified	one	models/overview#static-objects	
+0x6a2f20	12	InitMapObjStatic2Atexit		models	orchestration		Registers 0x6a2f30 with _atexit	verified	one	models/overview#static-objects	
+0x6a2f30	21	MapObjVectorAAtexit		models	primitive		Sets a map object guard bit at exit	verified	one	models/overview#static-objects	
+0x6a2f50	10	InitMapObjStatic3		models	orchestration		Runs 0x6a2f60, then registers an exit hook through 0x6a2f80; a static initializer	verified	one	models/overview#static-objects	
+0x6a2f60	31	InitMapObjVectorB		models	orchestration		Zeroes a three-float map object global	verified	one	models/overview#static-objects	
+0x6a2f80	12	InitMapObjStatic3Atexit		models	orchestration		Registers 0x6a2f90 with _atexit	verified	one	models/overview#static-objects	
+0x6a2f90	21	MapObjVectorBAtexit		models	primitive		Sets a map object guard bit at exit	verified	one	models/overview#static-objects	
+0x6a2fb0	10	InitMapObjStatic4		models	orchestration		Runs 0x6a2fc0, then registers an exit hook through 0x6a3010; a static initializer	verified	one	models/overview#static-objects	
+0x6a2fc0	67	InitMapObjUpPlane		models	orchestration		Stores the plane (0, 0, 1, 0) in a map object global	verified	one	models/overview#static-objects	
+0x6a3010	12	InitMapObjStatic4Atexit		models	orchestration		Registers 0x6a3020 with _atexit	verified	one	models/overview#static-objects	
+0x6a3020	21	MapObjUpPlaneAtexit		models	primitive		Sets a map object guard bit at exit	verified	one	models/overview#static-objects	
+0x6a3040	191	MapObjLoadShaders		models	host		Loads the map object pixel shaders	inferred	none		
+0x6a3100	95	MapObjUnloadShaders		models	host		Releases the map object shaders, buffer pools and vertex arrays	inferred	none		
+0x6a3160	205	MapObjReleaseAll		models	primitive		Releases every cached map object	inferred	none		
+0x6a3230	444	CMapObj::Get		models	primitive		Finds a cached map object by name or creates one and starts reading its file	inferred	none	models/wmo#loading	
+0x6a33f0	28	CMapObj::CountDown		models	orchestration		Decrements a map object counter and resets a float to 30.0 when it runs out	inferred	none		
+0x6a3410	11	MapObjEnableFlag		models	orchestration		Sets a map object global flag to 1	inferred	none		
+0x6a3420	11	MapObjDisableFlag		models	orchestration		Sets a map object global flag to 0	inferred	none		
+0x6a3430	113	CMapObj::Reset		models	primitive		Resets a map object's defaults and lists	inferred	none		
+0x6a34b0	242	CMapObj::~CMapObj		models	primitive		Drains a map object's groups and unlinks it from its lists	inferred	none		
+0x6a35b0	127	CMapObj::CMapObj		models	orchestration		Zeroes a map object and its field block	inferred	none		
+0x6a3630	153	CMapObj::ClearFields		models	orchestration		Zeroes a map object's header and group pointers	inferred	none		
+0x6a36d0	223	CMapObj::Free		models	host		Closes a map object's file and frees its data and groups	inferred	none	models/overview#object-files	
+0x6a37b0	649	CMapObj::IntersectSegment		models	primitive		Tests a segment against a map object's groups and returns the hit and surface	inferred	none	models/wmo#queries	
+0x6a3a40	200	CMapObj::IntersectSegmentTwoGroups		models	primitive		Tests a segment against two groups of a map object	inferred	none		
+0x6a3b10	266	CMapObj::CollectSegmentFacets		models	primitive		Collects the facets of a map object's groups a segment crosses	inferred	none	models/wmo#queries	
+0x6a3c20	207	CMapObj::CollectBoxFacets		models	primitive		Collects the facets of a map object's groups a box touches	inferred	none	models/wmo#queries	
+0x6a3cf0	199	CMapObj::QueryGroups		models	primitive		Tests a query against each loaded group of a map object	inferred	none		
+0x6a3dc0	285	CMapObj::CollectVolumeFacets		models	primitive		Collects the facets of a map object's groups inside a convex volume	inferred	none	models/wmo#queries	
+0x6a3ee0	46	CMapObj::ResetGroupQuery		models	orchestration		Clears a group's query state after validating it	inferred	none		
+0x6a3f10	97	CMapObj::GroupSegmentAnyHit		models	orchestration		Returns whether a segment hits a group of a map object	inferred	none		
+0x6a3f80	639	CMapObj::CrossPortals		models	primitive		Finds the group a segment enters through a map object's portals	inferred	none		
+0x6a4200	108	CMapObj::IsReady		models	host		Returns whether a map object's groups and their textures are loaded	inferred	none		
+0x6a4270	62	CMapObj::AreGroupsLoaded		models	orchestration		Returns whether a map object and all its groups are loaded	inferred	none		
+0x6a42b0	39	CMapObj::GetGroup		models	orchestration		Returns a loaded group of a map object by index	inferred	none		
+0x6a42e0	44	CMapObj::GroupHasData		models	unreached		Returns whether a group of a map object has its file data; nothing reaches it	inferred	none	models/overview#unreached-code	
+0x6a4310	265	CMapObj::GetBoundingSphere		models	primitive		Returns the centre and radius of a map object's bounding box	inferred	none		
+0x6a4420	132	CMapObj::GetBoundingBox		models	orchestration		Copies a map object's bounding box, or zeroes it when not loaded	inferred	none		
+0x6a44b0	250	CMapObj::GetGroupBoundingSphere		models	primitive		Returns the centre and radius of a group's bounding box	inferred	none		
+0x6a45b0	142	CMapObj::GetGroupBoundingBox		models	orchestration		Copies a group's bounding box from the group info	inferred	none		
+0x6a4640	38	CMapObj::GetGroupFlags		models	orchestration		Returns a group's flags from the group info	inferred	none		
+0x6a4670	150	CMapObj::BoxOverlaps		models	orchestration		Returns whether a box overlaps a map object's bounding box	inferred	none		
+0x6a4710	149	CMapObj::ContainsPoint		models	unreached		Returns whether a point lies in a map object's bounding box; nothing reaches it	inferred	none	models/overview#unreached-code	
+0x6a47b0	47	CMapObj::QueryLiquid		models	primitive		Forwards a liquid query to a group when the map object is loaded	inferred	none		
+0x6a47e0	73	CMapObj::QueryGroupLiquid		models	primitive		Resolves a group and forwards a liquid query to it	inferred	none		
+0x6a4830	170	CMapObj::BoxOverlapsGroup		models	orchestration		Returns whether a box overlaps a group's bounding box	inferred	none		
+0x6a48e0	166	CMapObj::GroupContainsPoint		models	unreached		Returns whether a point lies in a group's bounding box; nothing reaches it	inferred	none	models/overview#unreached-code	
+0x6a4990	100	PointInsidePlanes		models	primitive		Returns whether a point lies on the inner side of every plane of a set	inferred	none		
+0x6a4a00	46	CMapObj::GetLoadedGroup		models	orchestration		Returns a group of a map object when both are loaded	inferred	none	models/wmo#queries	
+0x6a4a30	18	CMapObj::LoadGroup		models	orchestration		Starts loading a group of a map object	inferred	none	models/wmo#loading	
+0x6a4a50	49	CMapObj::WaitLoad		models	host		Waits for a map object's file read to finish	inferred	none		
+0x6a4a90	58	CMapObj::WaitLoadGroup		models	host		Waits for a group's file read to finish	inferred	none		
+0x6a4ad0	54	CMapObj::GetGroupValue		models	orchestration		Returns a value of a loaded group	inferred	none		
+0x6a4b10	37	CMapObj::GetGroupPointer		models	orchestration		Returns a group's record pointer when the map object is loaded	inferred	none		
+0x6a4b40	379	CMapObj::RayHitClosest		models	unreached		Finds the closest group surface a ray hits and its vertex colour; nothing reaches it	inferred	none	models/overview#unreached-code	
+0x6a4cc0	255	CMapObj::RayHitGroup		models	primitive		Finds the surface a ray hits in one group and its vertex colour	inferred	none		
+0x6a4dc0	63	CMapObj::SampleGroupColor		models	orchestration		Samples a group's vertex colour at a hit	inferred	none		
+0x6a4e00	221	CMapObj::GroupLiquidAt		models	orchestration		Returns whether a group's liquid covers a point	inferred	none		
+0x6a4ee0	207	CMapObj::InGroupLiquid		models	orchestration		Returns whether a point lies in any group's liquid area	inferred	none		
+0x6a4fb0	103	CMapObj::FindDoodadSet		models	primitive		Returns the doodad set whose range holds an index	inferred	none		
+0x6a5020	477	CMapObj::GatherBoxGroups		models	primitive		Floods through a map object's portals to gather the groups a box reaches	inferred	none		
+0x6a5200	111	CMapObj::GatherBoxGroupsAt		models	orchestration		Gathers the groups a box reaches with a placement matrix	inferred	none		
+0x6a5270	793	CMapObj::FootprintCells		models	primitive		Tiles a map object's footprint into power-of-two cells	inferred	none		
+0x6a5590	49	CeilLog2		models	primitive		Returns the ceiling of log2 of a value	inferred	none		
+0x6a55d0	5	InitMapObjTwoPiThunk		models	orchestration		Jumps to 0x6a55e0; a static initializer	verified	one	models/overview#shared-header-constants	
+0x6a55e0	15	InitMapObjTwoPi		models	primitive		Stores π + π as a float in the object file's 2π global	verified	one	models/overview#shared-header-constants	
+0x6a55f0	5	InitMapObjInvTwoPiThunk		models	orchestration		Jumps to 0x6a5600; a static initializer	verified	one	models/overview#shared-header-constants	
+0x6a5600	19	InitMapObjInvTwoPi		models	primitive		Stores 1 / 2π as a float in the object file's 1/2π global	verified	one	models/overview#shared-header-constants	
+0x6a5620	34	CMapObj::DeletingDestructor		models	host		Destroys a cached map object and frees it when asked	inferred	none		
+0x6a5650	185	CMapObj::Create		models	primitive		Allocates and initializes a cached map object	inferred	none		
+0x6a5710	189	MapObjListDestruct		models	host		Unlinks and frees a map object list's nodes	inferred	none		
+0x6a57d0	190	MapObjListDeletingDestructor		models	host		Destroys a map object list and frees it when asked	inferred	none		
+0x6a5890	60	ListUnlink		models	primitive		Unlinks a node from an intrusive list	inferred	none		
+0x6a58d0	136	ListLinkBefore		models	primitive		Links a node into an intrusive list	inferred	none		
+0x6a5960	108	ListRelinkAll		models	primitive		Moves all nodes of one intrusive list to another	inferred	none		
+0x6a59d0	135	ListFreeAll		models	host		Unlinks and frees every node of an intrusive list	inferred	none		
+0x6a5a60	60	ListDrain		models	primitive		Unlinks every node of an intrusive list	inferred	none		
+0x6a5aa0	25	ListNodeOffset		models	orchestration		Returns the link of a list node	inferred	none		
+0x6a5ac0	181	MapObjHashFind		models	primitive		Finds a map object in the cache hash by name	inferred	none		
+0x6a5b80	492	MapObjHashResize		models	primitive		Rehashes the map object cache into a new bucket count	inferred	none		
+0x6a5d70	33	MapObjHashBucketCount		models	primitive		Returns the map object cache's bucket count	inferred	none		
+0x6a5da0	176	MapObjHashFreeBuckets		models	primitive		Frees the map object cache's bucket array	inferred	none		
+0x6a5e50	12	MapObjHashMask		models	primitive		Returns the bucket mask of the map object cache	inferred	none		
+0x6a5e60	317	MapObjHashInsert		models	primitive		Inserts a map object into the cache hash	inferred	none		
+0x6a5fa0	41	ListLinkDecode		models	primitive		Decodes a list link into a node pointer	inferred	none		
+0x6a5fd0	319	MapObjBucketArrayRealloc		models	primitive		Reallocates the map object cache's bucket array	inferred	none		
+0x6a6110	77	MapObjBucketInit		models	primitive		Initializes an empty bucket list	inferred	none		
+0x6a6160	264	MapObjBucketArrayGrow		models	primitive		Grows the map object cache's bucket array	inferred	none		
+0x6a6270	5	InitMapObjTenSquaredThunk		models	orchestration		Jumps to 0x6a6280; a static initializer	verified	one	models/overview#shared-header-constants	
+0x6a6280	19	InitMapObjTenSquared		models	primitive		Stores 10.0 · 10.0 as a float in an object-file global	verified	one	models/overview#shared-header-constants	
+0x6a62a0	5	InitMapObjTileUnitInvSquaredThunk		models	orchestration		Jumps to 0x6a62b0; a static initializer	verified	one	models/overview#shared-header-constants	
+0x6a62b0	19	InitMapObjTileUnitInvSquared		models	primitive		Stores 11.11111 · 11.11111 as a float in an object-file global	verified	one	models/overview#shared-header-constants	
+0x6a62d0	5	InitMapObjHalfTileUnitInvSquaredThunk		models	orchestration		Jumps to 0x6a62e0; a static initializer	verified	one	models/overview#shared-header-constants	
+0x6a62e0	19	InitMapObjHalfTileUnitInvSquared		models	primitive		Stores 5.555555 · 5.555555 as a float in an object-file global	verified	one	models/overview#shared-header-constants	
+0x6a6300	5	InitMapObjTenSquared2Thunk		models	orchestration		Jumps to 0x6a6310; a static initializer	verified	one	models/overview#shared-header-constants	
+0x6a6310	19	InitMapObjTenSquared2		models	primitive		Stores 10.0 · 10.0 as a float in an object-file global	verified	one	models/overview#shared-header-constants	
+0x6a6330	5	InitMapObjFiveSquaredThunk		models	orchestration		Jumps to 0x6a6340; a static initializer	verified	one	models/overview#shared-header-constants	
+0x6a6340	19	InitMapObjFiveSquared		models	primitive		Stores 5.0 · 5.0 as a float in an object-file global	verified	one	models/overview#shared-header-constants	
+0x6a6360	5	InitMapObjTenSquared3Thunk		models	orchestration		Jumps to 0x6a6370; a static initializer	verified	one	models/overview#shared-header-constants	
+0x6a6370	19	InitMapObjTenSquared3		models	primitive		Stores 10.0 · 10.0 as a float in an object-file global	verified	one	models/overview#shared-header-constants	
+0x6a6390	5	InitMapObjThirtySquaredThunk		models	orchestration		Jumps to 0x6a63a0; a static initializer	verified	one	models/overview#shared-header-constants	
+0x6a63a0	19	InitMapObjThirtySquared		models	primitive		Stores 30.0 · 30.0 as a float in an object-file global	verified	one	models/overview#shared-header-constants	
+0x6a63c0	5	InitMapObjOneTwentySquaredThunk		models	orchestration		Jumps to 0x6a63d0; a static initializer	verified	one	models/overview#shared-header-constants	
+0x6a63d0	19	InitMapObjOneTwentySquared		models	primitive		Stores 120.0 · 120.0 as a float in an object-file global	verified	one	models/overview#shared-header-constants	
+0x6a63f0	5	InitMapObjTwentySquaredThunk		models	orchestration		Jumps to 0x6a6400; a static initializer	verified	one	models/overview#shared-header-constants	
+0x6a6400	19	InitMapObjTwentySquared		models	primitive		Stores 20.0 · 20.0 as a float in an object-file global	verified	one	models/overview#shared-header-constants	
+0x6a6420	5	InitMapObjTenSquared4Thunk		models	orchestration		Jumps to 0x6a6430; a static initializer	verified	one	models/overview#shared-header-constants	
+0x6a6430	19	InitMapObjTenSquared4		models	primitive		Stores 10.0 · 10.0 as a float in an object-file global	verified	one	models/overview#shared-header-constants	
+0x6a6450	5	InitMapObjHalfSquaredThunk		models	orchestration		Jumps to 0x6a6460; a static initializer	verified	one	models/overview#shared-header-constants	
+0x6a6460	19	InitMapObjHalfSquared		models	primitive		Stores 0.5 · 0.5 as a float in an object-file global	verified	one	models/overview#shared-header-constants	
+0x6a6480	5	InitMapObjThreeSquaredThunk		models	orchestration		Jumps to 0x6a6490; a static initializer	verified	one	models/overview#shared-header-constants	
+0x6a6490	19	InitMapObjThreeSquared		models	primitive		Stores 3.0 · 3.0 as a float in an object-file global	verified	one	models/overview#shared-header-constants	
+0x6a64b0	5	InitMapObjHundredSquaredThunk		models	orchestration		Jumps to 0x6a64c0; a static initializer	verified	one	models/overview#shared-header-constants	
+0x6a64c0	19	InitMapObjHundredSquared		models	primitive		Stores 100.0 · 100.0 as a float in an object-file global	verified	one	models/overview#shared-header-constants	
+0x6a64e0	5	InitMapObjStoreFiveThunk		models	orchestration		Jumps to 0x6a64f0; a static initializer	verified	one	models/overview#shared-header-constants	
+0x6a64f0	11	InitMapObjStoreFive		models	orchestration		Stores the float 5.0 in an object-file global	verified	one	models/overview#shared-header-constants	
+0x6a6500	5	InitMapObjFiftySquaredThunk		models	orchestration		Jumps to 0x6a6510; a static initializer	verified	one	models/overview#shared-header-constants	
+0x6a6510	19	InitMapObjFiftySquared		models	primitive		Stores 50.0 · 50.0 as a float in an object-file global	verified	one	models/overview#shared-header-constants	
+0x6a6530	5	InitMapObjHundredSquared2Thunk		models	orchestration		Jumps to 0x6a6540; a static initializer	verified	one	models/overview#shared-header-constants	
+0x6a6540	19	InitMapObjHundredSquared2		models	primitive		Stores 100.0 · 100.0 as a float in an object-file global	verified	one	models/overview#shared-header-constants	
+0x6a6560	5	InitMapObjFortySquaredThunk		models	orchestration		Jumps to 0x6a6570; a static initializer	verified	one	models/overview#shared-header-constants	
+0x6a6570	19	InitMapObjFortySquared		models	primitive		Stores 40.0 · 40.0 as a float in an object-file global	verified	one	models/overview#shared-header-constants	
+0x6a6590	5	InitMapObjOneHalfSquaredThunk		models	orchestration		Jumps to 0x6a65a0; a static initializer	verified	one	models/overview#shared-header-constants	
+0x6a65a0	19	InitMapObjOneHalfSquared		models	primitive		Stores 1.5 · 1.5 as a float in an object-file global	verified	one	models/overview#shared-header-constants	
+0x6a65c0	5	InitMapObjNegTwentyOneOverThirtySixThunk		models	orchestration		Jumps to 0x6a65d0; a static initializer	verified	one	models/overview#shared-header-constants	
+0x6a65d0	19	InitMapObjNegTwentyOneOverThirtySix		models	primitive		Stores -21.0 · -0.02777778 as a float in an object-file global	verified	one	models/overview#shared-header-constants	
+0x6a65f0	5	InitMapObjScaledNeg255Thunk		models	orchestration		Jumps to 0x6a6600; a static initializer	verified	one	models/overview#shared-header-constants	
+0x6a6600	19	InitMapObjScaledNeg255		models	primitive		Stores another of the object file's globals · -255.0 as a float	verified	one	models/overview#shared-header-constants	
+0x6a6620	5	InitMapObjEighteenOverThirtySixThunk		models	orchestration		Jumps to 0x6a6630; a static initializer	verified	one	models/overview#shared-header-constants	
+0x6a6630	19	InitMapObjEighteenOverThirtySix		models	primitive		Stores 18.0 · 0.02777778 as a float in an object-file global	verified	one	models/overview#shared-header-constants	
+0x6a6650	5	InitMapObjScaled256Thunk		models	orchestration		Jumps to 0x6a6660; a static initializer	verified	one	models/overview#shared-header-constants	
+0x6a6660	19	InitMapObjScaled256		models	primitive		Stores another of the object file's globals · 256.0 as a float	verified	one	models/overview#shared-header-constants	
+0x6a6680	5	InitMapObjInvTileSizeThunk		models	orchestration		Jumps to 0x6a6690; a static initializer	verified	one	models/overview#shared-header-constants	
+0x6a6690	19	InitMapObjInvTileSize		models	primitive		Stores 1.0 / 4.166667 as a float in an object-file global	verified	one	models/overview#shared-header-constants	
+0x6a66b0	5	InitMapObjTenSquared5Thunk		models	orchestration		Jumps to 0x6a66c0; a static initializer	verified	one	models/overview#shared-header-constants	
+0x6a66c0	19	InitMapObjTenSquared5		models	primitive		Stores 10.0 · 10.0 as a float in an object-file global	verified	one	models/overview#shared-header-constants	
+0x6a66e0	5	InitMapObjHalfTenthThunk		models	orchestration		Jumps to 0x6a66f0; a static initializer	verified	one	models/overview#shared-header-constants	
+0x6a66f0	19	InitMapObjHalfTenth		models	primitive		Stores 0.5 / 10.0 as a float in an object-file global	verified	one	models/overview#shared-header-constants	
+0x6a6710	103	MapObjWalkTiles		models	primitive		Calls a function on each map tile a range covers	inferred	none	models/overview#object-files	
 0x6a6780	5	InitTerrainInfinity15Thunk		terrain	orchestration	void __cdecl (void)	Jumps to 0x6a6790; a static initializer	verified	one	terrain/statics#static-initializers	
 0x6a6790	11	InitTerrainInfinity15		terrain	orchestration	void __cdecl (void)	Copies the constant +inf into a global	verified	one	terrain/statics#static-initializers	
 0x6a67a0	207	CMapDoodadDef::Release		terrain	orchestration	void __fastcall (void *def)	Releases a doodad def's model and callbacks and frees the def unless still referenced	inferred	none		
@@ -9718,6 +9922,133 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x6b8350	19	InitTerrainSquare396		terrain	primitive	void __cdecl (void)	Stores 10 squared as a float in a global	verified	one	terrain/statics#static-initializers	
 0x6b8370	5	InitTerrainQuotient45Thunk		terrain	orchestration	void __cdecl (void)	Jumps to 0x6b8380; a static initializer	verified	one	terrain/statics#static-initializers	
 0x6b8380	19	InitTerrainQuotient45		terrain	primitive	void __cdecl (void)	Stores 0.5 divided by 10 as a float in a global	verified	one	terrain/statics#static-initializers	
+0x6b83c0	10	InitMapObjGroupStatic1		models	orchestration		Runs 0x6b83d0, then registers an exit hook through 0x6b8410; a static initializer	verified	one	models/overview#object-files	
+0x6b83d0	61	InitMapObjGroupStatic1Body		models	primitive		Initializes a static object of the object file	inferred	none	models/overview#static-objects	
+0x6b8410	12	InitMapObjGroupStatic1Atexit		models	orchestration		Registers 0x6b8420 with _atexit	verified	one	models/overview#static-objects	
+0x6b8420	288	VertexPoolAtexitA		models	primitive		Frees a static vertex pool's blocks once at exit	inferred	none	models/overview#static-objects	
+0x6b8540	10	InitMapObjGroupStatic2		models	orchestration		Runs 0x6b8550, then registers an exit hook through 0x6b8590; a static initializer	verified	one	models/overview#static-objects	
+0x6b8550	61	InitMapObjGroupStatic2Body		models	primitive		Initializes a static object of the object file	inferred	none	models/overview#static-objects	
+0x6b8590	12	InitMapObjGroupStatic2Atexit		models	orchestration		Registers 0x6b85a0 with _atexit	verified	one	models/overview#static-objects	
+0x6b85a0	288	VertexPoolAtexitB		models	primitive		Frees a static vertex pool's blocks once at exit	inferred	none	models/overview#static-objects	
+0x6b86c0	10	InitMapObjGroupStatic3		models	orchestration		Runs 0x6b86d0, then registers an exit hook through 0x6b8700; a static initializer	verified	one	models/overview#static-objects	
+0x6b86d0	34	InitMapObjGroupStatic3Body		models	primitive		Initializes a static object of the object file	inferred	none	models/overview#static-objects	
+0x6b8700	12	InitMapObjGroupStatic3Atexit		models	orchestration		Registers 0x6b8710 with _atexit	verified	one	models/overview#static-objects	
+0x6b8710	173	VertexPoolAtexitC		models	primitive		Frees a static free list's nodes once at exit	inferred	none	models/overview#static-objects	
+0x6b87c0	39	MapObjGroupInitPools		models	orchestration		Creates the two map object group vertex buffer pools	inferred	none	models/wmo#vertex-buffer-pools	
+0x6b87f0	25	MapObjGroupFreePools		models	orchestration		Frees the group vertex buffer pools and the vertex array	inferred	none		
+0x6b8810	98	CMapObjGroup::CMapObjGroup		models	orchestration		Zeroes a group record, its BSP and liquid block and its lists	inferred	none		
+0x6b8880	86	CMapObjGroup::~CMapObjGroup		models	primitive		Frees a group's arrays and returns its list nodes to the free list	inferred	none		
+0x6b88e0	654	CMapObjGroup::IntersectLeaf		models	primitive		Intersects a segment with the welded faces of a BSP leaf	inferred	none		
+0x6b8b70	131	BoxContainsTriangle		models	primitive		Returns whether three points share an outside side of a box	inferred	none		
+0x6b8c00	72	TriangleBehindPlanes		models	primitive		Returns whether a triangle lies behind three planes	inferred	none		
+0x6b8c50	5	CMapObjGroup::ReturnFalse		models	orchestration		Returns 0, popping two arguments	inferred	none		
+0x6b8c60	485	CMapObjGroup::CollectLeafBox		models	primitive		Collects a BSP leaf's welded faces that touch a box	inferred	none		
+0x6b8e50	866	CMapObjGroup::CommitFacets		models	primitive		Writes a leaf's collected faces into the global facet tables	inferred	none		
+0x6b91c0	238	CMapObjGroup::CollectSegment		models	primitive		Collects the facets a segment crosses through a group's BSP	inferred	none		
+0x6b92b0	384	CMapObjGroup::IntersectSegment		models	primitive		Intersects a segment with a group's BSP and liquid	inferred	none	models/wmo#queries	
+0x6b9430	252	CMapObjGroup::CollectVolume		models	primitive		Collects a group's facets and liquid in a convex volume	inferred	none		
+0x6b9530	172	CMapObjGroup::ResetQuery		models	primitive		Clears a group's BSP query and capture state	inferred	none		
+0x6b95e0	349	CMapObjGroup::SegmentAnyHit		models	primitive		Returns whether a segment hits any face of a group's BSP	inferred	none		
+0x6b9740	189	CMapObjGroup::ClearA		models	orchestration		Zeroes the first part of a group's fields	inferred	none		
+0x6b9800	188	CMapObjGroup::ClearB		models	orchestration		Zeroes the second part of a group's fields	inferred	none		
+0x6b98c0	130	CMapObjGroup::Free		models	host		Closes a group's file and frees its BSP, buffers and data	inferred	none		
+0x6b9950	243	CMapObjGroup::SphereNearFan		models	unreached		Returns whether a sphere comes near a triangle fan of a group; nothing reaches it	inferred	none	models/overview#unreached-code	
+0x6b9a50	755	CMapObjGroup::SampleVertexColor		models	primitive		Samples a group's vertex colour at a point of a face	inferred	none	models/wmo#queries	
+0x6b9d50	1	CMapObjGroup::NoOp		models	orchestration		Returns; an exit hook registered by the colour sampler	inferred	none		
+0x6b9d60	236	CMapObjGroup::SampleBelow		models	unreached		Samples the surface and colour of a group under a segment; nothing reaches it	inferred	none	models/overview#unreached-code	
+0x6b9e50	189	CMapObjGroup::LiquidTileFlags		models	primitive		Returns the liquid tile flags of a group at a point	inferred	none	models/wmo#queries	
+0x6b9f10	590	CMapObjGroup::LiquidHeight		models	primitive		Returns a group's liquid height at a point	inferred	none	models/wmo#queries	
+0x6ba180	93	VertexBufferBlockSetSize		models	primitive		Sets a vertex buffer block's size and its device buffer	inferred	none		
+0x6ba1e0	149	VertexBufferPoolCreate		models	primitive		Creates a vertex buffer pool's index and vertex buffers	inferred	none	models/wmo#vertex-buffer-pools	
+0x6ba280	187	VertexBufferPoolDestroy		models	host		Frees a vertex buffer pool's blocks and device buffers	inferred	none		
+0x6ba340	197	VertexBufferBlockAlloc		models	primitive		Allocates or reuses a vertex buffer block	inferred	none	models/wmo#vertex-buffer-pools	
+0x6ba410	396	VertexBufferBlockFree		models	primitive		Returns a block to its pool, merging free neighbours	inferred	none	models/wmo#vertex-buffer-pools	
+0x6ba5a0	185	VertexBufferBlockSplit		models	orchestration		Splits a free block to a requested size	inferred	none	models/wmo#vertex-buffer-pools	
+0x6ba660	118	VertexBufferPoolAcquire		models	orchestration		Finds a free block for a size, splitting or evicting	inferred	none	models/wmo#vertex-buffer-pools	
+0x6ba6e0	84	VertexBufferPoolDump		models	unreached		Logs a vertex buffer pool's blocks as used or free; nothing reaches it	inferred	none	models/overview#unreached-code	
+0x6ba740	40	ListTail		models	orchestration		Returns the last node of a list	inferred	none		
+0x6ba770	420	VertexBufferBlockFill		models	primitive		Locks a block and copies interleaved vertex data into it	inferred	none	models/wmo#vertex-buffer-pools	
+0x6ba920	71	VertexBufferBlockBindIndices		models	host		Binds the index buffer of a vertex buffer block	inferred	none		
+0x6ba970	62	FirstNonEmptyLiquidLayer		models	primitive		Returns the first liquid layer that has data	inferred	none		
+0x6ba9b0	177	CMapObjGroup::BuildLiquidVertices		models	primitive		Fills a group's liquid vertex lattice from its grid	inferred	none		
+0x6baa70	1699	CMapObjGroup::RayHitLiquid		models	primitive		Intersects a ray with a group's liquid surface	inferred	none		
+0x6bb120	5	InitMapObjGroupTwoPiThunk		models	orchestration		Jumps to 0x6bb130; a static initializer	verified	one	models/overview#shared-header-constants	
+0x6bb130	15	InitMapObjGroupTwoPi		models	primitive		Stores π + π as a float in the object file's 2π global	verified	one	models/overview#shared-header-constants	
+0x6bb140	5	InitMapObjGroupInvTwoPiThunk		models	orchestration		Jumps to 0x6bb150; a static initializer	verified	one	models/overview#shared-header-constants	
+0x6bb150	19	InitMapObjGroupInvTwoPi		models	primitive		Stores 1 / 2π as a float in the object file's 1/2π global	verified	one	models/overview#shared-header-constants	
+0x6bb170	1333	CMapObjGroup::CollectLiquidSegment		models	primitive		Collects the liquid tiles a segment crosses in a group	inferred	none		
+0x6bb6b0	1533	CMapObjGroup::CollectLiquidVolume		models	primitive		Collects the liquid triangles of a group inside a convex volume	inferred	none		
+0x6bbcb0	96	CMapObjGroup::QueryLiquidSegment		models	primitive		Runs a liquid segment query on a group	inferred	none		
+0x6bbd10	96	CMapObjGroup::QueryLiquidVolume		models	unreached		Runs a liquid volume query on a group; nothing reaches it	inferred	none	models/overview#unreached-code	
+0x6bbd70	254	CMapObjGroup::CreateVertArray		models	primitive		Builds a group's vertex array record from its vertices and indices	inferred	none		
+0x6bbe70	163	FreeListReturn		models	primitive		Returns a node to a free list	inferred	none		
+0x6bbf20	93	VertArrayFree		models	host		Frees a group vertex array record	inferred	none		
+0x6bbf80	171	VertArrayInit		models	primitive		Initializes a group vertex array record	inferred	none		
+0x6bc030	60	ListUnlinkB		models	primitive		Unlinks a node from an intrusive list	inferred	none		
+0x6bc070	41	ListInitEmpty		models	primitive		Makes an intrusive list empty	inferred	none		
+0x6bc0a0	60	ListUnlinkC		models	primitive		Unlinks a node from an intrusive list	inferred	none		
+0x6bc0e0	17	ListDefaultLink		models	orchestration		Returns the given link, or the list's own when it is null	inferred	none		
+0x6bc100	41	ListLinkDecodeB		models	primitive		Decodes a list link into a node pointer	inferred	none		
+0x6bc130	60	ListUnlinkD		models	primitive		Unlinks a node from an intrusive list	inferred	none		
+0x6bc170	22	ClearSixDwords		models	orchestration		Zeroes six dwords	inferred	none		
+0x6bc190	35	SegmentDirection		models	primitive		Stores a segment's end minus its start	inferred	none		
+0x6bc1c0	430	AaBspQueryBoxNode		models	primitive		Descends a group's BSP with a box, collecting the leaves it touches	inferred	none	models/wmo#queries	
+0x6bc370	903	AaBspIntersectSegmentNode		models	primitive		Clips a segment through a group's BSP and intersects the leaves it reaches	inferred	none	models/wmo#queries	
+0x6bc700	210	AaBspIntersectLeaf		models	primitive		Intersects a segment with a BSP leaf's faces, keeping the closest hit	inferred	none		
+0x6bc7e0	433	AaBspCollectBoxNode		models	primitive		Descends a group's BSP with a box, collecting the faces inside	inferred	none		
+0x6bc9a0	164	AaBspCollectLeafBox		models	primitive		Collects a BSP leaf's faces not behind a box's planes	inferred	none		
+0x6bca50	164	AaBspQueryLeafBox		models	primitive		Collects a BSP leaf's faces whose points a box contains	inferred	none		
+0x6bcb00	5	InitMapObjGroupTenSquaredThunk		models	orchestration		Jumps to 0x6bcb10; a static initializer	verified	one	models/overview#shared-header-constants	
+0x6bcb10	19	InitMapObjGroupTenSquared		models	primitive		Stores 10.0 · 10.0 as a float in an object-file global	verified	one	models/overview#shared-header-constants	
+0x6bcb30	5	InitMapObjGroupTileUnitInvSquaredThunk		models	orchestration		Jumps to 0x6bcb40; a static initializer	verified	one	models/overview#shared-header-constants	
+0x6bcb40	19	InitMapObjGroupTileUnitInvSquared		models	primitive		Stores 11.11111 · 11.11111 as a float in an object-file global	verified	one	models/overview#shared-header-constants	
+0x6bcb60	5	InitMapObjGroupHalfTileUnitInvSquaredThunk		models	orchestration		Jumps to 0x6bcb70; a static initializer	verified	one	models/overview#shared-header-constants	
+0x6bcb70	19	InitMapObjGroupHalfTileUnitInvSquared		models	primitive		Stores 5.555555 · 5.555555 as a float in an object-file global	verified	one	models/overview#shared-header-constants	
+0x6bcb90	5	InitMapObjGroupTenSquared2Thunk		models	orchestration		Jumps to 0x6bcba0; a static initializer	verified	one	models/overview#shared-header-constants	
+0x6bcba0	19	InitMapObjGroupTenSquared2		models	primitive		Stores 10.0 · 10.0 as a float in an object-file global	verified	one	models/overview#shared-header-constants	
+0x6bcbc0	5	InitMapObjGroupFiveSquaredThunk		models	orchestration		Jumps to 0x6bcbd0; a static initializer	verified	one	models/overview#shared-header-constants	
+0x6bcbd0	19	InitMapObjGroupFiveSquared		models	primitive		Stores 5.0 · 5.0 as a float in an object-file global	verified	one	models/overview#shared-header-constants	
+0x6bcbf0	5	InitMapObjGroupTenSquared3Thunk		models	orchestration		Jumps to 0x6bcc00; a static initializer	verified	one	models/overview#shared-header-constants	
+0x6bcc00	19	InitMapObjGroupTenSquared3		models	primitive		Stores 10.0 · 10.0 as a float in an object-file global	verified	one	models/overview#shared-header-constants	
+0x6bcc20	5	InitMapObjGroupThirtySquaredThunk		models	orchestration		Jumps to 0x6bcc30; a static initializer	verified	one	models/overview#shared-header-constants	
+0x6bcc30	19	InitMapObjGroupThirtySquared		models	primitive		Stores 30.0 · 30.0 as a float in an object-file global	verified	one	models/overview#shared-header-constants	
+0x6bcc50	5	InitMapObjGroupOneTwentySquaredThunk		models	orchestration		Jumps to 0x6bcc60; a static initializer	verified	one	models/overview#shared-header-constants	
+0x6bcc60	19	InitMapObjGroupOneTwentySquared		models	primitive		Stores 120.0 · 120.0 as a float in an object-file global	verified	one	models/overview#shared-header-constants	
+0x6bcc80	5	InitMapObjGroupTwentySquaredThunk		models	orchestration		Jumps to 0x6bcc90; a static initializer	verified	one	models/overview#shared-header-constants	
+0x6bcc90	19	InitMapObjGroupTwentySquared		models	primitive		Stores 20.0 · 20.0 as a float in an object-file global	verified	one	models/overview#shared-header-constants	
+0x6bccb0	5	InitMapObjGroupTenSquared4Thunk		models	orchestration		Jumps to 0x6bccc0; a static initializer	verified	one	models/overview#shared-header-constants	
+0x6bccc0	19	InitMapObjGroupTenSquared4		models	primitive		Stores 10.0 · 10.0 as a float in an object-file global	verified	one	models/overview#shared-header-constants	
+0x6bcce0	5	InitMapObjGroupHalfSquaredThunk		models	orchestration		Jumps to 0x6bccf0; a static initializer	verified	one	models/overview#shared-header-constants	
+0x6bccf0	19	InitMapObjGroupHalfSquared		models	primitive		Stores 0.5 · 0.5 as a float in an object-file global	verified	one	models/overview#shared-header-constants	
+0x6bcd10	5	InitMapObjGroupThreeSquaredThunk		models	orchestration		Jumps to 0x6bcd20; a static initializer	verified	one	models/overview#shared-header-constants	
+0x6bcd20	19	InitMapObjGroupThreeSquared		models	primitive		Stores 3.0 · 3.0 as a float in an object-file global	verified	one	models/overview#shared-header-constants	
+0x6bcd40	5	InitMapObjGroupHundredSquaredThunk		models	orchestration		Jumps to 0x6bcd50; a static initializer	verified	one	models/overview#shared-header-constants	
+0x6bcd50	19	InitMapObjGroupHundredSquared		models	primitive		Stores 100.0 · 100.0 as a float in an object-file global	verified	one	models/overview#shared-header-constants	
+0x6bcd70	5	InitMapObjGroupStoreFiveThunk		models	orchestration		Jumps to 0x6bcd80; a static initializer	verified	one	models/overview#shared-header-constants	
+0x6bcd80	11	InitMapObjGroupStoreFive		models	orchestration		Stores the float 5.0 in an object-file global	verified	one	models/overview#shared-header-constants	
+0x6bcd90	5	InitMapObjGroupFiftySquaredThunk		models	orchestration		Jumps to 0x6bcda0; a static initializer	verified	one	models/overview#shared-header-constants	
+0x6bcda0	19	InitMapObjGroupFiftySquared		models	primitive		Stores 50.0 · 50.0 as a float in an object-file global	verified	one	models/overview#shared-header-constants	
+0x6bcdc0	5	InitMapObjGroupHundredSquared2Thunk		models	orchestration		Jumps to 0x6bcdd0; a static initializer	verified	one	models/overview#shared-header-constants	
+0x6bcdd0	19	InitMapObjGroupHundredSquared2		models	primitive		Stores 100.0 · 100.0 as a float in an object-file global	verified	one	models/overview#shared-header-constants	
+0x6bcdf0	5	InitMapObjGroupFortySquaredThunk		models	orchestration		Jumps to 0x6bce00; a static initializer	verified	one	models/overview#shared-header-constants	
+0x6bce00	19	InitMapObjGroupFortySquared		models	primitive		Stores 40.0 · 40.0 as a float in an object-file global	verified	one	models/overview#shared-header-constants	
+0x6bce20	5	InitMapObjGroupOneHalfSquaredThunk		models	orchestration		Jumps to 0x6bce30; a static initializer	verified	one	models/overview#shared-header-constants	
+0x6bce30	19	InitMapObjGroupOneHalfSquared		models	primitive		Stores 1.5 · 1.5 as a float in an object-file global	verified	one	models/overview#shared-header-constants	
+0x6bce50	106	FacetTransformInit		models	orchestration		Initializes a facet transform record	inferred	none		
+0x6bcec0	5	InitMapObjGroupNegTwentyOneOverThirtySixThunk		models	orchestration		Jumps to 0x6bced0; a static initializer	verified	one	models/overview#shared-header-constants	
+0x6bced0	19	InitMapObjGroupNegTwentyOneOverThirtySix		models	primitive		Stores -21.0 · -0.02777778 as a float in an object-file global	verified	one	models/overview#shared-header-constants	
+0x6bcef0	5	InitMapObjGroupScaledNeg255Thunk		models	orchestration		Jumps to 0x6bcf00; a static initializer	verified	one	models/overview#shared-header-constants	
+0x6bcf00	19	InitMapObjGroupScaledNeg255		models	primitive		Stores another of the object file's globals · -255.0 as a float	verified	one	models/overview#shared-header-constants	
+0x6bcf20	5	InitMapObjGroupEighteenOverThirtySixThunk		models	orchestration		Jumps to 0x6bcf30; a static initializer	verified	one	models/overview#shared-header-constants	
+0x6bcf30	19	InitMapObjGroupEighteenOverThirtySix		models	primitive		Stores 18.0 · 0.02777778 as a float in an object-file global	verified	one	models/overview#shared-header-constants	
+0x6bcf50	5	InitMapObjGroupScaled256Thunk		models	orchestration		Jumps to 0x6bcf60; a static initializer	verified	one	models/overview#shared-header-constants	
+0x6bcf60	19	InitMapObjGroupScaled256		models	primitive		Stores another of the object file's globals · 256.0 as a float	verified	one	models/overview#shared-header-constants	
+0x6bcf80	5	InitMapObjGroupInvTileSizeThunk		models	orchestration		Jumps to 0x6bcf90; a static initializer	verified	one	models/overview#shared-header-constants	
+0x6bcf90	19	InitMapObjGroupInvTileSize		models	primitive		Stores 1.0 / 4.166667 as a float in an object-file global	verified	one	models/overview#shared-header-constants	
+0x6bcfb0	5	InitMapObjGroupTenSquared5Thunk		models	orchestration		Jumps to 0x6bcfc0; a static initializer	verified	one	models/overview#shared-header-constants	
+0x6bcfc0	19	InitMapObjGroupTenSquared5		models	primitive		Stores 10.0 · 10.0 as a float in an object-file global	verified	one	models/overview#shared-header-constants	
+0x6bcfe0	5	InitMapObjGroupHalfTenthThunk		models	orchestration		Jumps to 0x6bcff0; a static initializer	verified	one	models/overview#shared-header-constants	
+0x6bcff0	19	InitMapObjGroupHalfTenth		models	primitive		Stores 0.5 / 10.0 as a float in an object-file global	verified	one	models/overview#object-files	
 0x6bd010	5	InitTerrainInfinity23Thunk		terrain	orchestration	void __cdecl (void)	Jumps to 0x6bd020; a static initializer	verified	one	terrain/statics#static-initializers	
 0x6bd020	11	InitTerrainInfinity23		terrain	orchestration	void __cdecl (void)	Copies the constant +inf into a global	verified	one	terrain/statics#static-initializers	
 0x6bd030	5	InitTerrainTwoPi23Thunk		terrain	orchestration	void __cdecl (void)	Jumps to 0x6bd040; a static initializer	verified	one	terrain/statics#static-initializers	
@@ -10202,7 +10533,80 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x6c37f0	19	InitTerrainSquare522		terrain	primitive	void __cdecl (void)	Stores 10 squared as a float in a global	verified	one	terrain/statics#static-initializers	
 0x6c3810	5	InitTerrainQuotient59Thunk		terrain	orchestration	void __cdecl (void)	Jumps to 0x6c3820; a static initializer	verified	one	terrain/statics#static-initializers	
 0x6c3820	19	InitTerrainQuotient59		terrain	primitive	void __cdecl (void)	Stores 0.5 divided by 10 as a float in a global	verified	one	terrain/statics#static-initializers	
-0x6c4c20	122	LoadMapTexture		models		void * __fastcall (const char *name)	Creates a texture for a map file name	inferred	none		
+0x6c3840	42	CMapObj::OnReadDone		models	host		Closes a map object's read request and file, then parses the file	inferred	none	models/overview#object-files	
+0x6c3870	5	InitMapObjReadInfinityThunk		models	orchestration		Jumps to 0x6c3880; a static initializer	verified	one	models/overview#shared-header-constants	
+0x6c3880	11	InitMapObjReadInfinity		models	orchestration		Copies +inf into the object file's infinity global	verified	one	models/overview#shared-header-constants	
+0x6c3890	246	CMapObj::Load		models	host		Opens a map object file and starts reading it, asynchronously when asked	inferred	none	models/wmo#loading	
+0x6c3990	112	CMapObj::Parse		models	orchestration		Parses a map object's root chunks and creates its groups	inferred	none	models/wmo#root-file-chunks	
+0x6c3a00	17	MapObjNextChunk		models	orchestration		Returns the chunk header at a cursor and advances the cursor by 8, without checking the tag	verified	one	models/wmo#root-file-chunks	
+0x6c3a20	56	MapObjFindChunk		models	orchestration		Returns the chunk header at a cursor when it lies inside the file and carries a tag, else 0	verified	one	models/wmo#root-file-chunks	
+0x6c3a60	770	CMapObj::ParseChunks		models	primitive		Points a map object at its root chunks in their fixed order and counts their records	verified	one	models/wmo#root-file-chunks	
+0x6c3d70	51	CMapObj::ClearMaterialTextures		models	orchestration		Clears the two runtime texture fields of every map object material	inferred	none		
+0x6c3db0	105	CMapObj::GetGroupTextures		models	orchestration		Creates a group's textures, using a placeholder for missing ones	inferred	none		
+0x6c3e20	298	CMapObj::LoadGroupFile		models	primitive		Opens a group file named after the map object and starts reading it	inferred	none	models/wmo#loading	
+0x6c3f50	42	CMapObj::OnGroupReadDone		models	host		Closes a group's read request and file, then parses the group	inferred	none	models/wmo#loading	
+0x6c3f80	311	CMapObj::ParseGroup		models	primitive		Links a group into its map object and parses its chunks	inferred	none	models/wmo#group-file-chunks	
+0x6c40c0	282	CMapObjGroup::ParseChunks		models	primitive		Points a group at its required chunks in their fixed order, counts them and sets its strides	verified	one	models/wmo#group-file-chunks	
+0x6c41e0	94	CMapObjGroup::MarkOpaqueVertices		models	orchestration		Marks the vertices of a group's non-transparent faces in its colour alpha	inferred	none		
+0x6c4240	248	AaBspLeafDistance		models	primitive		Returns the nearest distance from a point to a BSP leaf's faces	inferred	none		
+0x6c4340	130	AaBspMinDistance		models	orchestration		Returns the nearest face distance over a set of BSP leaves	inferred	none		
+0x6c43d0	339	CMapObjGroup::FixVertexAlpha		models	primitive		Blends a group's vertex colour alpha by its distance to the portals	inferred	none		
+0x6c4530	509	CMapObjGroup::ParseOptionalChunks		models	primitive		Points a group at its optional chunks by its flags and builds its BSP, liquid and vertex arrays	inferred	none	models/wmo#group-file-chunks	
+0x6c4730	5	InitMapObjReadTwoPiThunk		models	orchestration		Jumps to 0x6c4740; a static initializer	verified	one	models/overview#shared-header-constants	
+0x6c4740	15	InitMapObjReadTwoPi		models	primitive		Stores π + π as a float in the object file's 2π global	verified	one	models/overview#shared-header-constants	
+0x6c4750	5	InitMapObjReadInvTwoPiThunk		models	orchestration		Jumps to 0x6c4760; a static initializer	verified	one	models/overview#shared-header-constants	
+0x6c4760	19	InitMapObjReadInvTwoPi		models	primitive		Stores 1 / 2π as a float in the object file's 1/2π global	verified	one	models/overview#shared-header-constants	
+0x6c4780	5	InitMapObjReadTenSquaredThunk		models	orchestration		Jumps to 0x6c4790; a static initializer	verified	one	models/overview#shared-header-constants	
+0x6c4790	19	InitMapObjReadTenSquared		models	primitive		Stores 10.0 · 10.0 as a float in an object-file global	verified	one	models/overview#shared-header-constants	
+0x6c47b0	5	InitMapObjReadTileUnitInvSquaredThunk		models	orchestration		Jumps to 0x6c47c0; a static initializer	verified	one	models/overview#shared-header-constants	
+0x6c47c0	19	InitMapObjReadTileUnitInvSquared		models	primitive		Stores 11.11111 · 11.11111 as a float in an object-file global	verified	one	models/overview#shared-header-constants	
+0x6c47e0	5	InitMapObjReadHalfTileUnitInvSquaredThunk		models	orchestration		Jumps to 0x6c47f0; a static initializer	verified	one	models/overview#shared-header-constants	
+0x6c47f0	19	InitMapObjReadHalfTileUnitInvSquared		models	primitive		Stores 5.555555 · 5.555555 as a float in an object-file global	verified	one	models/overview#shared-header-constants	
+0x6c4810	5	InitMapObjReadTenSquared2Thunk		models	orchestration		Jumps to 0x6c4820; a static initializer	verified	one	models/overview#shared-header-constants	
+0x6c4820	19	InitMapObjReadTenSquared2		models	primitive		Stores 10.0 · 10.0 as a float in an object-file global	verified	one	models/overview#shared-header-constants	
+0x6c4840	5	InitMapObjReadFiveSquaredThunk		models	orchestration		Jumps to 0x6c4850; a static initializer	verified	one	models/overview#shared-header-constants	
+0x6c4850	19	InitMapObjReadFiveSquared		models	primitive		Stores 5.0 · 5.0 as a float in an object-file global	verified	one	models/overview#shared-header-constants	
+0x6c4870	5	InitMapObjReadTenSquared3Thunk		models	orchestration		Jumps to 0x6c4880; a static initializer	verified	one	models/overview#shared-header-constants	
+0x6c4880	19	InitMapObjReadTenSquared3		models	primitive		Stores 10.0 · 10.0 as a float in an object-file global	verified	one	models/overview#shared-header-constants	
+0x6c48a0	5	InitMapObjReadThirtySquaredThunk		models	orchestration		Jumps to 0x6c48b0; a static initializer	verified	one	models/overview#shared-header-constants	
+0x6c48b0	19	InitMapObjReadThirtySquared		models	primitive		Stores 30.0 · 30.0 as a float in an object-file global	verified	one	models/overview#shared-header-constants	
+0x6c48d0	5	InitMapObjReadOneTwentySquaredThunk		models	orchestration		Jumps to 0x6c48e0; a static initializer	verified	one	models/overview#shared-header-constants	
+0x6c48e0	19	InitMapObjReadOneTwentySquared		models	primitive		Stores 120.0 · 120.0 as a float in an object-file global	verified	one	models/overview#shared-header-constants	
+0x6c4900	5	InitMapObjReadTwentySquaredThunk		models	orchestration		Jumps to 0x6c4910; a static initializer	verified	one	models/overview#shared-header-constants	
+0x6c4910	19	InitMapObjReadTwentySquared		models	primitive		Stores 20.0 · 20.0 as a float in an object-file global	verified	one	models/overview#shared-header-constants	
+0x6c4930	5	InitMapObjReadTenSquared4Thunk		models	orchestration		Jumps to 0x6c4940; a static initializer	verified	one	models/overview#shared-header-constants	
+0x6c4940	19	InitMapObjReadTenSquared4		models	primitive		Stores 10.0 · 10.0 as a float in an object-file global	verified	one	models/overview#shared-header-constants	
+0x6c4960	5	InitMapObjReadHalfSquaredThunk		models	orchestration		Jumps to 0x6c4970; a static initializer	verified	one	models/overview#shared-header-constants	
+0x6c4970	19	InitMapObjReadHalfSquared		models	primitive		Stores 0.5 · 0.5 as a float in an object-file global	verified	one	models/overview#shared-header-constants	
+0x6c4990	5	InitMapObjReadThreeSquaredThunk		models	orchestration		Jumps to 0x6c49a0; a static initializer	verified	one	models/overview#shared-header-constants	
+0x6c49a0	19	InitMapObjReadThreeSquared		models	primitive		Stores 3.0 · 3.0 as a float in an object-file global	verified	one	models/overview#shared-header-constants	
+0x6c49c0	5	InitMapObjReadHundredSquaredThunk		models	orchestration		Jumps to 0x6c49d0; a static initializer	verified	one	models/overview#shared-header-constants	
+0x6c49d0	19	InitMapObjReadHundredSquared		models	primitive		Stores 100.0 · 100.0 as a float in an object-file global	verified	one	models/overview#shared-header-constants	
+0x6c49f0	5	InitMapObjReadStoreFiveThunk		models	orchestration		Jumps to 0x6c4a00; a static initializer	verified	one	models/overview#shared-header-constants	
+0x6c4a00	11	InitMapObjReadStoreFive		models	orchestration		Stores the float 5.0 in an object-file global	verified	one	models/overview#shared-header-constants	
+0x6c4a10	5	InitMapObjReadFiftySquaredThunk		models	orchestration		Jumps to 0x6c4a20; a static initializer	verified	one	models/overview#shared-header-constants	
+0x6c4a20	19	InitMapObjReadFiftySquared		models	primitive		Stores 50.0 · 50.0 as a float in an object-file global	verified	one	models/overview#shared-header-constants	
+0x6c4a40	5	InitMapObjReadHundredSquared2Thunk		models	orchestration		Jumps to 0x6c4a50; a static initializer	verified	one	models/overview#shared-header-constants	
+0x6c4a50	19	InitMapObjReadHundredSquared2		models	primitive		Stores 100.0 · 100.0 as a float in an object-file global	verified	one	models/overview#shared-header-constants	
+0x6c4a70	5	InitMapObjReadFortySquaredThunk		models	orchestration		Jumps to 0x6c4a80; a static initializer	verified	one	models/overview#shared-header-constants	
+0x6c4a80	19	InitMapObjReadFortySquared		models	primitive		Stores 40.0 · 40.0 as a float in an object-file global	verified	one	models/overview#shared-header-constants	
+0x6c4aa0	5	InitMapObjReadOneHalfSquaredThunk		models	orchestration		Jumps to 0x6c4ab0; a static initializer	verified	one	models/overview#shared-header-constants	
+0x6c4ab0	19	InitMapObjReadOneHalfSquared		models	primitive		Stores 1.5 · 1.5 as a float in an object-file global	verified	one	models/overview#shared-header-constants	
+0x6c4ad0	5	InitMapObjReadNegTwentyOneOverThirtySixThunk		models	orchestration		Jumps to 0x6c4ae0; a static initializer	verified	one	models/overview#shared-header-constants	
+0x6c4ae0	19	InitMapObjReadNegTwentyOneOverThirtySix		models	primitive		Stores -21.0 · -0.02777778 as a float in an object-file global	verified	one	models/overview#shared-header-constants	
+0x6c4b00	5	InitMapObjReadScaledNeg255Thunk		models	orchestration		Jumps to 0x6c4b10; a static initializer	verified	one	models/overview#shared-header-constants	
+0x6c4b10	19	InitMapObjReadScaledNeg255		models	primitive		Stores another of the object file's globals · -255.0 as a float	verified	one	models/overview#shared-header-constants	
+0x6c4b30	5	InitMapObjReadEighteenOverThirtySixThunk		models	orchestration		Jumps to 0x6c4b40; a static initializer	verified	one	models/overview#shared-header-constants	
+0x6c4b40	19	InitMapObjReadEighteenOverThirtySix		models	primitive		Stores 18.0 · 0.02777778 as a float in an object-file global	verified	one	models/overview#shared-header-constants	
+0x6c4b60	5	InitMapObjReadScaled256Thunk		models	orchestration		Jumps to 0x6c4b70; a static initializer	verified	one	models/overview#shared-header-constants	
+0x6c4b70	19	InitMapObjReadScaled256		models	primitive		Stores another of the object file's globals · 256.0 as a float	verified	one	models/overview#shared-header-constants	
+0x6c4b90	5	InitMapObjReadInvTileSizeThunk		models	orchestration		Jumps to 0x6c4ba0; a static initializer	verified	one	models/overview#shared-header-constants	
+0x6c4ba0	19	InitMapObjReadInvTileSize		models	primitive		Stores 1.0 / 4.166667 as a float in an object-file global	verified	one	models/overview#shared-header-constants	
+0x6c4bc0	5	InitMapObjReadTenSquared5Thunk		models	orchestration		Jumps to 0x6c4bd0; a static initializer	verified	one	models/overview#shared-header-constants	
+0x6c4bd0	19	InitMapObjReadTenSquared5		models	primitive		Stores 10.0 · 10.0 as a float in an object-file global	verified	one	models/overview#shared-header-constants	
+0x6c4bf0	5	InitMapObjReadHalfTenthThunk		models	orchestration		Jumps to 0x6c4c00; a static initializer	verified	one	models/overview#shared-header-constants	
+0x6c4c00	19	InitMapObjReadHalfTenth		models	primitive		Stores 0.5 / 10.0 as a float in an object-file global	verified	one	models/overview#shared-header-constants	
+0x6c4c20	122	LoadMapTexture		models	primitive	void * __fastcall (const char *name)	Creates a texture for a map file name	inferred	none	models/overview#object-files	
 0x6c4ca0	5	InitTerrainInfinity30Thunk		terrain	orchestration	void __cdecl (void)	Jumps to 0x6c4cb0; a static initializer	verified	one	terrain/statics#static-initializers	
 0x6c4cb0	11	InitTerrainInfinity30		terrain	orchestration	void __cdecl (void)	Copies the constant +inf into a global	verified	one	terrain/statics#static-initializers	
 0x6c4cc0	5	InitTerrainTwoPi30Thunk		terrain	orchestration	void __cdecl (void)	Jumps to 0x6c4cd0; a static initializer	verified	one	terrain/statics#static-initializers	
@@ -10896,31 +11300,377 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x7060b0	664	Script::CreateFrame	idb	ui	orchestration		Creates a frame of a type, name, parent and inherited template	inferred	none	ui/script#method-tables-of-the-frame-types	
 0x706350	114	LoadFrameScriptFunctions		ui	orchestration		Registers the global script functions and the method tables of the frame types	inferred	none	ui/script#method-tables-of-the-frame-types	
 0x7063d0	108	UnloadFrameScriptFunctions		ui	orchestration		Unregisters what 0x706350 registers	inferred	none	ui/README#this-rounds-object-files	
-0x707350	161	CreateModelFromPath		models			Creates a model from a file path	inferred	none	spell/visuals#shard-model-start-and-end	
-0x7089b0	11	ModelManagerFlagQuery		models		void __thiscall (void *manager)	Stores 1 at +0x12c of the model manager before a segment query	inferred	none		
-0x7099e0	1650	ModelManagerTraceSegment		models		void __thiscall (void *manager, const float *start, const float *end, float *t)	Lowers a segment's hit fraction against the models the manager holds	inferred	none		
-0x710390	6	ModelAddRef		models			Increments a model's reference count, the dword at its start	inferred	none		
-0x7103a0	34	HandleClose2	idb	models			Closes a model handle	inferred	none	spell/visuals#shard-model-start-and-end	
-0x710450	193	ModelRefresh		models			Updates a scene model; glue passes 1 and 1	inferred	none		
-0x710620	43	ModelSetWorldTransform		models			Sets a model's world transform from a matrix	inferred	none	spell/visuals#shard-model-start-and-end	
-0x710650	108	ModelSetLocalTransform		models			Sets a model's matrix from a position, an angle about an axis and a scale	inferred	none		
-0x710b90	90	ModelSetFlagB		models			Sets a model flag	inferred	none	spell/visuals#shard-model-start-and-end	
-0x710c50	36	ModelSetFlagA		models			Sets a model flag	inferred	none	spell/visuals#shard-model-start-and-end	
-0x710cb0	16	ModelSetAlpha		models			Sets a model's alpha	inferred	none		
-0x710cf0	32	ModelSetTint		models			Sets a model's colour tint	inferred	none		
-0x711bb0	25	ModelSetDoneCallback		models			Stores a model's done callback and its 64-bit argument at +0x70 and +0x78	inferred	none	spell/visuals#shard-model-start-and-end	
-0x7121a0	1607	ModelPlayAnimation		models			Starts a model animation	inferred	none	spell/visuals#shard-model-start-and-end	
-0x712cb0	59	ModelHasAttachment		models			Returns whether a model has an attachment	inferred	none	spell/visuals#chain-endpoints	
-0x712d50	137	ModelGetAttachmentPosition		models			Writes the world position of a model attachment	inferred	none	spell/visuals#chain-endpoints	
-0x712f70	168	ModelAttach		models			Attaches a model to another model	inferred	none		
-0x7130a0	49	ModelDetachAt		models			Detaches from a model each attached model whose +0x1d0 equals the argument	inferred	none		
-0x7130e0	79	ModelHasEvent		models			Returns whether a model has an event tag	inferred	none	spell/visuals#chain-endpoints	
-0x7131b0	163	ModelGetEventPosition		models			Writes the world position of a model event	inferred	none	spell/visuals#chain-endpoints	
-0x7133a0	34	ModelSetEventCallback		models			Stores a model's event callback and two arguments at +0x1f4	inferred	none	spell/visuals#shard-model-start-and-end	
-0x7134b0	25	ModelSetLightCallback		models			Stores a model's light callback and its argument at +0x3bc and +0x3c0	inferred	none		
-0x713590	47	GetModelCamera		models			Returns a model camera by index	inferred	none		
-0x718910	77			models		void __thiscall (void *model, const float *matrix)	Takes a model's transport frame, or null; not read here	inferred	none	collision/mover#transport-change	
-0x71bf90	372	LightingAddLight		models			Adds a light to a model's lighting	inferred	none		
+0x706440	120	M2CacheConstruct		models	host		Zeroes the model cache, its 1021 shared-model buckets and its release list, and creates its two thread events	verified	one	models/cache#cache-object	
+0x7064c0	80	M2CacheDestruct		models	host		Logs a missing M2Destroy when the cache is still initialized, then closes the cache's thread and event handles	verified	one	models/cache#cache-object	
+0x706510	861	M2CacheInitialize		models	primitive		Grants the requested model features the device supports, starts the helper thread, loads the model shaders	verified	one	models/cache#feature-mask	
+0x706870	139	M2CacheEvictReleased		models	host		Destroys released shared models that have sat unused for 30000 ms, oldest first	verified	one	models/cache#release-and-eviction	
+0x706900	324	M2CacheDestroy		models	host		Stops the helper thread, destroys every cached shared model and releases the model shaders	verified	one	models/cache#helper-thread	
+0x706a50	638	M2CacheGetShared		models	primitive		Finds a loaded shared model by file name or opens the file and starts loading a new one	verified	one	models/cache#shared-model-lookup	
+0x706cd0	36	M2CacheSubmitJob		models	host		Stores a job and its argument on the cache and wakes the helper thread	verified	one	models/cache#helper-thread	
+0x706d00	14	M2CacheWaitJob		models	host		Waits for the helper thread to signal that its job is done	verified	one	models/cache#helper-thread	
+0x706d10	121	M2CacheWorkerThread		models	host		Runs the helper thread: waits for a job, runs it, signals done, until stopped	verified	one	models/cache#helper-thread	
+0x706d90	10	InitM2Cache		models	orchestration		Constructs the model cache and registers its destructor with _atexit; a static initializer	verified	one	models/cache#cache-object	
+0x706da0	10	InitM2CacheConstruct		models	orchestration		Constructs the model cache singleton	verified	one	models/cache#cache-object	
+0x706db0	12	InitM2CacheAtexit		models	orchestration		Registers the model cache destructor with _atexit	verified	one	models/cache#cache-object	
+0x706dc0	10	M2CacheAtexit		models	orchestration		Destroys the model cache singleton at exit	verified	one	models/cache#cache-object	
+0x706dd0	12	M2Initialize		models	orchestration		Initializes the model cache with a requested feature mask	verified	one	models/cache#feature-mask	
+0x706de0	20	M2Destroy		models	orchestration		Destroys the model cache, then the particle and ribbon emitter registries	verified	one	models/cache#scene-creation-and-teardown	
+0x706e00	7	M2SetSortMode		models	orchestration		Stores the scene sort and draw mode flags on the model cache	verified	one	models/cache#cache-object	
+0x706e10	42	M2CreateScene		models	host		Allocates and constructs a model scene on the model cache	verified	one	models/cache#scene-creation-and-teardown	
+0x706e40	5	InitM2CacheInfinityThunk		models	orchestration		Jumps to 0x706e50; a static initializer	verified	one	models/overview#shared-header-constants	
+0x706e50	11	InitM2CacheInfinity		models	orchestration		Copies +inf into the object file's infinity global	verified	one	models/overview#shared-header-constants	
+0x706e60	5	InitM2CacheTwoPiThunk		models	orchestration		Jumps to 0x706e70; a static initializer	verified	one	models/overview#shared-header-constants	
+0x706e70	15	InitM2CacheTwoPi		models	primitive		Stores π + π as a float in the object file's 2π global	verified	one	models/overview#shared-header-constants	
+0x706e80	5	InitM2CacheInvTwoPiThunk		models	orchestration		Jumps to 0x706e90; a static initializer	verified	one	models/overview#shared-header-constants	
+0x706e90	19	InitM2CacheInvTwoPi		models	primitive		Stores 1 / 2π as a float in the object file's 1/2π global	verified	one	models/overview#shared-header-constants	
+0x706eb0	5	InitM2CacheTenSquaredThunk		models	orchestration		Jumps to 0x706ec0; a static initializer	verified	one	models/overview#shared-header-constants	
+0x706ec0	19	InitM2CacheTenSquared		models	primitive		Stores 10.0 · 10.0 as a float in an object-file global	verified	one	models/overview#shared-header-constants	
+0x706ee0	5	InitM2CacheHalfTenthThunk		models	orchestration		Jumps to 0x706ef0; a static initializer	verified	one	models/overview#shared-header-constants	
+0x706ef0	19	InitM2CacheHalfTenth		models	primitive		Stores 0.5 / 10.0 as a float in an object-file global	verified	one	models/overview#object-files	
+0x706f10	10	InitM2SceneIdentity		models	orchestration		Builds the scene object file's identity matrix and registers its exit hook; a static initializer	verified	one	models/overview#object-files	
+0x706f20	161	InitM2SceneIdentityMatrix		models	orchestration		Stores a 4x4 identity matrix in the scene object file's global	verified	one	models/overview#static-objects	
+0x706fd0	12	InitM2SceneIdentityAtexit		models	orchestration		Registers the scene identity matrix's empty exit hook with _atexit	verified	one	models/overview#static-objects	
+0x706fe0	1	M2SceneIdentityAtexit		models	orchestration		Returns; the exit hook of the scene identity matrix	verified	one	models/overview#static-objects	
+0x706ff0	430	M2SceneConstruct		models	primitive		Constructs a model scene: reference count 1, two identity matrices, empty lists, shader id memo all -1	verified	one	models/cache#scene-creation-and-teardown	
+0x7071a0	275	M2SceneDestruct		models	host		Releases every model of a scene and frees its element, callback and sort arrays	verified	one	models/scene#scene-object	
+0x7072c0	76	M2SceneArrayDeletingDestructor		models	unreached		Frees a scene-owned array or object by the deleting-destructor flags; nothing reaches it	verified	one	models/overview#unreached-code	
+0x707310	6	M2SceneAddRef		models	unreached		Increments a scene's reference count; nothing reaches it	verified	one	models/overview#unreached-code	
+0x707320	34	M2SceneRelease		models	host		Decrements a scene's reference count and destroys and frees it at zero	verified	one	models/scene#scene-object	
+0x707350	161	CreateModelFromPath		models	primitive		Creates a model instance in a scene from a file path, substituting the error cube when the file fails	verified	one	models/scene#model-creation	
+0x707400	116	CreateModelFromModel		models	host		Creates a model instance in a scene that shares another instance's model and copies its attachments	verified	one	models/scene#model-creation	
+0x707480	4	M2SceneGetTime		models	orchestration		Returns a scene's clock in milliseconds	inferred	none		
+0x707490	21	M2SceneSetTime		models	orchestration		Sets a scene's clock and evicts released shared models	verified	one	models/cache#release-and-eviction	
+0x7074b0	300	M2SceneAdvance		models	orchestration		Advances a scene's clock and every animated model, then runs the queued model callbacks in order	verified	one	models/scene#scene-advance	
+0x7075e0	4	M2SceneGetFloat14		models	unreached		Returns the scene float at +0x14; nothing reaches it	verified	one	models/overview#unreached-code	
+0x7075f0	13	M2SceneSetFloat14		models	orchestration		Stores the scene float at +0x14 that the draw passes to every texture stage	inferred	none		
+0x707600	116	M2SceneAnimateOddJob		models	orchestration		Animates the odd-numbered unattached models of a scene's animate list; the helper thread's job	verified	one	models/scene#animate-pass	
+0x707680	4732	M2SceneAnimateAndCollect		models	primitive		Animates a scene's models and sorts their batches, ribbons and particles into its draw lists	verified	one	models/scene#view-rebase	
+0x708900	172	M2SceneDraw		models	primitive		Draws one of a scene's three element lists, and the grouped list with list 0	verified	one	models/render#list-draw	
+0x7089b0	11	M2SceneEnableRayHits		models	orchestration		Sets the scene flag that enables ray hits against its models	inferred	none	models/scene#ray-hits	
+0x7089c0	4126	M2SceneRayHit		models	primitive		Finds the nearest model triangle a segment crosses among a scene's hit-testable models	inferred	none	models/scene#ray-hits	
+0x7099e0	1650	M2SceneRayHitBox		models	primitive		Tests a segment against the hit-testable models of a scene with a widened bound	inferred	none	models/scene#ray-hits	
+0x70a060	143	M2SceneCompareHits		models	primitive		Orders ray-hit candidates by entry distance, exit distance, then index	inferred	none	models/scene#ray-hits	
+0x70a0f0	312	M2SceneAddLightsForPoint		models	primitive		Adds a scene's global lights and the grid lights around a point to a lighting record	verified	one	models/lights#scene-light-grid	
+0x70a230	25	M2SceneSetSpecialCallback		models	orchestration		Stores the scene's special-batch draw callback and its argument	verified	one	models/scene#scene-object	
+0x70a250	36	M2SceneSetProjection		models	orchestration		Stores two scene values at +0x124 and +0x128 and copies them to two globals	inferred	none		
+0x70a280	376	M2SceneQueueCallback		models	primitive		Queues a model callback with five arguments for the end of the scene advance	verified	one	models/animation#update-and-events	
+0x70a400	409	M2SceneQueueEventCallback		models	primitive		Queues a model event callback with a position for the end of the scene advance	verified	one	models/animation#update-and-events	
+0x70a5a0	85	M2SceneCompareCallbacks		models	primitive		Orders queued callbacks by their time key, latest first, then by queue index	verified	one	models/scene#scene-advance	
+0x70a600	260	M2ElementHash		models	primitive		Hashes an element's shared model, batch and lighting and colour inputs for grouping	verified	one	models/scene#batch-grouping	
+0x70a710	746	M2ElementCompareGroup		models	primitive		Compares two elements' shared model, batch, lighting and colour inputs for grouping	verified	one	models/scene#batch-grouping	
+0x70aa00	44	M2ElementCompareGroupKey		models	primitive		Orders elements by their group representative index	verified	one	models/scene#batch-grouping	
+0x70aa30	977	M2ElementCompareOpaque		models	primitive		Orders opaque elements by kind, shader, model, material and textures to minimize state changes	verified	one	models/scene#batch-grouping	
+0x70ae10	467	M2ElementCompareTransparent		models	primitive		Orders transparent elements by priority, depth, sort keys, instance, kind and batch, then the opaque order	verified	one	models/scene#batch-grouping	
+0x70aff0	80	M2DecodeVertexShaderId		models	primitive		Splits a vertex shader id into its seven mixed-radix digits	verified	one	models/scene#vertex-shader-id-remap	
+0x70b040	145	M2SceneRemapVertexShaderId		models	primitive		Rewrites a vertex shader id's lighting digit for the cache's shader mode, memoized per scene	verified	one	models/scene#vertex-shader-id-remap	
+0x70b0e0	548	M2DrawStateInitialize		models	primitive		Clears a draw state: identity matrix, scene and cache pointers, unset previous-element keys	verified	one	models/render#list-draw	
+0x70b310	5	InitM2SceneInfinityThunk		models	orchestration		Jumps to 0x70b320; a static initializer	verified	one	models/overview#shared-header-constants	
+0x70b320	11	InitM2SceneInfinity		models	orchestration		Copies +inf into the object file's infinity global	verified	one	models/overview#shared-header-constants	
+0x70b330	28	M2DrawStateClearBlock		models	orchestration		Zeroes an eight-dword block of the draw state	verified	one	models/render#list-draw	
+0x70b350	14	M2DrawStateClearVector		models	orchestration		Zeroes a four-dword vector; the element constructor of the draw state's arrays	verified	one	models/render#list-draw	
+0x70b360	967	M2SceneDrawList		models	host		Sets the device for model drawing and draws a list of elements by kind, tracking the previous element	verified	one	models/render#list-draw	
+0x70b740	935	M2DrawSetTextures		models	primitive		Binds an element's textures, wrap modes and texture matrices to the device stages	verified	one	models/render#texture-stages	
+0x70baf0	1674	M2DrawSetLighting		models	primitive		Sets an element's lighting, lights, fog mode and colour, and its clip plane on the device	verified	one	models/render#lighting-and-fog	
+0x70c190	2232	M2DrawSetMaterial		models	primitive		Sets an element's blend, alpha test, cull, depth and material colours on the device	verified	one	models/render#material-state	
+0x70ca50	192	M2DrawBeginEmitter		models	primitive		Sets an emitter element's textures, lighting and material, and a view offset to the model	verified	one	models/render#ribbon-particle-and-custom-draws	
+0x70cb10	30	M2DrawEndEmitter		models	host		Restores the device view and texture matrix after an emitter element	verified	one	models/render#ribbon-particle-and-custom-draws	
+0x70cb30	1075	M2DrawBatch		models	primitive		Draws a model batch: device state, bone palette or skinned vertices, then the indexed triangles	verified	one	models/render#list-draw	
+0x70cf70	957	M2DrawProjectedBatch		models	primitive		Draws a special batch through the scene callback with a texture matrix built from its depth range	verified	one	models/render#list-draw	
+0x70d330	1262	M2DrawBatchedRun		models	primitive		Draws a run of grouped batches from several instances of one shared model in one call	verified	one	models/render#list-draw	
+0x70d820	135	M2DrawRibbon		models	orchestration		Draws a model's ribbon emitter element	verified	one	models/render#list-draw	
+0x70d8b0	167	M2DrawParticles		models	primitive		Draws a model's particle emitter element with its emitter's blend as the material	verified	one	models/render#list-draw	
+0x70d960	76	M2DrawCustom		models	orchestration		Draws a model's custom element through its draw callback	verified	one	models/render#list-draw	
+0x70d9b0	5	InitM2SceneTwoPiThunk		models	orchestration		Jumps to 0x70d9c0; a static initializer	verified	one	models/overview#shared-header-constants	
+0x70d9c0	15	InitM2SceneTwoPi		models	primitive		Stores π + π as a float in the object file's 2π global	verified	one	models/overview#shared-header-constants	
+0x70d9d0	5	InitM2SceneInvTwoPiThunk		models	orchestration		Jumps to 0x70d9e0; a static initializer	verified	one	models/overview#shared-header-constants	
+0x70d9e0	19	InitM2SceneInvTwoPi		models	primitive		Stores 1 / 2π as a float in the object file's 1/2π global	verified	one	models/overview#shared-header-constants	
+0x70da00	228	M2ElementArrayGrow		models	primitive		Grows a scene's element array by a count, geometrically	verified	one	models/scene#element-collection	
+0x70daf0	57	M2ElementArrayQuantum		models	primitive		Returns the growth quantum of an element array for a count	inferred	none		
+0x70db30	31	M2ElementArrayRoundUp		models	primitive		Rounds a count up to a multiple of a quantum	inferred	none		
+0x70db50	146	M2ElementArrayRealloc		models	host		Reallocates a scene's element array to an exact capacity	inferred	none		
+0x70dbf0	1	M2DrawStateVectorDestruct		models	orchestration		Returns; the element destructor of the draw state's arrays	verified	one	models/render#list-draw	
+0x70dc00	5	InitM2SceneTenSquaredThunk		models	orchestration		Jumps to 0x70dc10; a static initializer	verified	one	models/overview#shared-header-constants	
+0x70dc10	19	InitM2SceneTenSquared		models	primitive		Stores 10.0 · 10.0 as a float in an object-file global	verified	one	models/overview#shared-header-constants	
+0x70dc30	5	InitM2SceneHalfTenthThunk		models	orchestration		Jumps to 0x70dc40; a static initializer	verified	one	models/overview#shared-header-constants	
+0x70dc40	19	InitM2SceneHalfTenth		models	primitive		Stores 0.5 / 10.0 as a float in an object-file global	verified	one	models/overview#object-files	
+0x70dc60	10	InitM2ModelIdentity		models	orchestration		Builds the model object file's identity matrix and registers its exit hook; a static initializer	verified	one	models/overview#object-files	
+0x70dc70	161	InitM2ModelIdentityMatrix		models	orchestration		Stores a 4x4 identity matrix in the model object file's global	verified	one	models/overview#static-objects	
+0x70dd20	12	InitM2ModelIdentityAtexit		models	orchestration		Registers the model identity matrix's empty exit hook with _atexit	verified	one	models/overview#static-objects	
+0x70dd30	1	M2ModelIdentityAtexit		models	orchestration		Returns; the exit hook of the model identity matrix	verified	one	models/overview#static-objects	
+0x70dd40	9	M2DeferredCallConstruct		models	orchestration		Sets a deferred call record's kind to -1 and returns it	verified	one	models/model#deferred-calls	
+0x70dd50	18	M2DeferredCallDestruct		models	orchestration		Releases the handle a kind-0 deferred call record holds	verified	one	models/model#deferred-calls	
+0x70dd70	1019	CM2Model::CM2Model		models	orchestration		Constructs a model instance and picks the vertex skinning routine once from the CPU features	verified	one	models/model#instance-object	
+0x70e170	1570	CM2Model::~CM2Model		models	host		Unlinks a model instance from its scene and parent and frees everything it holds	verified	one	models/model#instance-object	
+0x70e7a0	76	M2ModelArrayDeletingDestructorA		models	unreached		Frees an array or object by the deleting-destructor flags; nothing reaches it	verified	one	models/overview#unreached-code	
+0x70e7f0	76	M2ModelArrayDeletingDestructorB		models	unreached		Frees an array or object by the deleting-destructor flags; nothing reaches it	verified	one	models/overview#unreached-code	
+0x70e840	76	M2ModelArrayDeletingDestructorC		models	unreached		Frees an array or object by the deleting-destructor flags; nothing reaches it	verified	one	models/overview#unreached-code	
+0x70e890	141	M2LightStateArrayDeletingDestructor		models	unreached		Unlinks each light of a light-state array, then frees it; nothing reaches it	verified	one	models/overview#unreached-code	
+0x70e920	76	M2ModelArrayDeletingDestructorD		models	unreached		Frees an array or object by the deleting-destructor flags; nothing reaches it	verified	one	models/overview#unreached-code	
+0x70e970	76	M2ModelArrayDeletingDestructorE		models	unreached		Frees an array or object by the deleting-destructor flags; nothing reaches it	verified	one	models/overview#unreached-code	
+0x70e9c0	1	M2ColorStateDestruct		models	orchestration		Returns; the element destructor of the colour state array	inferred	none		
+0x70e9d0	1	M2TextureStateDestruct		models	orchestration		Returns; the element destructor of the texture transform state array	inferred	none		
+0x70e9e0	11	M2LightStateDestruct		models	orchestration		Unlinks the light of a light state; the element destructor of the light state array	inferred	none		
+0x70e9f0	1	M2EmitterStateDestruct		models	orchestration		Returns; the element destructor of the emitter state arrays	inferred	none		
+0x70ea00	458	CM2Model::Initialize		models	primitive		Binds a new instance to its scene and shared model and attaches the copied instance's children	verified	one	models/model#instance-object	
+0x70ebd0	5885	CM2Model::InitializeLoaded		models	primitive		Builds an instance's animation state once its shared model is loaded, then replays its deferred calls	verified	one	models/model#deferred-calls	
+0x710310	17	M2LookupIndex		models	primitive		Returns an entry of a 16-bit lookup table, or 0xffff past its end	verified	one	models/animation#playing-an-animation	
+0x710330	25	M2StaticWordArrayAtexit		models	host		Frees a static array the model object file builds; an exit hook	inferred	none		
+0x710350	25	M2StaticRibbonMatArrayAtexit		models	host		Frees the static ribbon material array; an exit hook	inferred	none		
+0x710370	25	M2StaticTextureArrayAtexit		models	host		Frees the static texture handle array; an exit hook	inferred	none		
+0x710390	6	CM2Model::AddRef		models	orchestration		Increments a model instance's reference count	verified	one	models/model#instance-object	
+0x7103a0	34	HandleClose2	idb	models	host		Releases a model instance: decrements its count and destroys and frees it at zero	verified	one	models/model#instance-object	
+0x7103d0	118	CM2Model::IsLoaded		models	orchestration		Returns whether an instance, and optionally all its children, have their shared models loaded	verified	one	models/model#load-state	
+0x710450	193	CM2Model::IsReady		models	host		Returns whether an instance and optionally its children are loaded and have their textures loaded	verified	one	models/model#load-state	
+0x710520	54	CM2Model::WaitForShared		models	host		Blocks until the shared model's file read finishes, logging a stall with the caller's name	verified	one	models/model#load-state	
+0x710560	64	CM2Model::RunLoadedCallbacks		models	orchestration		Calls the loaded callbacks of an instance and its parents once each is loaded	verified	one	models/model#load-state	
+0x7105a0	24	CM2Model::SetLoadedCallback		models	orchestration		Stores an instance's loaded callback and runs it at once when the instance is loaded	verified	one	models/model#load-state	
+0x7105c0	4	CM2Model::GetScene		models	orchestration		Returns an instance's scene	inferred	none		
+0x7105d0	36	CM2Model::GetPositionInScene		models	orchestration		Transforms an instance's world position by its scene's matrix	inferred	none		
+0x710600	29	CM2Model::GetBaseTransform		models	orchestration		Copies an instance's base matrix	inferred	none		
+0x710620	43	CM2Model::SetBaseTransform		models	orchestration		Sets an instance's base matrix	inferred	none		
+0x710650	108	CM2Model::SetBaseTransformTRS		models	orchestration		Builds an instance's base matrix from a position, an angle about an axis, and a scale	inferred	none	models/model#base-transform	
+0x7106c0	951	CM2Model::SetBaseTransformConformed		models	primitive		Builds an instance's base matrix tilted toward a ground normal by its conform mode and animation	inferred	none	models/model#base-transform	
+0x710a80	247	M2ConformRows		models	primitive		Rebuilds a rotation's rows so its third row is a given normal, keeping the first row's heading	inferred	none	models/model#base-transform	
+0x710b80	11	CM2Model::IsAnimated		models	orchestration		Returns whether an instance is on its scene's animate list	inferred	none		
+0x710b90	90	CM2Model::SetAnimated		models	orchestration		Links an instance into or out of its scene's animate list	verified	one	models/scene#scene-object	
+0x710bf0	4	CM2Model::GetPauseTime		models	orchestration		Returns the clock stamp at which an instance's animation was paused, or 0	inferred	none		
+0x710c00	43	CM2Model::SetPaused		models	orchestration		Pauses an instance's animation at the scene clock, or resumes it	inferred	none		
+0x710c30	21	CM2Model::GetVisible		models	unreached		Returns an instance's visible flag; nothing reaches it	verified	one	models/overview#unreached-code	
+0x710c50	36	CM2Model::SetVisible		models	orchestration		Sets an instance's visible flag, kept apart for attached instances	inferred	none		
+0x710c80	4	CM2Model::GetUserData		models	unreached		Returns an instance's user value; nothing reaches it	verified	one	models/overview#unreached-code	
+0x710c90	13	CM2Model::SetUserData		models	orchestration		Stores an instance's user value	inferred	none		
+0x710ca0	7	CM2Model::GetAlpha		models	orchestration		Returns an instance's alpha	inferred	none		
+0x710cb0	16	CM2Model::SetAlpha		models	orchestration		Sets an instance's alpha	inferred	none		
+0x710cc0	36	CM2Model::GetDiffuseColor		models	unreached		Copies an instance's diffuse colour multiplier; nothing reaches it	verified	one	models/overview#unreached-code	
+0x710cf0	32	CM2Model::SetDiffuseColor		models	orchestration		Sets an instance's diffuse colour multiplier	inferred	none		
+0x710d10	36	CM2Model::GetEmissiveColor		models	unreached		Copies an instance's emissive colour; nothing reaches it	verified	one	models/overview#unreached-code	
+0x710d40	32	CM2Model::SetEmissiveColor		models	orchestration		Sets an instance's emissive colour	inferred	none		
+0x710d60	10	CM2Model::GetGlobalTime		models	unreached		Returns the scene time since an instance's global sequence anchor; nothing reaches it	verified	one	models/overview#unreached-code	
+0x710d70	19	CM2Model::SetGlobalTime		models	unreached		Sets an instance's global sequence anchor so its global time reads a value; nothing reaches it	verified	one	models/overview#unreached-code	
+0x710d90	7	CM2Model::GetZFill		models	unreached		Returns an instance's depth-fill eligibility; nothing reaches it	verified	one	models/overview#unreached-code	
+0x710da0	16	CM2Model::SetZFill		models	unreached		Sets an instance's depth-fill eligibility; nothing reaches it	verified	one	models/overview#unreached-code	
+0x710db0	34	CM2Model::SetDrawCallback		models	orchestration		Stores an instance's custom draw callback, its argument and whether it draws opaque	inferred	none		
+0x710de0	31	CM2Model::GetModelName		models	orchestration		Waits for the shared model and returns the name its header holds	inferred	none		
+0x710e00	25	CM2Model::GetFileName		models	orchestration		Waits for the shared model and returns its file name	inferred	none		
+0x710e20	39	CM2Model::GetHeader		models	orchestration		Waits for the shared model and returns its fixed-up header	inferred	none		
+0x710e50	101	CM2Model::GetReplaceableTexture		models	orchestration		Returns the texture bound to a replaceable texture id of an instance	verified	one	models/model#replaceable-textures	
+0x710ec0	438	CM2Model::SetReplaceableTexture		models	host		Binds a texture to every texture of an instance with a replaceable type, and to its emitters	verified	one	models/model#deferred-calls	
+0x711080	77	CM2Model::HasGeoset		models	unreached		Returns whether the selected view has a submesh with a geoset id; nothing reaches it	verified	one	models/overview#unreached-code	
+0x7110d0	352	CM2Model::SetGeosetRange		models	host		Shows or hides the submeshes whose geoset ids lie in a range, rebuilding batches on change	verified	one	models/model#deferred-calls	
+0x711230	1346	CM2Model::BuildBatches		models	primitive		Builds an instance's own batch table and index buffer from its visible submeshes	verified	one	models/model#deferred-calls	
+0x711780	87	M2BatchesMatch		models	orchestration		Returns whether two batches share colour, material, textures, transparency and bone count	inferred	none	models/model#geosets-and-own-batches	
+0x7117e0	76	M2BatchArrayDeletingDestructorA		models	unreached		Frees an array or object by the deleting-destructor flags; nothing reaches it	verified	one	models/overview#unreached-code	
+0x711830	76	M2BatchArrayDeletingDestructorB		models	unreached		Frees an array or object by the deleting-destructor flags; nothing reaches it	verified	one	models/overview#unreached-code	
+0x711880	215	CM2Model::FreeBatches		models	host		Frees an instance's own batch table and its vertex and index buffers	inferred	none	models/model#geosets-and-own-batches	
+0x711960	56	CM2Model::HasAnimation		models	orchestration		Returns whether an instance's model has a sequence for an animation id	inferred	none		
+0x7119a0	122	CM2Model::CountVariations		models	unreached		Counts the variations of an animation id's sequence chain; nothing reaches it	verified	one	models/overview#unreached-code	
+0x711a20	392	CM2Model::GetSequenceInfo		models	primitive		Fills a record with a resolved sequence's flags, length, speed, bounds and radius	inferred	none		
+0x711bb0	25	CM2Model::SetDoneCallback		models	orchestration		Stores an instance's animation-done callback and its two arguments	inferred	none		
+0x711bd0	5	InitM2ModelInfinityThunk		models	orchestration		Jumps to 0x711be0; a static initializer	verified	one	models/overview#shared-header-constants	
+0x711be0	11	InitM2ModelInfinity		models	orchestration		Copies +inf into the object file's infinity global	verified	one	models/overview#shared-header-constants	
+0x711bf0	289	CM2Model::ResolveAnimationId		models	primitive		Maps an animation id to one the model has, following the fallback chain, with reverse and hold flags	verified	one	models/animation#animation-id-resolution	
+0x711d20	68	CM2Model::HasKeyBone		models	orchestration		Returns whether an instance's model has a key bone id	inferred	none		
+0x711d70	92	CM2Model::GetKeyBonePivot		models	unreached		Copies a key bone's pivot; nothing reaches it	verified	one	models/overview#unreached-code	
+0x711dd0	133	CM2Model::GetKeyBonePosition		models	unreached		Returns a key bone's pivot transformed by its bone and the scene; nothing reaches it	verified	one	models/overview#unreached-code	
+0x711e60	91	CM2Model::GetKeyBoneMatrix		models	unreached		Copies a key bone's animated matrix; nothing reaches it	verified	one	models/overview#unreached-code	
+0x711ec0	78	CM2Model::GetKeyBoneFlags		models	unreached		Returns a key bone's runtime flags; nothing reaches it	verified	one	models/overview#unreached-code	
+0x711f10	201	CM2Model::SetKeyBoneFlags		models	primitive		Writes a key bone's runtime flags under a mask, or defers the call	verified	one	models/model#deferred-calls	
+0x711fe0	172	CM2Model::GetKeyBoneAnimState		models	primitive		Copies a key bone's animation id, variation, time, speed and timing stamps	inferred	none	models/model#base-transform	
+0x712090	78	CM2Model::GetKeyBoneAnimId		models	orchestration		Returns the animation id playing on a key bone	inferred	none		
+0x7120e0	108	CM2Model::GetKeyBoneAnimTime		models	unreached		Returns the sequence time of a key bone's animation; nothing reaches it	verified	one	models/overview#unreached-code	
+0x712150	78	CM2Model::GetKeyBoneAnimSpeed		models	orchestration		Returns the speed of a key bone's animation	inferred	none		
+0x7121a0	1607	CM2Model::PlayAnimation		models	primitive		Starts or stops an animation on a key bone, with variation, repeats, speed and a blend from the last	verified	one	models/animation#playing-an-animation	
+0x7127f0	275	CM2Model::SetKeyBoneAnimTime		models	primitive		Moves a key bone's animation to a time, or defers the call	verified	one	models/model#deferred-calls	
+0x712910	373	CM2Model::SetKeyBoneAnimSpeed		models	primitive		Changes a key bone's animation speed keeping its current time, or defers the call	verified	one	models/model#deferred-calls	
+0x712a90	103	CM2Model::GetKeyBoneOverride		models	unreached		Copies a key bone's override matrix or identity; nothing reaches it	verified	one	models/overview#unreached-code	
+0x712b00	236	CM2Model::SetKeyBoneOverride		models	host		Sets a key bone's override matrix, or defers the call	verified	one	models/model#deferred-calls	
+0x712bf0	185	CM2Model::SetKeyBoneOverrideTRS		models	unreached		Builds and sets a key bone's override from position, rotation and scale; nothing reaches it	verified	one	models/overview#unreached-code	
+0x712cb0	59	CM2Model::HasAttachment		models	orchestration		Returns whether an instance's model has an attachment id	verified	one	models/model#attachments	
+0x712cf0	90	CM2Model::GetAttachmentOffset		models	orchestration		Copies an attachment's offset from its bone	verified	one	models/model#attachments	
+0x712d50	137	CM2Model::GetAttachmentPosition		models	orchestration		Returns an attachment's position transformed by its bone and the scene	verified	one	models/model#attachments	
+0x712de0	233	CM2Model::GetAttachmentMatrix		models	primitive		Returns an attachment's bone matrix moved to the attachment and taken into the scene	verified	one	models/model#attachments	
+0x712ed0	7	CM2Model::GetParent		models	orchestration		Returns the instance an instance is attached to	inferred	none		
+0x712ee0	7	CM2Model::GetAttachId		models	orchestration		Returns the attachment id an instance is attached at	inferred	none		
+0x712ef0	7	CM2Model::GetFirstChild		models	orchestration		Returns the first instance attached to an instance	inferred	none		
+0x712f00	40	CM2Model::FindChild		models	orchestration		Returns the first child attached at an attachment id, or 0	verified	one	models/model#attachments	
+0x712f30	7	CM2Model::GetNextSibling		models	orchestration		Returns the next instance attached to the same parent	inferred	none		
+0x712f40	40	CM2Model::FindSibling		models	unreached		Returns the next sibling attached at an attachment id; nothing reaches it	verified	one	models/overview#unreached-code	
+0x712f70	168	CM2Model::Attach		models	orchestration		Attaches an instance to a parent at an attachment id	verified	one	models/model#attachments	
+0x713020	77	CM2Model::Detach		models	orchestration		Detaches an instance from its parent and releases the parent's reference to it	verified	one	models/model#attachments	
+0x713070	33	CM2Model::DetachChildren		models	orchestration		Detaches every child of an instance	verified	one	models/model#attachments	
+0x7130a0	49	CM2Model::DetachAt		models	orchestration		Detaches every child attached at an attachment id	verified	one	models/model#attachments	
+0x7130e0	79	CM2Model::HasEvent		models	orchestration		Returns whether an instance's model has an event id	verified	one	models/model#events	
+0x713130	119	CM2Model::GetEventOffset		models	unreached		Copies an event's offset from its bone; nothing reaches it	verified	one	models/model#events	
+0x7131b0	163	CM2Model::GetEventPosition		models	orchestration		Returns an event's position transformed by its bone and the scene	verified	one	models/model#events	
+0x713260	306	CM2Model::GetEventMatrix		models	unreached		Returns an event's bone matrix moved to the event and taken into the scene; nothing reaches it	verified	one	models/model#events	
+0x7133a0	34	CM2Model::SetEventCallback		models	orchestration		Stores an instance's event callback and its two arguments	verified	one	models/model#events	
+0x7133d0	34	CM2Model::GetLightCount		models	unreached		Returns the number of lights in an instance's model; nothing reaches it	verified	one	models/overview#unreached-code	
+0x713400	47	CM2Model::GetLightEnabled		models	unreached		Returns a model light's enabled flag; nothing reaches it	verified	one	models/overview#unreached-code	
+0x713430	127	CM2Model::SetLightEnabled		models	host		Sets a model light's enabled flag, or defers the call	verified	one	models/model#deferred-calls	
+0x7134b0	25	CM2Model::SetLightingCallback		models	orchestration		Stores an instance's lighting callback and its argument	inferred	none		
+0x7134d0	34	CM2Model::GetCameraCount		models	orchestration		Returns the number of cameras in an instance's model	inferred	none		
+0x713500	59	CM2Model::HasCamera		models	unreached		Returns whether an instance's model has a camera id; nothing reaches it	verified	one	models/overview#unreached-code	
+0x713540	72	CM2Model::GetCameraById		models	orchestration		Returns the camera object of a model camera id	inferred	none		
+0x713590	47	CM2Model::GetCamera		models	orchestration		Returns the camera object of a model camera index	inferred	none		
+0x7135c0	7	CM2Model::HasModelParticles		models	orchestration		Returns whether an instance has particles that are models	inferred	none		
+0x7135d0	34	CM2Model::GetParticleEmitterCount		models	orchestration		Returns the number of particle emitters in an instance's model	inferred	none		
+0x713600	54	CM2Model::GetParticleEmitter		models	orchestration		Returns an instance's particle emitter by index	inferred	none		
+0x713640	54	CM2Model::GetBoundingBox		models	orchestration		Copies the bounding box of an instance's model	verified	one	models/model#bounds	
+0x713680	128	CM2Model::GetBoundingSphere		models	primitive		Returns the centre of the model's bounding box and its bounding radius	verified	one	models/model#bounds	
+0x713700	54	CM2Model::GetCollisionBox		models	orchestration		Copies the collision box of an instance's model	verified	one	models/model#bounds	
+0x713740	128	CM2Model::GetCollisionSphere		models	unreached		Returns the centre of the model's collision box and its collision radius; nothing reaches it	verified	one	models/model#bounds	
+0x7137c0	1203	CM2Model::GatherCollisionFacets		models	primitive		Transforms the model's collision vertices and emits the triangles that touch a box as facets	inferred	none	models/model#collision-facets	
+0x713c80	43	CM2Model::GetHitTestMode		models	unreached		Returns an instance's hit-test mode and its two arguments; nothing reaches it	verified	one	models/model#hit-test-mode	
+0x713cb0	146	CM2Model::SetHitTestMode		models	orchestration		Links an instance into or out of its scene's hit-test list with a mode and two arguments	verified	one	models/model#hit-test-mode	
+0x713d50	334	CM2Model::FindKey		models	primitive		Finds the key pair around a time in a track's range and the fraction between them	verified	one	models/animation#key-lookup	
+0x713ea0	337	M2SampleRotation		models	primitive		Samples a rotation track at a bone's times, blending toward the blend slot's rotation	verified	one	models/animation#key-lookup	
+0x714000	521	CM2Model::EnsureAnimated		models	primitive		Animates an instance this frame if it has not been, through its parent when attached	verified	one	models/animation#ensure-animated	
+0x714210	5	InitM2ModelTwoPiThunk		models	orchestration		Jumps to 0x714220; a static initializer	verified	one	models/overview#shared-header-constants	
+0x714220	15	InitM2ModelTwoPi		models	primitive		Stores π + π as a float in the object file's 2π global	verified	one	models/overview#shared-header-constants	
+0x714230	5	InitM2ModelInvTwoPiThunk		models	orchestration		Jumps to 0x714240; a static initializer	verified	one	models/overview#shared-header-constants	
+0x714240	19	InitM2ModelInvTwoPi		models	primitive		Stores 1 / 2π as a float in the object file's 1/2π global	verified	one	models/overview#shared-header-constants	
+0x714260	17703	CM2Model::Animate		models	primitive		Computes an instance's bone matrices and animated colours, textures, lights, emitters and children	verified	one	models/animation#sequence-time	
+0x7187e0	1	M2TextureCenterAtexit		models	orchestration		Returns; the exit hook of the texture transform centre constant	inferred	none		
+0x7187f0	116	CM2Model::TransformEmitters		models	orchestration		Transforms an instance's particles and ribbons by a matrix	inferred	none		
+0x718870	150	CM2Model::SetReferenceFrame		models	orchestration		Sets the frame an instance's emitters live in and re-expresses them, for it and its children	inferred	none		
+0x718910	77	CM2Model::SetTransportFrame		models	orchestration		Copies a transport matrix into an instance and makes it the emitters' frame	inferred	none		
+0x718960	2374	CM2Model::UpdateAfterAnimate		models	primitive		Pushes an instance's animated lights, cameras, ribbons and particles to their objects, then draws it	verified	one	models/animation#pushing-animated-state	
+0x7192b0	191	CM2Model::UpdateLighting		models	orchestration		Builds an instance's lighting record from the scene lights at its position and its lighting callback	verified	one	models/scene#animate-pass	
+0x719370	1470	CM2Model::Update		models	primitive		Advances an instance's time and queues its animation-done and event callbacks for the frame	verified	one	models/animation#update-and-events	
+0x719930	389	CM2Model::FillIndexBuffer		models	primitive		Writes the index buffer of an instance's own batches from its visible submeshes	verified	one	models/render#batch-draw	
+0x719ac0	91	CM2Model::FillVerticesTwoTexCoords		models	host		Skins a submesh's vertices with two texture coordinate sets into a device buffer	verified	one	models/render#batch-draw	
+0x719b20	246	CM2Model::FillVertices		models	host		Skins a submesh's or a batch range's vertices into a device buffer	verified	one	models/render#batch-draw	
+0x719c20	2112	CM2Model::GetSkinnedBounds		models	primitive		Skins a submesh's vertices through a matrix and returns their bounding box	inferred	none	models/render#grouped-and-projected-draws	
+0x71a460	696	M2SkinVerticesTwoTexCoords		models	primitive		Skins a submesh's vertices by up to four weighted bones, writing two texture coordinate sets	verified	one	models/render#software-skinning	
+0x71a720	700	M2SkinVertices		models	primitive		Skins a submesh's vertices by up to four weighted bones with x87 arithmetic	verified	one	models/render#software-skinning	
+0x71a9e0	590	M2SkinVerticesSse		models	primitive		Skins a submesh's vertices with SSE, or with the x87 routine when the buffer is not 16-byte aligned	verified	one	models/render#software-skinning	
+0x71ac30	18	M2TrackStateConstructVec		models	orchestration		Zeroes a track state with a 4-byte value	inferred	none		
+0x71ac50	19	M2TrackStateConstructWord		models	orchestration		Zeroes a track state with a 2-byte value	inferred	none		
+0x71ac70	18	M2TrackStateConstructByte		models	orchestration		Zeroes a track state with a 1-byte value	inferred	none		
+0x71ac90	18	M2TrackStateConstructDword		models	orchestration		Zeroes a track state with a 4-byte value	inferred	none		
+0x71acb0	57	M2RibbonMatArrayQuantum		models	primitive		Returns the growth quantum of a ribbon material array for a count	inferred	none		
+0x71acf0	31	M2RibbonMatArrayRoundUp		models	primitive		Rounds a count up to a multiple of a quantum	inferred	none		
+0x71ad10	144	M2RibbonMatArrayRealloc		models	host		Reallocates a ribbon material array to an exact capacity	inferred	none		
+0x71ada0	57	M2TextureArrayQuantum		models	primitive		Returns the growth quantum of a texture handle array for a count	inferred	none		
+0x71ade0	31	M2TextureArrayRoundUp		models	primitive		Rounds a count up to a multiple of a quantum	inferred	none		
+0x71ae00	133	M2TextureArrayRealloc		models	host		Reallocates a texture handle array to an exact capacity	inferred	none		
+0x71ae90	131	M2SampleByteTrack		models	orchestration		Samples a byte track at a time, stepping without interpolation	verified	one	models/animation#key-lookup	
+0x71af20	199	M2SampleFloatTrack		models	primitive		Samples a float track at a bone's times, blending toward the blend slot's value	verified	one	models/animation#key-lookup	
+0x71aff0	16	M2TrackValueAddress		models	orchestration		Returns the address of a 16-bit value in a track's value array	inferred	none	models/animation#element-tracks	
+0x71b000	13	M2TextureStateInitialize		models	primitive		Sets the low five flag bits of a texture state and clears its count	inferred	none		
+0x71b010	18	M2CopyWord		models	orchestration		Copies a 16-bit value	inferred	none	models/animation#element-tracks	
+0x71b030	5	InitM2ModelTenSquaredThunk		models	orchestration		Jumps to 0x71b040; a static initializer	verified	one	models/overview#shared-header-constants	
+0x71b040	19	InitM2ModelTenSquared		models	primitive		Stores 10.0 · 10.0 as a float in an object-file global	verified	one	models/overview#shared-header-constants	
+0x71b060	5	InitM2ModelHalfTenthThunk		models	orchestration		Jumps to 0x71b070; a static initializer	verified	one	models/overview#shared-header-constants	
+0x71b070	19	InitM2ModelHalfTenth		models	primitive		Stores 0.5 / 10.0 as a float in an object-file global	verified	one	models/overview#object-files	
+0x71b090	13	M2TrackStateClear		models	orchestration		Zeroes the three dwords of a track state's key and fraction	verified	one	models/overview#object-files	
+0x71b0a0	348	M2BoneStateConstruct		models	primitive		Constructs a bone state: cleared track states, no sequence in either slot, blend weight scale 1.0	inferred	none		
+0x71b200	31	M2Vec3TrackStateClear		models	orchestration		Zeroes a vector track state's key, value and blend value	inferred	none		
+0x71b220	20	M2QuatClear		models	orchestration		Sets a quaternion to (0, 0, 0, 1)	inferred	none		
+0x71b240	60	M2Vec3BlendStateClear		models	orchestration		Zeroes a vector track state and its blend copy	inferred	none		
+0x71b280	1	M2BoneStateDestruct		models	orchestration		Returns; the element destructor of the bone state array	inferred	none		
+0x71b290	79	M2RotationStateClear		models	orchestration		Zeroes a rotation track state and its blend copy with unit quaternions cleared	inferred	none		
+0x71b2e0	33	M2FloatTrackStateClear		models	orchestration		Zeroes a float track state and its blend copy	inferred	none		
+0x71b310	35	M2WordTrackStateClear		models	orchestration		Zeroes a 16-bit track state and its blend copy	inferred	none		
+0x71b340	33	M2ByteTrackStateClear		models	orchestration		Zeroes a byte track state and its blend copy	inferred	none		
+0x71b370	295	M2LightStateConstruct		models	orchestration		Constructs a model light state: cleared tracks, an initialized light, enabled	inferred	none		
+0x71b4a0	97	M2LightInitialize		models	orchestration		Initializes a light: point type, zero colours and position, attenuation 0.7 and 0.03, unlinked	verified	one	models/lights#light-object	
+0x71b510	213	M2LightCopy		models	unreached		Copies a light's type, position, colours and attenuation, unlinked; nothing reaches it	verified	one	models/overview#unreached-code	
+0x71b5f0	19	M2LightSetScene		models	orchestration		Binds a light to a scene, stamped one frame before the scene's current frame	verified	one	models/lights#light-object	
+0x71b610	5	M2LightUnlinkThunk		models	orchestration		Jumps to 0x71bb30	verified	one	models/lights#light-object	
+0x71b620	48	M2LightSetType		models	orchestration		Sets a light's type and relinks it in its scene when it is enabled	verified	one	models/lights#light-object	
+0x71b650	65	M2LightSetPosition		models	orchestration		Sets a light's position and relinks a point light in its scene's grid	verified	one	models/animation#pushing-animated-state	
+0x71b6a0	114	M2LightSetDirection		models	primitive		Sets a light's direction, normalized when its length exceeds 2.384186e-7	verified	one	models/animation#pushing-animated-state	
+0x71b720	82	M2LightSetAttenuation		models	unreached		Derives a light's attenuation pair from two distances; nothing reaches it	verified	one	models/overview#unreached-code	
+0x71b780	63	M2LightSetEnabled		models	orchestration		Enables or disables a light, linking it into or out of its scene	verified	one	models/animation#pushing-animated-state	
+0x71b7c0	867	M2LightToDeviceLight		models	primitive		Fills a device light record from a light's type, colours, position and direction	inferred	none	models/lights#reaching-the-device	
+0x71bb30	36	M2LightUnlink		models	orchestration		Unlinks a light from its scene list or grid cell	verified	one	models/lights#light-object	
+0x71bb60	207	M2LightLink		models	primitive		Links an enabled light into its scene: a point light into its 64x64 grid cell, others into the global list	verified	one	models/lights#light-object	
+0x71bc30	55	M2LightingInitialize		models	orchestration		Clears a lighting record and stores its scene and position	verified	one	models/lights#lighting-record	
+0x71bc70	98	M2LightingAddAmbient		models	primitive		Adds an ambient colour to a lighting record and to its spherical harmonic constant terms	verified	one	models/lights#adding-a-light	
+0x71bce0	633	M2LightingAddDirectional		models	primitive		Adds a directional colour to a lighting record's direction sums and spherical harmonic terms	verified	one	models/lights#adding-a-light	
+0x71bf60	36	M2LightingAddSpecular		models	primitive		Adds a light's third colour to a lighting record's sum	verified	one	models/lights#adding-a-light	
+0x71bf90	372	LightingAddLight		models	primitive		Adds a light to a lighting record: a point light into the four nearest, others into the sums	verified	one	models/lights#scene-light-grid	
+0x71c110	65	M2LightingSetFog		models	primitive		Sets a lighting record's fog colour, start and end, and the reciprocal of the fog range	verified	one	models/lights#lighting-record	
+0x71c160	387	M2LightingTransformToView		models	primitive		Transforms a lighting record's nearest point lights and its clip plane into view space	inferred	none	models/lights#reaching-the-device	
+0x71c2f0	482	M2LightingDeriveDominantLight		models	primitive		Derives a lighting record's dominant direction and its colours from the directional sums	inferred	none	models/lights#reaching-the-device	
+0x71c4e0	582	M2LightingBuildShConstants		models	primitive		Converts a lighting record's spherical harmonic terms into vertex shader constants	inferred	none	models/lights#spherical-harmonic-terms	
+0x71c730	846	M2LightingSetDeviceLights		models	primitive		Sets the device's fixed-function lights from a lighting record	inferred	none	models/lights#reaching-the-device	
+0x71ca80	439	M2PackLightColor		models	primitive		Packs a colour scaled by its largest component into a device colour and returns that component	inferred	none	models/lights#reaching-the-device	
+0x71cc40	5	InitM2LightInfinityThunk		models	orchestration		Jumps to 0x71cc50; a static initializer	verified	one	models/overview#shared-header-constants	
+0x71cc50	11	InitM2LightInfinity		models	orchestration		Copies +inf into the object file's infinity global	verified	one	models/overview#shared-header-constants	
+0x71cc60	5	InitM2LightTwoPiThunk		models	orchestration		Jumps to 0x71cc70; a static initializer	verified	one	models/overview#shared-header-constants	
+0x71cc70	15	InitM2LightTwoPi		models	primitive		Stores π + π as a float in the object file's 2π global	verified	one	models/overview#shared-header-constants	
+0x71cc80	5	InitM2LightInvTwoPiThunk		models	orchestration		Jumps to 0x71cc90; a static initializer	verified	one	models/overview#shared-header-constants	
+0x71cc90	19	InitM2LightInvTwoPi		models	primitive		Stores 1 / 2π as a float in the object file's 1/2π global	verified	one	models/overview#shared-header-constants	
+0x71ccb0	5	InitM2LightTenSquaredThunk		models	orchestration		Jumps to 0x71ccc0; a static initializer	verified	one	models/overview#shared-header-constants	
+0x71ccc0	19	InitM2LightTenSquared		models	primitive		Stores 10.0 · 10.0 as a float in an object-file global	verified	one	models/overview#shared-header-constants	
+0x71cce0	5	InitM2LightHalfTenthThunk		models	orchestration		Jumps to 0x71ccf0; a static initializer	verified	one	models/overview#shared-header-constants	
+0x71ccf0	19	InitM2LightHalfTenth		models	primitive		Stores 0.5 / 10.0 as a float in an object-file global	verified	one	models/overview#object-files	
+0x71cd10	215	M2FixupView		models	orchestration		Bounds-checks a view's five arrays and turns their offsets into pointers	verified	one	models/overview#object-files	
+0x71cdf0	1225	M2FixupHeader		models	orchestration		Checks an MD20 header and turns every array offset in it into a pointer, refusing any past the file	verified	one	models/shared#header-fixup	
+0x71d2c0	111	CM2Shared::CM2Shared		models	primitive		Constructs a shared model on its cache: reference count 1, not loaded, no file data	verified	one	models/cache#shared-model-lookup	
+0x71d330	255	CM2Shared::~CM2Shared		models	host		Unlinks a shared model from its bucket, closes its textures and frees its buffers and file data	verified	one	models/shared#shared-model-object	
+0x71d430	71	CM2Shared::AddRef		models	orchestration		Increments a shared model's count, taking it off the cache's release list when it was there	verified	one	models/cache#shared-model-lookup	
+0x71d480	91	CM2Shared::Release		models	host		Decrements a shared model's count; at zero queues it for eviction, or destroys it when uncached	verified	one	models/cache#release-and-eviction	
+0x71d4e0	192	CM2Shared::Load		models	primitive		Allocates a shared model's file buffer and starts reading the file, asynchronously when asked	verified	one	models/cache#shared-model-lookup	
+0x71d5a0	62	CM2Shared::AddInstance		models	orchestration		Initializes an instance at once when the shared model is loaded, else queues it until the load ends	verified	one	models/shared#loading	
+0x71d5e0	37	CM2Shared::OnReadDone		models	host		Closes the file and its read request, then finishes loading the shared model	verified	one	models/shared#loading	
+0x71d610	39	CM2Shared::ReadSync		models	host		Reads the whole file into the shared model's buffer, then finishes loading	verified	one	models/shared#loading	
+0x71d640	116	CM2Shared::FinishLoad		models	primitive		Fixes up the header, selects a view, marks the model loaded and initializes the queued instances	verified	one	models/shared#loading	
+0x71d6c0	1004	CM2Shared::InitializeView		models	primitive		Picks the richest view the bone palette fits, sets batch limits, shader ids and loads textures	verified	one	models/shared#view-selection	
+0x71dab0	459	CM2Shared::CreateIndexBuffer		models	primitive		Creates and fills a shared model's device index buffer from its view once	verified	one	models/render#batch-draw	
+0x71dc80	450	CM2Shared::CreateVertexBuffer		models	host		Creates and fills a shared model's device vertex buffer from its vertices once	verified	one	models/render#batch-draw	
+0x71de50	210	CM2Shared::GetVertexShaderId		models	primitive		Computes the vertex shader id of a batch from its bones, texture units and lighting	verified	one	models/shared#view-selection	
+0x71df30	98	CM2Shared::GetPixelShaderId		models	primitive		Computes the pixel shader id of a batch from its texture units' blend modes	verified	one	models/shared#view-selection	
+0x71dfa0	69	CM2Shared::CreateBuffers		models	primitive		Creates a shared model's device buffers when their contents changed	inferred	none	models/render#grouped-and-projected-draws	
+0x71dff0	93	CM2Shared::FreeBuffers		models	host		Frees a shared model's device index and vertex buffers	inferred	none	models/shared#device-buffers	
+0x71e050	5	InitM2SharedInfinityThunk		models	orchestration		Jumps to 0x71e060; a static initializer	verified	one	models/overview#shared-header-constants	
+0x71e060	11	InitM2SharedInfinity		models	orchestration		Copies +inf into the object file's infinity global	verified	one	models/overview#shared-header-constants	
+0x71e070	5	InitM2SharedTwoPiThunk		models	orchestration		Jumps to 0x71e080; a static initializer	verified	one	models/overview#shared-header-constants	
+0x71e080	15	InitM2SharedTwoPi		models	primitive		Stores π + π as a float in the object file's 2π global	verified	one	models/overview#shared-header-constants	
+0x71e090	5	InitM2SharedInvTwoPiThunk		models	orchestration		Jumps to 0x71e0a0; a static initializer	verified	one	models/overview#shared-header-constants	
+0x71e0a0	19	InitM2SharedInvTwoPi		models	primitive		Stores 1 / 2π as a float in the object file's 1/2π global	verified	one	models/overview#object-files	
+0x71e0c0	78	M2FixupArray8		models	orchestration		Bounds-checks an array of 8-byte elements and turns its offset into a pointer	verified	one	models/overview#object-files	
+0x71e110	78	M2FixupArray4		models	orchestration		Bounds-checks an array of 4-byte elements and turns its offset into a pointer	verified	one	models/shared#header-fixup	
+0x71e160	78	M2FixupArray2		models	orchestration		Bounds-checks an array of 2-byte elements and turns its offset into a pointer	verified	one	models/shared#header-fixup	
+0x71e1b0	82	M2FixupArray12		models	orchestration		Bounds-checks an array of 12-byte elements and turns its offset into a pointer	verified	one	models/shared#header-fixup	
+0x71e210	84	M2FixupVertices		models	orchestration		Bounds-checks the 48-byte vertex array and turns its offset into a pointer	verified	one	models/shared#header-fixup	
+0x71e270	120	M2FixupViews		models	orchestration		Bounds-checks the 44-byte view array and fixes up each view	verified	one	models/shared#header-fixup	
+0x71e2f0	333	M2FixupColors		models	orchestration		Bounds-checks the 56-byte colour array and fixes up its colour and alpha tracks	verified	one	models/shared#header-fixup	
+0x71e440	162	M2FixupTextures		models	orchestration		Bounds-checks the 16-byte texture array and turns each texture's name offset into a pointer	verified	one	models/shared#header-fixup	
+0x71e4f0	237	M2FixupTransparency		models	orchestration		Bounds-checks the 28-byte transparency tracks and fixes up their arrays	verified	one	models/shared#header-fixup	
+0x71e5e0	237	M2FixupFlipbooks		models	orchestration		Bounds-checks the 28-byte texture frame tracks and fixes up their arrays	verified	one	models/shared#header-fixup	
+0x71e6d0	417	M2FixupTextureTransforms		models	orchestration		Bounds-checks the 84-byte texture transforms and fixes up their three tracks	verified	one	models/shared#header-fixup	
+0x71e880	78	M2FixupMaterials		models	orchestration		Bounds-checks the 4-byte material array and turns its offset into a pointer	verified	one	models/shared#header-fixup	
+0x71e8d0	251	M2FixupAttachments		models	orchestration		Bounds-checks the 48-byte attachments and fixes up their visibility tracks	verified	one	models/shared#header-fixup	
+0x71e9d0	196	M2FixupEvents		models	orchestration		Bounds-checks the 44-byte events and fixes up their per-sequence time arrays	verified	one	models/shared#header-fixup	
+0x71eaa0	775	M2FixupLights		models	orchestration		Bounds-checks the 212-byte lights and fixes up their nine tracks	verified	one	models/shared#header-fixup	
+0x71edb0	400	M2FixupCameras		models	orchestration		Bounds-checks the 124-byte cameras and fixes up their spline tracks	verified	one	models/shared#header-fixup	
+0x71ef40	708	M2FixupRibbons		models	orchestration		Bounds-checks the 220-byte ribbon emitters and fixes up their arrays and tracks	verified	one	models/shared#header-fixup	
+0x71f210	1078	M2FixupParticles		models	orchestration		Bounds-checks the 504-byte particle emitters and fixes up their arrays and tracks	verified	one	models/shared#header-fixup	
+0x71f650	82	M2FixupArray16		models	orchestration		Bounds-checks an array of 16-byte elements and turns its offset into a pointer	inferred	none		
+0x71f6b0	78	M2FixupArray2B		models	orchestration		Bounds-checks an array of 2-byte values and turns its offset into a pointer	inferred	none		
+0x71f700	78	M2FixupArray1		models	orchestration		Bounds-checks an array of bytes and turns its offset into a pointer	inferred	none		
+0x71f750	78	M2FixupArray4B		models	orchestration		Bounds-checks an array of 4-byte values and turns its offset into a pointer	inferred	none		
+0x71f7a0	82	M2FixupArray36		models	orchestration		Bounds-checks an array of 36-byte spline keys and turns its offset into a pointer	inferred	none		
+0x71f800	5	InitM2FixupTenSquaredThunk		models	orchestration		Jumps to 0x71f810; a static initializer	verified	one	models/overview#shared-header-constants	
+0x71f810	19	InitM2FixupTenSquared		models	primitive		Stores 10.0 · 10.0 as a float in an object-file global	verified	one	models/overview#shared-header-constants	
+0x71f830	5	InitM2FixupHalfTenthThunk		models	orchestration		Jumps to 0x71f840; a static initializer	verified	one	models/overview#shared-header-constants	
+0x71f840	19	InitM2FixupHalfTenth		models	primitive		Stores 0.5 / 10.0 as a float in an object-file global	verified	one	models/overview#object-files	
+0x71f860	310	M2SortIndices		models	primitive		Sorts an index array with a comparator taking two indices and a context	verified	one	models/overview#object-files	
+0x71f9a0	41	M2AllocBuffer		models	primitive		Allocates a buffer of a byte count for a model	verified	one	models/shared#loading	
+0x71f9d0	28	M2FreeBuffer		models	host		Frees a model buffer	verified	one	models/shared#shared-model-object	
+0x71f9f0	5	InitM2UtilInfinityThunk		models	orchestration		Jumps to 0x71fa00; a static initializer	verified	one	models/overview#shared-header-constants	
+0x71fa00	11	InitM2UtilInfinity		models	orchestration		Copies +inf into the object file's infinity global	verified	one	models/overview#shared-header-constants	
+0x71fa10	5	InitM2UtilTwoPiThunk		models	orchestration		Jumps to 0x71fa20; a static initializer	verified	one	models/overview#shared-header-constants	
+0x71fa20	15	InitM2UtilTwoPi		models	primitive		Stores π + π as a float in the object file's 2π global	verified	one	models/overview#shared-header-constants	
+0x71fa30	5	InitM2UtilInvTwoPiThunk		models	orchestration		Jumps to 0x71fa40; a static initializer	verified	one	models/overview#shared-header-constants	
+0x71fa40	19	InitM2UtilInvTwoPi		models	primitive		Stores 1 / 2π as a float in the object file's 1/2π global	verified	one	models/overview#shared-header-constants	
+0x71fa60	5	InitM2UtilTenSquaredThunk		models	orchestration		Jumps to 0x71fa70; a static initializer	verified	one	models/overview#shared-header-constants	
+0x71fa70	19	InitM2UtilTenSquared		models	primitive		Stores 10.0 · 10.0 as a float in an object-file global	verified	one	models/overview#shared-header-constants	
+0x71fa90	5	InitM2UtilHalfTenthThunk		models	orchestration		Jumps to 0x71faa0; a static initializer	verified	one	models/overview#shared-header-constants	
+0x71faa0	19	InitM2UtilHalfTenth		models	primitive		Stores 0.5 / 10.0 as a float in an object-file global	verified	one	models/overview#object-files	
 0x729dd0	1068	LcdInitialize		ui	host		Starts the LCD layer	inferred	none		
 0x72a200	231	LcdShutdown		ui	host		Shuts the LCD layer down	inferred	none		
 0x72a8d0	2008	UpdateKeyboardLcd		ui	host		Updates the keyboard LCD screens each frame, the wait queue screen among them	inferred	none		
@@ -10928,14 +11678,39 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x730bc0	141	ZlibCompress2		zlib			Compresses a buffer with zlib 1.2.2 at a level, returning -5 when the output is too small	inferred	none		
 0x73f285	49	_fclose	idb	crt			Closes a C runtime file	inferred	none	collision/kinematics#teardown	
 0x73f333	19	_fopen	idb	crt			Opens a C runtime file	inferred	none	collision/kinematics#unreached-functions	
+0x73f700	39	strrchr		crt			Returns the last occurrence of a character in a string	inferred	none	models/cache#shared-model-lookup	
 0x73f727	340	_qsort		crt			Sorts an array of elements with a comparison function	inferred	none		
 0x73f90a	10	__CIfmod	idb	crt			Computes fmod(st1, st0) through the intrinsic dispatcher 0x7436c0	inferred	none	collision/kinematics#facing-and-pitch-integration	
+0x73ff3f	207	floor		crt			Returns the largest integer not greater than a double	inferred	none	models/particles#substeps	
 0x7400d8	13	_srand	idb	crt	orchestration	void __cdecl (unsigned int seed)	Stores the per-thread seed rand steps	verified	one	random#the-c-runtime-rand	
 0x7400e5	34	_rand	idb	crt	primitive	int __cdecl (void)	Steps the per-thread seed s = s·214013 + 2531011 and returns (s >> 16) & 0x7fff	verified	one	random#the-c-runtime-rand	random::msvc_rand_lcg_difftest
 0x7405a0	20	__CIasin	idb	crt			Computes asin(st0)	inferred	none	collision/kinematics#spline-follower	
 0x741760	20	__CIsqrt	idb	crt	boundary		Returns the square root of st0	inferred	none		
 0x741820	20	__CIacos	idb	crt			Computes acos(st0)	inferred	none	collision/kinematics#spline-follower	
 0x7436c0	62	__cintrindisp2	idb	crt			Dispatches a two-operand x87 math intrinsic	inferred	none	collision/kinematics#facing-and-pitch-integration	
+0x74a7ad	19	MultiplyMatrixFirstCall		cmath			Selects the math routines, then jumps through the matrix product slot	inferred	none	models/animation#dispatched-matrix-math	
+0x74a7c0	6	MultiplyMatrixDispatch		cmath			Jumps through a pointer to the matrix product routine	inferred	none	models/animation#bone-transform	
+0x74ad38	6	InvertMatrixDispatch		cmath			Jumps through a pointer to the routine that sets the scene matrix from a view	inferred	none	models/scene#view-rebase	
+0x74ad3e	935	InvertMatrixDefault		cmath			Sets the scene matrix from a view; the default routine	inferred	none	models/animation#dispatched-matrix-math	
+0x74b6a2	19	MatrixFromQuaternionFirstCall		cmath			Selects the math routines, then jumps through the quaternion matrix slot	inferred	none	models/animation#dispatched-matrix-math	
+0x74b6b5	6	MatrixFromQuaternionDispatch		cmath			Jumps through a pointer to the quaternion-to-matrix routine	inferred	none	models/animation#bone-transform	
+0x74b6bb	228	MatrixFromQuaternionDefault		cmath			Builds a rotation matrix from a quaternion; the default routine	inferred	none	models/animation#dispatched-matrix-math	
+0x74d0ee	38	BlendQuaternionFirstCall		cmath			Selects the math routines, then calls the quaternion blend slot	inferred	none	models/animation#dispatched-matrix-math	
+0x74d114	6	BlendQuaternionDispatch		cmath			Jumps through a pointer to the quaternion blend routine	inferred	none	models/animation#key-lookup	
+0x74d11a	229	BlendQuaternionDefault		cmath			Blends two quaternions by a weight; the default routine	inferred	none	models/animation#dispatched-matrix-math	
+0x74f951	95	ReadDirect3DValue		cmath			Reads a REG_DWORD value under HKLM Software\Microsoft\Direct3D	inferred	none	models/animation#dispatched-matrix-math	
+0x74fa8a	161	GetCpuidSseFlags		cmath			Returns 4 for CPUID SSE and 8 for SSE2 from leaf 1, under an exception handler	inferred	none	models/animation#dispatched-matrix-math	
+0x74fb49	259	SelectMathRoutines		cmath			Fills the math routine slots once by registry values and processor features	inferred	none	models/animation#dispatched-matrix-math	
+0x74fdf0	371	SetMathRoutinesSse		cmath			Stores the SSE math routines in the slots	inferred	none	models/animation#dispatched-matrix-math	
+0x74ff9a	361	SetMathRoutinesSse2		cmath			Stores the SSE2 math routines in the slots	inferred	none	models/animation#dispatched-matrix-math	
+0x7501e9	662	SetMathRoutines3DNow		cmath			Stores the 3DNow math routines in the slots	inferred	none	models/animation#dispatched-matrix-math	
+0x7507bb	229	MultiplyMatrixBase		cmath			Multiplies two 4x4 matrices; the routine the base set stores	inferred	none	models/animation#dispatched-matrix-math	
+0x750930	74	SetMathRoutinesBase		cmath			Replaces eight default math routine slots, the matrix product among them	inferred	none	models/animation#dispatched-matrix-math	
+0x751055	310	MultiplyMatrixSse		cmath			Multiplies two 4x4 matrices; the SSE set's routine	inferred	none	models/animation#dispatched-matrix-math	
+0x7512c1	681	InvertMatrixSse		cmath			Sets the scene matrix from a view; the SSE set's routine	inferred	none	models/animation#dispatched-matrix-math	
+0x754a66	310	MultiplyMatrixSse2		cmath			Multiplies two 4x4 matrices in single precision with SSE	inferred	none	models/animation#dispatched-matrix-math	
+0x754cd2	681	InvertMatrixSse2		cmath			Sets the scene matrix from a view with SSE; the SSE2 set's routine	inferred	none	models/animation#dispatched-matrix-math	
+0x7580fb	562	MultiplyMatrix3DNow		cmath			Multiplies two 4x4 matrices; the 3DNow set's routine	inferred	none	models/animation#dispatched-matrix-math	
 0x760080	7	CDataAllocator::ResetVtable		base			Stores the data allocator vtable	inferred	none		
 0x760090	104	CDataAllocator::Destroy		base			Frees a data allocator's blocks	inferred	none		
 0x760210	37	CDataAllocator::AllocLarge		base			Allocates a block with SMemAlloc and stores its size through a pointer	verified	one	core/events#deferred-messages	
@@ -11452,6 +12227,45 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x7adfa0	11	InitCameraInfinity2		camera	orchestration	void __cdecl (void)	Copies +inf into 0xcf5748, which nothing reads	verified	one	camera#object-file-and-initializers	
 0x7adfb0	75	SetParticleDensity		camera	primitive	void __stdcall (float density)	Clamps to [0, 1] (NaN to 1) and stores in 0x87d5fc	verified	one	camera#particle-density	camera::camera_clamp01
 0x7ae000	7	GetParticleDensity		camera	orchestration	float __cdecl (void)	Returns 0x87d5fc	verified	one	camera#particle-density	
+0x7ae010	382	ParticleRegistryGet		models	primitive		Returns the particle emitter registry, creating it and the 128-entry noise table on first use	verified	one	models/cache#noise-table	
+0x7ae190	58	ParticleRegistryDestroy		models	host		Releases the particle buffers, then destroys and frees the particle emitter registry	verified	one	models/cache#scene-creation-and-teardown	
+0x7ae1d0	98	ParticleRegistryDestruct		models	host		Releases the registry's emitters and frees its four emitter arrays	verified	one	models/particles#registries	
+0x7ae240	136	ParticleRegistryReleaseAll		models	orchestration		Releases every emitter on the registry's four arrays, last to first	verified	one	models/particles#registries	
+0x7ae2d0	277	ParticleRegistryAddLegacy		models	unreached		Creates a legacy particle emitter and appends it to the registry; nothing reaches it	inferred	none	models/overview#unreached-code	
+0x7ae3f0	290	ParticleRegistryAddPlane		models	unreached		Creates a plane particle emitter and appends it to the registry; nothing reaches it	inferred	none	models/overview#unreached-code	
+0x7ae520	290	ParticleRegistryAddSphere		models	unreached		Creates a sphere particle emitter and appends it to the registry; nothing reaches it	inferred	none	models/overview#unreached-code	
+0x7ae650	290	ParticleRegistryAddSpline		models	unreached		Creates a spline particle emitter and appends it to the registry; nothing reaches it	inferred	none	models/overview#unreached-code	
+0x7ae780	279	ParticleRegistryAddClone		models	primitive		Clones a particle emitter through its clone slot and appends the clone to the registry	verified	one	models/particles#registries	
+0x7ae8a0	365	ParticleRegistryUpdate		models	unreached		Updates the registry's emitters and moves dead ones to the free arrays; nothing reaches it	inferred	none	models/overview#unreached-code	
+0x7aea10	5	ParticleRegistryLegacyRenderThunk		models	unreached		Jumps to the legacy emitter render stub; nothing reaches it	inferred	none	models/overview#unreached-code	
+0x7aea20	8	ParticleRegistryRender		models	unreached		Renders a particle emitter with no frame; nothing reaches it	inferred	none	models/overview#unreached-code	
+0x7aea30	1	ParticleRegistryNoOp		models	unreached		Returns; nothing reaches it	inferred	none	models/overview#unreached-code	
+0x7aea40	277	ParticleRegistryRemoveLegacy		models	unreached		Moves a legacy emitter from the live array to the free array; nothing reaches it	inferred	none	models/overview#unreached-code	
+0x7aeb60	281	ParticleRegistryRemove		models	unreached		Moves a particle emitter from the live array to the free array; nothing reaches it	inferred	none	models/overview#unreached-code	
+0x7aec80	73	RibbonRegistryGet		models	unreached		Returns the ribbon emitter registry, creating it on first use; nothing reaches it	inferred	none	models/overview#unreached-code	
+0x7aecd0	45	RibbonRegistryDestroy		models	host		Destroys and frees the ribbon emitter registry	verified	one	models/cache#scene-creation-and-teardown	
+0x7aed00	54	RibbonRegistryDestruct		models	host		Releases the registry's ribbons and frees its two ribbon arrays	inferred	none		
+0x7aed40	75	RibbonRegistryReleaseAll		models	orchestration		Releases every ribbon on the registry's two arrays	inferred	none		
+0x7aed90	288	RibbonRegistryAddEmpty		models	unreached		Creates an empty ribbon emitter and appends it to the registry; nothing reaches it	inferred	none	models/overview#unreached-code	
+0x7aeeb0	196	RibbonRegistryAddCopy		models	unreached		Creates a ribbon emitter copied from another and appends it to the registry; nothing reaches it	inferred	none	models/overview#unreached-code	
+0x7aef80	244	RibbonRegistryUpdate		models	unreached		Updates the registry's ribbons and releases finished ones; nothing reaches it	inferred	none	models/overview#unreached-code	
+0x7af080	8	RibbonRegistryRender		models	unreached		Renders a ribbon emitter with no frame; nothing reaches it	inferred	none	models/overview#unreached-code	
+0x7af090	1	RibbonRegistryNoOp		models	unreached		Returns; nothing reaches it	inferred	none	models/overview#unreached-code	
+0x7af0a0	265	RibbonRegistryRemove		models	unreached		Moves a ribbon from the live array to the free array; nothing reaches it	inferred	none	models/overview#unreached-code	
+0x7af1b0	5	InitEmittersTwoPiThunk		models	orchestration		Jumps to 0x7af1c0; a static initializer	verified	one	models/overview#shared-header-constants	
+0x7af1c0	15	InitEmittersTwoPi		models	primitive		Stores π + π as a float in the object file's 2π global	verified	one	models/overview#shared-header-constants	
+0x7af1d0	5	InitEmittersInvTwoPiThunk		models	orchestration		Jumps to 0x7af1e0; a static initializer	verified	one	models/overview#shared-header-constants	
+0x7af1e0	19	InitEmittersInvTwoPi		models	primitive		Stores 1 / 2π as a float in the object file's 1/2π global	verified	one	models/overview#shared-header-constants	
+0x7af200	226	LegacyEmitterArrayRealloc		models	unreached		Reallocates an array of legacy emitter pointers to an exact capacity; nothing reaches it	inferred	none	models/overview#unreached-code	
+0x7af2f0	57	EmitterArrayQuantumA		models	unreached		Returns the growth quantum of an emitter pointer array for a count; nothing reaches it	inferred	none	models/overview#unreached-code	
+0x7af330	31	EmitterArrayRoundUpA		models	unreached		Rounds a count up to a multiple of a quantum; nothing reaches it	inferred	none	models/overview#unreached-code	
+0x7af350	133	LegacyEmitterArrayReallocB		models	unreached		Reallocates an array of legacy emitter pointers to an exact capacity; nothing reaches it	inferred	none	models/overview#unreached-code	
+0x7af3e0	57	EmitterArrayQuantumB		models	unreached		Returns the growth quantum of an emitter pointer array for a count; nothing reaches it	inferred	none	models/overview#unreached-code	
+0x7af420	31	EmitterArrayRoundUpB		models	unreached		Rounds a count up to a multiple of a quantum; nothing reaches it	inferred	none	models/overview#unreached-code	
+0x7af440	133	ParticleEmitterArrayRealloc		models	unreached		Reallocates an array of particle emitter pointers to an exact capacity; nothing reaches it	inferred	none	models/overview#unreached-code	
+0x7af4d0	57	EmitterArrayQuantumC		models	unreached		Returns the growth quantum of a ribbon pointer array for a count; nothing reaches it	inferred	none	models/overview#unreached-code	
+0x7af510	31	EmitterArrayRoundUpC		models	unreached		Rounds a count up to a multiple of a quantum; nothing reaches it	inferred	none	models/overview#unreached-code	
+0x7af530	133	RibbonEmitterArrayRealloc		models	unreached		Reallocates an array of ribbon emitter pointers to an exact capacity; nothing reaches it	inferred	none	models/overview#object-files	
 0x7b0760	28	LightningRendererInit		gx			Zeroes a 32-byte lightning renderer and returns it	inferred	none	spell/visuals#startup-and-shutdown	
 0x7b0780	103	LightningRendererDestroy		gx			Destroys a lightning renderer's bolts and arrays	inferred	none	spell/visuals#startup-and-shutdown	
 0x7b07f0	340	LightningRendererCreateBolt		gx			Creates a lightning bolt between two points with a chain record's values and returns its handle	inferred	none	spell/visuals#chain-update-per-frame	
@@ -11460,6 +12274,299 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x7b0a80	53	LightningRendererRender		gx			Renders every lightning bolt from an eye position	inferred	none	spell/visuals#frame-update	
 0x7b0ac0	263	LightningRendererDestroyBolt		gx			Destroys a lightning bolt by handle	inferred	none	spell/visuals#chain-update-per-frame	
 0x7b0bd0	44	LightningRendererShowBolt		gx			Shows or hides a lightning bolt by handle	inferred	none	spell/visuals#chain-update-per-frame	
+0x7b0dd0	5	InitParticleInfinityThunk		models	orchestration		Jumps to 0x7b0de0; a static initializer	verified	one	models/overview#object-files	
+0x7b0de0	11	InitParticleInfinity		models	orchestration		Copies +inf into the object file's infinity global	verified	one	models/overview#shared-header-constants	
+0x7b0df0	5	InitParticleTwoPiThunk		models	orchestration		Jumps to 0x7b0e00; a static initializer	verified	one	models/overview#shared-header-constants	
+0x7b0e00	15	InitParticleTwoPi		models	primitive		Stores π + π as a float in the object file's 2π global	verified	one	models/overview#shared-header-constants	
+0x7b0e10	5	InitParticleInvTwoPiThunk		models	orchestration		Jumps to 0x7b0e20; a static initializer	verified	one	models/overview#shared-header-constants	
+0x7b0e20	19	InitParticleInvTwoPi		models	primitive		Stores 1 / 2π as a float in the object file's 1/2π global	verified	one	models/overview#shared-header-constants	
+0x7b0e40	5	InitParticleTenSquaredThunk		models	orchestration		Jumps to 0x7b0e50; a static initializer	verified	one	models/overview#shared-header-constants	
+0x7b0e50	19	InitParticleTenSquared		models	primitive		Stores 10.0 · 10.0 as a float in an object-file global	verified	one	models/overview#shared-header-constants	
+0x7b0e70	5	InitParticleHalfTenthThunk		models	orchestration		Jumps to 0x7b0e80; a static initializer	verified	one	models/overview#shared-header-constants	
+0x7b0e80	19	InitParticleHalfTenth		models	primitive		Stores 0.5 / 10.0 as a float in an object-file global	verified	one	models/overview#shared-header-constants	
+0x7b0ea0	10	InitParticleUpAxis		models	orchestration		Stores the particle object file's unit z vector and registers its exit hook; a static initializer	verified	one	models/overview#static-objects	
+0x7b0eb0	31	InitParticleUpAxisVector		models	orchestration		Stores the vector (0, 0, 1) in a particle object file global	verified	one	models/overview#static-objects	
+0x7b0ed0	12	InitParticleUpAxisAtexit		models	orchestration		Registers the unit z vector's empty exit hook with _atexit	verified	one	models/overview#static-objects	
+0x7b0ee0	1	ParticleUpAxisAtexit		models	orchestration		Returns; the exit hook of the unit z vector	verified	one	models/overview#static-objects	
+0x7b0ef0	10	InitSortableParticleHeap		models	orchestration		Builds the sortable particle record heap and registers its destructor; a static initializer	verified	one	models/overview#static-objects	
+0x7b0f00	60	InitSortableParticleHeapObject		models	orchestration		Constructs the sortable particle record heap with 256 records and its vtable	verified	one	models/overview#static-objects	
+0x7b0f40	12	InitSortableParticleHeapAtexit		models	orchestration		Registers the sortable particle record heap's destructor with _atexit	verified	one	models/overview#static-objects	
+0x7b0f50	41	SortableParticleHeapAtexit		models	primitive		Destroys the sortable particle record heap once, under a guard bit	verified	one	models/overview#static-objects	
+0x7b0f80	10	InitParticleIdentity		models	orchestration		Stores the particle object file's identity matrix and registers its exit hook; a static initializer	verified	one	models/overview#static-objects	
+0x7b0f90	161	InitParticleIdentityMatrix		models	orchestration		Stores a 4x4 identity matrix in a particle object file global	verified	one	models/overview#static-objects	
+0x7b1040	12	InitParticleIdentityAtexit		models	orchestration		Registers the identity matrix's exit hook with _atexit	verified	one	models/overview#static-objects	
+0x7b1050	21	ParticleIdentityAtexit		models	primitive		Sets the identity matrix's guard bit at exit	verified	one	models/overview#static-objects	
+0x7b1070	10	InitParticleCornerTable		models	orchestration		Clears the particle object file's four-vector table and registers its exit hook; a static initializer	verified	one	models/overview#static-objects	
+0x7b1080	31	InitParticleCornerTableClear		models	orchestration		Zeroes four three-float vectors in a particle object file global	verified	one	models/overview#static-objects	
+0x7b10a0	12	InitParticleCornerTableAtexit		models	orchestration		Registers the four-vector table's exit hook with _atexit	verified	one	models/overview#static-objects	
+0x7b10b0	21	ParticleCornerTableAtexit		models	primitive		Sets the four-vector table's guard bit at exit	verified	one	models/overview#static-objects	
+0x7b10d0	158	ParticleBuffersAddRef		models	host		Counts a user of the shared particle index buffer, creating it for the first	inferred	none		
+0x7b1170	54	ParticleBuffersRelease		models	host		Drops a user of the shared particle buffers, freeing them with the last	inferred	none		
+0x7b11b0	699	CParticleEmitter2::CParticleEmitter2		models	primitive		Constructs a particle emitter: seeded random state, default gradients, base vtable	inferred	none	models/particles#emitter-classes	
+0x7b1470	43	CParticleEmitter2::DeletingDestructor		models	host		Destroys a particle emitter and frees it when asked	inferred	none		
+0x7b14a0	1757	CParticleEmitter2::CopyConstruct		models	primitive		Constructs a particle emitter as a copy of a prototype, sharing its model and registering it	inferred	none	models/particles#registries	
+0x7b1b80	229	CParticleEmitter2::~CParticleEmitter2		models	host		Releases a particle emitter's model, textures, children and particle arrays	inferred	none		
+0x7b1c70	1	CParticleEmitter2::NoOp		models	orchestration		Returns; called by the emitter destructor	inferred	none		
+0x7b1c80	61	CParticleEmitter2::SetModel		models	orchestration		Loads the model a particle emitter emits as particles	inferred	none		
+0x7b1cc0	270	ParticleRandom		models	primitive		Advances an emitter's random state and returns a float from the noise table in a range	inferred	none	models/cache#noise-table	
+0x7b1dd0	138	CParticleEmitter2::Preallocate		models	primitive		Reserves particle storage for the emitter's rate and lifespan, with 15 percent slack	inferred	none	models/particles#emitter-classes	
+0x7b1e60	153	CParticleEmitter2::ShrinkStorage		models	primitive		Picks the smaller capacity for an emitter's particle and index arrays	inferred	none		
+0x7b1f00	509	CParticleEmitter2::ReserveStorage		models	orchestration		Resizes an emitter's particle records, live and free index arrays to a capacity	inferred	none		
+0x7b2100	50	CParticle2Construct		models	orchestration		Zeroes a particle record and sets its scale to 1.0	inferred	none		
+0x7b2140	109	CParticleEmitter2::SnapSpawnToGround		models	primitive		Moves a spawned particle onto the ground when the emitter asks for it	inferred	none		
+0x7b21b0	98	Particle2ModelCopy		models	orchestration		Copies a model particle record and adds a reference to its model	inferred	none		
+0x7b2220	24	Particle2ModelRelease		models	orchestration		Releases the model a model particle record holds	inferred	none		
+0x7b2240	98	Particle2ModelAssign		models	orchestration		Assigns a model particle record from another, adding a reference to its model	inferred	none		
+0x7b22b0	357	CParticleEmitter2::InitParticle		models	primitive		Finishes a spawned particle: transform into the emitter's frame, random spin and noise offsets	inferred	none	models/particles#emitter-classes	
+0x7b2420	594	CParticleEmitter2::InitModelParticle		models	primitive		Finishes a spawned model particle: creates its model and gives it a random orientation	inferred	none	models/particles#emitter-classes	
+0x7b2680	597	CParticleEmitter2::IntegrateParticle		models	primitive		Moves a particle one step under wind, emitter motion, gravity and drag; returns 0 to kill it	verified	one	models/particles#particle-motion	
+0x7b28e0	223	CParticleEmitter2::IntegrateModelParticle		models	primitive		Moves a model particle one step and advances its spin quaternion	inferred	none		
+0x7b29c0	143	ParticleQuatMultiply		models	primitive		Multiplies two quaternions	inferred	none		
+0x7b2a50	2691	CParticleEmitter2::WriteQuads		models	primitive		Writes a particle's billboard or tail quads with colour, size and texture cell into a vertex buffer	inferred	none	models/particles#gradients-and-quads	
+0x7b34e0	741	CParticleEmitter2::GetBounds		models	unreached		Computes the centre and radius bounding an emitter's particles and its children; nothing reaches it	inferred	none	models/overview#unreached-code	
+0x7b37d0	470	ParticleSegmentRadii		models	unreached		Solves the radii of a segment's endpoints for the particle bounds; nothing reaches it	inferred	none	models/overview#unreached-code	
+0x7b39b0	85	CParticleEmitter2::GetFrameOffset		models	unreached		Copies an emitter's frame matrix minus its origin; nothing reaches it	inferred	none	models/overview#unreached-code	
+0x7b3a10	573	CParticleEmitter2::WriteAllQuads		models	primitive		Writes every particle's quads, in depth order when the emitter sorts	inferred	none	models/particles#gradients-and-quads	
+0x7b3c50	195	ParticleFillQuadIndices		models	host		Fills the shared particle index buffer with two triangles per quad	inferred	none		
+0x7b3d20	1978	CParticleEmitter2::Render		models	primitive		Sets device state and draws an emitter's particles from the shared buffers	inferred	none	models/particles#gradients-and-quads	
+0x7b44e0	1	ParticleRenderStateNoOpA		models	orchestration		Returns; a render callback the particle draw passes	inferred	none		
+0x7b44f0	1	ParticleRenderStateNoOpB		models	orchestration		Returns; a render callback the particle draw passes	inferred	none		
+0x7b4500	1	ParticleRenderStateNoOpC		models	orchestration		Returns; a render callback the particle draw passes	inferred	none		
+0x7b4510	801	CParticleEmitter2::DrawModelParticle		models	primitive		Places, tints and fades the model of one model particle	inferred	none		
+0x7b4840	760	CParticleEmitter2::DrawModelParticles		models	primitive		Places every model particle's model, in depth order when the emitter sorts	inferred	none	models/particles#update	
+0x7b4b40	77	CParticleEmitter2::RenderTree		models	orchestration		Renders an emitter and its child emitters	inferred	none	models/render#ribbon-particle-and-custom-draws	
+0x7b4b90	3	CParticleEmitter2::VirtualNoOp		models	orchestration		Returns, popping one argument; a vtable slot of every particle emitter	verified	one	models/particles#emitter-classes	
+0x7b4ba0	33	CParticleEmitter2::SetPreallocate		models	primitive		Stores the particle count an emitter reserves for	inferred	none		
+0x7b4bd0	31	CParticleEmitter2::SetFlag2		models	unreached		Sets or clears bit 1 of an emitter's flags; nothing reaches it	inferred	none	models/overview#unreached-code	
+0x7b4bf0	46	CParticleEmitter2::SetEmissionRate		models	orchestration		Sets an emitter's emission rate, storing 0 for a rate that is not positive	verified	one	models/particles#emitter-classes	
+0x7b4c20	36	CParticleEmitter2::SetLifespan		models	orchestration		Sets an emitter's lifespan and marks its gradients for rebuilding when it changes	inferred	none		
+0x7b4c50	16	CParticleEmitter2::SetSpeed		models	orchestration		Sets an emitter's emission speed at +0x17c	inferred	none		
+0x7b4c60	16	CParticleEmitter2::SetGravity		models	orchestration		Sets an emitter's gravity at +0x180	inferred	none		
+0x7b4c70	16	CParticleEmitter2::SetSpeedVariation		models	orchestration		Sets an emitter's speed variation at +0x184	inferred	none		
+0x7b4c80	60	CParticleEmitter2::SetTexture		models	orchestration		Replaces an emitter's texture handle and its texture-cell layout	inferred	none		
+0x7b4cc0	38	CParticleEmitter2::SetFlagA		models	unreached		Sets bit 0 of an emitter's draw flags from a cleared argument; nothing reaches it	inferred	none	models/overview#unreached-code	
+0x7b4cf0	40	CParticleEmitter2::SetFlagB		models	unreached		Sets bit 1 of an emitter's draw flags from a cleared argument; nothing reaches it	inferred	none	models/overview#unreached-code	
+0x7b4d20	40	CParticleEmitter2::ReplaceTexture		models	orchestration		Replaces an emitter's texture handle	inferred	none	models/model#replaceable-textures	
+0x7b4d50	16	CParticleEmitter2::SetFloat1a4		models	unreached		Stores an emitter's float at +0x1a4; nothing reaches it	inferred	none	models/overview#unreached-code	
+0x7b4d60	180	CParticleEmitter2::SetColorGradient		models	orchestration		Copies a colour and size gradient record into an emitter	inferred	none		
+0x7b4e20	164	ParticleGradientCopy		models	orchestration		Copies a 96-byte gradient record	inferred	none		
+0x7b4ed0	134	CParticleEmitter2::SetTextureGrid		models	primitive		Sets an emitter's texture cell grid, requiring power-of-two rows and columns	inferred	none		
+0x7b4f60	112	CParticleEmitter2::SetHeadTail		models	primitive		Sets whether an emitter draws particle heads, tails or both	inferred	none		
+0x7b4fd0	10	CParticleEmitter2::GetFlag1		models	unreached		Returns bit 0 of an emitter's flags; nothing reaches it	verified	one	models/overview#unreached-code	
+0x7b4fe0	12	CParticleEmitter2::GetFlag2		models	unreached		Returns bit 1 of an emitter's flags; nothing reaches it	verified	one	models/overview#unreached-code	
+0x7b4ff0	7	CParticleEmitter2::GetEmissionRate		models	unreached		Returns an emitter's emission rate; nothing reaches it	verified	one	models/overview#unreached-code	
+0x7b5000	7	CParticleEmitter2::GetLifespan		models	unreached		Returns an emitter's lifespan; nothing reaches it	verified	one	models/overview#unreached-code	
+0x7b5010	7	CParticleEmitter2::GetSpeed		models	unreached		Returns an emitter's emission speed; nothing reaches it	verified	one	models/overview#unreached-code	
+0x7b5020	7	CParticleEmitter2::GetGravity		models	unreached		Returns an emitter's gravity; nothing reaches it	verified	one	models/overview#unreached-code	
+0x7b5030	7	CParticleEmitter2::GetSpeedVariation		models	unreached		Returns an emitter's speed variation; nothing reaches it	verified	one	models/overview#unreached-code	
+0x7b5040	7	CParticleEmitter2::GetDword1a4		models	unreached		Returns an emitter's value at +0x1a4; nothing reaches it	verified	one	models/overview#unreached-code	
+0x7b5050	23	CParticleEmitter2::GetGradient		models	unreached		Returns the address of an emitter's gradient record by index; nothing reaches it	inferred	none	models/overview#unreached-code	
+0x7b5070	29	CParticleEmitter2::GetTextureGrid		models	unreached		Copies an emitter's texture cell grid size; nothing reaches it	inferred	none	models/overview#unreached-code	
+0x7b5090	52	CParticleEmitter2::GetHeadTail		models	unreached		Returns an emitter's head and tail settings; nothing reaches it	inferred	none	models/overview#unreached-code	
+0x7b50d0	137	CParticleEmitter2::SetPosition		models	unreached		Moves an emitter and its children to a position; nothing reaches it	inferred	none	models/overview#unreached-code	
+0x7b5160	200	CParticleEmitter2::SetFrame		models	primitive		Sets an emitter's frame matrix and origin from a model matrix and the reference frame	inferred	none	models/particles#update	
+0x7b5230	674	CParticleEmitter2::Update		models	primitive		Sets an emitter's frame and camera distance, derives its motion, then advances its particles	verified	one	models/animation#pushing-animated-state	
+0x7b54e0	104	ParticleMinVector		models	unreached		Stores the component-wise minimum of two vectors; nothing reaches it	inferred	none	models/overview#unreached-code	
+0x7b5550	816	CParticleEmitter2::Spawn		models	primitive		Spawns an emitter's particles for a step from its rate, the density setting and the camera distance	verified	one	models/particles#spawn-count	
+0x7b5880	395	CParticleEmitter2::Advance		models	primitive		Advances an emitter by a time, in 0.1 s substeps for long steps	verified	one	models/particles#update	
+0x7b5a10	566	CParticleEmitter2::Step		models	primitive		Ages, moves and kills an emitter's particles for one step and spawns new ones	inferred	none	models/particles#substeps	
+0x7b5c50	8	CParticleEmitter2::RequestBurst		models	primitive		Sets the flag that spawns one burst of particles at the next step	inferred	none		
+0x7b5c60	99	CParticleEmitter2::FlushSpawnQueue		models	unreached		Spawns an emitter's queued particles; nothing reaches it	inferred	none	models/overview#unreached-code	
+0x7b5cd0	44	CParticleEmitter2::SetZSource		models	primitive		Sets an emitter's z source, storing 0 for a magnitude under 0.001	inferred	none		
+0x7b5d00	32	CParticleEmitter2::SetFlag10		models	primitive		Sets or clears bit 4 of an emitter's flags	inferred	none		
+0x7b5d20	13	CParticleEmitter2::GetFlag10		models	unreached		Returns bit 4 of an emitter's flags; nothing reaches it	verified	one	models/overview#unreached-code	
+0x7b5d30	76	CParticleEmitter2::SetSpeedRemap		models	primitive		Stores the slope and offset of a linear remap from two points	inferred	none		
+0x7b5d80	26	CParticleEmitter2::AddChild		models	orchestration		Appends a child emitter to an emitter	inferred	none		
+0x7b5da0	44	CParticleEmitter2::LoadChildModel		models	orchestration		Loads the model whose emitters become an emitter's children	inferred	none		
+0x7b5dd0	106	CParticleEmitter2::OnChildModelLoaded		models	orchestration		Adopts a loaded child model's particle emitters as an emitter's children	inferred	none		
+0x7b5e40	6	EmitterAddRef		models	orchestration		Increments an emitter's reference count	inferred	none		
+0x7b5e50	13	EmitterRelease		models	orchestration		Decrements an emitter's reference count and destroys it through its vtable at zero	inferred	none	models/particles#registries	
+0x7b5e60	245	CParticleEmitter2::TransformParticles		models	primitive		Transforms the live particles of an emitter and its children by a matrix	inferred	none		
+0x7b5f60	59	CParticleEmitter2::HasModelParticles		models	orchestration		Returns whether an emitter or one of its children emits models	inferred	none		
+0x7b5fa0	53	CParticleEmitter2::CountModelParticles		models	orchestration		Counts the live model particles of an emitter and its children	inferred	none		
+0x7b5fe0	98	CParticleEmitter2::GetParticleModel		models	orchestration		Returns the model of a model particle by index across an emitter and its children	inferred	none		
+0x7b6050	45	SortableParticleHeapDeletingDestructor		models	host		Destroys the sortable particle record heap and frees it when asked	inferred	none		
+0x7b6080	38	ParticleIndexArrayFree		models	host		Frees a particle index array	inferred	none		
+0x7b60b0	43	Particle2ModelArrayFree		models	host		Releases and frees a model particle record array	inferred	none		
+0x7b60e0	231	CParticle2ArrayGrow		models	primitive		Grows a particle record array to a capacity	inferred	none		
+0x7b61d0	146	CParticle2ArrayRealloc		models	host		Reallocates a particle record array to an exact capacity	inferred	none		
+0x7b6270	57	ParticleIndexArrayQuantum		models	primitive		Returns the growth quantum of a particle index array for a count	inferred	none		
+0x7b62b0	31	ParticleIndexArrayRoundUp		models	primitive		Rounds a count up to a multiple of a quantum	inferred	none		
+0x7b62d0	196	Particle2ModelArrayRealloc		models	host		Reallocates a model particle record array, releasing the dropped records	inferred	none		
+0x7b63a0	157	ParticleDepthSortPush		models	orchestration		Inserts a particle and its depth into the sortable record heap	inferred	none		
+0x7b6440	83	ParticleDepthSortPopModel		models	orchestration		Removes the deepest model particle from the sortable record heap	inferred	none		
+0x7b64a0	81	ParticleDepthSortPop		models	orchestration		Removes the deepest particle from the sortable record heap	inferred	none		
+0x7b6500	996	CRibbonEmitter::Assign		models	unreached		Copies a ribbon emitter's settings, materials, textures and vertex arrays from another; nothing reaches it	inferred	none	models/overview#unreached-code	
+0x7b68f0	154	CRibbonEmitter::CopyTextures		models	primitive		Copies a ribbon's texture handle array, adding a reference to each handle	inferred	none		
+0x7b6990	631	CRibbonEmitter::BuildNodeFrame		models	primitive		Builds the cross-section basis of a ribbon node from its motion	inferred	none	models/overview#object-files	
+0x7b6c10	5	InitRibbonInfinityThunk		models	orchestration		Jumps to 0x7b6c20; a static initializer	verified	one	models/overview#object-files	
+0x7b6c20	11	InitRibbonInfinity		models	orchestration		Copies +inf into the object file's infinity global	verified	one	models/overview#shared-header-constants	
+0x7b6c30	715	CRibbonEmitter::EmitSegment		models	primitive		Writes the vertex pair of a ribbon segment at its node	inferred	none	models/ribbons#ribbon-update	
+0x7b6f00	34	RibbonRingAdvance		models	orchestration		Advances a ring-buffer index by a step, wrapping at the capacity	inferred	none	models/ribbons#ribbon-update	
+0x7b6f30	86	CRibbonEmitter::SetTextureCell		models	primitive		Computes the texture coordinates of a ribbon's texture cell	inferred	none		
+0x7b6f90	44	CRibbonEmitter::CloseTextures		models	orchestration		Closes every texture handle of a ribbon	inferred	none		
+0x7b6fc0	165	CRibbonEmitter::~CRibbonEmitter		models	primitive		Closes a ribbon's textures and frees its materials, vertex and index arrays	inferred	none		
+0x7b7070	381	CRibbonEmitter::CRibbonEmitter		models	primitive		Constructs an empty ribbon emitter with reference count 1	inferred	none		
+0x7b71f0	400	CRibbonEmitter::CopyConstruct		models	unreached		Constructs a ribbon emitter as a copy of another; nothing reaches it	inferred	none	models/overview#unreached-code	
+0x7b7380	29	CRibbonEmitter::Reassign		models	unreached		Closes a ribbon's textures and copies another ribbon into it; nothing reaches it	inferred	none	models/overview#unreached-code	
+0x7b73a0	793	CRibbonEmitter::Initialize		models	primitive		Sizes a ribbon's vertex ring from its edges per second and lifespan, and sets materials and textures	inferred	none	models/ribbons#ribbon-update	
+0x7b76c0	356	CRibbonEmitter::SetFrame		models	primitive		Sets a ribbon's emitter matrix and its frame relative to the reference frame	inferred	none	models/ribbons#ribbon-parameters	
+0x7b7830	275	CRibbonEmitter::SetMaterials		models	unreached		Replaces a ribbon's materials and texture handles; nothing reaches it	inferred	none	models/overview#unreached-code	
+0x7b7950	130	CRibbonEmitter::ReplaceTexture		models	orchestration		Replaces the ribbon textures whose replaceable type matches	inferred	none	models/model#replaceable-textures	
+0x7b79e0	74	CRibbonEmitter::SetMaterialFlag1		models	unreached		Sets or clears bit 0 of every ribbon material's flags; nothing reaches it	inferred	none	models/overview#unreached-code	
+0x7b7a30	75	CRibbonEmitter::SetMaterialFlag2		models	unreached		Sets or clears bit 1 of every ribbon material's flags; nothing reaches it	inferred	none	models/overview#unreached-code	
+0x7b7a80	142	CRibbonEmitter::SetColor		models	primitive		Packs a ribbon's colour into bytes, each component times 255 plus 0.5	inferred	none	models/ribbons#ribbon-parameters	
+0x7b7b10	37	CRibbonEmitter::SetAlpha		models	primitive		Packs a ribbon's alpha into a byte, times 255 plus 0.5	inferred	none	models/ribbons#ribbon-parameters	
+0x7b7b40	45	CRibbonEmitter::SetVisible		models	primitive		Sets or clears a ribbon's visible flag	inferred	none	models/ribbons#ribbon-parameters	
+0x7b7b70	29	CRibbonEmitter::SetTextureSlot		models	orchestration		Sets a ribbon's texture cell and recomputes its coordinates when it changes	inferred	none	models/ribbons#ribbon-parameters	
+0x7b7b90	16	CRibbonEmitter::SetAbove		models	orchestration		Sets a ribbon's height above its node at +0x15c	inferred	none	models/ribbons#ribbon-parameters	
+0x7b7ba0	16	CRibbonEmitter::SetBelow		models	orchestration		Sets a ribbon's height below its node at +0x160	inferred	none	models/ribbons#ribbon-parameters	
+0x7b7bb0	16	CRibbonEmitter::SetGravity		models	orchestration		Sets a ribbon's gravity at +0x164	inferred	none		
+0x7b7bc0	594	CRibbonEmitter::TransformVertices		models	primitive		Transforms a ribbon's vertices by a matrix	inferred	none		
+0x7b7e20	49	CRibbonEmitter::UpdateIfStarted		models	unreached		Updates a ribbon once its first frame has been placed; nothing reaches it	inferred	none	models/overview#unreached-code	
+0x7b7e60	593	CRibbonEmitter::Update		models	primitive		Ages a ribbon's edges, drops expired ones and emits new edges along its path	inferred	none	models/animation#pushing-animated-state	
+0x7b80c0	536	CRibbonEmitter::Render		models	primitive		Draws a ribbon's vertex ring as a triangle strip per material	inferred	none	models/render#ribbon-particle-and-custom-draws	
+0x7b82e0	12	CRibbonEmitter::IsEmpty		models	unreached		Returns whether a ribbon has no live edges; nothing reaches it	inferred	none	models/overview#unreached-code	
+0x7b82f0	5	CRibbonEmitter::AddRef		models	unreached		Increments a ribbon's reference count; nothing reaches it	inferred	none	models/overview#unreached-code	
+0x7b8300	29	CRibbonEmitter::Release		models	host		Decrements a ribbon's reference count, destroying and freeing it at zero	inferred	none		
+0x7b8320	23	RibbonMatArrayFree		models	host		Frees a ribbon material array	inferred	none		
+0x7b8340	23	RibbonTextureArrayFree		models	host		Frees a ribbon texture handle array	inferred	none		
+0x7b8360	19	RibbonArrayClear		models	orchestration		Clears an array's count and data	inferred	none		
+0x7b8380	1	RibbonNoOp		models	orchestration		Returns; called by the ribbon destructor and initializer	inferred	none		
+0x7b8390	5	InitRibbonTwoPiThunk		models	orchestration		Jumps to 0x7b83a0; a static initializer	verified	one	models/overview#shared-header-constants	
+0x7b83a0	15	InitRibbonTwoPi		models	primitive		Stores π + π as a float in the object file's 2π global	verified	one	models/overview#shared-header-constants	
+0x7b83b0	5	InitRibbonInvTwoPiThunk		models	orchestration		Jumps to 0x7b83c0; a static initializer	verified	one	models/overview#shared-header-constants	
+0x7b83c0	19	InitRibbonInvTwoPi		models	primitive		Stores 1 / 2π as a float in the object file's 1/2π global	verified	one	models/overview#shared-header-constants	
+0x7b83e0	226	RibbonIndexArrayGrow		models	primitive		Grows a ribbon index array to a capacity	inferred	none		
+0x7b84d0	232	CRibbonVertexArrayGrow		models	primitive		Grows a ribbon vertex array to a capacity	inferred	none		
+0x7b85c0	108	CRibbonVertexArrayAssign		models	unreached		Copies a ribbon vertex array; nothing reaches it	inferred	none	models/overview#unreached-code	
+0x7b8630	108	CRibbonMatArrayAssign		models	unreached		Copies a ribbon material array; nothing reaches it	inferred	none	models/overview#unreached-code	
+0x7b86a0	49	RibbonDwordArrayReserve		models	host		Reallocates a dword array to a count	inferred	none		
+0x7b86e0	48	RibbonWordArrayReserve		models	unreached		Reallocates a 16-bit array to a count; nothing reaches it	inferred	none	models/overview#unreached-code	
+0x7b8710	49	CRibbonMatArrayReserve		models	host		Reallocates a ribbon material array to a count	inferred	none	models/overview#object-files	
+0x7b8750	5	InitEmitterShapesInfinityThunk		models	orchestration		Jumps to 0x7b8760; a static initializer	verified	one	models/overview#object-files	
+0x7b8760	11	InitEmitterShapesInfinity		models	orchestration		Copies +inf into the object file's infinity global	verified	one	models/overview#shared-header-constants	
+0x7b8770	51	PlaneEmitterConstruct		models	orchestration		Constructs a plane-shaped particle emitter: base emitter, zero area and spread, its vtable	verified	one	models/particles#emitter-classes	
+0x7b87b0	56	PlaneEmitterClone		models	host		Allocates a plane emitter copied from another; a vtable slot	inferred	none	models/overview#object-files	
+0x7b87f0	43	PlaneEmitterDeletingDestructor		models	host		Destroys a plane emitter and frees it when asked; a vtable slot	inferred	none	models/particles#emitter-classes	
+0x7b8820	82	PlaneEmitterCopyConstruct		models	orchestration		Constructs a plane emitter as a copy of another	inferred	none		
+0x7b8880	11	PlaneEmitterDestruct		models	orchestration		Restores the plane vtable and destroys the base emitter	inferred	none		
+0x7b8890	817	PlaneEmitterSpawnParticle		models	primitive		Spawns a particle on a rectangle with a direction within the emitter's spread	inferred	none	models/overview#unreached-code	
+0x7b8bd0	7	PlaneEmitterGetValue290		models	unreached		Returns a plane emitter's float at +0x290; nothing reaches it	verified	one	models/overview#unreached-code	
+0x7b8be0	7	PlaneEmitterGetValue294		models	unreached		Returns a plane emitter's float at +0x294; nothing reaches it	verified	one	models/overview#unreached-code	
+0x7b8bf0	7	PlaneEmitterGetValue298		models	unreached		Returns a plane emitter's float at +0x298; nothing reaches it	verified	one	models/overview#unreached-code	
+0x7b8c00	7	PlaneEmitterGetValue29c		models	unreached		Returns a plane emitter's float at +0x29c; nothing reaches it	verified	one	models/overview#unreached-code	
+0x7b8c10	16	PlaneEmitterSetValue290		models	orchestration		Stores a plane emitter's value at +0x290; a vtable slot	verified	one	models/particles#emitter-classes	
+0x7b8c20	16	PlaneEmitterSetValue294		models	orchestration		Stores a plane emitter's value at +0x294; a vtable slot	inferred	none		
+0x7b8c30	16	PlaneEmitterSetValue298		models	orchestration		Stores a plane emitter's value at +0x298; a vtable slot	inferred	none		
+0x7b8c40	16	PlaneEmitterSetValue29c		models	orchestration		Stores a plane emitter's value at +0x29c; a vtable slot	verified	one	models/particles#emitter-classes	
+0x7b8c50	51	SphereEmitterConstruct		models	orchestration		Constructs a sphere-shaped particle emitter: base emitter, zero radii and spread, its vtable	inferred	none	models/particles#emitter-classes	
+0x7b8c90	56	SphereEmitterClone		models	host		Allocates a sphere emitter copied from another; a vtable slot	inferred	none	models/particles#emitter-classes	
+0x7b8cd0	43	SphereEmitterDeletingDestructor		models	host		Destroys a sphere emitter and frees it when asked; a vtable slot	inferred	none	models/particles#emitter-classes	
+0x7b8d00	94	SphereEmitterCopyConstruct		models	orchestration		Constructs a sphere emitter as a copy of another	inferred	none		
+0x7b8d60	11	SphereEmitterDestruct		models	orchestration		Restores the sphere vtable and destroys the base emitter	inferred	none		
+0x7b8d70	966	SphereEmitterSpawnParticle		models	primitive		Spawns a particle in a spherical shell with a direction within the emitter's spread	inferred	none	models/particles#emitter-classes	
+0x7b9140	7	SphereEmitterGetRangeMin		models	unreached		Returns a sphere emitter's float at +0x290; nothing reaches it	verified	one	models/overview#unreached-code	
+0x7b9150	7	SphereEmitterGetRangeMax		models	unreached		Returns a sphere emitter's float at +0x294; nothing reaches it	verified	one	models/overview#unreached-code	
+0x7b9160	7	SphereEmitterGetValue29c		models	unreached		Returns a sphere emitter's float at +0x29c; nothing reaches it	verified	one	models/overview#unreached-code	
+0x7b9170	7	SphereEmitterGetValue2a0		models	unreached		Returns a sphere emitter's float at +0x2a0; nothing reaches it	verified	one	models/overview#unreached-code	
+0x7b9180	31	SphereEmitterSetRangeMin		models	primitive		Stores +0x290 and the span +0x298 = +0x294 minus it; a vtable slot	inferred	none	models/particles#emitter-classes	
+0x7b91a0	31	SphereEmitterSetRangeMax		models	primitive		Stores +0x294 and the span +0x298 = it minus +0x290; a vtable slot	inferred	none		
+0x7b91c0	16	SphereEmitterSetValue29c		models	orchestration		Stores a sphere emitter's value at +0x29c; a vtable slot	inferred	none		
+0x7b91d0	16	SphereEmitterSetValue2a0		models	orchestration		Stores a sphere emitter's value at +0x2a0; a vtable slot	verified	one	models/particles#emitter-classes	
+0x7b91e0	121	SplineEmitterConstruct		models	orchestration		Constructs a spline-shaped particle emitter with its spline object and vtables	inferred	none	models/particles#emitter-classes	
+0x7b9260	56	SplineEmitterClone		models	host		Allocates a spline emitter copied from another; a vtable slot	inferred	none	models/particles#emitter-classes	
+0x7b92a0	43	SplineEmitterDeletingDestructor		models	host		Destroys a spline emitter and frees it when asked; a vtable slot	inferred	none	models/particles#emitter-classes	
+0x7b92d0	471	SplineEmitterCopyConstruct		models	host		Constructs a spline emitter as a copy of another, copying its spline points	inferred	none		
+0x7b94b0	67	SplineEmitterDestruct		models	host		Frees a spline emitter's point arrays and destroys the base emitter	inferred	none		
+0x7b9500	1065	SplineEmitterSpawnParticle		models	primitive		Spawns a particle at a point along the emitter's spline	inferred	none	models/particles#emitter-classes	
+0x7b9930	7	SplineEmitterGetValue294		models	unreached		Returns a spline emitter's float at +0x294; nothing reaches it	verified	one	models/overview#unreached-code	
+0x7b9940	7	SplineEmitterGetRateScale		models	unreached		Returns a spline emitter's rate scale at +0x298; nothing reaches it	verified	one	models/overview#unreached-code	
+0x7b9950	7	SplineEmitterGetValue29c		models	unreached		Returns a spline emitter's float at +0x29c; nothing reaches it	verified	one	models/overview#unreached-code	
+0x7b9960	7	SplineEmitterGetValue2a0		models	unreached		Returns a spline emitter's float at +0x2a0; nothing reaches it	verified	one	models/overview#unreached-code	
+0x7b9970	76	SplineEmitterSetValue294		models	orchestration		Stores a spline emitter's value at +0x294 clamped to [0, 1]; a vtable slot	inferred	none	models/particles#emitter-classes	
+0x7b99c0	113	SplineEmitterSetRateScale		models	primitive		Stores a rate scale clamped to [0, 1] and sets the rate to it times +0x290 on change; a vtable slot	inferred	none		
+0x7b9a40	16	SplineEmitterSetValue29c		models	orchestration		Stores a spline emitter's value at +0x29c; a vtable slot	inferred	none		
+0x7b9a50	16	SplineEmitterSetValue2a0		models	orchestration		Stores a spline emitter's value at +0x2a0; a vtable slot	verified	one	models/particles#emitter-classes	
+0x7b9a60	31	SplineEmitterSetBaseRate		models	primitive		Stores a base rate at +0x290 and sets the emission rate to it times +0x298	verified	one	models/particles#emitter-classes	
+0x7b9a80	26	SplineEmitterSetPath		models	orchestration		Sets the points of a spline emitter's spline	inferred	none		
+0x7b9aa0	5	InitEmitterShapesTwoPiThunk		models	orchestration		Jumps to 0x7b9ab0; a static initializer	verified	one	models/overview#shared-header-constants	
+0x7b9ab0	15	InitEmitterShapesTwoPi		models	primitive		Stores π + π as a float in the object file's 2π global	verified	one	models/overview#shared-header-constants	
+0x7b9ac0	5	InitEmitterShapesInvTwoPiThunk		models	orchestration		Jumps to 0x7b9ad0; a static initializer	verified	one	models/overview#shared-header-constants	
+0x7b9ad0	19	InitEmitterShapesInvTwoPi		models	primitive		Stores 1 / 2π as a float in the object file's 1/2π global	verified	one	models/overview#shared-header-constants	
+0x7b9af0	5	InitEmitterShapesInfinity2Thunk		models	orchestration		Jumps to 0x7b9b00; a static initializer	verified	one	models/overview#shared-header-constants	
+0x7b9b00	11	InitEmitterShapesInfinity2		models	orchestration		Copies +inf into the object file's infinity global	verified	one	models/overview#object-files	
+0x7b9b10	338	ParticleGradientSample		models	primitive		Samples a particle's colour, size and texture cell over its life from a gradient record	inferred	none	models/overview#object-files	
+0x7b9c70	92	ParticleGradientConstruct		models	orchestration		Constructs a gradient record with its defaults	inferred	none		
+0x7b9cd0	19	ParticleGradientSetMidpoint		models	orchestration		Sets a gradient record's normalized middle-key bounds	inferred	none		
+0x7b9cf0	67	ParticleGradientSetLifespan		models	primitive		Rebuilds a gradient record's slopes for a lifespan, clamping its spans to 0.001	inferred	none	models/particles#substeps	
+0x7b9d40	13	ParticleGradientSetRepeat		models	orchestration		Sets a gradient record's texture cell repeat count	inferred	none		
+0x7b9d50	70	ParticleGradientSetColors		models	orchestration		Sets a gradient record's three colour keys and their per-channel slopes	inferred	none	models/particles#gradients-and-quads	
+0x7b9da0	50	ParticleGradientSetHeadCells		models	orchestration		Sets a gradient record's head texture cell ramp	inferred	none		
+0x7b9de0	50	ParticleGradientSetTailCells		models	orchestration		Sets a gradient record's tail texture cell ramp	inferred	none		
+0x7b9e20	28	ParticleGradientSetScales		models	primitive		Sets a gradient record's size keys and their slope	inferred	none	models/particles#gradients-and-quads	
+0x7b9e40	23	ParticleGradientGetMidpoint		models	unreached		Copies a gradient record's middle-key bounds; nothing reaches it	inferred	none	models/overview#unreached-code	
+0x7b9e60	15	ParticleGradientGetRepeat		models	unreached		Returns a gradient record's repeat count; nothing reaches it	inferred	none	models/overview#unreached-code	
+0x7b9e70	15	ParticleGradientGetValue5c		models	unreached		Returns a gradient record's value at +0x5c; nothing reaches it	inferred	none	models/overview#unreached-code	
+0x7b9e80	22	ParticleGradientGetColors		models	unreached		Copies a gradient record's colour keys; nothing reaches it	inferred	none	models/overview#unreached-code	
+0x7b9ea0	23	ParticleGradientGetHeadCells		models	unreached		Copies a gradient record's head cell ramp; nothing reaches it	inferred	none	models/overview#unreached-code	
+0x7b9ec0	23	ParticleGradientGetTailCells		models	unreached		Copies a gradient record's tail cell ramp; nothing reaches it	inferred	none	models/overview#unreached-code	
+0x7b9ee0	23	ParticleGradientGetScales		models	unreached		Copies a gradient record's size keys; nothing reaches it	inferred	none	models/overview#unreached-code	
+0x7b9f00	5	InitGradientTwoPiThunk		models	orchestration		Jumps to 0x7b9f10; a static initializer	verified	one	models/overview#shared-header-constants	
+0x7b9f10	15	InitGradientTwoPi		models	primitive		Stores π + π as a float in the object file's 2π global	verified	one	models/overview#shared-header-constants	
+0x7b9f20	5	InitGradientInvTwoPiThunk		models	orchestration		Jumps to 0x7b9f30; a static initializer	verified	one	models/overview#shared-header-constants	
+0x7b9f30	19	InitGradientInvTwoPi		models	primitive		Stores 1 / 2π as a float in the object file's 1/2π global	verified	one	models/overview#shared-header-constants	
+0x7b9f50	5	InitGradientInfinityThunk		models	orchestration		Jumps to 0x7b9f60; a static initializer	verified	one	models/overview#shared-header-constants	
+0x7b9f60	11	InitGradientInfinity		models	orchestration		Copies +inf into the object file's infinity global	verified	one	models/overview#object-files	
+0x7b9f70	10	InitLegacyParticleSeed		models	orchestration		Seeds the legacy particle random state and registers its exit hook; a static initializer	verified	one	models/overview#object-files	
+0x7b9f80	13	InitLegacyParticleSeedState		models	orchestration		Seeds the legacy particle object file's random state	verified	one	models/overview#static-objects	
+0x7b9f90	12	InitLegacyParticleSeedAtexit		models	orchestration		Registers the random state's empty exit hook with _atexit	verified	one	models/overview#static-objects	
+0x7b9fa0	1	LegacyParticleSeedAtexit		models	orchestration		Returns; the exit hook of the random state	verified	one	models/overview#static-objects	
+0x7b9fb0	74	CParticleCopy		models	unreached		Copies a legacy particle record; nothing reaches it	inferred	none	models/overview#unreached-code	
+0x7ba000	7	CParticleClear		models	orchestration		Clears a legacy particle record's live flag	inferred	none		
+0x7ba010	69	CParticleEmitter::SetDefaults		models	unreached		Sets a legacy emitter's default rates, spread and scale; nothing reaches it	inferred	none	models/overview#unreached-code	
+0x7ba060	70	CParticleEmitter::CopyParams		models	unreached		Copies a legacy emitter's parameter block; nothing reaches it	inferred	none	models/overview#unreached-code	
+0x7ba0b0	1	CParticleEmitter::NoOp		models	unreached		Returns; nothing reaches it	inferred	none	models/overview#unreached-code	
+0x7ba0c0	315	CParticleEmitter::Reserve		models	unreached		Grows a legacy emitter's particle pool for its rate and lifespan; nothing reaches it	inferred	none	models/overview#unreached-code	
+0x7ba200	364	CParticleEmitter::SpawnParticle		models	unreached		Spawns a legacy particle with a random lifetime and direction; nothing reaches it	inferred	none	models/overview#unreached-code	
+0x7ba370	16	CParticleEmitter::KillParticle		models	unreached		Clears a legacy particle's live flag; nothing reaches it	inferred	none	models/overview#unreached-code	
+0x7ba380	162	CParticleEmitter::IntegrateParticle		models	unreached		Moves a legacy particle one step under gravity; nothing reaches it	inferred	none	models/overview#unreached-code	
+0x7ba430	58	CParticleEmitter::CParticleEmitter		models	unreached		Constructs a legacy particle emitter with its defaults; nothing reaches it	inferred	none	models/overview#unreached-code	
+0x7ba470	68	CParticleEmitter::CopyConstruct		models	unreached		Constructs a legacy particle emitter from a parameter block; nothing reaches it	inferred	none	models/overview#unreached-code	
+0x7ba4c0	18	CParticleEmitter::SetParams		models	unreached		Copies a parameter block into a legacy emitter; nothing reaches it	inferred	none	models/overview#unreached-code	
+0x7ba4e0	109	CParticleEmitter::~CParticleEmitter		models	host		Frees a legacy emitter's index arrays and particle pool	inferred	none		
+0x7ba550	4	CParticleEmitter::GetFloat18		models	unreached		Returns a legacy emitter's value at +0x18; nothing reaches it	verified	one	models/overview#unreached-code	
+0x7ba560	4	CParticleEmitter::GetFloat1c		models	unreached		Returns a legacy emitter's value at +0x1c; nothing reaches it	verified	one	models/overview#unreached-code	
+0x7ba570	4	CParticleEmitter::GetFloat20		models	unreached		Returns a legacy emitter's value at +0x20; nothing reaches it	verified	one	models/overview#unreached-code	
+0x7ba580	4	CParticleEmitter::GetFloat24		models	unreached		Returns a legacy emitter's value at +0x24; nothing reaches it	verified	one	models/overview#unreached-code	
+0x7ba590	4	CParticleEmitter::GetFloat28		models	unreached		Returns a legacy emitter's value at +0x28; nothing reaches it	verified	one	models/overview#unreached-code	
+0x7ba5a0	4	CParticleEmitter::GetFloat10		models	unreached		Returns a legacy emitter's value at +0x10; nothing reaches it	verified	one	models/overview#unreached-code	
+0x7ba5b0	4	CParticleEmitter::GetFloat14		models	unreached		Returns a legacy emitter's value at +0x14; nothing reaches it	verified	one	models/overview#unreached-code	
+0x7ba5c0	13	CParticleEmitter::SetValue8		models	unreached		Stores a legacy emitter's value at +0x8; nothing reaches it	verified	one	models/overview#unreached-code	
+0x7ba5d0	13	CParticleEmitter::SetValueC		models	unreached		Stores a legacy emitter's value at +0xc; nothing reaches it	verified	one	models/overview#unreached-code	
+0x7ba5e0	320	CParticleEmitter::Update		models	unreached		Ages, moves and kills a legacy emitter's particles and spawns new ones; nothing live reaches it	inferred	none	models/overview#unreached-code	
+0x7ba720	1	CParticleEmitter::NoOpB		models	unreached		Returns; nothing reaches it	verified	one	models/overview#unreached-code	
+0x7ba730	1	CParticleEmitter::Render		models	unreached		Returns; the legacy emitter draws nothing	verified	one	models/overview#unreached-code	
+0x7ba740	53	CParticleEmitter::KillAll		models	unreached		Kills every live legacy particle; nothing reaches it	inferred	none	models/overview#unreached-code	
+0x7ba780	13	CParticleEmitter::SetValue18		models	unreached		Stores a legacy emitter's value at +0x18; nothing reaches it	verified	one	models/overview#unreached-code	
+0x7ba790	13	CParticleEmitter::SetValue1c		models	unreached		Stores a legacy emitter's value at +0x1c; nothing reaches it	verified	one	models/overview#unreached-code	
+0x7ba7a0	13	CParticleEmitter::SetValue20		models	unreached		Stores a legacy emitter's value at +0x20; nothing reaches it	verified	one	models/overview#unreached-code	
+0x7ba7b0	13	CParticleEmitter::SetValue24		models	unreached		Stores a legacy emitter's value at +0x24; nothing reaches it	verified	one	models/overview#unreached-code	
+0x7ba7c0	13	CParticleEmitter::SetValue28		models	unreached		Stores a legacy emitter's value at +0x28; nothing reaches it	verified	one	models/overview#unreached-code	
+0x7ba7d0	13	CParticleEmitter::SetValue10		models	unreached		Stores a legacy emitter's value at +0x10; nothing reaches it	verified	one	models/overview#unreached-code	
+0x7ba7e0	13	CParticleEmitter::SetValue14		models	unreached		Stores a legacy emitter's value at +0x14; nothing reaches it	verified	one	models/overview#unreached-code	
+0x7ba7f0	3	CParticleEmitter::NoOpC		models	unreached		Returns, popping one argument; nothing reaches it	verified	one	models/overview#unreached-code	
+0x7ba800	5	CParticleEmitter::AddRef		models	unreached		Increments a legacy emitter's reference count; nothing reaches it	inferred	none	models/overview#unreached-code	
+0x7ba810	29	CParticleEmitter::Release		models	host		Decrements a legacy emitter's reference count, destroying and freeing it at zero	inferred	none	models/particles#registries	
+0x7ba830	43	CParticleArrayFree		models	unreached		Clears and frees a legacy particle array; nothing reaches it	inferred	none	models/overview#unreached-code	
+0x7ba860	5	InitLegacyParticleTwoPiThunk		models	orchestration		Jumps to 0x7ba870; a static initializer	verified	one	models/overview#shared-header-constants	
+0x7ba870	15	InitLegacyParticleTwoPi		models	primitive		Stores π + π as a float in the object file's 2π global	verified	one	models/overview#shared-header-constants	
+0x7ba880	5	InitLegacyParticleInvTwoPiThunk		models	orchestration		Jumps to 0x7ba890; a static initializer	verified	one	models/overview#shared-header-constants	
+0x7ba890	19	InitLegacyParticleInvTwoPi		models	primitive		Stores 1 / 2π as a float in the object file's 1/2π global	verified	one	models/overview#shared-header-constants	
+0x7ba8b0	57	CParticleArrayQuantum		models	unreached		Returns the growth quantum of a legacy particle array for a count; nothing reaches it	inferred	none	models/overview#unreached-code	
+0x7ba8f0	31	CParticleArrayRoundUp		models	unreached		Rounds a count up to a multiple of a quantum; nothing reaches it	inferred	none	models/overview#unreached-code	
+0x7ba910	209	CParticleArrayRealloc		models	unreached		Reallocates a legacy particle array to an exact capacity; nothing reaches it	inferred	none	models/overview#unreached-code	
+0x7ba9f0	171	VectorsEqualFuzzy		models	unreached		Compares two vectors component by component; nothing reaches it	inferred	none	models/overview#object-files	
 0x7bca80	93	TransformPoint		cmath		float * __fastcall (float *out, const float *v, const float *m)	Writes v times the upper 3×3 of a row-major 4×4 matrix plus its fourth row to out	verified	one	collision/falling#frame-transform	
 0x7bcc60	109	TransformPointInPlace		cmath		float * __fastcall (float *out, float *v, const float *m)	Replaces v with v times the upper 3×3 of a 4×4 matrix plus its fourth row, and copies it to out	verified	one	collision/falling#frame-transform	
 0x7bd700	280	InvertRigidMatrix		cmath		void __thiscall (const float *m, float *out)	Writes the rigid inverse of a 4×4 matrix: its 3×3 transposed, then translated by −t times that	verified	one	collision/contact#facet-gather	
@@ -11472,7 +12579,7 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x7be1e0	183	Matrix3Adjugate		cmath		float * __thiscall (const float *m, float *out)	Writes the adjugate of a 3×3 matrix, its cofactors transposed	verified	one	collision/airborne#crease-helpers	
 0x7be2a0	121	InvertMatrix3		cmath		float *__thiscall (const float *m, float *out, float determinant)	Writes a 3x3 matrix's adjugate scaled by 1/determinant	verified	one	collision/airborne#crease-helpers	
 0x7be490	282	BuildAxisRotation		cmath			Builds a rotation matrix about an axis by an angle	inferred	none	collision/kinematics#spline-follower	
-0x7bfdf0	22			cmath			Restores two vtables around a base destructor call	inferred	none		
+0x7bfdf0	22	SortedHeapDestruct		cmath			Destroys a sorted record container and restores its base vtable	inferred	none		
 0x7c2c40	580	IntersectRayTriangle		cmath		uint8_t __fastcall (const float *origin, const float *dir, const float *v0, const float *v1, const float *v2, float *t)	Intersects a ray with a triangle and returns its fraction	inferred	none		
 0x7c47e0	5	InitSharedATwoPiThunk		collision	orchestration	void __cdecl (void)	Jumps to 0x7c47f0, a static initializer of the file	verified	one	collision/overview#shared-file-initializers	
 0x7c47f0	15	InitSharedATwoPi		collision	primitive	void __cdecl (void)	Stores 2π as π + π in floats, 6.2831855 (0x40c90fdb)	verified	one	collision/overview#shared-file-initializers	

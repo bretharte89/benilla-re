@@ -85,6 +85,37 @@ CLayoutFrame	0x0054	4	float	m_height	ui	Holds the height before scaling	verified
 CLayoutFrame	0x0058	4	float	m_layoutScale	ui	Holds the scale sizes and point offsets are multiplied by, 1.0 at construction	verified	one	ui/anchors#size-scale-and-stored-rectangle
 CLayoutFrame	0x005c	16	float[4]	m_resizeBounds	ui	Holds the minimum and maximum size a user resize may reach	verified	one	ui/frames#loading-from-xml
 CLayoutFrame	0x006c	8	uint32_t[2]	m_queueLink	ui	Holds the frame's link in the layout queue	verified	one	ui/anchors#invalidation-and-the-layout-queue
+CM2Model	0x0000	4	uint32_t	m_refCount	models	Holds the instance's reference count	verified	one	models/model#instance-object
+CM2Model	0x0010	4	uint32_t	m_loaded	models	Holds 1 once the instance's state is built	verified	one	models/model#instance-object
+CM2Model	0x0014	4	uint32_t	m_texturesLoaded	models	Holds 1 once the instance's textures are loaded	verified	one	models/model#instance-object
+CM2Model	0x002c	4	M2Scene *	m_scene	models	Holds the scene the instance belongs to	verified	one	models/model#instance-object
+CM2Model	0x0030	4	CM2Shared *	m_shared	models	Holds the shared model of the instance's file	verified	one	models/model#instance-object
+CM2Model	0x0034	4	CM2Model *	m_copySource	models	Holds the instance copied from, until the load ends	verified	one	models/model#instance-object
+CM2Model	0x0038	4	void *	m_deferredHead	models	Holds the first deferred call record	verified	one	models/model#instance-object
+CM2Model	0x003c	4	void *	m_deferredTail	models	Holds the address of the deferred queue's tail link	verified	one	models/model#instance-object
+CM2Model	0x0040	4	uint32_t	m_animatedFrame	models	Holds the scene frame the instance last animated in	verified	one	models/model#instance-object
+CM2Model	0x0090	4	void *	m_boneStates	models	Holds the bone states, 0x118 bytes each	verified	one	models/model#instance-object
+CM2Model	0x0094	4	void *	m_boneMatrices	models	Holds the bone matrices, 64 bytes each	verified	one	models/model#instance-object
+CM2Model	0x00bc	64	float[16]	m_baseMatrix	models	Holds the instance's base matrix	verified	one	models/model#instance-object
+CM2Model	0x00fc	64	float[16]	m_worldMatrix	models	Holds the instance's world matrix	verified	one	models/model#instance-object
+CM2Model	0x013c	64	float[16]	m_transportMatrix	models	Holds the transport matrix the emitters use as their frame	verified	one	models/model#instance-object
+CM2Model	0x0180	4	float	m_alpha	models	Holds the instance alpha	verified	one	models/model#instance-object
+CM2Model	0x0184	12	float[3]	m_diffuse	models	Holds the diffuse colour multiplier	verified	one	models/model#instance-object
+CM2Model	0x0190	12	float[3]	m_emissive	models	Holds the emissive colour	verified	one	models/model#instance-object
+CM2Model	0x01cc	4	CM2Model *	m_parent	models	Holds the instance this one is attached to	verified	one	models/model#instance-object
+CM2Model	0x01d0	4	uint32_t	m_attachId	models	Holds the attachment id it is attached at	verified	one	models/model#instance-object
+CM2Model	0x01d4	4	uint32_t	m_attachIndex	models	Holds the attachment index in the parent, 0xffff while unresolved	verified	one	models/model#instance-object
+CM2Model	0x01dc	4	CM2Model *	m_firstChild	models	Holds the first attached instance	verified	one	models/model#instance-object
+CM2Model	0x01e4	4	CM2Model *	m_nextSibling	models	Holds the next instance attached to the same parent	verified	one	models/model#instance-object
+CM2Model	0x03b8	4	M2Lighting *	m_lighting	models	Holds the lighting record the instance draws with	verified	one	models/model#instance-object
+CM2Shared	0x0000	4	uint32_t	m_refCount	models	Holds the shared model's reference count	verified	one	models/shared#shared-model-object
+CM2Shared	0x0004	4	M2Cache *	m_cache	models	Holds the cache the shared model belongs to	verified	one	models/shared#shared-model-object
+CM2Shared	0x0008	4	uint32_t	m_flags	models	Holds flag 1 when loaded and flag 2 when loading asynchronously	verified	one	models/shared#shared-model-object
+CM2Shared	0x0020	260	char[260]	m_name	models	Holds the file name	verified	one	models/shared#shared-model-object
+CM2Shared	0x012c	4	uint32_t	m_hash	models	Holds the hash of the file name	verified	one	models/shared#shared-model-object
+CM2Shared	0x0130	4	void *	m_data	models	Holds the file data with its offsets fixed up	verified	one	models/shared#shared-model-object
+CM2Shared	0x0134	4	uint32_t	m_size	models	Holds the file size	verified	one	models/shared#shared-model-object
+CM2Shared	0x0138	4	void *	m_view	models	Holds the selected view	verified	one	models/shared#shared-model-object
 CMirrorHandler	0x0010	4	void *	m_callback	objectlayer	Holds the function called when the watched bytes change, written by 0x467f00	verified	one	objectlayer/fields#watcher-records
 CMirrorHandler	0x0014	4	uint32_t	m_argument	objectlayer	Holds the argument passed to the callback, written by 0x467f00	verified	one	objectlayer/fields#watcher-records
 CMirrorHandler	0x0018	4	uint32_t	m_countdown	objectlayer	Holds the field steps left before the record is checked, written by 0x465970 and 0x465570	verified	one	objectlayer/fields#when-a-watcher-runs
@@ -291,6 +322,115 @@ LightningObject::Bolt	0x0002	2	uint16_t	m_to	spell	Holds the GUID index of the h
 LightningObject::Bolt	0x0004	4	uint32_t	m_startTime	spell	Holds the time the hop starts	verified	one	spell/visuals#chain-hop-table
 LightningObject::Bolt	0x0008	4	uint32_t	m_endTime	spell	Holds the time the hop ends	verified	one	spell/visuals#chain-hop-table
 LightningObject::Bolt	0x000c	4	uint32_t	m_handle	spell	Holds the renderer bolt handle, -1 for none	verified	one	spell/visuals#chain-update-per-frame
+M2Cache	0x0000	4	uint32_t	m_initialized	models	Holds 1 once the cache is initialized	verified	one	models/cache#cache-object
+M2Cache	0x0004	4	uint32_t	m_features	models	Holds the granted feature mask	verified	one	models/cache#cache-object
+M2Cache	0x0008	4	uint32_t	m_sortMode	models	Holds the scene sort and draw mode flags	verified	one	models/cache#cache-object
+M2Cache	0x000c	4	CM2Shared *	m_releaseHead	models	Holds the first released shared model	verified	one	models/cache#cache-object
+M2Cache	0x0010	4	void *	m_releaseTail	models	Holds the address of the release list's tail link	verified	one	models/cache#cache-object
+M2Cache	0x0014	4084	CM2Shared *[1021]	m_buckets	models	Holds the 1021 chains of cached shared models	verified	one	models/cache#cache-object
+M2Cache	0x100c	4	void *	m_thread	models	Holds the helper thread handle	verified	one	models/cache#cache-object
+M2Cache	0x1014	4	uint32_t	m_stop	models	Holds 1 when the helper thread must stop	verified	one	models/cache#cache-object
+M2Cache	0x1018	4	void *	m_startEvent	models	Holds the event that wakes the helper thread	verified	one	models/cache#cache-object
+M2Cache	0x101c	4	void *	m_doneEvent	models	Holds the event the helper thread sets after its job	verified	one	models/cache#cache-object
+M2Cache	0x1024	4	void *	m_job	models	Holds the helper thread's job function	verified	one	models/cache#cache-object
+M2Cache	0x1028	4	void *	m_jobArg	models	Holds the helper thread job's argument	verified	one	models/cache#cache-object
+M2Cache	0x102c	4	void *	m_vertexShaders	models	Holds the array of 1800 vertex shader handles	verified	one	models/cache#cache-object
+M2Cache	0x1030	4	void *	m_pixelShaders	models	Holds the array of 32 pixel shader handles	verified	one	models/cache#cache-object
+M2Header	0x0000	4	uint32_t	m_magic	models	Holds MD20	verified	one	models/shared#header-fixup
+M2Header	0x0004	4	uint32_t	m_version	models	Holds the version, 0x100 or 0x101	verified	one	models/shared#header-fixup
+M2Header	0x0008	4	uint32_t	m_nName	models	Holds the count of the name	verified	one	models/shared#header-fixup
+M2Header	0x000c	4	void *	m_name	models	Holds the name, a pointer after the fixup	verified	one	models/shared#header-fixup
+M2Header	0x0014	4	uint32_t	m_nGlobalSequences	models	Holds the count of the global sequence lengths	verified	one	models/shared#header-fixup
+M2Header	0x0018	4	void *	m_globalSequences	models	Holds the global sequence lengths, a pointer after the fixup	verified	one	models/shared#header-fixup
+M2Header	0x001c	4	uint32_t	m_nSequences	models	Holds the count of the sequences, 0x44 bytes each	verified	one	models/shared#header-fixup
+M2Header	0x0020	4	void *	m_sequences	models	Holds the sequences, 0x44 bytes each, a pointer after the fixup	verified	one	models/shared#header-fixup
+M2Header	0x0024	4	uint32_t	m_nSequenceLookup	models	Holds the count of the sequence lookup	verified	one	models/shared#header-fixup
+M2Header	0x0028	4	void *	m_sequenceLookup	models	Holds the sequence lookup, a pointer after the fixup	verified	one	models/shared#header-fixup
+M2Header	0x002c	4	uint32_t	m_nPlayableTable	models	Holds the count of the playable animation pairs	verified	one	models/shared#header-fixup
+M2Header	0x0030	4	void *	m_playableTable	models	Holds the playable animation pairs, a pointer after the fixup	verified	one	models/shared#header-fixup
+M2Header	0x0034	4	uint32_t	m_nBones	models	Holds the count of the bones, 0x6c bytes each	verified	one	models/shared#header-fixup
+M2Header	0x0038	4	void *	m_bones	models	Holds the bones, 0x6c bytes each, a pointer after the fixup	verified	one	models/shared#header-fixup
+M2Header	0x003c	4	uint32_t	m_nKeyBoneLookup	models	Holds the count of the key bone lookup	verified	one	models/shared#header-fixup
+M2Header	0x0040	4	void *	m_keyBoneLookup	models	Holds the key bone lookup, a pointer after the fixup	verified	one	models/shared#header-fixup
+M2Header	0x0044	4	uint32_t	m_nVertices	models	Holds the count of the vertices, 0x30 bytes each	verified	one	models/shared#header-fixup
+M2Header	0x0048	4	void *	m_vertices	models	Holds the vertices, 0x30 bytes each, a pointer after the fixup	verified	one	models/shared#header-fixup
+M2Header	0x004c	4	uint32_t	m_nViews	models	Holds the count of the views, 0x2c bytes each	verified	one	models/shared#header-fixup
+M2Header	0x0050	4	void *	m_views	models	Holds the views, 0x2c bytes each, a pointer after the fixup	verified	one	models/shared#header-fixup
+M2Header	0x0054	4	uint32_t	m_nColors	models	Holds the count of the colours, 0x38 bytes each	verified	one	models/shared#header-fixup
+M2Header	0x0058	4	void *	m_colors	models	Holds the colours, 0x38 bytes each, a pointer after the fixup	verified	one	models/shared#header-fixup
+M2Header	0x005c	4	uint32_t	m_nTextures	models	Holds the count of the textures, 0x10 bytes each	verified	one	models/shared#header-fixup
+M2Header	0x0060	4	void *	m_textures	models	Holds the textures, 0x10 bytes each, a pointer after the fixup	verified	one	models/shared#header-fixup
+M2Header	0x0064	4	uint32_t	m_nTransparency	models	Holds the count of the transparency tracks	verified	one	models/shared#header-fixup
+M2Header	0x0068	4	void *	m_transparency	models	Holds the transparency tracks, a pointer after the fixup	verified	one	models/shared#header-fixup
+M2Header	0x006c	4	uint32_t	m_nTextureFrames	models	Holds the count of the texture frame tracks	verified	one	models/shared#header-fixup
+M2Header	0x0070	4	void *	m_textureFrames	models	Holds the texture frame tracks, a pointer after the fixup	verified	one	models/shared#header-fixup
+M2Header	0x0074	4	uint32_t	m_nTextureTransforms	models	Holds the count of the texture transforms, 0x54 bytes each	verified	one	models/shared#header-fixup
+M2Header	0x0078	4	void *	m_textureTransforms	models	Holds the texture transforms, 0x54 bytes each, a pointer after the fixup	verified	one	models/shared#header-fixup
+M2Header	0x007c	4	uint32_t	m_nReplaceableLookup	models	Holds the count of the replaceable texture lookup	verified	one	models/shared#header-fixup
+M2Header	0x0080	4	void *	m_replaceableLookup	models	Holds the replaceable texture lookup, a pointer after the fixup	verified	one	models/shared#header-fixup
+M2Header	0x0084	4	uint32_t	m_nMaterials	models	Holds the count of the materials, 4 bytes each	verified	one	models/shared#header-fixup
+M2Header	0x0088	4	void *	m_materials	models	Holds the materials, 4 bytes each, a pointer after the fixup	verified	one	models/shared#header-fixup
+M2Header	0x008c	4	uint32_t	m_nBoneLookup	models	Holds the count of the bone lookup	verified	one	models/shared#header-fixup
+M2Header	0x0090	4	void *	m_boneLookup	models	Holds the bone lookup, a pointer after the fixup	verified	one	models/shared#header-fixup
+M2Header	0x0094	4	uint32_t	m_nTextureLookup	models	Holds the count of the texture lookup	verified	one	models/shared#header-fixup
+M2Header	0x0098	4	void *	m_textureLookup	models	Holds the texture lookup, a pointer after the fixup	verified	one	models/shared#header-fixup
+M2Header	0x009c	4	uint32_t	m_nTextureUnitLookup	models	Holds the count of the texture unit lookup	verified	one	models/shared#header-fixup
+M2Header	0x00a0	4	void *	m_textureUnitLookup	models	Holds the texture unit lookup, a pointer after the fixup	verified	one	models/shared#header-fixup
+M2Header	0x00a4	4	uint32_t	m_nTransparencyLookup	models	Holds the count of the transparency lookup	verified	one	models/shared#header-fixup
+M2Header	0x00a8	4	void *	m_transparencyLookup	models	Holds the transparency lookup, a pointer after the fixup	verified	one	models/shared#header-fixup
+M2Header	0x00ac	4	uint32_t	m_nTextureTransformLookup	models	Holds the count of the texture transform lookup	verified	one	models/shared#header-fixup
+M2Header	0x00b0	4	void *	m_textureTransformLookup	models	Holds the texture transform lookup, a pointer after the fixup	verified	one	models/shared#header-fixup
+M2Header	0x00b4	24	float[6]	m_bounds	models	Holds the bounding box, minimum then maximum	verified	one	models/shared#header-fixup
+M2Header	0x00cc	4	float	m_boundsRadius	models	Holds the bounding radius	verified	one	models/shared#header-fixup
+M2Header	0x00d0	24	float[6]	m_collisionBounds	models	Holds the collision box	verified	one	models/shared#header-fixup
+M2Header	0x00e8	4	float	m_collisionRadius	models	Holds the collision radius	verified	one	models/shared#header-fixup
+M2Header	0x00ec	4	uint32_t	m_nCollisionIndices	models	Holds the count of the collision indices	verified	one	models/shared#header-fixup
+M2Header	0x00f0	4	void *	m_collisionIndices	models	Holds the collision indices, a pointer after the fixup	verified	one	models/shared#header-fixup
+M2Header	0x00f4	4	uint32_t	m_nCollisionVertices	models	Holds the count of the collision vertices	verified	one	models/shared#header-fixup
+M2Header	0x00f8	4	void *	m_collisionVertices	models	Holds the collision vertices, a pointer after the fixup	verified	one	models/shared#header-fixup
+M2Header	0x00fc	4	uint32_t	m_nCollisionNormals	models	Holds the count of the collision normals	verified	one	models/shared#header-fixup
+M2Header	0x0100	4	void *	m_collisionNormals	models	Holds the collision normals, a pointer after the fixup	verified	one	models/shared#header-fixup
+M2Header	0x0104	4	uint32_t	m_nAttachments	models	Holds the count of the attachments, 0x30 bytes each	verified	one	models/shared#header-fixup
+M2Header	0x0108	4	void *	m_attachments	models	Holds the attachments, 0x30 bytes each, a pointer after the fixup	verified	one	models/shared#header-fixup
+M2Header	0x010c	4	uint32_t	m_nAttachmentLookup	models	Holds the count of the attachment lookup	verified	one	models/shared#header-fixup
+M2Header	0x0110	4	void *	m_attachmentLookup	models	Holds the attachment lookup, a pointer after the fixup	verified	one	models/shared#header-fixup
+M2Header	0x0114	4	uint32_t	m_nEvents	models	Holds the count of the events, 0x2c bytes each	verified	one	models/shared#header-fixup
+M2Header	0x0118	4	void *	m_events	models	Holds the events, 0x2c bytes each, a pointer after the fixup	verified	one	models/shared#header-fixup
+M2Header	0x011c	4	uint32_t	m_nLights	models	Holds the count of the lights, 0xd4 bytes each	verified	one	models/shared#header-fixup
+M2Header	0x0120	4	void *	m_lights	models	Holds the lights, 0xd4 bytes each, a pointer after the fixup	verified	one	models/shared#header-fixup
+M2Header	0x0124	4	uint32_t	m_nCameras	models	Holds the count of the cameras, 0x7c bytes each	verified	one	models/shared#header-fixup
+M2Header	0x0128	4	void *	m_cameras	models	Holds the cameras, 0x7c bytes each, a pointer after the fixup	verified	one	models/shared#header-fixup
+M2Header	0x012c	4	uint32_t	m_nCameraLookup	models	Holds the count of the camera lookup	verified	one	models/shared#header-fixup
+M2Header	0x0130	4	void *	m_cameraLookup	models	Holds the camera lookup, a pointer after the fixup	verified	one	models/shared#header-fixup
+M2Header	0x0134	4	uint32_t	m_nRibbons	models	Holds the count of the ribbon emitters, 0xdc bytes each	verified	one	models/shared#header-fixup
+M2Header	0x0138	4	void *	m_ribbons	models	Holds the ribbon emitters, 0xdc bytes each, a pointer after the fixup	verified	one	models/shared#header-fixup
+M2Header	0x013c	4	uint32_t	m_nParticles	models	Holds the count of the particle emitters, 0x1f8 bytes each	verified	one	models/shared#header-fixup
+M2Header	0x0140	4	void *	m_particles	models	Holds the particle emitters, 0x1f8 bytes each, a pointer after the fixup	verified	one	models/shared#header-fixup
+M2Light	0x0000	4	M2Scene *	m_scene	models	Holds the scene the light belongs to	verified	one	models/lights#light-object
+M2Light	0x0008	4	uint32_t	m_type	models	Holds the light type, 1 for a point light	verified	one	models/lights#light-object
+M2Light	0x000c	12	float[3]	m_position	models	Holds the light position	verified	one	models/lights#light-object
+M2Light	0x0024	12	float[3]	m_direction	models	Holds the light direction	verified	one	models/lights#light-object
+M2Light	0x0058	4	float	m_attenuation0	models	Holds the first attenuation term, 0.7 by default	verified	one	models/lights#light-object
+M2Light	0x005c	4	float	m_attenuation1	models	Holds the second attenuation term, 0.03 by default	verified	one	models/lights#light-object
+M2Light	0x0060	4	uint32_t	m_enabled	models	Holds whether the light is enabled	verified	one	models/lights#light-object
+M2Lighting	0x0000	4	M2Scene *	m_scene	models	Holds the scene the record gathers lights from	verified	one	models/lights#lighting-record
+M2Lighting	0x0004	12	float[3]	m_position	models	Holds the position the record is lit at	verified	one	models/lights#lighting-record
+M2Lighting	0x0054	12	float[3]	m_ambient	models	Holds the summed ambient colour	verified	one	models/lights#lighting-record
+M2Lighting	0x0160	16	M2Light *[4]	m_nearLights	models	Holds the nearest point lights as a max-heap	verified	one	models/lights#lighting-record
+M2Lighting	0x0170	16	float[4]	m_nearDistances	models	Holds the squared distances of the nearest point lights	verified	one	models/lights#lighting-record
+M2Lighting	0x0180	4	uint32_t	m_nearCount	models	Holds the number of nearest point lights	verified	one	models/lights#lighting-record
+M2Lighting	0x0184	4	float	m_fogStart	models	Holds the fog start	verified	one	models/lights#lighting-record
+M2Lighting	0x0188	4	float	m_fogEnd	models	Holds the fog end	verified	one	models/lights#lighting-record
+M2Lighting	0x018c	4	float	m_fogScale	models	Holds 1/(fog end - fog start)	verified	one	models/lights#lighting-record
+M2Lighting	0x0190	12	float[3]	m_fogColor	models	Holds the fog colour	verified	one	models/lights#lighting-record
+M2Scene	0x0000	4	uint32_t	m_refCount	models	Holds the scene's reference count	verified	one	models/scene#scene-object
+M2Scene	0x0004	4	M2Cache *	m_cache	models	Holds the cache the scene belongs to	verified	one	models/scene#scene-object
+M2Scene	0x000c	4	uint32_t	m_time	models	Holds the scene clock in milliseconds	verified	one	models/scene#scene-object
+M2Scene	0x0010	4	uint32_t	m_frame	models	Holds the frame counter the collect pass increments	verified	one	models/scene#scene-object
+M2Scene	0x0020	4	CM2Model *	m_animateList	models	Holds the first instance of the animate list	verified	one	models/scene#scene-object
+M2Scene	0x009c	64	float[16]	m_view	models	Holds the view matrix, rebased to the frame origin	verified	one	models/scene#scene-object
+M2Scene	0x00dc	64	float[16]	m_sceneMatrix	models	Holds the matrix the scene derives from its view	verified	one	models/scene#scene-object
+M2Scene	0x014c	7200	uint32_t[1800]	m_shaderIdMemo	models	Holds the remapped vertex shader ids, -1 when not computed	verified	one	models/scene#scene-object
 MovementGlobals	0x0000	260	char[260]	m_logPath	collision	Holds the movement log path copied by 0x616860	verified	one	collision/mover#initialisation-and-teardown
 MovementGlobals	0x0104	4	void *	m_logFile	collision	Holds a log file handle, closed by 0x7c4e90 and 0x616910	inferred	none	collision/mover#initialisation-and-teardown
 MovementGlobals	0x0108	4	void *	m_fallLogFile	collision	Holds a second log file handle, closed by 0x616910	inferred	none	collision/mover#initialisation-and-teardown

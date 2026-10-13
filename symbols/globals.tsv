@@ -111,6 +111,12 @@ address	type	name	name_from	system	meaning	confidence	proof	finding
 0x6ea408	uint8_t[62]	s_spellHelpTargetBIndex		spell	Maps implicit target B values 1 to 62 to cases of 0x6ea3fc	verified	one	spell/handlers#hostility-classifier
 0x7052a4	void *[5]	s_handlerFormatCases		ui	Holds the case addresses of the argument runner's format letters	verified	one	ui/script#running-a-handler
 0x7052b8	uint8_t[18]	s_handlerFormatIndex		ui	Holds the case of each letter from d to u for the argument runner	verified	one	ui/script#running-a-handler
+0x70b728	void *[6]	s_m2DrawKindTable		models	Holds the draw routine of each element kind, 0 to 5	verified	one	models/render#list-draw
+0x70c17c	void *[4]	s_m2FogModeTable		models	Holds the jump targets of fog modes 1 to 4	verified	one	models/render#lighting-and-fog
+0x7102d0	void *[6]	s_m2EmitterTypeTable		models	Holds the jump targets that build a particle emitter by its record's type	verified	one	models/particles#emitter-classes
+0x7102e8	void *[10]	s_m2DeferredCallTable		models	Holds the jump targets that replay deferred calls of kinds 0 to 9	verified	one	models/model#deferred-calls
+0x718788	void *[5]	s_m2BillboardTable		models	Holds the jump targets of the billboard cases	inferred	none	models/animation#billboards
+0x71879c	uint8_t[57]	s_m2BillboardIndex		models	Maps a bone's billboard flags minus 8 to a billboard case	inferred	none	models/animation#billboards
 0x7a3054	void *[3]	s_pointXCases		ui	Holds the three case addresses of the relative point x getter	verified	one	ui/anchors#relative-point-coordinates
 0x7a3060	uint8_t[9]	s_pointXCaseIndex		ui	Holds the case of each anchor point for the x getter: 0, 1, 2 repeated	verified	one	ui/anchors#relative-point-coordinates
 0x7a3134	void *[3]	s_pointYCases		ui	Holds the three case addresses of the relative point y getter	verified	one	ui/anchors#relative-point-coordinates
@@ -149,6 +155,7 @@ address	type	name	name_from	system	meaning	confidence	proof	finding
 0x801620	float	s_mouseSpeedMin		core	Holds 0.1, the lowest mouse speed setting and the factor 0x42cd60 returns it with	verified	one	core/input#mouse-speed-and-num-lock
 0x801624	float	s_mouseSpeedScale		core	Holds 10.0, the mouse speed setting's factor to the Windows speed	verified	one	core/input#mouse-speed-and-num-lock
 0x801628	float	s_mouseSpeedMax		core	Holds 2.0, the highest mouse speed setting	verified	one	core/input#mouse-speed-and-num-lock
+0x8026c8	float	s_oneOver255		models	Holds 1/255, the scale of a byte to a unit value	verified	one	models/render#software-skinning
 0x802700	uint32_t[64]	NTempest::gnoise32_	idb	random	Holds the 64 dwords the state advance and the hashes read	verified	two	random#state-advance
 0x802800	float[16]	s_noiseGradients		random	Holds -1 + 2k/15 for k = 0 to 15, the gradient components of the noise	inferred	none	random#unreached-functions
 0x802978	float	s_oneEighth		terrain	Holds 0.125	verified	one	terrain/lod#chunk-mesh-tables
@@ -169,6 +176,7 @@ address	type	name	name_from	system	meaning	confidence	proof	finding
 0x803960	void *[40]	CSimpleModelFFX::vftable		glue	Holds CSimpleModelFFX's vtable; slots 12 and 17 are 0x46fa60 and 0x46fa90	verified	one	glue/select#the-modelffx-frame
 0x803a78	float	s_radiansToDegrees		glue	Holds the f32 57.29578 (0x42652ee1) that turns the select facing into degrees	verified	one	glue/select#facing-in-degrees
 0x80654c	float	s_tileSize		terrain	Holds 533.33331 (0x44055555), a tile's side in yards	verified	one	terrain/files#wdl
+0x808120	float	s_m2OpaqueAlpha		models	Holds 0.99999, the alpha at or above which a batch draws as opaque	verified	one	models/scene#element-collection
 0x808b5c	float	s_dragTravel		input	Holds 8.0, the travel either sum must reach for a slow release to count as a drag	verified	two	input#click-versus-drag
 0x809070	void *[17]	NetClient::vftable		net	Holds NetClient's vtable: 17 slots, data hook at 1, queued events at 12 to 15	verified	one	net/dispatch#dispatch
 0x8090d8	float	s_placementScaleUnit		terrain	Holds 1/1024 (0x3a800000), the unit of an MDDF scale	verified	one	terrain/files#doodad-placements
@@ -298,6 +306,7 @@ address	type	name	name_from	system	meaning	confidence	proof	finding
 0x810fec	const float	s_infinity28		terrain	Holds +inf, 0x7f800000, the literal one terrain file copies at start-up	verified	one	terrain/statics#static-initializers
 0x811048	const float	s_infinity29		terrain	Holds +inf, 0x7f800000, the literal one terrain file copies at start-up	verified	one	terrain/statics#static-initializers
 0x811114	const float	s_infinity30		terrain	Holds +inf, 0x7f800000, the literal one terrain file copies at start-up	verified	one	terrain/statics#static-initializers
+0x811610	float	s_int16ToUnit		models	Holds 1/32767, the scale of a 16-bit track value to a unit value	inferred	none	models/animation#element-tracks
 0x811818	void *[4]	s_raceClassInfoTableVtable		spell	Holds the race-class table's delete, make, destroy and clear slots	verified	one	spell/tables#node-vtables
 0x811828	void *[4]	s_skillCostsInfoTableVtable		spell	Holds the skill-cost table's delete, make, destroy and clear slots	verified	one	spell/tables#node-vtables
 0x811838	void *[4]	s_skillLineRecPoolTableVtable		spell	Holds the ability table's pooled delete, make and destroy slots and the base clear	verified	one	spell/tables#node-vtables
@@ -311,6 +320,12 @@ address	type	name	name_from	system	meaning	confidence	proof	finding
 0x811a38	uint32_t[18]	s_anchorPointNames		ui	Holds nine pairs of an anchor point index and its name	verified	one	ui/anchors#point-slots-and-point-names
 0x811e28	uint32_t[72]	s_frameScriptBaseLibrary		ui	Holds 36 pairs of a name and a function, setglobal to debugstack, the script base library	inferred	none	ui/script#the-lua-state
 0x811f4c	void *[5]	s_scriptObjectVtable		ui	Holds the script object vtable the constructor 0x701ae0 stores	verified	one	ui/script#the-script-object
+0x811f8c	uint32_t[7]	s_m2StageCombineByBlend		models	Holds the texture stage combine value of each blend mode	verified	one	models/render#texture-stages
+0x811fa8	uint32_t[7]	s_m2LitByBlend		models	Holds whether each blend mode is lit	verified	one	models/render#lighting-and-fog
+0x811fc4	uint32_t[7]	s_m2FogModeByBlend		models	Holds the fog mode of each blend mode	verified	one	models/render#lighting-and-fog
+0x811fe0	uint32_t[21]	s_m2DeviceBlendByList		models	Holds the device blend of each blend mode for each of the three lists	verified	one	models/render#material-state
+0x812034	float	s_m2AlphaRefScale		models	Holds 224.0, the alpha test reference of an alpha-keyed batch at full alpha	verified	one	models/render#material-state
+0x81207c	float	s_twoSqrtPi		models	Holds 2·sqrt(π), the scale of an ambient colour into the constant harmonic term	inferred	none	models/lights#spherical-harmonic-terms
 0x81c378	const float	s_inputPriority		ui	Holds 1.0, the priority of the top's input handlers	verified	one	ui/input#the-handlers
 0x81c380	void *[11]	CSimpleTop::vftable		ui	Holds the vtable of CSimpleTop	verified	one	ui/strata#construction-and-teardown
 0x81c3b8	uint32_t[3]	s_centerXPoints		ui	Holds the anchor points 1, 4, 7 that fix a horizontal centre	verified	one	ui/anchors#edge-resolution-from-points
@@ -347,6 +362,13 @@ address	type	name	name_from	system	meaning	confidence	proof	finding
 0x81d7e8	void *[2]	s_propertySetVftable		camera	Holds the camera base's vtable: 0x7acd10, then 0x442a70	verified	one	camera#lifetime
 0x81d7f0	void *[3]	CBaseManaged::vftable		camera	Holds the base property vtable: 0x7acb50, 0x7acb30, 0x7acb40	verified	one	camera#property-updates
 0x81d7fc	void *[4]	s_anglePropertyVftable		camera	Holds the angle property vtable: delete, the scalar evaluate and verify, store	verified	one	camera#property-updates
+0x81d828	float	s_particleSubstep		models	Holds 0.1, the particle substep in seconds	verified	one	models/particles#substeps
+0x81d82c	float	s_particleVelocityPeriod		models	Holds 1/30, the period over which an emitter derives its velocity	verified	one	models/particles#update
+0x81d83c	void *[11]	CParticleEmitter2::vftable		models	Holds the base particle emitter's virtual functions	verified	one	models/particles#emitter-classes
+0x81d86c	float	s_particleVelocityEpsilon		models	Holds 1e-8, under which a particle velocity component becomes 0	verified	one	models/particles#particle-motion
+0x81d888	void *[11]	s_planeEmitterVftable		models	Holds the plane emitter's virtual functions	verified	one	models/particles#emitter-classes
+0x81d8b4	void *[11]	s_sphereEmitterVftable		models	Holds the sphere emitter's virtual functions	verified	one	models/particles#emitter-classes
+0x81d8e0	void *[11]	s_splineEmitterVftable		models	Holds the spline emitter's virtual functions	verified	one	models/particles#emitter-classes
 0x81da58	float	s_gravity		collision	Holds g, 19.291105 (0x419a542f) yards per second squared, down-positive	verified	one	collision/falling#arc-fields-and-constants
 0x81da5c	float	s_negInvGravity		collision	Holds -1/g, -0.051837362 (0xbd54536a)	verified	one	collision/falling#arc-fields-and-constants
 0x81da60	float	s_halfGravity		collision	Holds g/2, 9.6455526 (0x411a542f)	verified	one	collision/falling#arc-fields-and-constants
@@ -531,6 +553,12 @@ address	type	name	name_from	system	meaning	confidence	proof	finding
 0x872a28	char[6]	s_handlerNameFormat		ui	Holds %s:%s, the format of a compiled handler's name	verified	one	ui/script#compiling-a-script-element
 0x872cd0	char[15]	s_getPluralIndexName		ui	Holds GetPluralIndex	inferred	none	ui/script#text-counts-and-running-code
 0x872e64	char[5]	s_thisGlobalName		ui	Holds this, the global a handler runs with	verified	one	ui/script#running-a-handler
+0x873070	char[32]	s_m2DestroyNeverCalled		models	Holds the message logged when the model cache dies initialized	verified	one	models/cache#cache-object
+0x873184	uint32_t[6]	s_m2KindPriority		models	Holds the transparent sort priority of each element kind	verified	one	models/scene#batch-grouping
+0x8732ac	char[34]	s_m2StallFormat		models	Holds the message logged when an instance waits for its file	verified	one	models/model#load-state
+0x8764f8	void *[74]	s_mathRoutineSlots		cmath	Holds the math routine slots the dispatch thunks jump through	verified	one	models/animation#dispatched-matrix-math
+0x876620	void *[74]	s_mathRoutineDefaults		cmath	Holds the default math routines copied into the slots	verified	one	models/animation#dispatched-matrix-math
+0x87674c	uint32_t	s_mathRoutineSet		cmath	Holds which routine set was chosen, 0xffff before the first call	verified	one	models/animation#dispatched-matrix-math
 0x8783a4	char[53]	s_simpleTopPath		ui	Holds the source path of CSimpleTop.cpp	verified	one	ui/input#input-lists
 0x8783e4	char[23]	s_strataNodeTag		ui	Holds .PAVCFrameStrataNode@@, the allocation tag of the level node arrays	verified	one	ui/strata#strata-records-and-level-nodes
 0x878440	char[33]	s_relativeFrameMissing		ui	Holds the error the XML anchors report for a relativeTo name that finds no frame	verified	one	ui/anchors#construction-and-the-xml-anchors
@@ -733,6 +761,8 @@ address	type	name	name_from	system	meaning	confidence	proof	finding
 0xc0df8c	uint32_t[5]	s_charBaseInfoStore		dbc	Holds the CharBaseInfo.dbc store of 8-byte race and class records	verified	one	spell/tables#startup-build-of-the-indexes
 0xc0dfa0	uint8_t[20]	s_cfgConfigsStore		dbc	Holds the Cfg_Configs.dbc store: records, count, id map, max row and loaded flag	inferred	none	
 0xc0dfb4	uint8_t[20]	s_cfgCategoriesStore		dbc	Holds the Cfg_Categories.dbc store: records, count, index table, highest ordinal and loaded flag	inferred	none	
+0xc0e070	void *	s_animationDataRows		dbc	Holds the animation table's rows indexed by id	verified	one	models/animation#animation-id-resolution
+0xc0e074	uint32_t	s_animationDataMaxId		dbc	Holds the highest id of the animation table	verified	one	models/animation#animation-id-resolution
 0xc0e080	uint32_t	s_localeIndex		client	Holds the locale index that picks a localized string column	inferred	none	spell/handlers#channel-start-and-update
 0xc27fb8	uint8_t[308]	s_selectedRealm		net	Holds the selected realm's 308-byte record; its address text is at +0x109	verified	one	net/session#connecting
 0xc28118	void *	s_realmList		net	Holds the realm list the realm selection searches	verified	one	net/session#connecting
@@ -839,6 +869,8 @@ address	type	name	name_from	system	meaning	confidence	proof	finding
 0xc9e35c	uint32_t[8]	s_wdtHeader		terrain	Holds the WDT's 32-byte map header; bit 0 of its first dword marks a one-object map	verified	one	terrain/files#wdt
 0xc9e384	uint8_t	s_mapIsOneObject		terrain	Holds 1 when the WDT names one map object for the whole map	inferred	none	
 0xc9e388	uint32_t	s_useSse		terrain	Holds 1 when the processor has SSE, set at map start-up	verified	one	terrain/queries#chunk-height
+0xca03e4	void *	s_aaBspLeafCache		models	Holds the BSP leaf cache's slot table, freed with a BSP tree	verified	one	models/overview#object-files
+0xca03e8	uint32_t	s_aaBspLeafCacheVictim		models	Holds the counter whose low three bits pick the leaf cache slot to replace	verified	one	models/overview#object-files
 0xca05f0	uint8_t	s_footprintPools		terrain	Begins the footprint ring pools	inferred	none	
 0xca7d70	void *	s_sceneDefList		terrain	Holds the scene's placement list	inferred	none	
 0xca7d98	void *	s_globalMapObjList		terrain	Holds the global map object list	inferred	none	
@@ -906,6 +938,11 @@ address	type	name	name_from	system	meaning	confidence	proof	finding
 0xceef68	void *	s_eventRecords		ui	Points to the event records, 0x10 bytes each: name and listener list	verified	one	ui/script#the-event-table
 0xceef6c	uint32_t	s_lastTypeId		ui	Holds the last script type id handed out	verified	one	ui/frames#the-region-type-id
 0xceef74	void *	s_luaState		ui	Points to the Lua state of the interface, 0 while closed	inferred	none	ui/script#the-lua-state
+0xceefb0	M2Cache	s_m2Cache		models	Holds the model cache	verified	one	models/cache#cache-object
+0xceffec	float	s_m2LightGridScale		models	Holds the scale from world units to a scene light grid cell	verified	one	models/lights#scene-light-grid
+0xcefff8	uint32_t[251]	s_m2GroupBuckets		models	Holds the buckets of the batch grouping hash, -1 when empty	verified	one	models/scene#batch-grouping
+0xcf043c	float[3]	s_m2TextureCenter		models	Holds (0.5, 0.5, 0), the centre texture transforms rotate and scale about	inferred	none	models/animation#element-tracks
+0xcf04c8	void *	s_m2SkinVertices		models	Holds the vertex skinning routine the CPU features select	verified	one	models/render#software-skinning
 0xcf0a3c	float	s_softFloatZero		cmath	Holds 0.0, set by 0x7625e0; the floor and ceil read it	verified	one	spell/records#software-floats
 0xcf0a40	float	s_softFloatOne		cmath	Holds 1.0, set by 0x762e20; the ceil reads it	verified	one	spell/records#software-floats
 0xcf0b0c	float	s_softFloatHundredth		cmath	Holds 0x3c23d70a, 0.01, set by 0x7626e0; the software modifier applier reads it	verified	one	spell/records#modifier-appliers
@@ -932,6 +969,10 @@ address	type	name	name_from	system	meaning	confidence	proof	finding
 0xcf5740	float	s_cameraInvTwoPi2		camera	Holds 1/2π, set at startup; nothing reads it	verified	one	camera#object-file-and-initializers
 0xcf5744	float	s_cameraTwoPi2		camera	Holds 2π, set at startup; read only by 0x7adf50	verified	one	camera#object-file-and-initializers
 0xcf5748	float	s_cameraInfinity2		camera	Holds +inf, set at startup; nothing reads it	verified	one	camera#object-file-and-initializers
+0xcf575c	void *	s_particleRegistry		models	Holds the particle emitter registry, created on first use	verified	one	models/particles#registries
+0xcf5760	void *	s_ribbonRegistry		models	Holds the ribbon emitter registry, created on first use	verified	one	models/particles#registries
+0xcf58e8	float	s_particleCameraDistance		models	Holds the distance from the last updated emitter to the camera	verified	one	models/particles#update
+0xcf58f0	float[128]	s_particleNoise		models	Holds 128 uniform values in [0, 1) the particle code draws from	verified	one	models/cache#noise-table
 0xcf5ca4	float	s_sharedInvTwoPiA		collision	Holds 1/2π, 0.15915494, from start-up	verified	one	collision/overview#shared-file-initializers
 0xcf5ca8	float	s_sharedTwoPiA		collision	Holds 2π, 6.2831855, from start-up	verified	one	collision/overview#shared-file-initializers
 0xcf5cc0	float	s_sharedInfinityA		collision	Holds +∞ from start-up	verified	one	collision/overview#shared-file-initializers

@@ -8,6 +8,8 @@ CGPlayer_C	11340	0x80af78	objectlayer	Holds a player other than the active one, 
 CGUnit_C	5120	0x80c4f8	objectlayer	Holds a unit: the object, the unit members with their field pointers, the unit fields and watch copy	verified	one	objectlayer/classes#class-sizes-and-pools
 CInputControl	28		input	Holds the world input state: held commands, travel sums, times and the armed click	verified	one	input#input-state
 CLayoutFrame	116	0x81c400	ui	Holds a laid-out object's anchor points, dependents, flags, rectangle, size, scale and queue link	verified	one	ui/anchors#construction-and-the-xml-anchors
+CM2Model	1064		models	Holds a model instance: its scene, shared model, transforms, animation state and children	verified	one	models/model#instance-object
+CM2Shared	356		models	Holds a model file: its fixed-up data, view, textures, shader ids and buffers	verified	one	models/shared#shared-model-object
 CMirrorHandler	48		objectlayer	Holds one field watcher: the watched byte range, its copy offset, the callback and its argument	verified	one	objectlayer/fields#watcher-records
 CMovement	352		collision	Holds a unit's movement: the shared kinematics to +0xab, then collision size, relay timing, event queue and unit	verified	one	collision/mover#construction
 CPlayerMoveEvent	80		collision	Holds one queued movement event: list link, time, tag, pose, status snapshot, payload and flags	verified	one	collision/events#event-node
@@ -24,6 +26,12 @@ EvtHandler	24		core	Holds a registered handler: its link, function, argument, pr
 ITEMCOOLDOWNHASHNODE	36		spell	Holds one item-cooldown hash node: key, slot link, node-list link and payload	verified	one	spell/cooldowns#item-cooldown-table
 LightningObject	80		spell	Holds a chain effect: link, GUID and hop arrays, end time, chain record values, texture, spell, flag and references	verified	one	spell/visuals#chain-effect-creation
 LightningObject::Bolt	16		spell	Holds one hop of a chain: endpoint indices, start and end time and renderer handle	verified	one	spell/visuals#chain-hop-table
+M2Cache	4152		models	Holds the model cache: features, shared model buckets, release list, helper thread and shaders	verified	one	models/cache#cache-object
+M2Element	64		models	Holds one drawable of a scene frame: its kind, instance, batch, depth keys and shader ids	verified	one	models/scene#element-collection
+M2Header	340		models	Holds an MD20 file header: magic, version and the count and offset of every array	verified	one	models/shared#header-fixup
+M2Light	108		models	Holds a light: type, position, direction, colours, attenuation and scene link	verified	one	models/lights#light-object
+M2Lighting	436		models	Holds the lights an instance draws with: nearest point lights, sums, harmonic terms, fog, clip plane	verified	one	models/lights#lighting-record
+M2Scene	7532		models	Holds a scene: clock, model lists, light grid, elements, draw lists and queued callbacks	verified	one	models/scene#scene-object
 MovementGlobals	312		collision	Holds the movement manager: log path and files, the mover list, the tick clock and the heartbeat deadline	verified	one	collision/mover#movement-manager
 NETEVENTQUEUENODE	24		net	Holds one queued network event: link, type, time, data copy and length	verified	one	net/dispatch#network-thread-handoff
 NTempest::CRndSeed	8		random	Holds a random state: an accumulator and four lane indices	verified	two	random#state-and-seeding

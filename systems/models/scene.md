@@ -1,0 +1,238 @@
+# models: the scene
+
+A scene: the set of model instances one view draws, its clock, its animate list, and the per-frame
+pass that animates the instances and sorts what they draw into three lists.
+
+M2Scene.cpp runs from `0x706f10` through `0x70dc40`. A scene is a 0x1d6c-byte object the cache
+allocates (`cache`); the world frame, the glue screens and the interface's model frames each hold
+one. Each frame the owner advances the scene's clock (`0x7074b0`), runs the collect pass
+(`0x707680`) and draws the lists (`0x708900`); the draw itself is `render`. An instance is a
+`CM2Model` (`model`), its file data a shared model (`shared`).
+
+Roots: `0x707320`, `0x707350`, `0x707400`, `0x707480`, `0x707490`, `0x7074b0`, `0x7075f0`, `0x707600`, `0x707680`, `0x7089b0`, `0x7089c0`, `0x7099e0`, `0x70a060`, `0x70a0f0`, `0x70a230`, `0x70a250`, `0x70a5a0`, `0x70aa00`, `0x70aa30`, `0x70ae10`, `0x70b350`, `0x70dbf0`
+
+## Scene object
+
+The constructor stores the cache at `+0x4`, sets the reference count `+0x0` to 1, the view
+`+0x9c` and the scene matrix `+0xdc` to identity, and the 1800-entry shader id memo at `+0x14c` to
+−1. `0x707320` decrements the count and destroys and frees the scene at zero; the destructor
+releases every instance on the model list `+0x8`, then frees the element, sort and callback arrays.
+
+| offset | holds |
+|---|---|
+| `+0x00c` | clock, milliseconds |
+| `+0x010` | frame counter |
+| `+0x018`, `+0x01c` | global light list, 64×64 light grid |
+| `+0x020` | animate list (link `+0x44`/`+0x48` in the instance) |
+| `+0x024`, `+0x028` | draw queue, emitter queue (links `+0x54`/`+0x58`, `+0x3dc`/`+0x3e0`) |
+| `+0x02c` to `+0x034` | element array (64-byte `M2Element`) |
+| `+0x03c`, `+0x04c`, `+0x05c`, `+0x06c` | grouped list, list 0, list 1, list 2 (index arrays) |
+| `+0x07c` to `+0x088` | queued callbacks (48-byte records) |
+| `+0x11c`, `+0x120` | special-batch callback and its argument |
+
+Addresses: `0x706ff0`, `0x7071a0`, `0x707320`, `0x707310`, `0x70a230`
+Confidence: verified
+Proof: one
+Test: none
+
+The identity stores are 1.0 at `+0x9c`, `+0xb0`, `+0xc4`, `+0xd8` and at `+0xdc`, `+0xf0`,
+`+0x104`, `+0x118`; `0x706ff0` fills 0x708 dwords from `+0x14c` with −1. The destructor loops
+`0x7103a0` on the head of `+0x8` until the list is empty. The list offsets are the links each
+writer uses: `0x710b90` for `+0x20`, `0x707680` for `+0x24` and `+0x28`, `0x70a280` for `+0x7c`.
+
+## Model creation
+
+`0x707350(path, flags)` asks the cache for the file's shared model, asynchronously when flags bit
+4 is set. When that fails it loads `Spells\ErrorCube.mdx` synchronously instead. It allocates a
+0x428-byte instance, constructs it and initializes it on the scene; a failed initialization
+destroys the instance and returns 0. The lookup's own reference is released either way.
+`0x707400(source, flags)` does the same with the source instance's shared model, and the new
+instance copies the source's attachments.
+
+Addresses: `0x707350`, `0x707400`, `0x706a50`, `0x70dd70`, `0x70ea00`, `0x70e170`, `0x71d480`
+Confidence: verified
+Proof: one
+Test: none
+
+The allocation passes line 0x92 in `0x707350` and 0xaf in `0x707400`. The fallback pushes the
+string `Spells\ErrorCube.mdx` and 0 for the asynchronous flag before a second `0x706a50`.
+`0x70ea00` receives the scene, the shared model, the source (0 from a path) and the flags.
+`0x71d480` runs on the shared model before the return.
+
+## Scene advance
+
+`0x7074b0(dt)` does nothing for `dt` 0. Otherwise it adds `dt` to the clock, evicting released
+shared models, runs `CM2Model::Update(dt)` on every instance of the animate list, then runs the
+callbacks the updates queued. The queue is sorted by each record's time key, largest first, ties in
+queue order; a kind-0 record calls `fn(ecx=model, edx=a, b, c, d, e, f)`, a kind-1 record passes a
+copy of its position before the last three arguments. Each record's instance is then released and
+the queue emptied.
+
+Addresses: `0x7074b0`, `0x707490`, `0x719370`, `0x71f860`, `0x70a5a0`, `0x70a280`, `0x70a400`
+Confidence: verified
+Proof: one
+Test: none
+
+The sort fills an index array with 0 to n−1 and calls `0x71f860` with the comparator `0x70a5a0`,
+which returns −1 when record i's `+0x24` is greater (unsigned), 1 when smaller, then compares the
+indices. Records are 0x30 bytes at `+0x84`; their kind is `+0x0`, the function `+0x4`, the
+instance `+0x8`. `0x70a280` and `0x70a400` add a reference to the instance when they queue it, and
+cap the queue at 0x10000 records.
+
+## View rebase
+
+The collect pass increments the frame counter and clears the shader id memo when the cache's mode
+changed. It reads the device view into `+0x9c` and moves its translation so the view is relative to
+the origin `p` the caller passes: `m30 −= (m10·py + m20·pz) + m00·px`, `m31 −= (m11·py + m01·px)
++ m21·pz`, `m32 −= (m12·py + m02·px) + m22·pz`, each sum at the FPU's 53-bit precision (control
+word 0x027F) and each result rounded to a float. It then sets the scene matrix `+0xdc` with the
+dispatched routine `0x74ad38(+0xdc, 0, view)`, which has a matrix inverse's arguments and whose
+result is not transcribed (`animation`, `Dispatched matrix math`).
+
+Addresses: `0x707680`, `0x707696`, `0x7076a2`, `0x7076f8`, `0x707722`, `0x70774c`, `0x707752`, `0x74ad38`
+Confidence: verified
+Proof: one
+Test: none
+
+`m[r][c]` is `+0x9c + 16r + 4c`. At `0x7076cb`: `fld +0xac; fmul p.y; fld +0xbc; fmul p.z; faddp;
+fld +0x9c; fmul p.x; faddp; fsubr +0xcc; fstp +0xcc`. The y row loads `+0xb0`·p.y, `+0xa0`·p.x,
+then `+0xc0`·p.z; the z row `+0xb4`, `+0xa4`, `+0xc4`. The memo reset at `0x7076a2` fills 0x708
+dwords with −1 and copies the mode to `+0x148`.
+
+## Animate pass
+
+Every unattached instance on the animate list is animated with the view as its parent matrix,
+white colour multipliers, black emissive and alpha 1.0. With the helper thread granted, the thread
+animates the odd positions of the list while the caller animates the even ones, and the caller
+waits for it. Then each instance on the list runs `UpdateAfterAnimate`, and the list is drained
+with each instance's lighting update.
+
+Addresses: `0x707680`, `0x707600`, `0x706cd0`, `0x706d00`, `0x714260`, `0x718960`, `0x7192b0`, `0x707761`, `0x7077bb`
+Confidence: verified
+Proof: one
+Test: none
+
+`0x707761` submits `0x707600` with the scene. The caller's loop at `0x707772` skips an instance
+whose `+0x1cc` is set and steps two links (`0x7077bb`, `0x7077c2`); `0x707600` starts one link
+in and steps two. The arguments of `0x714260` are the view, (1,1,1), (0,0,0) and 1.0. The drain pops
+the head, clears its `+0x44` and `+0x48`, and calls `0x7192b0`.
+
+## Element collection
+
+Each instance on the draw queue that is ready contributes one 64-byte element per visible batch,
+ribbon and particle emitter, and one for its custom draw. A batch's alpha is the instance alpha
+times its colour's animated alpha and its transparency weight; a batch with alpha ≤ 0 is skipped, and one with a NaN alpha is kept.
+An element goes to list 0 when its blend mode is 0 or 1 and its alpha is at least 0.99999, else
+to list 1 when the instance lies above the lighting record's clip plane and to list 2 when below.
+
+| kind | element |
+|---|---|
+| 0 | a batch |
+| 1 | a batch with flag 4, when the scene has a special callback |
+| 2 | an opaque batch of a batchable instance, flag 0x10, cache bit 0x20, no lights |
+| 3 | a ribbon emitter |
+| 4 | a particle emitter |
+| 5 | the instance's custom draw |
+
+Addresses: `0x707680`, `0x710450`, `0x808120`, `0x70da00`, `0x707b48`, `0x707b5c`
+Confidence: verified
+Proof: one
+Test: none
+
+The ready test is `0x710450(model, 0, 0)`. The opaque test compares the blend word of the batch's
+material with 1 and the alpha with the float at `0x808120`. Kind 3 walks the shared header's
+`+0x134` ribbons with state stride 0xd0, kind 4 its `+0x13c` emitters with stride 0x16c; kind 5
+needs a draw callback at instance `+0x1b8` and goes to list 0 when `+0x1c0` is set.
+
+## Plane classification
+
+When the instance's lighting record has a clip plane, its bounding sphere is the shared header's
+box centre transformed by the instance matrix, with radius `sqrt(row0·row0)` times the header
+radius. With `d` the signed distance of the centre, bit 2 of the cache's feature mask `+0x4` puts
+the instance above unless `d < −r` and below when `d ≤ r`, so a NaN `d` is neither; without it,
+above unless `d < 0`, and below otherwise, so a NaN `d` is below. Without a plane every instance is
+above.
+
+Addresses: `0x707680`, `0x7079bf`, `0x7079ca`, `0x7079da`, `0x7079ed`
+Confidence: verified
+Proof: one
+Test: none
+
+The centre is `0.5·(min + max)` of the header box at `+0xb4`/`+0xc0`, each sum rounded to a float,
+then `TransformPoint` by the instance matrix `+0xfc`. The dot product is `(x·x + y·y) + z·z` of
+`+0xfc..+0x104`, stored as a float before `fsqrt`. The distance is `((cz·nz + cy·ny) + cx·nx) + d`
+with the plane at lighting `+0x1a0`. `0x7079bf` tests the cache's `+0x4` with 2; `fcompp` at
+`0x7079ca` clears "above" on C0, which a NaN sets, and `fcomp r` at `0x7079da` sets "below" when
+exactly one of C0 and C3 is set.
+
+## Batch grouping
+
+Before sorting, the grouped list (kind 2 elements) is grouped by inputs: a 251-bucket hash of the
+shared model, batch index, fog range, fog colour, spherical harmonic terms, colour and the instance
+colours finds each element's first equal element, the list is sorted by that representative, and
+each run of equal elements becomes one element with the run length, drawn as one batched run.
+Lists 0, 1 and 2 are then sorted: list 0 by the opaque order, lists 1 and 2 by the transparent
+order.
+
+Addresses: `0x70a600`, `0x70a710`, `0x70aa00`, `0x70aa30`, `0x70ae10`, `0xcefff8`, `0x873184`
+Confidence: verified
+Proof: one
+Test: none
+
+`0x70a600` folds `h = h·19 + x` over the dwords listed with `imul` and `add`; `0x70a710` compares
+the same fields. The buckets at `0xcefff8` start at −1 and probe linearly. The orders are
+`Element sort orders`.
+
+## Element sort orders
+
+Each order compares two elements key by key, returning at the first difference. Unsigned unless
+marked; `mode` is the scene's copy `+0x148` of the cache mode.
+
+| order | keys |
+|---|---|
+| transparent | under mode bit 4, the priority of the kind in `0x873184`; depth `+0x14` descending; `+0x8` descending (signed); `+0x28` ascending (signed); under mode bit 2, `+0x38`; depth `+0x18` descending; instance `+0x4`; kind (signed); for kinds 0 to 2, the batch's `+0xc` word; then the opaque order |
+| opaque, all kinds | kind (signed) |
+| opaque, kind 0 | under mode bit 1, vertex shader `+0x38`; the shared header; `+0x34` (signed); instance `+0x4`; the submesh's `+0xe`; vertex shader `+0x38`; pixel shader `+0x3c` |
+| opaque, kinds 0 and 1 | material flags word; blend word; each of the first `min(nA, nB)` textures by handle; texture count `+0xe`; each of the first `min(nA, nB)` texture unit entries; the batch pointer |
+| opaque, kind 3 | each of the first `min` ribbon textures by handle; the ribbon's texture count; the ribbon index `+0x1c` |
+| opaque, kind 4 | the emitter index `+0x1c` |
+
+Addresses: `0x70ae10`, `0x70aa30`, `0x873184`, `0x41af70`
+Confidence: verified
+Proof: one
+Test: none
+
+The float keys compare with `fcomp` and `test ah,0x41` (greater returns −1) then `test ah,5` (less
+returns 1), so a NaN depth compares equal. Kind 1 skips the kind-0 keys (`jne 0x70ab7d`). A batch's
+material is header `+0x88` at batch `+0xa`; its textures are instance `+0xa4` at the header lookup
+`+0x98` from batch `+0x10`, 0 past header `+0x5c`, compared with `0x41af70`; texture units are the
+header lookup `+0xa0` from batch `+0x12`. Kind 3 reads the ribbon records `+0x138` (0xdc bytes):
+count `+0x14`, texture indices `+0x18`. Other kinds compare equal.
+
+## Vertex shader id remap
+
+A vertex shader id is seven mixed-radix digits, most significant first with radices 5, 2, 2, 3, 3,
+5 after a leading digit. When the cache mode has bit 8 or 0x10, the scene rewrites digit 1: to 4
+under bit 8; under 0x10, to 4 when it was nonzero and 0 otherwise. The result is memoized per id.
+
+Addresses: `0x70aff0`, `0x70b040`
+Confidence: verified
+Proof: one
+Test: none
+
+`0x70aff0` stores `id mod 5`, then `mod 3` twice, `& 1` twice, `mod 5` and the quotient into
+digits 6 to 0. `0x70b040` returns the id unchanged unless `+0x148 & 0x18`, reads the memo
+`+0x14c[id]`, and recomposes `(((((5·d0 + c)·2 + d2)·2 + d3)·3 + d4)·3 + d5)·5 + d6`.
+
+## Ray hits
+
+`0x7089c0` finds the nearest triangle of the hit-test instances a segment crosses; segments
+shorter than 1e-5 clear the hit list. `0x7099e0` tests a segment against the same instances' bounds.
+
+Addresses: `0x7089c0`, `0x7099e0`, `0x70a060`, `0x7089b0`, `0x713cb0`
+Confidence: inferred
+Proof: none
+Test: none
+
+`0x713cb0` links an instance into the hit list at scene `+0x130`; `0x7089b0` sets `+0x12c`.
+Candidates are 16-byte records sorted by `0x70a060`. The triangle test was not transcribed.
