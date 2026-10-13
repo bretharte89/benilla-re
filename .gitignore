@@ -1,0 +1,12 @@
+/target/
+
+# Your own client, read at runtime and never committed: the exe, the MPQs, anything extracted.
+/WoW
+*.dbc
+*.mpq
+*.MPQ
+
+# Disassembly and decompiler dumps are regenerated from your own exe, never committed.
+/dumps/
+
+.DS_Store
