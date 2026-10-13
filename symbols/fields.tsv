@@ -1,0 +1,49 @@
+struct	offset	size	type	name	system	meaning	confidence	proof	finding
+CBaseManaged	0x0000	4	void **	__vfptr	camera	Holds the vtable: delete, evaluate, verify, store	verified	one	camera#property-updates
+CBaseManaged	0x0004	8	void *[2]	m_link	camera	Holds the property's link in the update list	verified	one	camera#lifetime
+CBaseManaged	0x000c	1	uint8_t	m_type	camera	Holds the property type: 3 vector, 6 scalar or angle in the camera	verified	one	camera#property-updates
+CBaseManaged	0x000d	1	uint8_t	m_flags	camera	Holds 0x01 listed, 0x02 verify only, 0x04 stale, 0x08 changed	verified	one	camera#property-updates
+CBaseManaged	0x0010	4	void *	m_producer	camera	Holds the callback evaluate and verify run, or null	verified	one	camera#property-updates
+CBaseManaged	0x0014	4	void *	m_producerContext	camera	Holds the value passed to the producer in ecx	verified	one	camera#property-updates
+CBaseManaged	0x0018	4	float	m_orderKey	camera	Holds the key that orders the update list	verified	one	camera#property-updates
+CCamera	0x0000	4	void **	__vfptr	camera	Holds the vtable 0x81d7c0	verified	one	camera#lifetime
+CCamera	0x0008	4	uint32_t	m_slotCapacity	camera	Holds the allocated length of the slot array	verified	one	camera#lifetime
+CCamera	0x000c	4	uint32_t	m_slotCount	camera	Holds the number of slots; ids at or past it are refused	verified	one	camera#property-updates
+CCamera	0x0010	4	CBaseManaged **	m_slots	camera	Holds the property pointer for each id	verified	one	camera#property-updates
+CCamera	0x0014	4	int32_t	m_listLinkOffset	camera	Holds 4, the offset of the link inside a listed property	verified	one	camera#lifetime
+CCamera	0x0018	8	void *[2]	m_listHead	camera	Holds the update list head, linked to itself when empty	verified	one	camera#lifetime
+CCamera	0x0020	28	CBaseManaged	m_eyeProperty	camera	Holds the eye position property, id 7, a vector	verified	one	camera#properties
+CCamera	0x003c	12	float[3]	m_eye	camera	Holds the eye position	verified	one	camera#properties
+CCamera	0x0048	28	CBaseManaged	m_targetProperty	camera	Holds the point looked at property, id 8, a vector	verified	one	camera#properties
+CCamera	0x0064	12	float[3]	m_target	camera	Holds the point looked at	verified	one	camera#properties
+CCamera	0x0070	28	CBaseManaged	m_distanceProperty	camera	Holds the eye-to-target distance property, id 1, a scalar	verified	one	camera#properties
+CCamera	0x008c	4	float	m_distance	camera	Holds the eye-to-target distance	verified	one	camera#properties
+CCamera	0x0090	28	CBaseManaged	m_farClipProperty	camera	Holds the far clip distance property, id 2, a scalar	verified	one	camera#properties
+CCamera	0x00ac	4	float	m_farClip	camera	Holds the far clip distance	verified	one	camera#properties
+CCamera	0x00b0	28	CBaseManaged	m_nearClipProperty	camera	Holds the near clip distance property, id 3, a scalar	verified	one	camera#properties
+CCamera	0x00cc	4	float	m_nearClip	camera	Holds the near clip distance	verified	one	camera#properties
+CCamera	0x00d0	28	CBaseManaged	m_pitchProperty	camera	Holds the pitch angle property, id 0, a angle	inferred	none	camera#properties
+CCamera	0x00ec	4	float	m_pitch	camera	Holds the pitch angle	inferred	none	camera#properties
+CCamera	0x00f0	4	float	m_pitchCos	camera	Holds the cosine of the pitch angle, recomputed on every store	inferred	none	camera#angle-properties
+CCamera	0x00f4	4	float	m_pitchSin	camera	Holds the sine of the pitch angle, recomputed on every store	inferred	none	camera#angle-properties
+CCamera	0x00f8	28	CBaseManaged	m_fovProperty	camera	Holds the field of view property, id 4, a angle	verified	one	camera#properties
+CCamera	0x0114	4	float	m_fov	camera	Holds the field of view	verified	one	camera#properties
+CCamera	0x0118	4	float	m_fovCos	camera	Holds the cosine of the field of view, recomputed on every store	verified	one	camera#angle-properties
+CCamera	0x011c	4	float	m_fovSin	camera	Holds the sine of the field of view, recomputed on every store	verified	one	camera#angle-properties
+CCamera	0x0120	28	CBaseManaged	m_rollProperty	camera	Holds the roll angle property, id 5, a angle	verified	one	camera#properties
+CCamera	0x013c	4	float	m_roll	camera	Holds the roll angle	verified	one	camera#properties
+CCamera	0x0140	4	float	m_rollCos	camera	Holds the cosine of the roll angle, recomputed on every store	verified	one	camera#angle-properties
+CCamera	0x0144	4	float	m_rollSin	camera	Holds the sine of the roll angle, recomputed on every store	verified	one	camera#angle-properties
+CCamera	0x0148	28	CBaseManaged	m_yawProperty	camera	Holds the yaw angle property, id 6, a angle	inferred	none	camera#properties
+CCamera	0x0164	4	float	m_yaw	camera	Holds the yaw angle	inferred	none	camera#properties
+CCamera	0x0168	4	float	m_yawCos	camera	Holds the cosine of the yaw angle, recomputed on every store	inferred	none	camera#angle-properties
+CCamera	0x016c	4	float	m_yawSin	camera	Holds the sine of the yaw angle, recomputed on every store	inferred	none	camera#angle-properties
+CInputControl	0x0000	4	uint32_t	m_createTime	input	Holds the client clock when the object was built	inferred	none	input#input-state
+CInputControl	0x0004	4	uint32_t	m_held	input	Holds the held command bits; 0x1 and 0x2 are the two primary mouse commands	verified	one	input#mouse-commands
+CInputControl	0x0008	4	float	m_travelX	input	Holds the sum of scaled |dx| since the first primary press	verified	two	input#click-versus-drag
+CInputControl	0x000c	4	float	m_travelY	input	Holds the sum of scaled |dy| since the first primary press	verified	two	input#click-versus-drag
+CInputControl	0x0010	4	uint32_t	m_motionStamp	input	Holds a graphics device counter read at the last mouse motion while a command was held	inferred	none	input#click-versus-drag
+CInputControl	0x0014	4	uint32_t	m_pressTime	input	Holds the clock time of the first primary press	verified	two	input#click-versus-drag
+CInputControl	0x0018	4	uint32_t	m_clickMode	input	Holds the armed click action, 1 or 2, set to 0 when a release is a drag	verified	one	input#click-versus-drag
+NTempest::CRndSeed	0x0000	4	uint32_t	m_accumulator	random	Holds the sum the advance returns; the seed after seeding	verified	two	random#state-and-seeding
+NTempest::CRndSeed	0x0004	4	uint32_t	m_lanes	random	Holds four lane indices, byte k a byte offset into the table	verified	two	random#state-and-seeding

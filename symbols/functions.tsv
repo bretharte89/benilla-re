@@ -1,0 +1,224 @@
+address	size	name	name_from	system	class	signature	meaning	confidence	proof	finding	test
+0x404100	33	_WinMain@16	idb	client		int __stdcall (void *instance, void *previous, char *command_line, int show)	Sets the x87 control word to 0x027F through 0x409bf2 and 0x409c06, then runs the client	verified	one	METHOD#the-harness	
+0x4044b0	49	__ehvec_dtor		crt	boundary		Calls a destructor on each element of an array, last first	inferred	none	camera#unprojection	
+0x4078e0	22	SplatVector3		cmath	orchestration	float * __thiscall (float *this, float v)	Stores one float in all three components	verified	one	camera#unprojection	
+0x4098c0	264	_WinMainCRTStartup	idb	crt	boundary		Starts the process: runs __cinit at 0x409965, then calls WinMain at 0x40999b	verified	one	random#the-c-runtime-rand	
+0x409bf2	20	__clearfp	idb	crt	boundary	unsigned int __cdecl (void)	Clears the x87 exception flags and returns the old status word in abstract form	verified	one	METHOD#the-harness	
+0x409c06	53	__control87	idb	crt	boundary	unsigned int __cdecl (unsigned int value, unsigned int mask)	Sets the x87 control word: the bits in mask from value, the rest kept; returns the new word in abstract form	verified	one	METHOD#the-harness	
+0x40a2b0	39	__ftol	idb	crt	boundary		Converts st0 to a 64-bit integer by truncation and returns its low dword	verified	one	camera#angle-properties	
+0x40a2e0	45	__cinit	idb	crt	boundary	void __cdecl (void)	Runs the C and C++ static initializer tables through __initterm	verified	one	random#static-initializers	
+0x40a404	26	__initterm	idb	crt	boundary	void __cdecl (void (**begin)(void), void (**end)(void))	Calls every non-null pointer in [begin, end) in ascending order	verified	one	random#static-initializers	
+0x40acbb	103	__getptd	idb	crt	boundary		Returns the C runtime's per-thread data	inferred	none	random#the-c-runtime-rand	
+0x41ad10	65	SetScreenAspect		screencoord	primitive	void __stdcall (float aspect)	Stores the aspect a, a·0.75, and the scales K2 = 1/sqrt(a² + 1), K1 = a·K2	verified	one	input#click-versus-drag	
+0x41ad80	37	ScaleScreenDelta		screencoord	primitive	void __fastcall (float *out_x, float *out_y, float x, float y)	Writes K1·x and K2·y to whichever outputs are not null	verified	one	input#click-versus-drag	
+0x41af10	20	CreateHandle		core			Returns a handle for an object, or 0 with error 0x57 for a null object	inferred	none	camera#lifetime	
+0x425810	119	PostMouseDelta		event	orchestration	uint32_t __fastcall (const void *raw, void *target)	Posts a mouse delta message with x and y scaled by 0x41ad80	verified	one	input#click-versus-drag	
+0x42b8b0	178	SetClockCounter		os	primitive	void __thiscall (void *clock, uint32_t mode)	Switches the clock counter and rescales it to 1000 over the counter frequency, keeping time continuous	verified	one	input#click-versus-drag	
+0x42c010	5	OsGetAsyncTimeMs	idb	os	orchestration	uint32_t __cdecl (void)	Returns the client clock in milliseconds; jumps to 0x42b790	verified	one	input#click-versus-drag	
+0x42d780	113	EnqueueInputEvent		os			Queues an input event stamped with the client clock	inferred	none	input#click-versus-drag	
+0x442a70	3	ReturnZero		core	orchestration	uint32_t __cdecl (void)	Returns 0; a shared vtable slot	verified	one	camera#lifetime	
+0x44ea80	85	NTempest::CRndSeed::SetSeed	idb	random	primitive	void __thiscall (NTempest::CRndSeed *this, uint32_t seed)	Seeds a state: accumulator = seed, lane k = 4·(seed mod 61, 59, 53, 47) from byte 0 up	verified	two	random#state-and-seeding	random::srand_seed_state_init
+0x44eae0	5	InitRandomInfinityThunk		random	orchestration	void __cdecl (void)	Jumps to 0x44eaf0; a static initializer	verified	one	random#static-initializers	
+0x44eaf0	11	InitRandomInfinity		random	orchestration	void __cdecl (void)	Copies +inf into 0xb05d68	verified	one	random#static-initializers	
+0x44eb00	27	RandomSeedFromString		random	unreached	void __thiscall (NTempest::CRndSeed *this, const char *text)	Seeds a state with the hash of a C string (0x44eb20, then 0x44ea80)	inferred	none	random#unreached-functions	
+0x44eb20	48	HashString		random	unreached	uint32_t __fastcall (const char *text)	Hashes a C string: h = s[0], then h = s[i] + ((h·0x7a2d) ^ h) for each later byte	inferred	none	random#unreached-functions	
+0x44eb50	261	RandomFillUint32		random	unreached	void __fastcall (uint32_t *out, uint32_t count, NTempest::CRndSeed *seed)	Fills an array with successive accumulators	inferred	none	random#unreached-functions	
+0x44ec60	16	RandomFillUint32Forward		random	unreached	void __fastcall (uint32_t *out, uint32_t count, NTempest::CRndSeed *seed)	Forwards to 0x44eb50 unchanged	inferred	none	random#unreached-functions	
+0x44ec70	279	RandomFillUnitFloat		random	unreached	void __fastcall (float *out, uint32_t count, NTempest::CRndSeed *seed)	Fills an array with floats in [0, 1): the mantissa value in [1, 2) minus 1	inferred	none	random#unreached-functions	
+0x44ed90	466	RandomFillUnitDouble		random	unreached	void __fastcall (double *out, uint32_t count, NTempest::CRndSeed *seed)	Fills an array with doubles in [0, 1), two advances each	inferred	none	random#unreached-functions	
+0x44ef70	279	RandomFillUnitFloatUpper		random	unreached	void __fastcall (float *out, uint32_t count, NTempest::CRndSeed *seed)	Fills an array with floats in (0, 1]: 2 minus the mantissa value	inferred	none	random#unreached-functions	
+0x44f090	466	RandomFillUnitDoubleUpper		random	unreached	void __fastcall (double *out, uint32_t count, NTempest::CRndSeed *seed)	Fills an array with doubles in (0, 1], two advances each	inferred	none	random#unreached-functions	
+0x44f270	291	RandomFillSignedFloat		random	unreached	void __fastcall (float *out, uint32_t count, NTempest::CRndSeed *seed)	Fills an array with floats in [-1, 0) or (0, 1], signed by the accumulator	inferred	none	random#unreached-functions	
+0x44f3a0	478	RandomFillSignedDouble		random	unreached	void __fastcall (double *out, uint32_t count, NTempest::CRndSeed *seed)	Fills an array with doubles in [-1, 0) or (0, 1], signed by the first accumulator	inferred	none	random#unreached-functions	
+0x44f580	252	RandomExponentialFloat		random	unreached	float __fastcall (NTempest::CRndSeed *seed)	Returns -ln u, u = 2 minus the mantissa value, through the software log2	inferred	none	random#unreached-functions	
+0x44f680	258	RandomExponentialDouble		random	unreached	double __fastcall (NTempest::CRndSeed *seed)	Returns -ln u for a double u from two advances	inferred	none	random#unreached-functions	
+0x44f790	257	RandomExponentialScaledFloat		random	unreached	float __fastcall (NTempest::CRndSeed *seed, float mean)	Returns mean·(-ln u)	inferred	none	random#unreached-functions	
+0x44f8a0	263	RandomExponentialScaledDouble		random	unreached	double __fastcall (NTempest::CRndSeed *seed, double mean)	Returns mean·(-ln u) in doubles	inferred	none	random#unreached-functions	
+0x44f9b0	181	RandomGaussianFloat		random	unreached	float __fastcall (NTempest::CRndSeed *seed)	Returns a normal deviate by Box-Muller, keeping the second of the pair in 0xb05d74	inferred	none	random#unreached-functions	
+0x44fa70	190	RandomGaussianDouble		random	unreached	double __fastcall (NTempest::CRndSeed *seed)	Returns a normal deviate in doubles, keeping the second of the pair in 0xb05d78	inferred	none	random#unreached-functions	
+0x44fb30	18	RandomGaussianScaledFloat		random	unreached	float __fastcall (NTempest::CRndSeed *seed, float mean, float sigma)	Returns mean + sigma·N with N from 0x44f9b0	inferred	none	random#unreached-functions	
+0x44fb50	18	RandomGaussianScaledDouble		random	unreached	double __fastcall (NTempest::CRndSeed *seed, double mean, double sigma)	Returns mean + sigma·N with N from 0x44fa70	inferred	none	random#unreached-functions	
+0x44fb70	39	RandomFillExponentialFloat		random	unreached	void __fastcall (float *out, uint32_t count, NTempest::CRndSeed *seed)	Fills an array by calling 0x44f580 once per element	inferred	none	random#unreached-functions	
+0x44fba0	39	RandomFillExponentialDouble		random	unreached	void __fastcall (double *out, uint32_t count, NTempest::CRndSeed *seed)	Fills an array by calling 0x44f680 once per element	inferred	none	random#unreached-functions	
+0x44fbd0	43	RandomFillExponentialScaledFloat		random	unreached	void __fastcall (float *out, uint32_t count, float mean, NTempest::CRndSeed *seed)	Fills an array by calling 0x44f790 once per element	inferred	none	random#unreached-functions	
+0x44fc00	47	RandomFillExponentialScaledDouble		random	unreached	void __fastcall (double *out, uint32_t count, double mean, NTempest::CRndSeed *seed)	Fills an array by calling 0x44f8a0 once per element	inferred	none	random#unreached-functions	
+0x44fc30	39	RandomFillGaussianFloat		random	unreached	void __fastcall (float *out, uint32_t count, NTempest::CRndSeed *seed)	Fills an array by calling 0x44f9b0 once per element	inferred	none	random#unreached-functions	
+0x44fc60	39	RandomFillGaussianDouble		random	unreached	void __fastcall (double *out, uint32_t count, NTempest::CRndSeed *seed)	Fills an array by calling 0x44fa70 once per element	inferred	none	random#unreached-functions	
+0x44fc90	47	RandomFillGaussianScaledFloat		random	unreached	void __fastcall (float *out, uint32_t count, float mean, float sigma, NTempest::CRndSeed *seed)	Fills an array by calling 0x44fb30 once per element	inferred	none	random#unreached-functions	
+0x44fcc0	55	RandomFillGaussianScaledDouble		random	unreached	void __fastcall (double *out, uint32_t count, double mean, double sigma, NTempest::CRndSeed *seed)	Fills an array by calling 0x44fb50 once per element	inferred	none	random#unreached-functions	
+0x44fd00	284	RandomUnitVector2		random	primitive	void __fastcall (float *out, NTempest::CRndSeed *seed)	Writes (cos a, sin a), a = 2π·u from one inlined advance	verified	one	random#unit-vectors	random::rand_44fd00_gradient
+0x44fe20	547	RandomUnitVector3		random	primitive	void __fastcall (float *out, NTempest::CRndSeed *seed)	Writes (r cos a, r sin a, z), z signed-uniform and r = sqrt(1 - z²), from two inlined advances	verified	one	random#unit-vectors	random::rand_unit_vector_3d_diff
+0x450050	55	RandomFillUnitVector2		random	unreached	void __fastcall (float *out, uint32_t count, NTempest::CRndSeed *seed)	Fills an array of 2D vectors from 0x44fd00	inferred	none	random#unreached-functions	
+0x450090	63	RandomFillUnitVector3		random	unreached	void __fastcall (float *out, uint32_t count, NTempest::CRndSeed *seed)	Fills an array of 3D vectors from 0x44fe20	inferred	none	random#unreached-functions	
+0x4500d0	25	RandomShuffleString		random	unreached	void __fastcall (char *text, NTempest::CRndSeed *seed)	Shuffles the bytes of a C string with 0x450100	inferred	none	random#unreached-functions	
+0x4500f0	16	RandomShuffleBytesForward		random	unreached	void __fastcall (uint8_t *items, uint32_t count, NTempest::CRndSeed *seed)	Forwards to 0x450100 unchanged	inferred	none	random#unreached-functions	
+0x450100	296	RandomShuffleBytes		random	unreached	void __fastcall (uint8_t *items, uint32_t count, NTempest::CRndSeed *seed)	Shuffles an array in place, swapping item i with item umulh(i + 1, advance)	inferred	none	random#unreached-functions	
+0x450230	16	RandomShuffleUint16Forward		random	unreached	void __fastcall (uint16_t *items, uint32_t count, NTempest::CRndSeed *seed)	Forwards to 0x450240 unchanged	inferred	none	random#unreached-functions	
+0x450240	297	RandomShuffleUint16		random	unreached	void __fastcall (uint16_t *items, uint32_t count, NTempest::CRndSeed *seed)	Shuffles an array in place, swapping item i with item umulh(i + 1, advance), moving low bytes only	inferred	none	random#unreached-functions	
+0x450370	16	RandomShuffleUint32Forward		random	unreached	void __fastcall (uint32_t *items, uint32_t count, NTempest::CRndSeed *seed)	Forwards to 0x450380 unchanged	inferred	none	random#unreached-functions	
+0x450380	290	RandomShuffleUint32		random	unreached	void __fastcall (uint32_t *items, uint32_t count, NTempest::CRndSeed *seed)	Shuffles an array in place, swapping item i with item umulh(i + 1, advance)	inferred	none	random#unreached-functions	
+0x4504b0	290	RandomShuffleFloat		random	unreached	void __fastcall (float *items, uint32_t count, NTempest::CRndSeed *seed)	Shuffles an array in place, swapping item i with item umulh(i + 1, advance) through the x87 stack	inferred	none	random#unreached-functions	
+0x4505e0	290	RandomShuffleDouble		random	unreached	void __fastcall (double *items, uint32_t count, NTempest::CRndSeed *seed)	Shuffles an array in place, swapping item i with item umulh(i + 1, advance) through the x87 stack	inferred	none	random#unreached-functions	
+0x450710	275	RandomXorBytes		random	unreached	void __fastcall (uint8_t *buffer, uint32_t count, uint32_t seed)	XORs the low byte of successive advances into a buffer from its first 4-aligned byte	inferred	none	random#unreached-functions	
+0x450830	33	RandomXorBytesWithKey		random	unreached	void __fastcall (uint8_t *buffer, uint32_t count, const char *key)	Runs 0x450710 seeded with the hash of a C string	inferred	none	random#unreached-functions	
+0x450860	127	NoiseHash1		random	unreached	uint32_t __fastcall (uint32_t x)	Returns H(x), the table hash	inferred	none	random#unreached-functions	
+0x4508e0	264	NoiseHash2		random	unreached	uint32_t __fastcall (uint32_t a, uint32_t b)	Returns H(rotl(H(b), 4) ^ a)	inferred	none	random#unreached-functions	
+0x4509f0	416	NoiseHash3		random	unreached	uint32_t __fastcall (uint32_t a, uint32_t b, uint32_t c)	Returns H(rotl(H(rotl(H(c), 4) ^ b), 4) ^ a)	inferred	none	random#unreached-functions	
+0x450b90	553	NoiseHash4		random	unreached	uint32_t __fastcall (uint32_t a, uint32_t b, uint32_t c, uint32_t d)	Chains H over d, c, b, a as 0x4509f0 does	inferred	none	random#unreached-functions	
+0x450dc0	274	NoiseHashBlock2		random	unreached	void __fastcall (uint32_t x, uint32_t *out)	Writes H(x), H(x + 1)	inferred	none	random#unreached-functions	
+0x450ee0	848	NoiseHashBlock4		random	unreached	void __fastcall (uint32_t x, uint32_t y, uint32_t *out)	Writes 0x4508e0(x + i, y + j) for j, i in 0..1, j outer	inferred	none	random#unreached-functions	
+0x451230	1144	NoiseHashBlock8		random	unreached	void __fastcall (uint32_t x, uint32_t y, uint32_t z, uint32_t *out)	Writes 0x4509f0(x + i, y + j, z + k) for k, j, i in 0..1, k outermost	inferred	none	random#unreached-functions	
+0x4516b0	126	NoiseHash1Copy		random	unreached	uint32_t __fastcall (uint32_t x)	Returns H(x), a second copy of 0x450860 that the block hashes call	inferred	none	random#unreached-functions	
+0x451730	408	NoiseHashBlock3		random	unreached	void __fastcall (uint32_t x, uint32_t *out)	Writes H(x - 1), H(x), H(x + 1)	inferred	none	random#unreached-functions	
+0x4518d0	1065	NoiseHashBlock9		random	unreached	void __fastcall (uint32_t x, uint32_t y, uint32_t *out)	Writes 0x4508e0(x + i, y + j) for j, i in -1..1, j outer	inferred	none	random#unreached-functions	
+0x451d00	1163	NoiseHashBlock27		random	unreached	void __fastcall (uint32_t x, uint32_t y, int32_t z, uint32_t *out)	Writes 0x4509f0(x + i, y + j, z + k) for k, j, i in -1..1, the k loop a signed compare	inferred	none	random#unreached-functions	
+0x452190	491	Noise1		random	unreached	float __stdcall (double x)	Returns one-dimensional gradient noise at x	inferred	none	random#unreached-functions	
+0x452380	691	Noise2		random	unreached	float __stdcall (double x, double y)	Returns two-dimensional gradient noise	inferred	none	random#unreached-functions	
+0x452640	793	Noise3		random	unreached		Returns three-dimensional gradient noise through the gradient table 0x802800	inferred	none	random#unreached-functions	
+0x452960	1668	Noise3WithGradient		random	unreached		Returns three-dimensional gradient noise and writes its gradient	inferred	none	random#unreached-functions	
+0x452ff0	406	NoiseFractalSum		random	unreached		Sums 0x452960 over five octaves, weights 1 to 1/16, scaled by 16/31	inferred	none	random#unreached-functions	
+0x453190	5	InitRandomTwoPiThunk		random	orchestration	void __cdecl (void)	Jumps to 0x4531a0; a static initializer	verified	one	random#static-initializers	
+0x4531a0	15	InitRandomTwoPi		random	primitive	void __cdecl (void)	Stores π + π as a float in 0xb05d70	verified	one	random#static-initializers	
+0x4531b0	5	InitRandomInvTwoPiThunk		random	orchestration	void __cdecl (void)	Jumps to 0x4531c0; a static initializer	verified	one	random#static-initializers	
+0x4531c0	19	InitRandomInvTwoPi		random	primitive	void __cdecl (void)	Stores 1 / [0xb05d70] as a float in 0xb05d6c	verified	one	random#static-initializers	
+0x4531e0	211	NTempest::CRandom::uint32	idb	random	primitive	uint32_t __fastcall (NTempest::CRndSeed *seed)	Advances a state: steps its four lanes, adds the XOR of four rotated table dwords to the accumulator, returns it	verified	two	random#state-advance	random::crandom_uint32_advance
+0x4549a0	26	SetVector3		cmath	orchestration	float * __thiscall (float *this, float x, float y, float z)	Stores three floats	verified	one	camera#unprojection	
+0x454c80	186	FastLog2		fastmath	primitive	double __stdcall (double x)	Returns log2 x from the exponent field, a table and a polynomial	inferred	none		
+0x455c70	7	MulHigh32		cmath	primitive	uint32_t __fastcall (uint32_t a, uint32_t b)	Returns the high dword of the 64-bit product a·b	inferred	none		
+0x4621a0	1	DestroyVector3		cmath	orchestration	void __thiscall (float *this)	Returns; the element destructor of vector arrays	verified	one	camera#unprojection	
+0x46ab40	98	GetScreenAspect		screencoord	primitive	float __cdecl (void)	Returns gxResolution's width over height while widescreen is on, else 4/3	verified	one	input#click-versus-drag	
+0x46b0e0	5	CallHashClockRandomPoolThunk		net			Jumps to 0x5ab5a0; no call, jump or stored address reaches it	verified	one	random#the-c-runtime-rand	
+0x481f00	87	PickObjectUnderCursor		worldframe			Picks the world object under the cursor for the armed click	inferred	none	input#mouse-commands	
+0x481f60	301	DispatchWorldClick		worldframe			Runs world click action 1 or 4 on the object picked at the press	inferred	none	input#click-versus-drag	
+0x4841f0	36	SubtractVector3		cmath	primitive	float * __fastcall (float *out, const float *a, const float *b)	Writes a - b	verified	one	camera#unprojection	
+0x494a50	247	CheckActivePlayer		gameui			Returns 0 or 1 from a check chosen by its argument, 0 to 11, through a jump table	inferred	none	input#mouse-commands	
+0x514120	54	Script::TurnOrActionStart	idb	input	orchestration		Arms click mode 2 and presses command bit 0x1, when 0x494a50(0) allows	verified	one	input#mouse-commands	
+0x514190	54	Script::CameraOrSelectOrMoveStart	idb	input	orchestration		Arms click mode 1 and presses command bit 0x2, when 0x494a50(0) allows	verified	one	input#mouse-commands	
+0x5143c0	25	CInputControl::CInputControl		input	orchestration	CInputControl * __thiscall (CInputControl *this)	Clears the held commands, press time and click mode, and stores the client clock at +0x00	verified	one	input#input-state	
+0x5143e0	6	GetInputControl		input	orchestration	CInputControl * __cdecl (void)	Returns the CInputControl singleton from 0xbe1148	verified	one	input#input-state	
+0x514400	134	CInputControl::AccumulateMotion		input	primitive	void __thiscall (CInputControl *this, const void *message)	Adds |dx| and |dy| of a mouse message to the travel sums while any command is held	verified	one	input#click-versus-drag	
+0x5144c0	28	CInputControl::ReleaseAll		input	orchestration	void __thiscall (CInputControl *this)	Releases every held command at the current clock through 0x514b70	verified	one	input#click-versus-drag	
+0x514810	38	CInputControl::ArmClick		input	orchestration	void __thiscall (CInputControl *this, uint32_t mode)	Stores the click mode unless a primary is held, and for a nonzero mode picks the object under the cursor	verified	one	input#mouse-commands	
+0x514840	660	CInputControl::PressCommands		input	orchestration	uint32_t __thiscall (CInputControl *this, uint32_t commands, uint32_t time)	Presses command bits; on the first primary, latches the time and zeroes the travel sums	verified	one	input#click-versus-drag	
+0x514ae0	85	CInputControl::IsDragRelease		input	primitive	uint32_t __thiscall (CInputControl *this, uint32_t release_time)	Returns 1 when a release is a drag: held 800 ms or more, or 200 ms or more with 8.0 of travel	verified	two	input#click-versus-drag	
+0x514b40	44	CInputControl::IsDragging		input	orchestration	uint32_t __thiscall (CInputControl *this)	Returns 1 when 0x514ae0 says drag at the current clock and the motion stamp is recent	verified	one	input#click-versus-drag	
+0x514b70	559	CInputControl::ReleaseCommands		input	orchestration	uint32_t __thiscall (CInputControl *this, uint32_t commands, uint32_t time, uint32_t extra)	Releases command bits; on the last primary, dispatches the armed click unless 0x514ae0 says drag	verified	one	input#click-versus-drag	
+0x515090	284	CInputControl::SetCommands		input	orchestration	uint32_t __thiscall (CInputControl *this, uint32_t commands, uint32_t press, uint32_t time, uint32_t extra)	Sends commands to 0x514840 when press is nonzero, else to 0x514b70	verified	one	input#mouse-commands	
+0x589ca0	11	QueryDevice		gx	host		Returns a device query result; tail-calls into the device	inferred	none	camera#orthographic-setup	
+0x58a250	15	GxCapsScreenSize	idb	gx	host		Writes the screen rectangle as four floats	inferred	none	camera#orthographic-setup	
+0x58b040	15	SetDeviceProjection		gx	host	void __fastcall (const float *matrix)	Passes a matrix to device vtable slot +0x70	verified	one	camera#view-and-projection	
+0x58b050	15	SetDeviceView		gx	host	void __fastcall (const float *matrix)	Passes a matrix to device vtable slot +0x74	verified	one	camera#view-and-projection	
+0x58b090	13	GetDeviceProjection		gx	host	void __fastcall (float *out)	Copies the device matrix at +0xf50	verified	one	camera#unprojection	
+0x58b0b0	13	GetDeviceView		gx	host	void __fastcall (float *out)	Copies the top of the device matrix stack at +0x1ac8	verified	one	camera#unprojection	
+0x5995c0	335	CreateD3dDevice		gx			Creates the Direct3D 9 device with behaviour flags 0x22 or 0x52, both with FPU_PRESERVE	verified	one	METHOD#the-harness	
+0x5ab5a0	20	CallHashClockRandomPool		net			Calls 0x5b3120 when a global object exists; reached only through 0x46b0e0	verified	one	random#the-c-runtime-rand	
+0x5b3120	183	HashClockRandomPool		net			Builds a random pool seeded from the clock and hashes it into its object	inferred	none	random#the-c-runtime-rand	
+0x5b7ff0	5	InitGlobalRandomPoolThunk		net	orchestration	void __cdecl (void)	Jumps to 0x5b8000; a static initializer	verified	one	random#the-c-runtime-rand	
+0x5b8000	17	InitGlobalRandomPool		net	orchestration	void __cdecl (void)	Builds the global random pool with the client clock as its seed	verified	one	random#the-c-runtime-rand	
+0x5c3cc0	207	BuildPerspectiveMatrix		gxumath	primitive	void __thiscall (float *matrix, float fov, float aspect, float near, float far)	Builds a perspective matrix; the half-angle is fov / (2·sqrt(aspect² + 1)); error 0x57 on bad input	verified	one	camera#view-and-projection	
+0x5c3d90	188	BuildOrthoMatrix		gxumath	primitive		Builds an orthographic projection matrix	inferred	none	camera#orthographic-setup	
+0x5c3e70	648	BuildLookAtMatrix		gxumath	primitive		Builds a view matrix from an eye, a target and an up vector	inferred	none	camera#view-and-projection	
+0x5c43b0	1404	BuildFrustumCorners		gxumath	primitive		Writes the eight world corners of the frustum of two matrices, clip-space z = -1 first	inferred	none	camera#unprojection	
+0x5d1c70	119	SeedRandomPool		net	orchestration		Seeds rand with its argument, then builds a hash pool from _time and rand	verified	one	random#the-c-runtime-rand	
+0x5f8cf0	34	ScaleVector3		cmath	primitive	float * __fastcall (float *out, const float *v, float s)	Writes s·v	verified	one	camera#unprojection	
+0x621160	36	AddVector3		cmath	primitive	float * __fastcall (float *out, const float *a, const float *b)	Writes a + b	verified	one	camera#unprojection	
+0x6462e0	61	SMemAlloc	idb	storm	boundary		Allocates memory tagged with a name and line	inferred	none		
+0x646320	261	SMemReAlloc		storm	boundary		Reallocates tagged memory	inferred	none		
+0x646430	34	SMemFree	idb	storm	boundary		Frees tagged memory	inferred	none		
+0x64a6f0	46	SStrLen	idb	storm	boundary	uint32_t __stdcall (const char *text)	Returns the length of a C string	inferred	none		
+0x64e850	22	SErrSetLastError	idb	storm	boundary	void __stdcall (uint32_t code)	Stores an error code and passes it to SetLastError	inferred	none		
+0x688fb0	77	HandleParticleDensityOption		cvar			Handles the particleDensity option by storing its value through 0x7adfb0	inferred	none	camera#particle-density	
+0x689510	145	HandleSpellEffectLevelOption		cvar			Handles the spellEffectLevel option, storing a density through 0x7adfb0	inferred	none	camera#particle-density	
+0x7400d8	13	_srand	idb	crt	orchestration	void __cdecl (unsigned int seed)	Stores the per-thread seed rand steps	verified	one	random#the-c-runtime-rand	
+0x7400e5	34	_rand	idb	crt	primitive	int __cdecl (void)	Steps the per-thread seed s = s·214013 + 2531011 and returns (s >> 16) & 0x7fff	verified	one	random#the-c-runtime-rand	random::msvc_rand_lcg_difftest
+0x7abbe0	61	NormalizeAngle		camera	primitive	float __stdcall (float angle)	Returns x - 2π·trunc(x/2π), plus 2π when x < 0, at 53-bit precision	verified	two	camera#angle-properties	camera::camera_normalize_2pi
+0x7abc20	48	RegisterProperty		camera	orchestration	void __thiscall (void *object, CBaseManaged *property, uint32_t id, uint8_t flags, uint8_t type)	Stores a property's type and flags, puts it in slot id, and on flag 0x01 adds it to the update list	verified	one	camera#property-updates	
+0x7abc50	26	RegisterPropertyType1		camera	unreached	void __thiscall (void *object, CBaseManaged *property, uint32_t id, uint8_t flags)	Calls 0x7abc20 with type 1	inferred	none	camera#unreached-functions	
+0x7abc70	26	RegisterPropertyType2		camera	unreached	void __thiscall (void *object, CBaseManaged *property, uint32_t id, uint8_t flags)	Calls 0x7abc20 with type 2	inferred	none	camera#unreached-functions	
+0x7abc90	26	RegisterVectorProperty		camera	orchestration	void __thiscall (void *object, CBaseManaged *property, uint32_t id, uint8_t flags)	Calls 0x7abc20 with type 3; the camera registers its vectors with it	verified	one	camera#property-updates	
+0x7abcb0	26	RegisterPropertyType4		camera	unreached	void __thiscall (void *object, CBaseManaged *property, uint32_t id, uint8_t flags)	Calls 0x7abc20 with type 4	inferred	none	camera#unreached-functions	
+0x7abcd0	26	RegisterPropertyType5		camera	unreached	void __thiscall (void *object, CBaseManaged *property, uint32_t id, uint8_t flags)	Calls 0x7abc20 with type 5	inferred	none	camera#unreached-functions	
+0x7abcf0	26	RegisterScalarProperty		camera	orchestration	void __thiscall (void *object, CBaseManaged *property, uint32_t id, uint8_t flags)	Calls 0x7abc20 with type 6; the camera registers its scalars and angles with it	verified	one	camera#property-updates	
+0x7abd10	214	InsertPropertyInUpdateList		camera	orchestration	void __thiscall (void *object, CBaseManaged *property)	Links a property into the update list in the order of its key at +0x18	verified	one	camera#property-updates	
+0x7abdf0	87	UpdateAllProperties		camera	unreached	void __thiscall (void *object, uint32_t arg)	Calls slot 2 (verify) on each listed property with flag 0x02, slot 1 (evaluate) on the rest	inferred	none	camera#unreached-functions	
+0x7abe50	78	GetPropertyType5		camera	unreached	uint32_t __fastcall (void *object, uint32_t id)	Returns the dword of property id of type 5, evaluating it first when stale	inferred	none	camera#unreached-functions	
+0x7abea0	97	GetPropertyType1		camera	unreached	void __fastcall (void *object, uint32_t id, uint32_t *out)	Copies the dword of property id of type 1 out, evaluating it first when stale	inferred	none	camera#unreached-functions	
+0x7abf10	102	GetPropertyType2		camera	unreached	void __fastcall (void *object, uint32_t id, uint32_t *out)	Copies the three dwords of property id of type 2 out, evaluating it first when stale	inferred	none	camera#unreached-functions	
+0x7abf80	102	GetVectorProperty		camera	orchestration	void __fastcall (void *object, uint32_t id, float *out)	Copies the vector property id out, evaluating it first when stale; error 0x57 on a bad id or type	verified	one	camera#property-updates	
+0x7abff0	107	GetPropertyType4		camera	unreached	void __fastcall (void *object, uint32_t id, uint32_t *out)	Copies the nine dwords of property id of type 4 out, evaluating it first when stale	inferred	none	camera#unreached-functions	
+0x7ac060	78	GetPropertyType5Copy		camera	unreached	uint32_t __fastcall (void *object, uint32_t id)	Returns the dword of property id of type 5, as 0x7abe50 does	inferred	none	camera#unreached-functions	
+0x7ac0b0	93	GetScalarProperty		camera	orchestration	float __fastcall (void *object, uint32_t id)	Returns the scalar or angle property id, evaluating it first when stale; error 0x57 on a bad id or type	verified	one	camera#property-updates	
+0x7ac110	61	GetPropertyProducer		camera	unreached	void __fastcall (void *object, uint32_t id, uint32_t *out)	Copies the producer callback, context and key of property id out	inferred	none	camera#unreached-functions	
+0x7ac150	69	SetPropertyType5		camera	unreached	void __fastcall (void *object, uint32_t id, uint32_t value)	Detaches the producer of property id of type 5 and stores a dword through slot 3	inferred	none	camera#unreached-functions	
+0x7ac1a0	69	SetPropertyType1		camera	unreached	void __fastcall (void *object, uint32_t id, const uint32_t * value)	Detaches the producer of property id of type 1 and stores the value pointed at through slot 3	inferred	none	camera#unreached-functions	
+0x7ac1f0	81	SetPropertyType2		camera	unreached	void __fastcall (void *object, uint32_t id, const uint32_t * value)	Detaches the producer of property id of type 2 and stores the value pointed at through slot 3	inferred	none	camera#unreached-functions	
+0x7ac250	166	SetVectorProperty		camera	orchestration	void __fastcall (void *object, uint32_t id, const float *value, uint32_t keep)	Detaches the producer of vector property id and stores value through slot 3, keeping components whose keep bit is set	verified	one	camera#property-updates	
+0x7ac300	69	SetPropertyType4		camera	unreached	void __fastcall (void *object, uint32_t id, const uint32_t * value)	Detaches the producer of property id of type 4 and stores the value pointed at through slot 3	inferred	none	camera#unreached-functions	
+0x7ac350	69	SetPropertyType5Copy		camera	unreached	void __fastcall (void *object, uint32_t id, uint32_t value)	Detaches the producer of property id of type 5 and stores a dword, as 0x7ac150 does	inferred	none	camera#unreached-functions	
+0x7ac3a0	69	SetScalarProperty		camera	orchestration	void __fastcall (void *object, uint32_t id, float value)	Detaches the producer of the scalar or angle property id and stores value through slot 3	verified	one	camera#property-updates	
+0x7ac3f0	26	AttachProducerType5		camera	unreached	void __fastcall (void *object, uint32_t id, void *callback, void *context, float key)	Calls 0x7ac410 with type 5	inferred	none	camera#unreached-functions	
+0x7ac410	155	AttachPropertyProducer		camera	unreached	void __fastcall (void *object, uint32_t id, void *callback, void *context, float key, uint32_t type)	Stores a producer on property id of the given type, sets flag 0x04, and relinks it in the update list	inferred	none	camera#unreached-functions	
+0x7ac4b0	26	AttachProducerType1		camera	unreached	void __fastcall (void *object, uint32_t id, void *callback, void *context, float key)	Calls 0x7ac410 with type 1	inferred	none	camera#unreached-functions	
+0x7ac4d0	26	AttachProducerType2		camera	unreached	void __fastcall (void *object, uint32_t id, void *callback, void *context, float key)	Calls 0x7ac410 with type 2	inferred	none	camera#unreached-functions	
+0x7ac4f0	26	AttachVectorProducer		camera	unreached	void __fastcall (void *object, uint32_t id, void *callback, void *context, float key)	Calls 0x7ac410 with type 3	inferred	none	camera#unreached-functions	
+0x7ac510	26	AttachProducerType4		camera	unreached	void __fastcall (void *object, uint32_t id, void *callback, void *context, float key)	Calls 0x7ac410 with type 4	inferred	none	camera#unreached-functions	
+0x7ac530	26	AttachProducerType5Copy		camera	unreached	void __fastcall (void *object, uint32_t id, void *callback, void *context, float key)	Calls 0x7ac410 with type 5	inferred	none	camera#unreached-functions	
+0x7ac550	26	AttachScalarProducer		camera	unreached	void __fastcall (void *object, uint32_t id, void *callback, void *context, float key)	Calls 0x7ac410 with type 6	inferred	none	camera#unreached-functions	
+0x7ac570	41	GetNextLink		camera	orchestration	void * __thiscall (void *link, int32_t link_offset)	Returns the link a node's link points at, or the list head marked by its low bit	verified	one	camera#lifetime	
+0x7ac5a0	5	InitCameraTwoPiThunk		camera	orchestration	void __cdecl (void)	Jumps to 0x7ac5b0; a static initializer	verified	one	camera#object-file-and-initializers	
+0x7ac5b0	15	InitCameraTwoPi		camera	primitive	void __cdecl (void)	Stores π + π as a float in 0xcf5734	verified	one	camera#object-file-and-initializers	
+0x7ac5c0	5	InitCameraInvTwoPiThunk		camera	orchestration	void __cdecl (void)	Jumps to 0x7ac5d0; a static initializer	verified	one	camera#object-file-and-initializers	
+0x7ac5d0	19	InitCameraInvTwoPi		camera	primitive	void __cdecl (void)	Stores 1 / [0xcf5734] as a float in 0xcf5730	verified	one	camera#object-file-and-initializers	
+0x7ac5f0	5	InitCameraInfinityThunk		camera	orchestration	void __cdecl (void)	Jumps to 0x7ac600; a static initializer	verified	one	camera#object-file-and-initializers	
+0x7ac600	11	InitCameraInfinity		camera	orchestration	void __cdecl (void)	Copies +inf into 0xcf573c, which nothing reads	verified	one	camera#object-file-and-initializers	
+0x7ac610	5	InitDefaultFovThunk		camera	orchestration	void __cdecl (void)	Jumps to 0x7ac620; a static initializer	verified	one	camera#object-file-and-initializers	
+0x7ac620	19	InitDefaultFov		camera	primitive	void __cdecl (void)	Stores π·0.5 as a float in 0xcf5738, the default field of view	verified	one	camera#object-file-and-initializers	
+0x7ac640	449	CCamera::SetDeviceTransforms		camera	primitive	void __thiscall (CCamera *this, const float *rect, uint32_t unused)	Sets the device projection from fov, rect aspect, near and far, and the view from target - eye, roll and yaw	verified	one	camera#view-and-projection	camera::camera_view_lookat
+0x7ac810	140	CCamera::ComputeEye		camera	unreached	void __fastcall (const CCamera *camera, float *out)	Writes target - distance·(cos pitch cos yaw, cos pitch sin yaw, sin pitch)	inferred	none	camera#unreached-functions	
+0x7ac8a0	134	CCamera::ComputeTarget		camera	unreached	void __fastcall (const CCamera *camera, float *out)	Writes eye + distance·(cos pitch cos yaw, cos pitch sin yaw, sin pitch)	inferred	none	camera#unreached-functions	
+0x7ac930	472	CameraCreate		camera	orchestration	void * __cdecl (void)	Allocates a camera with default properties and returns its handle	verified	one	camera#lifetime	
+0x7acb10	32	CBaseManaged::CBaseManaged		camera	orchestration	CBaseManaged * __thiscall (CBaseManaged *this)	Clears a property's header and sets the base property vtable	verified	one	camera#lifetime	
+0x7acb30	3	CBaseManaged::Evaluate		camera	orchestration	void __thiscall (CBaseManaged *this, uint32_t arg)	Returns; slot 1 of the base property vtable	verified	one	camera#property-updates	
+0x7acb40	3	CBaseManaged::Verify		camera	orchestration	void __thiscall (CBaseManaged *this, uint32_t arg)	Returns; slot 2 of the base property vtable	verified	one	camera#property-updates	
+0x7acb50	102	CBaseManaged::DeletingDestructor		camera	orchestration	CBaseManaged * __thiscall (CBaseManaged *this, uint32_t flags)	Unlinks a base property and frees it when bit 0 of flags is set	verified	one	camera#lifetime	
+0x7acbc0	117	InitAngleProperty		camera	primitive	CBaseManaged * __thiscall (CBaseManaged *this, float angle)	Builds an angle property: stores the reduced angle and caches its cosine and sine	verified	two	camera#angle-properties	camera::camera_angle_cossin
+0x7acc40	87	StoreAngleProperty		camera	primitive	void __thiscall (CBaseManaged *this, const float *angle)	Stores the reduced angle when it changes and recomputes its cosine and sine; slot 3 of an angle	verified	one	camera#angle-properties	camera::camera_angle_cossin
+0x7acca0	102	DeleteAngleProperty		camera	orchestration	CBaseManaged * __thiscall (CBaseManaged *this, uint32_t flags)	Unlinks an angle property and frees it when bit 0 of flags is set	verified	one	camera#lifetime	
+0x7acd10	109	DeletePropertySet		camera	orchestration	void * __thiscall (void *object, uint32_t flags)	Unlinks every property, frees the slot array, and frees the object when bit 0 of flags is set	verified	one	camera#lifetime	
+0x7acd80	175	CCamera::DeletingDestructor		camera	orchestration	CCamera * __thiscall (CCamera *this, uint32_t flags)	Tears down the nine properties and the base, and frees the camera when bit 0 of flags is set	verified	one	camera#lifetime	
+0x7ace30	69	CBaseManaged::~CBaseManaged		camera	orchestration	void __thiscall (CBaseManaged *this)	Resets a property to the base vtable and unlinks it, without freeing	verified	one	camera#lifetime	
+0x7ace80	136	DestroyPropertySet		camera	orchestration	void __thiscall (void *object)	Unlinks every property, frees the slot array and resets the base vtable, without freeing	verified	one	camera#lifetime	
+0x7acf10	672	CameraClone		camera	orchestration	void * __fastcall (const CCamera *source)	Allocates a camera, copies each property value from source through its slot 3, returns the handle	verified	one	camera#lifetime	
+0x7ad1b0	25	CBaseManaged::SetProducer		camera	orchestration	void __thiscall (CBaseManaged *this, void *callback, void *context, float key)	Stores a property's producer callback, its context and its ordering key	verified	one	camera#property-updates	
+0x7ad1d0	233	InitPropertySet		camera	orchestration	void * __thiscall (void *object, uint32_t slots)	Builds the camera base: empty update list, link offset 4, a slot array of the given size	verified	one	camera#lifetime	
+0x7ad2c0	1328	UnprojectScreenPoint		camera	primitive	void __fastcall (float *near_point, float *far_point, float a, float b)	Maps a screen fraction (a, b) to near and far plane points through the device matrices	verified	one	camera#unprojection	camera::camera_frustum_split
+0x7ad7f0	589	SetupOrthoTransforms		camera	primitive	void __fastcall (const float *rect, const float *point, uint32_t unused)	Sets an orthographic projection over a rectangle, depth ±500, and a view offset by a point	verified	one	camera#orthographic-setup	camera::camera_ortho
+0x7ada40	32	CameraSetDeviceTransforms		camera	orchestration	void __fastcall (CCamera *camera, const float *rect, uint32_t unused)	Calls 0x7ac640, or raises error 0x57 for a null camera	verified	one	camera#view-and-projection	
+0x7ada60	31	CameraUpdateProperties		camera	unreached	void __fastcall (CCamera *camera, uint32_t arg)	Calls 0x7abdf0, or raises error 0x57 for a null camera	inferred	none	camera#unreached-functions	
+0x7ada80	52	InitScalarProperty		camera	orchestration	CBaseManaged * __thiscall (CBaseManaged *this, const float *value)	Builds a scalar property holding a copy of value	verified	one	camera#lifetime	
+0x7adac0	31	StoreScalarProperty		camera	orchestration	void __thiscall (CBaseManaged *this, const float *value)	Stores value and sets flag 0x08 when it differs from the current one or is NaN; slot 3 of a scalar	verified	one	camera#property-updates	
+0x7adae0	54	EvaluateScalarProperty		camera	orchestration	void __thiscall (CBaseManaged *this, uint32_t arg)	Runs the producer on a copy of the value and stores the result; clears flag 0x04	verified	one	camera#property-updates	
+0x7adb20	77	VerifyScalarProperty		camera	orchestration	void __thiscall (CBaseManaged *this, uint32_t arg)	Runs the producer on a copy of the value and raises error 0x57 if it changed; clears flag 0x04	verified	one	camera#property-updates	
+0x7adb70	23	FreePropertySlots		camera	orchestration	void __thiscall (void *slots)	Frees the slot array	verified	one	camera#lifetime	
+0x7adb90	187	ResizePropertySlots		camera	orchestration	void __thiscall (void *slots, uint32_t count)	Resizes the slot array to count entries, keeping the existing ones	verified	one	camera#lifetime	
+0x7adc50	33	InitUpdateList		camera	orchestration	void __thiscall (void *list)	Makes an empty update list: link offset 4, head pointing to itself	verified	one	camera#lifetime	
+0x7adc80	68	InitVectorProperty		camera	orchestration	CBaseManaged * __thiscall (CBaseManaged *this, const float *value)	Builds a vector property holding a copy of value	verified	one	camera#lifetime	
+0x7adcd0	73	StoreVectorProperty		camera	orchestration	void __thiscall (CBaseManaged *this, const float *value)	Stores value and sets flag 0x08 when any component differs or is NaN; slot 3 of a vector	verified	one	camera#property-updates	
+0x7add20	70	EvaluateVectorProperty		camera	orchestration	void __thiscall (CBaseManaged *this, uint32_t arg)	Runs the producer on a copy of the vector and stores the result; clears flag 0x04	verified	one	camera#property-updates	
+0x7add70	138	VerifyVectorProperty		camera	orchestration	void __thiscall (CBaseManaged *this, uint32_t arg)	Runs the producer on a copy and raises error 0x57 if any component changed; clears flag 0x04	verified	one	camera#property-updates	
+0x7ade00	102	DeleteScalarProperty		camera	orchestration	CBaseManaged * __thiscall (CBaseManaged *this, uint32_t flags)	Unlinks a scalar property and frees it when bit 0 of flags is set	verified	one	camera#lifetime	
+0x7ade70	102	DeleteVectorProperty		camera	orchestration	CBaseManaged * __thiscall (CBaseManaged *this, uint32_t flags)	Unlinks a vector property and frees it when bit 0 of flags is set	verified	one	camera#lifetime	
+0x7adee0	60	UnlinkListNode		camera	orchestration	void __thiscall (void *link)	Unlinks a node from its list and clears its link	verified	one	camera#lifetime	
+0x7adf20	5	InitCameraTwoPi2Thunk		camera	orchestration	void __cdecl (void)	Jumps to 0x7adf30; a static initializer	verified	one	camera#object-file-and-initializers	
+0x7adf30	15	InitCameraTwoPi2		camera	primitive	void __cdecl (void)	Stores π + π as a float in 0xcf5744, which only 0x7adf50 reads	verified	one	camera#object-file-and-initializers	
+0x7adf40	5	InitCameraInvTwoPi2Thunk		camera	orchestration	void __cdecl (void)	Jumps to 0x7adf50; a static initializer	verified	one	camera#object-file-and-initializers	
+0x7adf50	19	InitCameraInvTwoPi2		camera	primitive	void __cdecl (void)	Stores 1 / [0xcf5744] as a float in 0xcf5740, which nothing reads	verified	one	camera#object-file-and-initializers	
+0x7adf70	25	GetNodeLink		camera	orchestration	void * __thiscall (void *list, void *node)	Returns a node's link (the node plus the list's link offset), or the head for a null node	verified	one	camera#lifetime	
+0x7adf90	5	InitCameraInfinity2Thunk		camera	orchestration	void __cdecl (void)	Jumps to 0x7adfa0; a static initializer	verified	one	camera#object-file-and-initializers	
+0x7adfa0	11	InitCameraInfinity2		camera	orchestration	void __cdecl (void)	Copies +inf into 0xcf5748, which nothing reads	verified	one	camera#object-file-and-initializers	
+0x7adfb0	75	SetParticleDensity		camera	primitive	void __stdcall (float density)	Clamps to [0, 1] (NaN to 1) and stores in 0x87d5fc	verified	one	camera#particle-density	camera::camera_clamp01
+0x7ae000	7	GetParticleDensity		camera	orchestration	float __cdecl (void)	Returns 0x87d5fc	verified	one	camera#particle-density	
+0x7bdc40	90	TranslateMatrix		cmath	primitive	void __thiscall (float *matrix, const float *t)	Adds t[0]·row0 + t[1]·row1 + t[2]·row2 to row 3	verified	one	camera#orthographic-setup	
+0x7bdca0	82	ScaleMatrixRows		cmath	primitive	void __thiscall (float *matrix, const float *s)	Multiplies the matrix's first three rows by s[0], s[1], s[2]	verified	one	camera#orthographic-setup	
+0x7fb310	317	math_random		lua			Returns a Lua random number drawn from rand	inferred	none	random#the-c-runtime-rand	
+0x7fb450	27	math_randomseed		lua	orchestration		Seeds rand from its first Lua argument, truncated	verified	one	random#the-c-runtime-rand	

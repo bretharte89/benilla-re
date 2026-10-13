@@ -1,0 +1,38 @@
+address	type	name	name_from	system	meaning	confidence	proof	finding
+0x802700	uint32_t[64]	NTempest::gnoise32_	idb	random	Holds the 64 dwords the state advance and the hashes read	verified	two	random#state-advance
+0x802800	float[16]	s_noiseGradients		random	Holds -1 + 2k/15 for k = 0 to 15, the gradient components of the noise	inferred	none	random#unreached-functions
+0x8038dc	float	s_perspectiveDepthFactor		gxumath	Holds -2.0, the factor of near·far in the perspective depth term	verified	one	camera#unprojection
+0x808b5c	float	s_dragTravel		input	Holds 8.0, the travel either sum must reach for a slow release to count as a drag	verified	two	input#click-versus-drag
+0x81d7b0	float	s_defaultDistance		camera	Holds 100.0, the default distance and eye x	verified	one	camera#properties
+0x81d7b4	float	s_defaultFarClip		camera	Holds 5000.0, the default far clip	verified	one	camera#properties
+0x81d7b8	float	s_defaultNearClip		camera	Holds 8.0, the default near clip	verified	one	camera#properties
+0x81d7bc	float	s_orthoDepth		camera	Holds 500.0, the orthographic depth either side of zero	verified	one	camera#orthographic-setup
+0x81d7c0	void *[2]	CCamera::vftable		camera	Holds the camera's vtable: 0x7acd80, then 0x442a70	verified	one	camera#lifetime
+0x81d7c8	void *[4]	s_scalarPropertyVftable		camera	Holds the scalar property vtable: delete, evaluate, verify, store	verified	one	camera#property-updates
+0x81d7d8	void *[4]	s_vectorPropertyVftable		camera	Holds the vector property vtable: delete, evaluate, verify, store	verified	one	camera#property-updates
+0x81d7e8	void *[2]	s_propertySetVftable		camera	Holds the camera base's vtable: 0x7acd10, then 0x442a70	verified	one	camera#lifetime
+0x81d7f0	void *[3]	CBaseManaged::vftable		camera	Holds the base property vtable: 0x7acb50, 0x7acb30, 0x7acb40	verified	one	camera#property-updates
+0x81d7fc	void *[4]	s_anglePropertyVftable		camera	Holds the angle property vtable: delete, the scalar evaluate and verify, store	verified	one	camera#property-updates
+0x822c60	luaL_reg[25]	mathlib		lua	Pairs the Lua math library's names with its C functions, ending in a null pair	verified	one	random#the-c-runtime-rand
+0x827000	void (*[7180])(void)	__xc_a		crt	Lists the C++ static initializers __cinit runs in ascending order, up to __xc_z at 0x82e030	verified	one	random#static-initializers
+0x832a44	float	s_screenScaleX		screencoord	Holds K1 = a/sqrt(a² + 1) for the display aspect a; 0.8 in the file	verified	one	input#click-versus-drag
+0x832a48	float	s_screenScaleY		screencoord	Holds K2 = 1/sqrt(a² + 1) for the display aspect a; 0.6 in the file	verified	one	input#click-versus-drag
+0x8500b8	void *[52]	s_bindingCommands		input	Pairs the 26 movement and mouse binding commands' names with their handlers	verified	one	input#mouse-commands
+0x850340	char[53]	s_inputControlSourcePath		input	Holds the source path the object file asserts with, ending InputControl.cpp	verified	one	input#input-state
+0x850378	char[51]	s_inputControlTag		input	Holds the path ending InputControl.h, the allocation tag of CInputControl	verified	one	input#input-state
+0x87d5d8	char[8]	s_cameraTag		camera	Holds "HCAMERA", the tag of camera allocations and handles	verified	one	camera#lifetime
+0x87d5e8	char[19]	s_propertySlotsTag		camera	Holds ".PAVCBaseManaged@@", the tag of slot array allocations	verified	one	camera#property-updates
+0x87d5fc	float	s_particleDensity		camera	Holds the particle density in [0, 1]; 1.0 in the file	verified	one	camera#particle-density
+0xb05d68	float	s_randomInfinity		random	Holds +inf, set at startup; nothing reads it	verified	one	random#static-initializers
+0xb05d6c	float	s_randomInvTwoPi		random	Holds 1/2π, set at startup; read only by unreached noise	verified	one	random#static-initializers
+0xb05d70	float	s_randomTwoPi		random	Holds 2π, set at startup; read only by unreached noise	verified	one	random#static-initializers
+0xb05d74	float	s_gaussianSpareFloat		random	Holds the spare deviate of 0x44f9b0, 0 when empty; one for every state	inferred	none	random#unreached-functions
+0xb05d78	double	s_gaussianSpareDouble		random	Holds the spare deviate of 0x44fa70, 0 when empty; one for every state	inferred	none	random#unreached-functions
+0xbe1148	CInputControl *	s_inputControl		input	Holds the CInputControl singleton	verified	one	input#input-state
+0xcf5730	float	s_cameraInvTwoPi		camera	Holds 1/2π (0x3e22f983), set at startup, read by 0x7abbe0	verified	two	camera#angle-properties
+0xcf5734	float	s_cameraTwoPi		camera	Holds 2π (0x40c90fdb), set at startup, read by 0x7abbe0	verified	two	camera#angle-properties
+0xcf5738	float	s_defaultFov		camera	Holds π/2, set at startup, the default field of view	verified	one	camera#properties
+0xcf573c	float	s_cameraInfinity		camera	Holds +inf, set at startup; nothing reads it	verified	one	camera#object-file-and-initializers
+0xcf5740	float	s_cameraInvTwoPi2		camera	Holds 1/2π, set at startup; nothing reads it	verified	one	camera#object-file-and-initializers
+0xcf5744	float	s_cameraTwoPi2		camera	Holds 2π, set at startup; read only by 0x7adf50	verified	one	camera#object-file-and-initializers
+0xcf5748	float	s_cameraInfinity2		camera	Holds +inf, set at startup; nothing reads it	verified	one	camera#object-file-and-initializers

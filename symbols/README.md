@@ -1,0 +1,157 @@
+# The symbol table
+
+Every known function, global, struct and struct field of `WoW.exe` 1.12.1.5875, one row each. A
+row says what the thing is in a line and links to the finding that proves it. The detail lives
+in the finding; the row is the index.
+
+Four files, tab-separated, UTF-8, one header line, no comments:
+
+- `functions.tsv`, sorted by `address`
+- `globals.tsv`, sorted by `address`
+- `structs.tsv`, sorted by `name`
+- `fields.tsv`, sorted by `struct`, then `offset`
+
+Sorting is plain byte order (`LC_ALL=C sort`), and every key below is written so that byte order
+is numeric order. Two people adding rows in different places then merge without conflict.
+
+## One row per address
+
+An address has exactly one row, owned by one system. A function belongs to the system whose
+object file holds it; other systems reach it through their closures (`../systems/README.md`).
+Library code the client links is owned by its library: `crt` (the MSVC C runtime), `storm`
+(Blizzard's Storm library), `lua` (Lua 5.0). A correction edits the row in place. A row is never
+duplicated to record a second opinion: a disagreement is settled at the bytes first
+(`../METHOD.md`).
+
+## Names
+
+One convention, the client's own C++ style:
+
+- **Methods.** `Class::Method` where the class is established: a vtable, an allocation or type
+  tag, or consistent use of one object as `this`. The class name comes from a tag or string in
+  the image (`HCAMERA` gives `CCamera`, `.PAVCBaseManaged@@` gives `CBaseManaged`) or from the
+  community database; it is never guessed. Constructors and destructors are `Class::Class` and
+  `Class::~Class`, and the deleting destructor a vtable holds is `Class::DeletingDestructor`.
+- **Free functions.** A PascalCase name that says what the function does to its inputs:
+  `RandomSeedFromString`, `NormalizeAngle`. This covers methods of a class the image does not
+  name.
+- **Data.** `s_` and camelCase for a global (`s_particleDensity`); `Class::vftable` for the vtable
+  of a named class.
+- **Fields.** `m_` and camelCase (`m_pressTime`); `__vfptr` for a vtable pointer.
+- **Structs.** The class name, by the rule for methods.
+- **Library code** keeps the library's own names (`_srand`, `__ftol`, `SMemAlloc`,
+  `math_randomseed`).
+- **Community names** from `vmangos/idb` (1.12.1.5875) are used verbatim, decorations included
+  (`_WinMain@16`), once checked at the bytes, with `idb` in `name_from`. A community name the
+  bytes contradict is not used.
+
+A name is unique among functions and globals, and a field's name is unique within its struct.
+Exports use `FUN_00514ae0` for a function with no name.
+
+## Common columns
+
+| column | values |
+|---|---|
+| `address` | `0x` and exactly six lowercase hex digits: `0x514ae0`. The virtual address in the exe, never a file offset or an RVA. |
+| `name` | As above. Empty only when the meaning is unknown. |
+| `name_from` | `idb` for a community name; empty for a name given here. |
+| `system` | The owning system, a lowercase word naming a doc under `../systems/`, or a library. |
+| `meaning` | One line starting with a verb: what the thing does or holds. |
+| `confidence` | `verified`: read at the bytes, the derivation recorded in `finding`. `inferred`: a lead, not settled. |
+| `proof` | For `verified`: `one` (one reading), `two` (two independent readings reconciled) or `test` (a bit-exact test against the exe passes). For `inferred`: `none`. |
+| `finding` | Where the derivation is: a doc under `../systems/` without `.md`, `#`, and the entry's anchor, for example `random#state-advance`; `METHOD#the-harness` for the facts the harness rests on. The entry mentions the row's address. |
+
+Confidence and proof are separate on purpose: every row states both, so `verified` is never a
+default and never says how strongly. The full rules are in `../METHOD.md`.
+
+An anchor is the GitHub slug of the entry's heading: lowercase, spaces to hyphens, punctuation
+dropped (`## State advance` is `#state-advance`). Renaming a heading means changing every row
+that links to it in the same commit.
+
+A row's finding may live in another system's doc: a library function whose behaviour matters to
+one system (the C runtime's `rand` is explained in `random`), or a function of a system with no
+doc yet whose meaning a finding elsewhere derives.
+
+## functions.tsv
+
+`address  size  name  name_from  system  class  signature  meaning  confidence  proof  finding  test`
+
+| column | values |
+|---|---|
+| `size` | Decimal bytes from the entry to the end of the last instruction, padding excluded. A cited instruction address belongs to the function whose `[address, address + size)` holds it. |
+| `class` | `primitive`, `orchestration`, `host`, `boundary` or `unreached`. Required on every row of a system that has a doc; empty only for a row owned by a system not yet written. |
+| `signature` | The C prototype without the name: return type, calling convention, parameters. `uint32_t __fastcall (uint32_t x)`. `__thiscall` puts `this` first; `__fastcall` passes its first two parameters in `ecx` and `edx`. Empty when not derived. |
+| `test` | The bit-exact test that runs this function against the exe: `crate::test_fn`, the function name of a test under `crates/<crate>/tests/`. Empty when there is none. |
+
+Classes:
+
+- `primitive`: computes a value or state a reimplementation must reproduce bit for bit. Any
+  arithmetic, bit manipulation or table lookup on values, beyond loading, storing, comparing and
+  computing addresses, makes a function primitive, however thin. Every primitive in a closure
+  needs a bit-exact `test`.
+- `orchestration`: calls other functions and moves values (loads, stores, compares, branches) and
+  computes nothing of its own. Its contract is its call order and arguments, which its finding
+  states.
+- `host`: talks to the operating system, the heap, files, threads, the GPU or the sound device. A
+  reimplementation replaces it rather than reproducing it.
+- `boundary`: library code whose documented behaviour is enough (`strlen`, `malloc`, `__ftol`).
+  Closures stop at it. Library code whose exact output matters, like `rand`, is `primitive`.
+- `unreached`: nothing live reaches it. No `call` or `jmp` in the image targets it and no section
+  stores its address, except other unreached code. The row keeps its one-line meaning; it owes
+  no test and its `test` is empty, and a port drops its transcription.
+
+## globals.tsv
+
+`address  type  name  name_from  system  meaning  confidence  proof  finding`
+
+| column | values |
+|---|---|
+| `type` | A C type: `float`, `uint32_t[64]`, `char[8]`, `void *`, a struct from `structs.tsv`, or a pointer to one. Its size is the size of the type. |
+
+A `.data` global that code writes is a variable, even when its file bytes hold a sensible value:
+the meaning names its default and its finding names its writers. A `.rdata` value is a constant.
+Pooled literals (`1.0f` and the like) get a row only when a finding cites their address.
+
+## structs.tsv
+
+`name  size  vtable  system  meaning  confidence  proof  finding`
+
+| column | values |
+|---|---|
+| `name` | The class name, by the naming rule. |
+| `size` | Decimal bytes, from the allocation or the constructor. |
+| `vtable` | The address of the vtable the constructor finally stores, a row of `globals.tsv`; empty for a struct without one. |
+
+## fields.tsv
+
+`struct  offset  size  type  name  system  meaning  confidence  proof  finding`
+
+| column | values |
+|---|---|
+| `struct` | A row of `structs.tsv`. |
+| `offset` | `0x` and exactly four lowercase hex digits from the start of the struct: `0x0014`. |
+| `size` | Decimal bytes; `offset + size` stays within the struct. |
+| `type` | As in `globals.tsv`. |
+
+A field's type comes from the instruction that loads it (`fld dword` is a `float`), and its
+meaning from its writers, never from one reader's use of it. A sub-object of a class the image
+does not name is written as its named base followed by its own fields.
+
+## Rules the check enforces
+
+`../tools/validate.py` enforces these now; the full check replaces it later.
+
+| rule | value | why |
+|---|---|---|
+| columns | the headers above, in order, every row complete | parallel edits must merge |
+| sorting | byte order of the keys above | parallel edits must merge |
+| `meaning` | 120 characters, one line, verb first, no final period | a cell is a gloss; the finding holds the detail |
+| `name` | 48 characters, the naming rule | exported to Ghidra, IDA and Binary Ninja as an identifier |
+| `signature` | 160 characters | one prototype, no commentary |
+| banned in `meaning` | `?`, `TODO`, `probably`, `maybe`, `seems`, `likely` | a guess is `inferred`, said in the confidence column |
+| `verified` | needs `one`, `two` or `test`, and a `finding` | provenance is the point of the label |
+| `inferred` | needs `none`; a `finding` is allowed | a finding can name what it did not settle |
+| `finding` | resolves to an entry that mentions the row's address | the row and its derivation stay linked |
+| `class` | set on every row of a system with a doc | a written system's closure is classified |
+| `unreached` | `test` empty | nothing runs the code |
+| addresses | unique across functions and globals | one row per address |

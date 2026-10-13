@@ -1,0 +1,108 @@
+# System docs
+
+One doc per system of the client: `systems/<system>.md`. A system that outgrows one doc splits by
+topic into `systems/<system>/<topic>.md`, and its rows link to the topic doc. A doc is a
+reference: it says what the client does, where, and how that was read from the bytes. History is
+in git; open work is in the issue tracker.
+
+## Shape of a doc
+
+```
+# <system>
+
+<Overview>
+
+Roots: `0x……`, `0x……`, …
+
+## <Entry title>
+…
+```
+
+### Overview
+
+What the system does and where it lives in the exe: its object files as address ranges, the
+structs and globals it owns, and which of its functions the rest of the client actually reaches.
+A system owns the functions of its object files (`../symbols/README.md`). At most 200 words, no
+addresses beyond what a reader needs to find the code.
+
+### Roots
+
+The functions through which anything outside the system enters it:
+
+- functions called or jumped to from code another system owns;
+- functions whose address is stored anywhere in the image: vtable slots, registration tables,
+  callbacks passed as arguments;
+- static initializers, which the C runtime calls through its initializer table.
+
+The closure of a system is every function reachable from its roots by calls, tail jumps, vtable
+slots and stored addresses, stopping at functions another system owns. Every function in the
+closure has a row with a `class` (`../symbols/README.md`), and every `primitive` in it has a
+bit-exact test. A function the system owns that nothing live reaches is of class `unreached`:
+it keeps a row with its one-line meaning and owes no test. The doc gives the unreached functions
+one short entry that lists their addresses and the census that shows nothing reaches them.
+
+### Entries
+
+One entry per mechanism: a `##` heading (the title, at most six words, which is also the
+anchor rows link to), then this shape:
+
+```
+## State advance
+
+<Claim: what the client does, in one to three sentences, with the inputs it holds for.>
+
+Addresses: `0x4531e0`, `0x802700`
+Confidence: verified
+Proof: two
+Test: `random::crandom_uint32_advance`
+
+<Derivation: the path from the bytes to the claim, in a few lines.>
+```
+
+- **Claim.** The mechanism in plain words, precise enough to reimplement: formulas with their
+  constants, every branch that changes the result, the order of effects, what is stored where.
+  It states the input space it holds for; a claim about one case names it.
+- **Addresses.** Every address that decides the claim: the functions, the globals, and the
+  instruction addresses of deciding branches and stores. Each one resolves to a row: an exact
+  address, or an instruction inside a function row's extent.
+- **Confidence** and **Proof** take the values of the table columns: `verified` with `one`,
+  `two` or `test`; `inferred` with `none`. The entry states its weakest load-bearing step; a row
+  linking here may carry less, never more.
+- **Test.** The bit-exact test that proves the transcription, `crate::test_fn`, or `none`.
+  When a test covers only part of a function, the derivation says which instructions.
+- **Derivation.** Instruction addresses, opcodes and constants, in the order that proves the
+  claim. Quote at most a few instructions; never paste a listing. A census states its pattern,
+  where it searched, its count and its control (`../METHOD.md`).
+
+An entry that settles a configuration another entry decided reconciles both in the same change.
+A correction rewrites the entry; the wrong version stays only in git.
+
+## Addresses in prose
+
+An address is written `0x` and six lowercase hex digits, in backticks: `` `0x514ae0` ``. Struct
+fields are written `+0x14` with the struct named nearby. Every address in a doc resolves to a row
+of the table. A pooled constant is cited by value (`2π as f32, 0x40c90fdb`) unless its address
+matters. A constant that would read as an address, six hex digits after `0x`, is written in
+decimal or without backticks. A range is written by its first and last function, never by an end
+address that belongs to no row.
+
+## Rules the check enforces
+
+`../tools/validate.py` enforces these now; the full check replaces it later. They apply to every
+doc under `systems/` except this one.
+
+| rule | value | why |
+|---|---|---|
+| overview | 200 words | a reader orients on one screen |
+| entry title | 6 words | it is an anchor and must stay stable |
+| claim | 120 words, a table not counted | a longer claim is two mechanisms |
+| table in a claim | 12 rows | a longer table belongs in the symbol table |
+| derivation | 200 words | a derivation cites bytes; a longer one is a pasted dump |
+| quoted instructions | 8 lines per block | findings cite the bytes, they do not reproduce the exe |
+| one doc | 4,000 words | past that, split by topic |
+| hedges | `probably`, `likely`, `seems`, `appears to`, `roughly`, `maybe`, `should be`, `TODO`, `FIXME` | a guess is `inferred`, said once in the Confidence line |
+| shouting | `NOTE:`, `IMPORTANT`, `WARNING`, `CORRECTED`, `VERIFIED`, `INFERRED` | emphasis does not make a claim truer |
+| history | `previously`, `used to`, `no longer`, `originally`, `corrected`, `was wrong` | the doc states the current fact; git holds the past |
+| first person | `we`, `our`, `I` | the claim is about the client, not the reader |
+| entry shape | the four lines `Addresses`, `Confidence`, `Proof`, `Test` with valid values | the table and the docs share one vocabulary |
+| addresses | every address in a doc, `METHOD.md` included, resolves to a row | a citation without a row cannot be looked up |
