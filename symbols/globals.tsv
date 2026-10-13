@@ -109,10 +109,19 @@ address	type	name	name_from	system	meaning	confidence	proof	finding
 0x6ea3bc	uint8_t[62]	s_spellHelpTargetAIndex		spell	Maps implicit target A values 1 to 62 to cases of 0x6ea3b0	verified	one	spell/handlers#hostility-classifier
 0x6ea3fc	void *[3]	s_spellHelpTargetBCases		spell	Holds the three case addresses of the second implicit target B switch of 0x6ea280	verified	one	spell/handlers#hostility-classifier
 0x6ea408	uint8_t[62]	s_spellHelpTargetBIndex		spell	Maps implicit target B values 1 to 62 to cases of 0x6ea3fc	verified	one	spell/handlers#hostility-classifier
+0x7052a4	void *[5]	s_handlerFormatCases		ui	Holds the case addresses of the argument runner's format letters	verified	one	ui/script#running-a-handler
+0x7052b8	uint8_t[18]	s_handlerFormatIndex		ui	Holds the case of each letter from d to u for the argument runner	verified	one	ui/script#running-a-handler
+0x7a3054	void *[3]	s_pointXCases		ui	Holds the three case addresses of the relative point x getter	verified	one	ui/anchors#relative-point-coordinates
+0x7a3060	uint8_t[9]	s_pointXCaseIndex		ui	Holds the case of each anchor point for the x getter: 0, 1, 2 repeated	verified	one	ui/anchors#relative-point-coordinates
+0x7a3134	void *[3]	s_pointYCases		ui	Holds the three case addresses of the relative point y getter	verified	one	ui/anchors#relative-point-coordinates
+0x7a3140	uint8_t[9]	s_pointYCaseIndex		ui	Holds the case of each anchor point for the y getter: 0, 0, 0, 1, 1, 1, 2, 2, 2	verified	one	ui/anchors#relative-point-coordinates
 0x7c5468	void *[5]	s_displacementCases		collision	Holds the five case labels of the displacement dispatcher 0x7c5360	verified	one	collision/kinematics#displacement-dispatcher
 0x7c547c	uint8_t[15]	s_displacementCaseIndex		collision	Holds the case index for modes 1 to 15 of the displacement dispatcher	verified	one	collision/kinematics#displacement-dispatcher
 0x7ffa10	uint8_t[20]	CStatus::vftable		client	Holds the vtable of CStatus	inferred	none	
+0x7ffa24	const float	s_half		ui	Holds 0.5, the factor of the layout's centre arithmetic	verified	one	ui/anchors#edge-resolution-from-size
+0x7ffd74	const float	s_zero		ui	Holds 0.0, against which the layout tests sizes and edges	verified	one	ui/anchors#edge-resolution-from-size
 0x7ffd84	void *	s_splineCurveVtable		cmath	Holds the vtable stored at +0x2c of the movement spline object; its first slot reads a count minus 3	inferred	none	collision/world#spline-object
+0x7ffe58	const float	s_twoFiftyFive		ui	Holds 255.0, the alpha scale of Frame:SetAlpha	verified	one	ui/visibility#alpha
 0x801354	float	s_defaultHandlerPriority		core	Holds 0.0, the priority 0x41fc90 registers with	verified	one	core/events#registration-calls
 0x801360	float	s_millisecondsToSeconds		core	Holds 0.001f (0x3a83126f), the frame time and timer factor	verified	one	core/loop#frame-time
 0x801364	void *[1]	EvtContext::vftable		core	Holds the context vtable: the deleting destructor 0x423240	verified	one	core/loop#start-and-stop
@@ -139,6 +148,9 @@ address	type	name	name_from	system	meaning	confidence	proof	finding
 0x801628	float	s_mouseSpeedMax		core	Holds 2.0, the highest mouse speed setting	verified	one	core/input#mouse-speed-and-num-lock
 0x802700	uint32_t[64]	NTempest::gnoise32_	idb	random	Holds the 64 dwords the state advance and the hashes read	verified	two	random#state-advance
 0x802800	float[16]	s_noiseGradients		random	Holds -1 + 2k/15 for k = 0 to 15, the gradient components of the noise	inferred	none	random#unreached-functions
+0x80297c	const float	s_three		ui	Holds 3.0, a factor of the sizing point choice	inferred	none	ui/input#moving-and-sizing
+0x8029b0	const float	s_quarter		ui	Holds 0.25, a factor of the sizing point choice	inferred	none	ui/input#moving-and-sizing
+0x8029d4	const float	s_layoutEpsilon		ui	Holds 2^-22, the change below which a point, scale or alpha setter does nothing	verified	one	ui/anchors#absolute-and-relative-points
 0x803600	void *	s_guidHashTableVtable		objectlayer	Holds the vtable the manager's two GUID hash tables carry	inferred	none	objectlayer/manager#manager-block
 0x803640	void *[31]	CGObject_C::vftable		objectlayer	Holds the base object vtable, 31 slots	verified	one	objectlayer/classes#constructors-and-final-vtables
 0x803740	uint8_t[180]	s_authUrlKeys		glue	Holds five 36-byte rows of a status code and its URL key, AUTH_BANNED (28) to AUTH_PARENTAL_CONTROL (33)	verified	one	glue/flow#world-connect-failure
@@ -173,6 +185,7 @@ address	type	name	name_from	system	meaning	confidence	proof	finding
 0x80c330	void *[34]	CGGameObject_C::vftable		objectlayer	Holds the game object vtable, 34 slots	verified	one	objectlayer/classes#constructors-and-final-vtables
 0x80c4f8	void *[46]	CGUnit_C::vftable		objectlayer	Holds the unit vtable, 46 slots	verified	one	objectlayer/classes#constructors-and-final-vtables
 0x80c5c4	float	s_facetFacingBound		collision	Holds -1e-5 (0xb727c5ac), the n·dir at or below which a facet faces against the motion	verified	one	collision/contact#nearest-facet-per-face
+0x80c5c8	const float	s_rectEpsilon		ui	Holds 1e-5, the edge change below which a resolved rectangle counts as unchanged	verified	one	ui/anchors#resolving-and-the-changed-callback
 0x80c734	float	s_splineWarpSpeedSquared		collision	Holds 3600.0 (0x45610000), the squared horizontal speed in yd/s above which a spline step skips collision	verified	one	collision/mover#spline-warp-gate
 0x80c738	float	s_mapCoordinateSpan		collision	Holds 34131.332 (0x47055355), the bound on 17066.666 minus a coordinate	verified	one	collision/mover#position-validity
 0x80c73c	float	s_collisionRadiusCap		collision	Holds 0.54071623 (0x3f0a6c61), the cap on half width over scale in 0x617460	verified	one	collision/mover#collision-size
@@ -200,6 +213,36 @@ address	type	name	name_from	system	meaning	confidence	proof	finding
 0x811904	void *[4]	s_itemCooldownTableVtable		spell	Holds the item-cooldown table vtable: delete node, new node, deleting destructor, clear	verified	one	spell/cooldowns#item-cooldown-table
 0x811914	float	s_movingRangeBonus		spell	Holds 8/3 (0x402aaaab), the yards a maximum range gains when caster and target both have movement flags 0x200d	verified	one	spell/records#range-bonuses-and-modifier
 0x81199c	float	s_shardRateScaleLevel1		spell	Holds 0.66, the shard rate scale at spellEffectLevel 1	verified	one	spell/visuals#emitter-initialization
+0x8119f8	uint32_t[16]	s_frameStrataNames		ui	Holds eight pairs of a stratum index and its name, BACKGROUND 1 to TOOLTIP 8	verified	one	ui/strata#strata-and-their-names
+0x811a38	uint32_t[18]	s_anchorPointNames		ui	Holds nine pairs of an anchor point index and its name	verified	one	ui/anchors#point-slots-and-point-names
+0x811e28	uint32_t[72]	s_frameScriptBaseLibrary		ui	Holds 36 pairs of a name and a function, setglobal to debugstack, the script base library	inferred	none	ui/script#the-lua-state
+0x811f4c	void *[5]	s_scriptObjectVtable		ui	Holds the script object vtable the constructor 0x701ae0 stores	verified	one	ui/script#the-script-object
+0x81c378	const float	s_inputPriority		ui	Holds 1.0, the priority of the top's input handlers	verified	one	ui/input#the-handlers
+0x81c380	void *[11]	CSimpleTop::vftable		ui	Holds the vtable of CSimpleTop	verified	one	ui/strata#construction-and-teardown
+0x81c3b8	uint32_t[3]	s_centerXPoints		ui	Holds the anchor points 1, 4, 7 that fix a horizontal centre	verified	one	ui/anchors#edge-resolution-from-points
+0x81c3c4	uint32_t[3]	s_centerYPoints		ui	Holds the anchor points 3, 4, 5 that fix a vertical centre	verified	one	ui/anchors#edge-resolution-from-points
+0x81c3d0	uint32_t[3]	s_leftPoints		ui	Holds the anchor points 0, 3, 6 that fix a left edge	verified	one	ui/anchors#edge-resolution-from-points
+0x81c3dc	uint32_t[3]	s_topPoints		ui	Holds the anchor points 0, 1, 2 that fix a top edge	verified	one	ui/anchors#edge-resolution-from-points
+0x81c3e8	uint32_t[3]	s_rightPoints		ui	Holds the anchor points 2, 5, 8 that fix a right edge	verified	one	ui/anchors#edge-resolution-from-points
+0x81c3f4	uint32_t[3]	s_bottomPoints		ui	Holds the anchor points 6, 7, 8 that fix a bottom edge	verified	one	ui/anchors#edge-resolution-from-points
+0x81c400	void *[11]	CLayoutFrame::vftable		ui	Holds the vtable of CLayoutFrame	verified	one	ui/anchors#resolving-and-the-changed-callback
+0x81c42c	void *[4]	s_absolutePointVtable		ui	Holds the vtable of an anchor point with no relative frame	verified	one	ui/anchors#absolute-and-relative-points
+0x81c43c	void *[4]	s_anchorPointVtable		ui	Holds the base vtable of an anchor point, with two pure getters	verified	one	ui/anchors#absolute-and-relative-points
+0x81c44c	void *[4]	s_relativePointVtable		ui	Holds the vtable of an anchor point relative to another frame	verified	one	ui/anchors#absolute-and-relative-points
+0x81c468	const float	s_dragDistance		ui	Holds 0.01, the distance whose square starts a drag	verified	one	ui/README#static-initializers
+0x81c46c	void *[11]	s_simpleFrameLayoutVtable		ui	Holds the vtable of a CSimpleFrame's layout part	verified	one	ui/frames#vtables-and-the-two-parts
+0x81c498	void *[36]	CSimpleFrame::vftable		ui	Holds the vtable of CSimpleFrame	verified	one	ui/visibility#alpha
+0x81c528	void *[11]	s_titleRegionLayoutVtable		ui	Holds the vtable of a title region's layout part	verified	one	ui/frames#vtables-and-the-two-parts
+0x81c554	void *[8]	s_titleRegionVtable		ui	Holds the vtable of a title region	verified	one	ui/frames#vtables-and-the-two-parts
+0x81c580	void *[8]	CScriptRegion::vftable		ui	Holds the vtable of CScriptRegion	verified	one	ui/frames#vtables-and-the-two-parts
+0x81c5a0	void *[11]	s_scriptRegionLayoutVtable		ui	Holds the vtable of a CScriptRegion's layout part	verified	one	ui/frames#vtables-and-the-two-parts
+0x81d560	const float	s_regionMethodsInfinityConst		ui	Holds +inf, the region methods' copy of the shared header's constant	verified	one	ui/README#this-rounds-object-files
+0x81d564	const float	s_regionMethodsPiConst		ui	Holds pi, the region methods' copy of the shared header's constant	verified	one	ui/README#this-rounds-object-files
+0x81d568	const float	s_regionMethodsTenConst		ui	Holds 10.0, the region methods' copy of the shared header's constant	verified	one	ui/README#this-rounds-object-files
+0x81d56c	const float	s_framePointInfinityConst		ui	Holds +inf, the point getters' copy of the shared header's constant	verified	one	ui/README#this-rounds-object-files
+0x81d570	const float	s_framePointPiConst		ui	Holds pi, the point getters' copy of the shared header's constant	verified	one	ui/README#this-rounds-object-files
+0x81d574	const float	s_framePointTenConst		ui	Holds 10.0, the point getters' copy of the shared header's constant	verified	one	ui/README#this-rounds-object-files
+0x81d578	const float	s_hyperlinkedFrameInfinityConst		ui	Holds +inf, CSimpleHyperlinkedFrame.cpp's copy of the shared header's constant	verified	one	ui/README#this-rounds-object-files
 0x81d7b0	float	s_defaultDistance		camera	Holds 100.0, the default distance and eye x	verified	one	camera#properties
 0x81d7b4	float	s_defaultFarClip		camera	Holds 5000.0, the default far clip	verified	one	camera#properties
 0x81d7b8	float	s_defaultNearClip		camera	Holds 8.0, the default near clip	verified	one	camera#properties
@@ -320,6 +363,9 @@ address	type	name	name_from	system	meaning	confidence	proof	finding
 0x838f6c	uint32_t[5]	s_gameObjectWatchedFields		objectlayer	Holds the game object's watched field indices, 3, 8, 17, 18 and 20	verified	one	objectlayer/fields#watched-fields
 0x838f90	uint32_t[295]	s_playerWatchedFields		objectlayer	Holds the 295 player field indices every player watches	verified	one	objectlayer/fields#watched-fields
 0x839430	uint32_t[643]	s_activePlayerWatchedFields		objectlayer	Holds the 643 further player field indices only the active player watches	verified	one	objectlayer/fields#watched-fields
+0x847ec0	char[49]	s_errNonScriptObject		ui	Holds the error of a method whose table holds no object	verified	one	ui/methods#finding-self
+0x847ef8	char[71]	s_errNonTable		ui	Holds the error of a method called on a value that is not a table	verified	one	ui/methods#finding-self
+0x84b648	char[6]	s_eventGlobalName		ui	Holds event, the global SignalEvent sets to the event name	verified	one	ui/script#signalling-an-event
 0x8500b8	void *[52]	s_bindingCommands		input	Pairs the 26 movement and mouse binding commands' names with their handlers	verified	one	input#mouse-commands
 0x850340	char[53]	s_inputControlSourcePath		input	Holds the source path the object file asserts with, ending InputControl.cpp	verified	one	input#input-state
 0x850378	char[51]	s_inputControlTag		input	Holds the path ending InputControl.h, the allocation tag of CInputControl	verified	one	input#input-state
@@ -345,6 +391,30 @@ address	type	name	name_from	system	meaning	confidence	proof	finding
 0x870dc0	char[13]	s_autoSelfCastName		spell	Holds the name autoSelfCast that the system start registers as a CVar	verified	one	spell/handlers#system-initialization-and-teardown
 0x870e20	uint32_t	s_lightningLastUpdate		spell	Holds the clock of the last lightning update, -1 by default; written by 0x6eca20 and 0x6ec130	verified	one	spell/visuals#frame-update
 0x870e24	char *[7]	s_areaShardModelPaths		spell	Holds the seven shard model paths 0x6ece30 indexes by type, unbounded; read only there	verified	one	spell/visuals#area-shard-emitter-creation
+0x8722c8	int32_t	s_errorHandlerRef		ui	Holds the registry reference of the script error handler	verified	one	ui/script#running-a-handler
+0x8722cc	int32_t	s_scriptReference2		ui	Holds -1 after the state is opened	inferred	none	ui/script#the-lua-state
+0x8722d4	int32_t	s_scriptReference3		ui	Holds a registry reference the state's opening takes	inferred	none	ui/script#the-lua-state
+0x8722dc	char[8]	s_argName		ui	Holds arg and the digits of the argument global being set	verified	one	ui/script#running-a-handler
+0x872990	char[30]	s_eventObjectTag		ui	Holds the allocation tag of the event array, the type name of FrameScript_EventObject	verified	one	ui/script#the-event-table
+0x8729b0	char[60]	s_frameScriptPath		ui	Holds the source path of FrameScript.cpp	verified	one	ui/README#this-rounds-object-files
+0x8729ec	char[19]	s_frameScriptMetaName		ui	Holds __framescript_meta, the global holding the object metatable	verified	one	ui/script#the-script-object
+0x872a08	char[24]	s_listenerNodeTag		ui	Holds the allocation tag of a listener node, the type name of EVENTLISTENERNODE	verified	one	ui/script#registering-for-an-event
+0x872a28	char[6]	s_handlerNameFormat		ui	Holds %s:%s, the format of a compiled handler's name	verified	one	ui/script#compiling-a-script-element
+0x872cd0	char[15]	s_getPluralIndexName		ui	Holds GetPluralIndex	inferred	none	ui/script#text-counts-and-running-code
+0x872e64	char[5]	s_thisGlobalName		ui	Holds this, the global a handler runs with	verified	one	ui/script#running-a-handler
+0x8783a4	char[53]	s_simpleTopPath		ui	Holds the source path of CSimpleTop.cpp	verified	one	ui/input#input-lists
+0x8783e4	char[23]	s_strataNodeTag		ui	Holds .PAVCFrameStrataNode@@, the allocation tag of the level node arrays	verified	one	ui/strata#strata-records-and-level-nodes
+0x878440	char[33]	s_relativeFrameMissing		ui	Holds the error the XML anchors report for a relativeTo name that finds no frame	verified	one	ui/anchors#construction-and-the-xml-anchors
+0x878500	char[55]	s_layoutFramePath		ui	Holds the source path of CLayoutFrame.cpp	verified	one	ui/README#this-rounds-object-files
+0x878540	char[29]	s_frameNodeTag		ui	Holds the allocation tag of a dependent node, the type name of CLayoutFrame's FRAMENODE	verified	one	ui/anchors#dependents
+0x8785b8	char[55]	s_simpleFramePath		ui	Holds the source path of CSimpleFrame.cpp	verified	one	ui/README#this-rounds-object-files
+0x878870	char *	s_regionTypeName		ui	Points to Region, the type name of CScriptRegion	verified	one	ui/frames#vtables-and-the-two-parts
+0x878874	char[56]	s_scriptRegionPath		ui	Holds the source path of CScriptRegion.cpp	verified	one	ui/README#this-rounds-object-files
+0x8788ac	char[4]	s_topName		ui	Holds Top, what $parent becomes when no ancestor is named	verified	one	ui/frames#names-and-lookup-by-name
+0x8788b0	char[8]	s_parentPrefix		ui	Holds $parent, the name prefix replaced by an ancestor's name	verified	one	ui/frames#names-and-lookup-by-name
+0x878ec0	uint32_t[136]	s_frameMethods		ui	Holds the 68 pairs of a name and a function of the Frame methods	verified	one	ui/methods#method-tables-and-lookup
+0x879504	char[61]	s_simpleFrameScriptPath		ui	Holds the source path of CSimpleFrameScript.cpp	verified	one	ui/README#this-rounds-object-files
+0x87c9b8	uint32_t[38]	s_regionMethods		ui	Holds the 19 pairs of a name and a function of the Region methods	verified	one	ui/methods#method-tables-and-lookup
 0x87d5d8	char[8]	s_cameraTag		camera	Holds "HCAMERA", the tag of camera allocations and handles	verified	one	camera#lifetime
 0x87d5e8	char[19]	s_propertySlotsTag		camera	Holds ".PAVCBaseManaged@@", the tag of slot array allocations	verified	one	camera#property-updates
 0x87d5fc	float	s_particleDensity		camera	Holds the particle density in [0, 1]; 1.0 in the file	verified	one	camera#particle-density
@@ -598,13 +668,33 @@ address	type	name	name_from	system	meaning	confidence	proof	finding
 0xcee94c	uint32_t[3]	s_lightningObjects		spell	Holds the chain list: link offset 0, then the terminator link	verified	one	spell/visuals#static-lists-and-pools
 0xcee96c	uint32_t[3]	s_blizzardObjects		spell	Holds the emitter list: link offset 0, then the terminator link	verified	one	spell/visuals#static-lists-and-pools
 0xcee9a8	void *	s_spellEffectLevelCVar		spell	Holds the spellEffectLevel CVar record; written by 0x6ec0e0 and cleared by 0x6ec130	verified	one	spell/visuals#startup-and-shutdown
+0xceeac0	uint32_t	s_scriptContext		ui	Holds the current execution-context word a running handler set	verified	one	ui/script#running-a-handler
+0xceeac4	int32_t	s_scriptContextDepth		ui	Holds the nesting count of running handlers	verified	one	ui/script#running-a-handler
+0xceeb60	char[1024]	s_serializeBuffer		ui	Holds the line the saved-variables writer builds	inferred	none	ui/script#saved-variables
+0xceef60	uint32_t	s_eventCapacity		ui	Holds the capacity of the event record array	verified	one	ui/script#the-event-table
+0xceef64	uint32_t	s_eventCount		ui	Holds the number of event records	verified	one	ui/script#the-event-table
+0xceef68	void *	s_eventRecords		ui	Points to the event records, 0x10 bytes each: name and listener list	verified	one	ui/script#the-event-table
+0xceef6c	uint32_t	s_lastTypeId		ui	Holds the last script type id handed out	verified	one	ui/frames#the-region-type-id
+0xceef74	void *	s_luaState		ui	Points to the Lua state of the interface, 0 while closed	inferred	none	ui/script#the-lua-state
 0xcf0a3c	float	s_softFloatZero		cmath	Holds 0.0, set by 0x7625e0; the floor and ceil read it	verified	one	spell/records#software-floats
 0xcf0a40	float	s_softFloatOne		cmath	Holds 1.0, set by 0x762e20; the ceil reads it	verified	one	spell/records#software-floats
 0xcf0b0c	float	s_softFloatHundredth		cmath	Holds 0x3c23d70a, 0.01, set by 0x7626e0; the software modifier applier reads it	verified	one	spell/records#modifier-appliers
 0xcf0b2c	float	s_softFloatHalf		cmath	Holds 0.5, set by 0x762be0; 0x761160 adds it	verified	one	spell/records#software-floats
 0xcf0b64	float	s_softFloatMinusOne		cmath	Holds -1.0, set by 0x762520; the floor reads it	verified	one	spell/records#software-floats
-0xcf0bd8	void *			worldframe	Points to an object whose +0x1100 the cast attempt sets to 1 when it raises the cursor	inferred	none	spell/cast#targeting-refusal-or-cursor
+0xcf0bc0	float	s_topInfinity		ui	Holds +inf, the top file's copy of the shared header's value	verified	one	ui/README#static-initializers
+0xcf0bc8	uint32_t	s_lastInputTime		ui	Holds the time of the last key or mouse event the top's handlers received	verified	one	ui/input#the-handlers
+0xcf0bd8	void *	s_simpleTop		ui	Points to the CSimpleTop its constructor stores; its destructor stores 0	verified	one	ui/frames#construction
+0xcf0bec	uint32_t	s_layoutQueueLinkOffset		ui	Holds 0x6c, the offset of the layout queue link in a layout frame	verified	one	ui/anchors#invalidation-and-the-layout-queue
+0xcf0bf0	void *	s_layoutQueueTail		ui	Points to the layout queue terminator's previous link, the tail	verified	one	ui/anchors#invalidation-and-the-layout-queue
+0xcf0bf4	void *	s_layoutQueueHead		ui	Points to the first queued layout frame, tagged by bit 0 when empty	verified	one	ui/anchors#invalidation-and-the-layout-queue
+0xcf0c10	uint32_t	s_frameTypeId		ui	Holds the script type id of Frame, assigned on first use	verified	one	ui/methods#finding-self
+0xcf0c14	float	s_dragThresholdSq		ui	Holds 0.0001, the squared distance a pressed frame moves before its drag starts	verified	one	ui/README#static-initializers
+0xcf0c1c	uint32_t	s_frameCount		ui	Counts the CSimpleFrame objects that exist	verified	one	ui/frames#construction
+0xcf0c3c	uint32_t	s_regionTypeId		ui	Holds the script type id of Region, assigned on first use	verified	one	ui/frames#the-region-type-id
 0xcf0c5c	uint32_t	s_modelTypeId		ui	Holds the model frame type id, assigned from a counter on first use	inferred	none	
+0xcf4d38	uint32_t[10]	s_frameMethodHash		ui	Holds the hash table of the Frame methods	verified	one	ui/methods#method-tables-and-lookup
+0xcf54b4	uint32_t[10]	s_regionMethodHash		ui	Holds the hash table of the Region methods	verified	one	ui/methods#method-tables-and-lookup
+0xcf550c	float	s_layoutUndefined		ui	Holds +inf, the value of an edge or point the layout cannot resolve	verified	one	ui/anchors#relative-point-coordinates
 0xcf5730	float	s_cameraInvTwoPi		camera	Holds 1/2π (0x3e22f983), set at startup, read by 0x7abbe0	verified	two	camera#angle-properties
 0xcf5734	float	s_cameraTwoPi		camera	Holds 2π (0x40c90fdb), set at startup, read by 0x7abbe0	verified	two	camera#angle-properties
 0xcf5738	float	s_defaultFov		camera	Holds π/2, set at startup, the default field of view	verified	one	camera#properties

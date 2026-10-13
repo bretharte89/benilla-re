@@ -2193,49 +2193,49 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x483460	839	RenderWorldFrame		worldframe			Renders the world; calls 0x6ecb20 and then 0x6eca20	inferred	none	spell/visuals#frame-update	
 0x4837b0	442			worldframe			Draws the placement preview model 0xceca8c	inferred	none	spell/targeting#placement-model-and-rotation	
 0x4841f0	36	SubtractVector3		cmath	primitive	float * __fastcall (float *out, const float *a, const float *b)	Writes a - b	verified	one	camera#unprojection	
-0x48ad70	285	Script::UseSoulstone		ui			Implements the Lua function UseSoulstone	inferred	none	spell/cancel#who-cancels-a-cast	
+0x48ad70	285	Script::UseSoulstone		ui	orchestration		Implements the Lua function UseSoulstone	inferred	none	spell/cancel#who-cancels-a-cast	
 0x48d330	8	Script::ReplaceTradeEnchant	idb	gameui			Calls 0x6e6900 and returns no Lua results	verified	one	spell/targeting#binding-the-trade-slot	
-0x48e980	487	Script::LoadAddOn		ui			Loads an add-on for the in-game script, keeping a shared load-log status	inferred	none		
+0x48e980	487	Script::LoadAddOn		ui	orchestration		Loads an add-on for the in-game script, keeping a shared load-log status	inferred	none		
 0x4918d0	5	CGGameUI::IsPartyMember	idb	gameui		int __thiscall (const uint64_t *guid)	Jumps to 0x4e7f70, the party membership test for a GUID	verified	one	objectlayer/reaction#unit-toward-unit	
 0x492580	76			gameui			Binds a clicked position through 0x6e60f0 for a click record whose +0xc is 1	inferred	none	spell/targeting#binding-a-clicked-location	
 0x492c20	90			gameui			Rotates the placement or stops targeting for a world input whose +0x14 is 4	inferred	none	spell/targeting#placement-model-and-rotation	
-0x493540	966			ui			Selects the unit of a guid as the player's target	inferred	none	spell/handlers#spell-start	
-0x494720	28			ui			Passes a miss reason below 12, mapped through a table, with a guid to the UI	inferred	none	spell/go#inline-miss-report	
+0x493540	966			ui	primitive		Selects the unit of a guid as the player's target	inferred	none	spell/handlers#spell-start	
+0x494720	28			ui	orchestration		Passes a miss reason below 12, mapped through a table, with a guid to the UI	inferred	none	spell/go#inline-miss-report	
 0x494a50	247	CheckActivePlayer		gameui			Returns 0 or 1 from a check chosen by its argument, 0 to 11, through a jump table	inferred	none	input#mouse-commands	
-0x4958e0	54	SetPlayerControl		ui			Stores the player-control flag 0xb4b3e4 and signals PLAYER_CONTROL_GAINED or PLAYER_CONTROL_LOST on a change	verified	one	spell/checks#lost-control-exemption	
+0x4958e0	54	SetPlayerControl		ui	orchestration		Stores the player-control flag 0xb4b3e4 and signals PLAYER_CONTROL_GAINED or PLAYER_CONTROL_LOST on a change	verified	one	spell/checks#lost-control-exemption	
 0x495920	24			gameui			Clears the cursor, then cancels the cast with failed and send set	verified	one	spell/cancel#who-cancels-a-cast	
 0x495d60	1026			gameui			Checks an item against the pending spell's enchant effects, then binds it through 0x6e5b40	inferred	none	spell/targeting#flag-word-predicates	
 0x496170	204			gameui			Binds the trade slot through 0x6e6900 unless the spell would replace the slot's enchantment	inferred	none	spell/targeting#binding-the-trade-slot	
-0x496720	357	CGGameUI::DisplayError	idb	ui		void __cdecl (uint32_t id, ...)	Formats a catalogue message with its arguments, copies the text to 0xb4da40 and shows it by the message kind	verified	one	spell/failures#display-log-and-events	
-0x4968a0	6	GetLastDisplayedMessage		ui		const char *__cdecl (void)	Returns 0xb4da40, the text DisplayError last formatted	verified	one	spell/failures#display-log-and-events	
-0x4b31b0	15	FireCooldownEvents		ui		void __cdecl (void)	Signals ACTIONBAR_UPDATE_COOLDOWN, then SPELL_UPDATE_COOLDOWN	verified	one	spell/records#global-cooldown-start	
-0x4b31c0	144	FireUsableEvents		ui			Refreshes the action and spell usable state, signalling ACTIONBAR_UPDATE_USABLE on a change, then SPELL_UPDATE_USABLE	verified	one	spell/cooldowns#cooldown-events-fired	
+0x496720	357	CGGameUI::DisplayError	idb	ui	orchestration	void __cdecl (uint32_t id, ...)	Formats a catalogue message with its arguments, copies the text to 0xb4da40 and shows it by the message kind	verified	one	spell/failures#display-log-and-events	
+0x4968a0	6	GetLastDisplayedMessage		ui	orchestration	const char *__cdecl (void)	Returns 0xb4da40, the text DisplayError last formatted	verified	one	spell/failures#display-log-and-events	
+0x4b31b0	15	FireCooldownEvents		ui	orchestration	void __cdecl (void)	Signals ACTIONBAR_UPDATE_COOLDOWN, then SPELL_UPDATE_COOLDOWN	verified	one	spell/records#global-cooldown-start	
+0x4b31c0	144	FireUsableEvents		ui	orchestration		Refreshes the action and spell usable state, signalling ACTIONBAR_UPDATE_USABLE on a change, then SPELL_UPDATE_USABLE	verified	one	spell/cooldowns#cooldown-events-fired	
 0x4b3250	15			gameui			Calls a game UI function, then fires CURRENT_SPELL_CAST_CHANGED	verified	one	spell/cast#the-in-flight-spell	
-0x4b45c0	577	Script::GetShapeshiftFormInfo	idb	ui			Returns a form-bar entry's icon, name, active and castable values to Lua	inferred	none	spell/checks#usability-callers-and-events	
-0x4b5390	300			ui			Sets a bit of a flag set when the set exists and the bit is clear	inferred	none	spell/failures#player-unit-cleanup	
-0x4bce90	10	FirePetBarCooldownEvent		ui		void __cdecl (void)	Signals PET_BAR_UPDATE_COOLDOWN	verified	one	spell/records#global-cooldown-start	
-0x4bd1d0	765			ui			Handles a pet bar action press; calls 0x6e2de0 with pet 1 for a spell	inferred	none	spell/records#global-cooldown-start	
-0x4bf2b0	556	TradeInfoSetTargetItems		ui			Takes the partner's trade item records for the interface	inferred	none		
-0x4bf720	743	CGTradeInfo::HandleTradeMessage	idb	ui			Passes a trade status to the interface	inferred	none		
-0x4bfbd0	121	TradeInfoClearPlayerItem		ui			Clears the interface's record of one own trade slot	inferred	none		
-0x4c7300	1634			ui			Passes an inventory item to 0x495d60 while the flag word wants an item	inferred	none	spell/targeting#flag-word-predicates	
-0x4d61b0	33	CGReputationInfo::IsAtWar	idb	ui		bool __fastcall (uint32_t faction)	Returns bit 1 of the flag byte of the faction's reputation slot, the at-war flag; false with no slot below 64	verified	one	objectlayer/reaction#faction-toward-a-unit	
-0x4d63a0	93	CGReputationInfo::GetFactionStandingReaction	idb	ui		uint32_t __fastcall (uint32_t faction)	Returns the rank 0 to 7 of the player's standing with a faction, by thresholds from -6000 to 42000	verified	one	objectlayer/reaction#faction-toward-a-unit	
-0x4d6490	46	CGReputationInfo::GetForcedReaction	idb	ui		bool __fastcall (uint32_t faction, uint32_t *rank)	Finds the faction in the forced-reaction pairs and stores its rank; false when absent	verified	one	objectlayer/reaction#faction-toward-a-unit	
-0x4d7d40	1733			ui			Rebuilds state for the open trainer after a talent modifier changes	inferred	none	spell/records#talent-modifier-tables	
-0x4e5050	480	GetActionSlotUsable		ui			Computes an action slot's usable and no-power pair, through 0x6e3d60 for a spell	inferred	none	spell/checks#usability-callers-and-events	
-0x4e56f0	212	GetActionSlotInRange		ui			Computes an action slot's range answer through the range pre-check 0x6e4440	inferred	none	spell/checks#range-pre-check	
+0x4b45c0	577	Script::GetShapeshiftFormInfo	idb	ui	primitive		Returns a form-bar entry's icon, name, active and castable values to Lua	inferred	none	spell/checks#usability-callers-and-events	
+0x4b5390	300			ui	primitive		Sets a bit of a flag set when the set exists and the bit is clear	inferred	none	spell/failures#player-unit-cleanup	
+0x4bce90	10	FirePetBarCooldownEvent		ui	orchestration	void __cdecl (void)	Signals PET_BAR_UPDATE_COOLDOWN	verified	one	spell/records#global-cooldown-start	
+0x4bd1d0	765			ui	primitive		Handles a pet bar action press; calls 0x6e2de0 with pet 1 for a spell	inferred	none	spell/records#global-cooldown-start	
+0x4bf2b0	556	TradeInfoSetTargetItems		ui	orchestration		Takes the partner's trade item records for the interface	inferred	none		
+0x4bf720	743	CGTradeInfo::HandleTradeMessage	idb	ui	orchestration		Passes a trade status to the interface	inferred	none		
+0x4bfbd0	121	TradeInfoClearPlayerItem		ui	orchestration		Clears the interface's record of one own trade slot	inferred	none		
+0x4c7300	1634			ui	primitive		Passes an inventory item to 0x495d60 while the flag word wants an item	inferred	none	spell/targeting#flag-word-predicates	
+0x4d61b0	33	CGReputationInfo::IsAtWar	idb	ui	primitive	bool __fastcall (uint32_t faction)	Returns bit 1 of the flag byte of the faction's reputation slot, the at-war flag; false with no slot below 64	verified	one	objectlayer/reaction#faction-toward-a-unit	
+0x4d63a0	93	CGReputationInfo::GetFactionStandingReaction	idb	ui	primitive	uint32_t __fastcall (uint32_t faction)	Returns the rank 0 to 7 of the player's standing with a faction, by thresholds from -6000 to 42000	verified	one	objectlayer/reaction#faction-toward-a-unit	
+0x4d6490	46	CGReputationInfo::GetForcedReaction	idb	ui	orchestration	bool __fastcall (uint32_t faction, uint32_t *rank)	Finds the faction in the forced-reaction pairs and stores its rank; false when absent	verified	one	objectlayer/reaction#faction-toward-a-unit	
+0x4d7d40	1733			ui	primitive		Rebuilds state for the open trainer after a talent modifier changes	inferred	none	spell/records#talent-modifier-tables	
+0x4e5050	480	GetActionSlotUsable		ui	primitive		Computes an action slot's usable and no-power pair, through 0x6e3d60 for a spell	inferred	none	spell/checks#usability-callers-and-events	
+0x4e56f0	212	GetActionSlotInRange		ui	orchestration		Computes an action slot's range answer through the range pre-check 0x6e4440	inferred	none	spell/checks#range-pre-check	
 0x4e5bf0	10			gameui			Signals event 214 through 0x703e50	verified	one	spell/targeting#the-binds-range-test	
-0x4e5c00	92	RefreshActionBarUsable		ui			Recomputes the 120 action slots' usable pairs and signals ACTIONBAR_UPDATE_USABLE on a change	verified	one	spell/checks#usability-callers-and-events	
-0x4e5c60	10	FireActionBarCooldownEvent		ui			Signals ACTIONBAR_UPDATE_COOLDOWN	verified	one	spell/cooldowns#cooldown-events-fired	
-0x4e7f70	71	CGPartyInfo::IsMember	idb	ui		int __thiscall (const uint64_t *guid)	Returns 1 for a nonzero GUID that is the active player's or one of the four party members', else 0	verified	one	objectlayer/reaction#unit-toward-unit	
-0x4eeca0	805	Script::PingLocation		ui			Binds the clicked minimap point through 0x6e60f0 while the flag word wants a position	inferred	none	spell/targeting#binding-a-clicked-location	
-0x4f6000	69			ui			Toggles the craft window: closes it with CRAFT_CLOSE for the current profession, else opens it with CRAFT_SHOW	inferred	none	spell/cast#cast-attempt-refusals	
-0x4f93d0	10	FireBagCooldownEvent		ui		void __cdecl (void)	Signals BAG_UPDATE_COOLDOWN	verified	one	spell/records#cooldown-queries	
-0x4f9b30	1085	Script::PickupContainerItem		ui			Passes a container item to 0x495d60 while the flag word wants an item	inferred	none	spell/targeting#flag-word-predicates	
-0x4fc910	150			ui			Toggles the trade-skill window: TRADE_SKILL_CLOSE for the current skill, else TRADE_SKILL_SHOW when a count is nonzero	inferred	none	spell/cast#cast-attempt-refusals	
-0x4fd790	30	ClearTradeSkillRecast		ui		void __cdecl (void)	Clears the trade-skill repeat spell when one is set and fires UPDATE_TRADESKILL_RECAST	verified	one	spell/failures#reporter-inputs-and-first-effects	
-0x4fd7b0	60			ui			Runs the post-cast step of a repeated trade skill cast for a spell id	inferred	none	spell/go#player-cast-tail	
+0x4e5c00	92	RefreshActionBarUsable		ui	orchestration		Recomputes the 120 action slots' usable pairs and signals ACTIONBAR_UPDATE_USABLE on a change	verified	one	spell/checks#usability-callers-and-events	
+0x4e5c60	10	FireActionBarCooldownEvent		ui	orchestration		Signals ACTIONBAR_UPDATE_COOLDOWN	verified	one	spell/cooldowns#cooldown-events-fired	
+0x4e7f70	71	CGPartyInfo::IsMember	idb	ui	orchestration	int __thiscall (const uint64_t *guid)	Returns 1 for a nonzero GUID that is the active player's or one of the four party members', else 0	verified	one	objectlayer/reaction#unit-toward-unit	
+0x4eeca0	805	Script::PingLocation		ui	primitive		Binds the clicked minimap point through 0x6e60f0 while the flag word wants a position	inferred	none	spell/targeting#binding-a-clicked-location	
+0x4f6000	69			ui	orchestration		Toggles the craft window: closes it with CRAFT_CLOSE for the current profession, else opens it with CRAFT_SHOW	inferred	none	spell/cast#cast-attempt-refusals	
+0x4f93d0	10	FireBagCooldownEvent		ui	orchestration	void __cdecl (void)	Signals BAG_UPDATE_COOLDOWN	verified	one	spell/records#cooldown-queries	
+0x4f9b30	1085	Script::PickupContainerItem		ui	primitive		Passes a container item to 0x495d60 while the flag word wants an item	inferred	none	spell/targeting#flag-word-predicates	
+0x4fc910	150			ui	orchestration		Toggles the trade-skill window: TRADE_SKILL_CLOSE for the current skill, else TRADE_SKILL_SHOW when a count is nonzero	inferred	none	spell/cast#cast-attempt-refusals	
+0x4fd790	30	ClearTradeSkillRecast		ui	orchestration	void __cdecl (void)	Clears the trade-skill repeat spell when one is set and fires UPDATE_TRADESKILL_RECAST	verified	one	spell/failures#reporter-inputs-and-first-effects	
+0x4fd7b0	60			ui	orchestration		Runs the post-cast step of a repeated trade skill cast for a spell id	inferred	none	spell/go#player-cast-tail	
 0x511d40	81	CameraAddShake		worldframe			Adds a camera shake by id at a position to a camera	inferred	none	spell/visuals#camera-shake-groups	
 0x511da0	237	SetCameraTransport		uicamera		void __thiscall (void *camera, uint64_t transport)	Stores the camera's transport GUID, turning the camera by the old and new transports' facings	inferred	none	collision/world#camera-notices	
 0x513bd0	376	Script::Jump		input	orchestration		Implements the Lua function Jump	inferred	none	spell/cancel#who-cancels-a-cast	
@@ -2251,19 +2251,19 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x514b40	44	CInputControl::IsDragging		input	orchestration	uint32_t __thiscall (CInputControl *this)	Returns 1 when 0x514ae0 says drag at the current clock and the motion stamp is recent	verified	one	input#click-versus-drag	
 0x514b70	559	CInputControl::ReleaseCommands		input	orchestration	uint32_t __thiscall (CInputControl *this, uint32_t commands, uint32_t time, uint32_t extra)	Releases command bits; on the last primary, dispatches the armed click unless 0x514ae0 says drag	verified	one	input#click-versus-drag	
 0x515090	284	CInputControl::SetCommands		input	orchestration	uint32_t __thiscall (CInputControl *this, uint32_t commands, uint32_t press, uint32_t time, uint32_t extra)	Sends commands to 0x514840 when press is nonzero, else to 0x514b70	verified	one	input#mouse-commands	
-0x515940	34			ui			Returns the unit a unit token names through 0x515970 and 0x468460, or null	inferred	none	spell/targeting#lua-targeting-functions	
-0x515970	725	Script::GetGUIDFromName	idb	ui			Returns the guid a unit token names	inferred	none	spell/targeting#lua-targeting-functions	
-0x51bb20	30	LoadGameScriptFunctions		ui			Registers the six shared script functions GetTime to AppendToFile	inferred	none		
-0x51bb40	24	UnloadGameScriptFunctions		ui			Unregisters the six shared script functions	inferred	none		
-0x51c740	28	LoadAddOnsForAccount		ui			Sets the account name and loads the add-on list from Interface\AddOns for it	inferred	none		
-0x51d910	352	WriteAddonInfo	idb	ui			Appends the add-on block to an auth session packet	inferred	none	net/session#session-challenge	
-0x51ebe0	827	LoadCharacterAddOnState		ui			Loads a character's add-on enable state into AddOns.cpp's list, or every node's for a null name	inferred	none		
-0x51f0b0	194	DropCharacterAddOnState		ui			Drops a character's node from AddOns.cpp's add-on state list, or every node for a null name	inferred	none		
-0x51fb50	156	MoveAsideLooseInterface		ui			Handles loose Interface GlueXML and FrameXML folders under %s.old names, then the Blizzard add-ons	inferred	none		
-0x523790	130			ui			Copies the cursor image chosen by the current state into the device and refreshes it through 0x58b5c0	inferred	none		
-0x523c20	20			ui			Sets the current cursor index and refreshes the cursor when it changes	inferred	none	spell/cast#targeting-refusal-or-cursor	
-0x523d20	7			ui			Stores the default cursor index	verified	one	spell/cast#targeting-refusal-or-cursor	
-0x523d30	11			ui			Sets the shown cursor to the base cursor through 0x523c20	inferred	none	spell/targeting#the-targeting-cursor	
+0x515940	34			ui	orchestration		Returns the unit a unit token names through 0x515970 and 0x468460, or null	inferred	none	spell/targeting#lua-targeting-functions	
+0x515970	725	Script::GetGUIDFromName	idb	ui	primitive		Returns the guid a unit token names	inferred	none	spell/targeting#lua-targeting-functions	
+0x51bb20	30	LoadGameScriptFunctions		ui	orchestration		Registers the six shared script functions GetTime to AppendToFile	inferred	none		
+0x51bb40	24	UnloadGameScriptFunctions		ui	orchestration		Unregisters the six shared script functions	inferred	none		
+0x51c740	28	LoadAddOnsForAccount		ui	orchestration		Sets the account name and loads the add-on list from Interface\AddOns for it	inferred	none		
+0x51d910	352	WriteAddonInfo	idb	ui	primitive		Appends the add-on block to an auth session packet	inferred	none	net/session#session-challenge	
+0x51ebe0	827	LoadCharacterAddOnState		ui	primitive		Loads a character's add-on enable state into AddOns.cpp's list, or every node's for a null name	inferred	none		
+0x51f0b0	194	DropCharacterAddOnState		ui	orchestration		Drops a character's node from AddOns.cpp's add-on state list, or every node for a null name	inferred	none		
+0x51fb50	156	MoveAsideLooseInterface		ui	orchestration		Handles loose Interface GlueXML and FrameXML folders under %s.old names, then the Blizzard add-ons	inferred	none		
+0x523790	130			ui	orchestration		Copies the cursor image chosen by the current state into the device and refreshes it through 0x58b5c0	inferred	none		
+0x523c20	20			ui	orchestration		Sets the current cursor index and refreshes the cursor when it changes	inferred	none	spell/cast#targeting-refusal-or-cursor	
+0x523d20	7			ui	orchestration		Stores the default cursor index	verified	one	spell/cast#targeting-refusal-or-cursor	
+0x523d30	11			ui	orchestration		Sets the shown cursor to the base cursor through 0x523c20	inferred	none	spell/targeting#the-targeting-cursor	
 0x536eb0	5	InitCopy1Thunk		net	orchestration	void __cdecl (void)	Jumps to 0x536ec0; a static initializer	verified	one	net/layout#static-initializers	
 0x536ec0	11	InitCopy1		net	orchestration	void __cdecl (void)	Copies the constant +inf into a global	verified	one	net/layout#static-initializers	
 0x536ed0	5	InitDouble1Thunk		net	orchestration	void __cdecl (void)	Jumps to 0x536ee0; a static initializer	verified	one	net/layout#static-initializers	
@@ -7819,26 +7819,118 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x6ed8f0	22	SpellVisualsInitCountUnit1		spell	primitive	void __cdecl (void)	Counts one more unit in a shared global and calls 0x5b71c0 on the first	verified	one	spell/layout#static-initializers	
 0x6ed910	12	RegisterSpellVisualsReleaseCountUnit1		spell	orchestration	void __cdecl (void)	Registers 0x6ed920 with _atexit	verified	one	spell/layout#static-initializers	
 0x6ed920	14	SpellVisualsReleaseCountUnit1		spell	primitive	void __cdecl (void)	Counts one unit fewer in a shared global and tail-calls the empty 0x5b71d0 when it reaches zero	verified	one	spell/layout#static-initializers	
-0x6edb90	627	LoadTocFile		ui			Runs a toc's files into the script, adding the toc's bytes to an MD5 context	inferred	none		
-0x6ee880	376	FrameXML::RegisterFactory		ui			Registers a frame type's factory by name	inferred	none		
-0x6f10f0	268	CheckTocSignature		ui			Checks a toc's .sig file: 0 unreadable, 1 bad size or verification, 2 digest differs, 3 good	inferred	none		
-0x6f1c10	213	GetScriptFlagArg		ui			Reads a script argument as an integer flag: nil 0, a boolean 0 or 1, a number truncated, else by keyword or default	inferred	none		
+0x6edb90	627	LoadTocFile		ui	primitive		Runs a toc's files into the script, adding the toc's bytes to an MD5 context	inferred	none		
+0x6ee880	376	FrameXML::RegisterFactory		ui	primitive		Registers a frame type's factory by name	inferred	none		
+0x6f10f0	268	CheckTocSignature		ui	orchestration		Checks a toc's .sig file: 0 unreadable, 1 bad size or verification, 2 digest differs, 3 good	inferred	none		
+0x6f17d0	69	ParseFrameStrata		ui	primitive		Finds a stratum name in 0x8119f8, ignoring case, and writes its index	verified	one	ui/frames#loading-from-xml	
+0x6f1820	31	GetFrameStrataName		ui	primitive		Returns the name of a stratum index from 0x8119f8, or UNKNOWN	verified	one	ui/strata#strata-and-their-names	
+0x6f1840	69	ParseAnchorPoint		ui	primitive		Finds an anchor point name in 0x811a38, ignoring case, and writes its index	verified	one	ui/anchors#point-slots-and-point-names	
+0x6f1890	31	GetAnchorPointName		ui	primitive		Returns the name of an anchor point index from 0x811a38, or UNKNOWN	verified	one	ui/anchors#point-slots-and-point-names	
+0x6f1c10	213	GetScriptFlagArg		ui	primitive		Reads a script argument as an integer flag: nil 0, a boolean 0 or 1, a number truncated, else by keyword or default	inferred	none		
 0x6f3510	24	lua_isstring	idb	lua			Returns whether a stack value is a string or a number	inferred	none	spell/targeting#lua-targeting-functions	
 0x6f37f0	23	lua_pushnil	idb	lua			Pushes nil	inferred	none	spell/targeting#lua-targeting-functions	
 0x6f3810	43	lua_pushnumber	idb	lua			Pushes a number	inferred	none	spell/targeting#lua-targeting-functions	
 0x6f4940	55	luaL_error	idb	lua			Raises a Lua error with a formatted message	inferred	none	spell/targeting#lua-targeting-functions	
-0x701f20	212			ui			Tears down the script object 0x78dc80 passes it	inferred	none		
-0x702840	19	ScriptDebugProfileStart		ui			Latches the time-stamp counter for 0x702860	verified	one	core/time#counter-rate	
-0x702860	153	ScriptDebugProfileStop		ui			Returns the time-stamp counter's advance divided by a thousandth of 0x42c020	verified	one	core/time#counter-rate	
-0x703b80	20	ResetFrameScript		ui			Destroys the Lua state and builds it again when one exists	inferred	none		
-0x703bf0	245	FrameScript_GetText	idb	ui			Returns the string value of a script global, or an empty string	inferred	none	spell/failures#reason-text-and-pet-variant	
-0x703d90	178	SetScriptEventTable		ui			Replaces the script event names with a table of names	inferred	none		
-0x703e50	246	FrameScript_SignalEvent	idb	ui			Signals a script event to the interface	inferred	none		
-0x703f50	257	FrameScript_SignalEvent2	idb	ui			Signals a script event with arguments in a printf-style format	inferred	none	spell/handlers#cast-delayed	
-0x704120	55			ui			Registers a Lua function by name	inferred	none	spell/cast#small-spell-helpers	
-0x704160	53	FrameScript_UnregisterFunction	idb	ui			Unregisters a Lua function by name	inferred	none	spell/cast#small-spell-helpers	
-0x706350	114	LoadFrameScriptFunctions		ui			Registers the frame script functions and the 17 frame-type method tables	inferred	none		
-0x7063d0	108	UnloadFrameScriptFunctions		ui			Unregisters what 0x706350 registers	inferred	none		
+0x701940	5	FrameScriptInitTwoPiThunk		ui	orchestration		Jumps to 0x701950; a static initializer	verified	one	ui/README#this-rounds-object-files	
+0x701950	15	FrameScriptInitTwoPi		ui	primitive		Stores 3.1415927 + 3.1415927 as a float in a global	verified	one	ui/README#static-initializers	
+0x701960	5	FrameScriptInitInvTwoPiThunk		ui	orchestration		Jumps to 0x701970; a static initializer	verified	one	ui/README#static-initializers	
+0x701970	19	FrameScriptInitInvTwoPi		ui	primitive		Stores 1 divided by a global set just before as a float in a global	verified	one	ui/README#static-initializers	
+0x701990	5	FrameScriptInitInfinityThunk		ui	orchestration		Jumps to 0x7019a0; a static initializer	verified	one	ui/README#static-initializers	
+0x7019a0	11	FrameScriptInitInfinity		ui	orchestration		Copies +inf into a global of the file	verified	one	ui/README#static-initializers	
+0x7019b0	10	FrameScriptInitEventTableThunk		ui	orchestration		Calls 0x7019c0, then registers the event table's exit handler; a static initializer	verified	one	ui/script#the-event-table	
+0x7019c0	18	InitScriptEventTable		ui	orchestration		Zeroes the event table globals 0xceef60 to 0xceef68	verified	one	ui/script#the-event-table	
+0x7019e0	12	RegisterDestroyScriptEventTable		ui	orchestration		Registers 0x7019f0 with _atexit	verified	one	ui/README#static-initializers	
+0x7019f0	69	DestroyScriptEventTable		ui	orchestration		Destroys every event record and frees the event array; registered with _atexit	verified	one	ui/README#static-initializers	
+0x701a40	155	DestroyScriptEventRecord		ui	orchestration		Frees an event record's name and unlinks its listener list	verified	one	ui/script#the-event-table	
+0x701ae0	39	ConstructScriptObject		ui	orchestration		Builds a script object with no table reference and no events	verified	one	ui/frames#vtables-and-the-two-parts	
+0x701b10	43	DeleteScriptObject		ui	orchestration		Destroys a script object and frees it when asked	verified	one	ui/script#the-script-object	
+0x701b40	97	DestructScriptObject		ui	orchestration		Unregisters all events, releases OnEvent and frees the event index array	verified	one	ui/script#the-script-object	
+0x701bb0	23	FreeUint32ArrayData		ui	host		Frees a dword array's data	inferred	none		
+0x701bd0	244	LockScriptObject		ui	orchestration		Makes the object's table on first use, counts a holder and sets a name global when unset	verified	one	ui/frames#names-and-lookup-by-name	
+0x701cd0	163	UnlockScriptObject		ui	orchestration		Counts a holder down and at zero clears the table's object and metatable and frees it	verified	one	ui/frames#destruction	
+0x701d80	409	FrameScriptRegisterMethods		ui	orchestration		Adds name and function pairs to a method hash table as registry references	inferred	none	ui/methods#method-tables-and-lookup	
+0x701f20	212	FrameScriptUnregisterMethods		ui	orchestration		Frees the function references and nodes of a method hash table	inferred	none	ui/methods#method-tables-and-lookup	
+0x702000	168	FrameScriptPushMethod		ui	orchestration		Pushes the function of a name from a method hash table and answers whether found	inferred	none	ui/methods#method-tables-and-lookup	
+0x7020b0	131	FrameScriptErrorHandler		ui	orchestration		Handles a script error; registered by 0x7039e0	inferred	none		
+0x702140	306	FrameScriptRegisterEvent		ui	orchestration		Appends an object to the listeners of an event name and records the event index	verified	one	ui/script#registering-for-an-event	
+0x702280	338	FrameScriptUnregisterEvent		ui	orchestration		Removes an object from the listeners of an event name and its index	verified	one	ui/script#registering-for-an-event	
+0x7023e0	262	FrameScriptRegisterAllEvents		ui	orchestration		Appends an object to the listeners of every event it is not on	verified	one	ui/script#registering-for-an-event	
+0x7024f0	153	FrameScriptUnregisterAllEvents		ui	orchestration		Removes an object from every event it listens to and empties its index array	verified	one	ui/script#registering-for-an-event	
+0x702590	44	GetScriptObjectScriptByName		ui	orchestration		Returns the OnEvent slot for the name OnEvent, else 0	verified	one	ui/frames#script-slots-by-name	
+0x7025c0	173	SetScriptObjectScript		ui	orchestration		Compiles text as a handler named after the object and handler into its slot	verified	one	ui/frames#loading-from-xml	
+0x702670	21	FrameScriptReleaseScript		ui	orchestration		Releases a script slot's function reference when set	verified	one	ui/frames#destruction	
+0x702690	84	FrameScriptExecute		ui	orchestration		Runs a script slot with the slot's context word as the current context	verified	one	ui/visibility#show-and-hide-scripts	
+0x7026f0	29	FrameScriptExecuteVarArgs		ui	orchestration		Runs a script slot with a format and its variable arguments	verified	one	ui/script#running-a-handler	
+0x702710	96	FrameScriptExecuteV		ui	orchestration		Runs a script slot with a format and an argument list under the slot's context word	verified	one	ui/script#running-a-handler	
+0x702840	19	ScriptDebugProfileStart		ui	host		Latches the time-stamp counter for 0x702860	verified	one	core/time#counter-rate	
+0x702860	153	ScriptDebugProfileStop		ui	primitive		Returns the time-stamp counter's advance divided by a thousandth of 0x42c020	verified	one	core/time#counter-rate	
+0x7039e0	338	FrameScriptInitialize		ui	orchestration		Opens the Lua state, takes the error handler reference and opens the libraries	inferred	none	ui/script#the-lua-state	
+0x703b40	57	FrameScriptRegisteredFunctionB		ui	orchestration		Serves as a C function 0x7039e0 registers	inferred	none		
+0x703b80	20	ResetFrameScript		ui	orchestration		Closes the Lua state and opens it again when one exists	inferred	none	ui/script#the-lua-state	
+0x703ba0	22	FrameScriptDestroy		ui	orchestration		Closes the Lua state and stores 0 in 0xceef74	inferred	none	ui/script#the-lua-state	
+0x703bc0	42	FrameScriptCollectGarbage		ui	orchestration		Runs the collector with a threshold	inferred	none	ui/script#the-lua-state	
+0x703bf0	245	FrameScript_GetText	idb	ui	orchestration		Returns the text of a global string, choosing a variant by a count and gender	inferred	none	ui/script#text-counts-and-running-code	
+0x703cf0	148	FrameScriptGetPluralIndex		ui	orchestration		Calls the Lua GetPluralIndex with a count and returns its result minus one	inferred	none	ui/script#text-counts-and-running-code	
+0x703d90	178	SetScriptEventTable		ui	orchestration		Replaces the event table with copies of a list of names	verified	one	ui/script#the-event-table	
+0x703e50	246	FrameScript_SignalEvent	idb	ui	orchestration		Runs OnEvent of every listener of an event with the global event set to its name	verified	one	ui/script#signalling-an-event	
+0x703f50	257	FrameScript_SignalEvent2	idb	ui	orchestration		Runs OnEvent of every listener of an event with event and formatted arguments set	verified	one	ui/script#signalling-an-event	
+0x704060	99	FrameScriptDestroyEventTable		ui	unreached		Destroys every event record and frees the array; nothing reaches it	verified	one	ui/README#unreached-functions	
+0x7040d0	6	FrameScript::GetContext	idb	ui	orchestration		Returns the Lua state 0xceef74	inferred	none	ui/script#the-lua-state	
+0x7040e0	59	FrameScriptError		ui	orchestration		Raises a Lua error with a formatted message	inferred	none	ui/script#functions-and-globals	
+0x704120	55	FrameScriptRegisterFunction		ui	orchestration		Sets a global of a name to a C function	inferred	none	ui/script#functions-and-globals	
+0x704160	53	FrameScript_UnregisterFunction	idb	ui	orchestration		Sets a global of a name to nil	inferred	none	ui/script#functions-and-globals	
+0x7041a0	73	FrameScriptSetNumberGlobalInt		ui	unreached		Sets a global to an integer; nothing reaches it	verified	one	ui/README#unreached-functions	
+0x7041f0	89	FrameScriptGetNumberGlobalInt		ui	unreached		Reads a global as an integer; nothing reaches it	verified	one	ui/README#unreached-functions	
+0x704250	69	FrameScriptSetNumberGlobal		ui	orchestration		Sets a global to a float	inferred	none	ui/script#functions-and-globals	
+0x7042a0	84	FrameScriptGetNumberGlobal		ui	unreached		Reads a global as a float; nothing reaches it	verified	one	ui/README#unreached-functions	
+0x704300	71	FrameScriptSetStringGlobal		ui	orchestration		Sets a global to a string, or nil for an empty one	inferred	none	ui/script#functions-and-globals	
+0x704350	84	FrameScript::GetVariable	idb	ui	orchestration		Reads a global as a string and answers whether it was one	inferred	none	ui/script#functions-and-globals	
+0x7043b0	53	FrameScriptClearGlobal		ui	unreached		Sets a global to nil; nothing reaches it	verified	one	ui/README#unreached-functions	
+0x7043f0	130	FrameScriptSaveVariable		ui	orchestration		Writes name = value for a global to a saved-variables file	inferred	none	ui/script#saved-variables	
+0x704480	1470	FrameScriptSerializeValue		ui	primitive		Writes a Lua value as text: escaped strings, %.16g numbers and nested tables	inferred	none	ui/script#saved-variables	
+0x704ae0	224	FrameScriptExecuteBuffer		ui	orchestration		Compiles and runs a buffer, reporting errors through a status object	inferred	none	ui/script#text-counts-and-running-code	
+0x704bc0	162	FrameScriptExecuteFile		ui	orchestration		Reads a file and runs it as a script	inferred	none	ui/script#text-counts-and-running-code	
+0x704c70	52	FrameScriptCompileFunction		ui	orchestration		Compiles a buffer and returns a registry reference, or -1	inferred	none	ui/script#compiling-a-script-element	
+0x704cb0	19	FrameScriptReleaseFunction		ui	orchestration		Frees a function's registry reference	inferred	none	ui/script#compiling-a-script-element	
+0x704cd0	23	FrameScriptExecuteString		ui	orchestration		Runs a string as a script	inferred	none	ui/script#the-lua-state	
+0x704cf0	85	FrameScriptCallFunction		ui	orchestration		Calls a function reference protected under the error handler	inferred	none	ui/script#text-counts-and-running-code	
+0x704d50	402	FrameScriptRunHandler		ui	orchestration		Calls a function with the global this set to an object's table, restoring it after	verified	one	ui/script#running-a-handler	
+0x704ef0	29	FrameScriptRunHandlerVarArgs		ui	unreached		Passes its variable arguments to 0x704f10; nothing reaches it	verified	one	ui/script#running-a-handler	
+0x704f10	914	FrameScriptRunHandlerV		ui	orchestration		Calls a function with this and arg1 to arg19 set from a format, restoring them after	verified	one	ui/script#running-a-handler	
+0x7052d0	221	NewEventListenerNode		ui	orchestration		Allocates a listener node and links it before or after the list's terminator	verified	one	ui/script#registering-for-an-event	
+0x7053b0	381	SetEventRecordCount		ui	orchestration		Resizes the event record array, destroying or building records	verified	one	ui/script#the-event-table	
+0x705530	63	DestroyEventRecordArray		ui	orchestration		Destroys every event record and frees the array	verified	one	ui/script#the-event-table	
+0x705570	60	UnlinkListenerLink		ui	orchestration		Unlinks a listener link and zeroes it	verified	one	ui/script#registering-for-an-event	
+0x7055b0	40	MoveListenerList		ui	orchestration		Builds a list header from another's link offset, empty	inferred	none		
+0x7055e0	181	LinkMethodNode		ui	orchestration		Links a hash node before or after another link of a bucket	inferred	none		
+0x7056a0	139	MethodHashShouldGrow		ui	orchestration		Counts a bucket's chain and grows the table when it passes 13	inferred	none	ui/script#method-tables-of-the-frame-types	
+0x705730	569	MethodHashRehash		ui	orchestration		Rebuilds a method hash table with a new bucket count	inferred	none	ui/script#method-tables-of-the-frame-types	
+0x705970	136	MethodHashClear		ui	orchestration		Unlinks every node of a method hash table	inferred	none		
+0x705a00	60	MethodHashFreeNode		ui	orchestration		Frees a method hash node	inferred	none		
+0x705a40	43	MethodHashDestroyBucket		ui	orchestration		Unlinks a bucket's nodes	inferred	none		
+0x705a70	77	MethodHashInitBucket		ui	orchestration		Makes a bucket list empty	inferred	none		
+0x705ac0	108	MethodHashInitBuckets		ui	orchestration		Makes a count of buckets empty	inferred	none	ui/script#method-tables-of-the-frame-types	
+0x705b30	316	MethodHashSetBucketCount		ui	orchestration		Reallocates the bucket array to a count	inferred	none	ui/script#method-tables-of-the-frame-types	
+0x705c70	33	MethodHashBuildBucket		ui	orchestration		Builds one empty bucket	inferred	none		
+0x705ca0	109	MethodHashReserveBuckets		ui	primitive		Grows the bucket array by a count, rounded to its quantum	inferred	none		
+0x705d10	12	MethodHashInitList		ui	orchestration		Makes an empty list header	inferred	none		
+0x705d20	264	BucketArraySetCount		ui	orchestration		Sets an array of 12-byte list heads to n: destroys those past n, then reallocates, moving the lists when it must	inferred	none	ui/README#this-rounds-object-files	
+0x705e30	5	ScriptFunctionsInitInfinityThunk		ui	orchestration		Jumps to 0x705e40; a static initializer	verified	one	ui/README#this-rounds-object-files	
+0x705e40	11	ScriptFunctionsInitInfinity		ui	orchestration		Copies +inf into a global of the file	verified	one	ui/README#static-initializers	
+0x705e50	5	ScriptFunctionsInitTwoPiThunk		ui	orchestration		Jumps to 0x705e60; a static initializer	verified	one	ui/README#static-initializers	
+0x705e60	15	ScriptFunctionsInitTwoPi		ui	primitive		Stores 3.1415927 + 3.1415927 as a float in a global	verified	one	ui/README#static-initializers	
+0x705e70	5	ScriptFunctionsInitInvTwoPiThunk		ui	orchestration		Jumps to 0x705e80; a static initializer	verified	one	ui/README#static-initializers	
+0x705e80	19	ScriptFunctionsInitInvTwoPi		ui	primitive		Stores 1 divided by a global set just before as a float in a global	verified	one	ui/README#static-initializers	
+0x705ea0	5	ScriptFunctionsInitSquareThunk		ui	orchestration		Jumps to 0x705eb0; a static initializer	verified	one	ui/README#static-initializers	
+0x705eb0	19	ScriptFunctionsInitSquare		ui	primitive		Stores a constant squared as a float in a global	verified	one	ui/README#static-initializers	
+0x705ed0	5	ScriptFunctionsInitHalfTenthThunk		ui	orchestration		Jumps to 0x705ee0; a static initializer	verified	one	ui/README#static-initializers	
+0x705ee0	19	ScriptFunctionsInitHalfTenth		ui	primitive		Stores 0.5 divided by 10 as a float in a global	verified	one	ui/README#static-initializers	
+0x705f00	91	Script::GetNumFrames	idb	ui	orchestration		Returns the number of frames that exist	inferred	none	ui/script#method-tables-of-the-frame-types	
+0x705f60	224	Script::EnumerateFrames	idb	ui	orchestration		Returns the frame after a given one, or the first	inferred	none	ui/script#method-tables-of-the-frame-types	
+0x706040	102	Script::CreateFont	idb	ui	orchestration		Creates a font object of a name	inferred	none	ui/script#method-tables-of-the-frame-types	
+0x7060b0	664	Script::CreateFrame	idb	ui	orchestration		Creates a frame of a type, name, parent and inherited template	inferred	none	ui/script#method-tables-of-the-frame-types	
+0x706350	114	LoadFrameScriptFunctions		ui	orchestration		Registers the global script functions and the method tables of the frame types	inferred	none	ui/script#method-tables-of-the-frame-types	
+0x7063d0	108	UnloadFrameScriptFunctions		ui	orchestration		Unregisters what 0x706350 registers	inferred	none	ui/README#this-rounds-object-files	
 0x707350	161	CreateModelFromPath		models			Creates a model from a file path	inferred	none	spell/visuals#shard-model-start-and-end	
 0x7103a0	34	HandleClose2	idb	models			Closes a model handle	inferred	none	spell/visuals#shard-model-start-and-end	
 0x710450	193	ModelRefresh		models			Updates a scene model; glue passes 1 and 1	inferred	none		
@@ -7861,10 +7953,10 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x713590	47	GetModelCamera		models			Returns a model camera by index	inferred	none		
 0x718910	77			models		void __thiscall (void *model, const float *matrix)	Takes a model's transport frame, or null; not read here	inferred	none	collision/mover#transport-change	
 0x71bf90	372	LightingAddLight		models			Adds a light to a model's lighting	inferred	none		
-0x729dd0	1068	LcdInitialize		ui			Starts the LCD layer	inferred	none		
-0x72a200	231	LcdShutdown		ui			Shuts the LCD layer down	inferred	none		
-0x72a8d0	2008	UpdateKeyboardLcd		ui			Updates the keyboard LCD screens each frame, the wait queue screen among them	inferred	none		
-0x72b810	36	RefreshKeyboardLcd		ui			Redraws the keyboard LCD player screen when the LCD is present	inferred	none		
+0x729dd0	1068	LcdInitialize		ui	host		Starts the LCD layer	inferred	none		
+0x72a200	231	LcdShutdown		ui	host		Shuts the LCD layer down	inferred	none		
+0x72a8d0	2008	UpdateKeyboardLcd		ui	host		Updates the keyboard LCD screens each frame, the wait queue screen among them	inferred	none		
+0x72b810	36	RefreshKeyboardLcd		ui	host		Redraws the keyboard LCD player screen when the LCD is present	inferred	none		
 0x730bc0	141	ZlibCompress2		zlib			Compresses a buffer with zlib 1.2.2 at a level, returning -5 when the output is too small	inferred	none		
 0x73f285	49	_fclose	idb	crt			Closes a C runtime file	inferred	none	collision/kinematics#teardown	
 0x73f333	19	_fopen	idb	crt			Opens a C runtime file	inferred	none	collision/kinematics#unreached-functions	
@@ -7894,33 +7986,414 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x7626e0	11	InitSoftFloatHundredth		cmath		void __cdecl (void)	Stores 0x3c23d70a, 0.01, in its global; a static initializer	verified	one	spell/records#modifier-appliers	
 0x762be0	11	InitSoftFloatHalf		cmath		void __cdecl (void)	Stores 0x3f000000, 0.5, in its global; a static initializer	verified	one	spell/records#software-floats	
 0x762e20	15	InitSoftFloatOne		cmath		void __cdecl (void)	Stores the software float of 1 in its global; a static initializer	verified	one	spell/records#software-floats	
-0x764180	430	CSimpleTop::CSimpleTop		ui			Constructs the top of the frame hierarchy	inferred	none		
-0x764d50	97	CSimpleTop::SetCursor		ui			Sets the top's cursor texture and copies its image to the cursor	inferred	none		
-0x765bf0	277	UiRegisterInputHandlers		ui			Registers the interface's input handlers, among them 0x7660d0 on category 0xc	inferred	none	core/loop#unreached-functions	
-0x765df0	140	UiInputHandlerA		ui			Handles an input event category for the interface, building an event object	inferred	none	core/loop#unreached-functions	
-0x765f10	178	UiInputHandlerB		ui			Handles an input event category for the interface, building an event object	inferred	none	core/loop#unreached-functions	
-0x766070	93	UiInputHandlerC		ui			Handles an input event category for the interface, building an event object	inferred	none	core/loop#unreached-functions	
-0x7660d0	381	UiOnMouseMove		ui			Handles category 0xc for the interface: builds a mouse event and runs the hover test	inferred	none	core/loop#unreached-functions	
-0x7665c0	134	HandleTopSizeEvent		ui			Handles the window's size event and calls the top's size callback with the new size	inferred	none		
-0x766f70	78	UiCopyMouseEvent		ui			Copies a mouse payload into an interface event and scales its fractions with 0x41ad80	verified	one	core/events#unreached-functions	
-0x768ed0	145	LayoutPendingFrames		ui			Lays out the frames waiting for a layout, up to 32 passes	inferred	none		
-0x76ac10	62	SetFrameScale		ui			Sets a frame's scale, laying it out again when it changed or when forced	inferred	none		
-0x76ae10	239	SimpleFrameShowNow		ui			Marks a shown frame visible when its parent is, shows its children and calls its slot 12	inferred	none		
-0x76b260	33	SimpleModelShowHook		ui			Runs CSimpleModel's slot 12, the show hook	inferred	none		
-0x76b3a0	79	SimpleFrameRegisterLayer		ui			Registers a frame's regions of one draw layer	inferred	none		
-0x76c760	124	FindFrameOfType		ui			Returns the global object of a name when it is a frame of the given type	inferred	none		
-0x76c8e0	311	CSimpleModel::CSimpleModel		ui			Constructs a model frame and stores its two vtables	inferred	none		
-0x76ca50	108	DestroyModelFrame		ui			Destroys a model frame's members; the ModelFFX destructor calls it	inferred	none		
-0x76cce0	68	SimpleModelLoadFile		ui			Loads a model file into a model frame's scene and hands the model to slot 36	inferred	none		
-0x76cd30	144	SimpleModelSetModel		ui			Stores a model frame's scene model at +0x318 and installs its callbacks	inferred	none		
-0x76cec0	100	SimpleModelSetCamera		ui			Selects a camera of a model frame's scene model by index	inferred	none		
-0x76cfc0	32	SimpleModelGetScene		ui			Returns a model frame's M2 scene, creating it on first use	inferred	none		
-0x76d160	56	SimpleModelRegisterLayer		ui			Registers a model frame's layers, with its model draw for layer 2	inferred	none		
-0x76d240	1078	SimpleModelDraw		ui			Draws a model frame's scene	inferred	none		
-0x76d680	368	SimpleModelLightCallback		ui			Lights a model frame's scene model; the callback the frame installs on its own model	inferred	none		
-0x773110	142	RegisterLayerCallback		ui			Adds a draw callback and its argument to a layer's list	inferred	none		
-0x78dc60	21			ui			Registers a table of three script functions	inferred	none		
-0x78dc80	10			ui			Unregisters the table of three script functions	inferred	none		
+0x764160	5	TopInitInfinityThunk		ui	orchestration		Jumps to 0x764170; a static initializer	verified	one	ui/README#this-rounds-object-files	
+0x764170	11	TopInitInfinity		ui	orchestration		Copies +inf into a global of the file	verified	one	ui/README#static-initializers	
+0x764180	430	CSimpleTop::CSimpleTop	idb	ui	orchestration		Builds the top: layout base, strata records, input lists, key table, pass and input registrations	verified	one	ui/strata#strata-records-and-level-nodes	
+0x764330	33	CSimpleTop::OnPaint		ui	orchestration		Runs the top update pass with the elapsed time, then the draw pass; the callback the constructor registers	verified	one	ui/strata#the-update-pass	
+0x764360	43	CSimpleTop::DeletingDestructor		ui	orchestration		Destroys the top and frees it when bit 0 of the argument is set	verified	one	ui/strata#construction-and-teardown	
+0x764390	526	CSimpleTop::~CSimpleTop		ui	orchestration		Deletes queued objects and frames, frees strata nodes, removes cursor and input registrations	verified	one	ui/strata#construction-and-teardown	
+0x7645a0	229	CFrameStrataNode::DeletingDestructor		ui	orchestration		Unlinks a level node's frames and batches, destroys its five batches and frees it when asked	inferred	none	ui/strata#construction-and-teardown	
+0x764690	3	CSimpleTop::DoNothing		ui	orchestration		Returns, popping one argument; the frame destructor calls it	verified	one	ui/frames#destruction	
+0x7646a0	112	CSimpleTop::RegisterFrame		ui	orchestration		Links a frame into the top's frame list at +0xcc0 through its +0x304 link	verified	one	ui/frames#construction	
+0x764710	99	CSimpleTop::UnregisterFrame		ui	orchestration		Takes a frame out of its level and unlinks it from the top's frame list	verified	one	ui/frames#destruction	
+0x764780	410	CSimpleTop::ShowFrame		ui	orchestration		Puts a visible frame into its stratum's level node, creating nodes, and enters its input kinds	verified	one	ui/strata#strata-records-and-level-nodes	
+0x764920	255	CSimpleTop::HideFrame		ui	orchestration		Takes a frame out of its level node and input lists, ending its move unless kept	verified	one	ui/frames#destruction	
+0x764a20	64	CSimpleTop::NotifyFrameMoved		ui	orchestration		Marks a frame's stratum levels dirty, raises the frame being moved or sized unchecked and asks for a hover pick	verified	one	ui/strata#dirty-marks	
+0x764a60	59	CSimpleTop::NotifyFrameLayerChanged		ui	orchestration		Marks one draw layer of a frame's level node and its stratum's draw flag dirty	verified	one	ui/strata#dirty-marks	
+0x764aa0	253	CSimpleTop::RegisterForEvent	idb	ui	primitive		Enters a frame into the input list of its stratum and a kind, ordered by level from high to low	verified	one	ui/input#input-lists	
+0x764ba0	320	CSimpleTop::UnregisterForEvent		ui	orchestration		Removes a frame's entry from an input list and forgets it as key taker, pressed or hovered frame	verified	one	ui/input#input-lists	
+0x764ce0	112	LinkDeletionNode		ui	unreached		Links a node onto the top's deletion list; nothing reaches it	verified	one	ui/README#unreached-functions	
+0x764d50	97	CSimpleTop::SetCursor	idb	ui	orchestration		Sets the top's cursor texture handle and copies its image to the cursor	inferred	none		
+0x764dc0	237	CSimpleTop::SetMouseFocus		ui	orchestration		Makes a frame the hovered one with leave and enter calls, releasing a different pressed frame	verified	one	ui/input#mouse-focus-from-the-game	
+0x764eb0	350	CSimpleTop::CompactStrata		ui	primitive		Closes runs of empty levels in a stratum by lowering higher frames and trims the in-use count	verified	one	ui/strata#raising-a-frame	
+0x765010	217	RaiseFrameUnderCursor		ui	unreached		Raises the toplevel ancestor of the topmost hit frame of strata 7 to 0; nothing reaches it	verified	one	ui/README#unreached-functions	
+0x7650f0	421	CSimpleTop::RaiseFrame		ui	orchestration		Raises a frame's toplevel ancestor above its stratum's levels when overlapped, checking overlap on request	verified	one	ui/strata#raising-a-frame	
+0x7652a0	5	CSimpleTop::LowerFrame		ui	orchestration		Returns 0 without changing anything; what Frame:Lower calls	verified	one	ui/strata#raising-a-frame	
+0x7652b0	111	CSimpleTop::StartMovingOrSizing		ui	orchestration		Records the frame, kind, point and cursor of a move or size and raises the frame	inferred	none	ui/input#moving-and-sizing	
+0x765320	358	CSimpleTop::StartMovingOrSizingAt		ui	primitive		Chooses a sizing point by the cursor's third of the frame, else the centre, and starts the move or size	inferred	none	ui/input#moving-and-sizing	
+0x765490	274	CSimpleTop::StartModifierDrag		ui	orchestration		Starts moving or sizing the toplevel ancestor of the topmost hit frame of strata 7 to 0	inferred	none	ui/input#mouse-buttons	
+0x7655b0	133	CSimpleTop::UpdateMovingOrSizing		ui	primitive		Applies the cursor difference since the last move to the frame being moved or sized	inferred	none	ui/input#mouse-move-and-the-hover-pick	
+0x765640	15	CSimpleTop::StopMovingOrSizing		ui	orchestration		Clears the frame being moved or sized and the kind	verified	one	ui/input#mouse-buttons	
+0x765650	377	CSimpleTop::OnLayerUpdate		ui	orchestration		Deletes queued objects, drains the layout queue, runs every visible frame's update slot in order	verified	one	ui/strata#the-update-pass	
+0x7657d0	332	CSimpleTop::OnLayerRender		ui	orchestration		Sets the orthographic projection and draws each stratum's levels, refreshing overlap bits and batches	verified	one	ui/strata#the-update-pass	
+0x765920	368	CFrameStrataNode::RebuildBatches		ui	orchestration		Rebuilds the dirty draw layers of a level node from its frames and relinks the batches to draw	verified	one	ui/strata#the-draw-pass	
+0x765a90	339	CFrameStrataNode::IsFrameOverlapped		ui	primitive		Answers whether a frame at the same or a higher level overlaps a frame with positive area	verified	one	ui/strata#the-draw-pass	
+0x765bf0	277	CSimpleTop::RegisterInputHandlers		ui	orchestration		Registers the top's twelve input handlers on their event categories with priority 1.0	verified	one	ui/input#the-handlers	
+0x765d10	221	CSimpleTop::UnregisterInputHandlers		ui	orchestration		Removes the top's twelve input handlers	verified	one	ui/input#the-handlers	
+0x765df0	140	CSimpleTop::OnChar		ui	orchestration		Handles category 1: offers a character to the character lists from stratum 8 down	verified	one	ui/input#the-handlers	
+0x765e80	140	CSimpleTop::OnInputLanguage		ui	orchestration		Handles category 0x1b: offers the event to the character lists from stratum 8 down	verified	one	ui/input#the-handlers	
+0x765f10	178	CSimpleTop::OnKeyDown		ui	orchestration		Handles category 8: offers a key down to the key lists and remembers the frame that takes it	verified	one	ui/input#the-handlers	
+0x765fd0	158	CSimpleTop::OnKeyUp		ui	orchestration		Handles category 9: sends a key up to the frame that took the key, which stays remembered	verified	one	ui/input#the-handlers	
+0x766070	93	CSimpleTop::OnKeyRepeat		ui	orchestration		Handles category 0xa: sends a key repeat to the frame that took the key	verified	one	ui/input#the-handlers	
+0x7660d0	381	CSimpleTop::OnMouseMove		ui	orchestration		Handles category 0xc: moves a dragged frame or picks the hovered frame from the mouse lists	verified	one	ui/input#the-handlers	
+0x766250	100	CSimpleTop::OnMouseMoveRelative		ui	orchestration		Handles category 0xd: passes the event to the host's mouse-move callback	inferred	none	ui/input#the-handlers	
+0x7662c0	351	CSimpleTop::OnMouseDown		ui	orchestration		Handles category 0xb: starts a drag or move, or presses and raises the target frame	verified	one	ui/input#the-handlers	
+0x766420	208	CSimpleTop::OnMouseUp		ui	orchestration		Handles category 0xe: ends a move or size, or releases the pressed frame	verified	one	ui/input#the-handlers	
+0x7664f0	195	CSimpleTop::OnMouseWheel		ui	orchestration		Handles category 0x10: offers the wheel to hit frames of the wheel lists from stratum 8 down	verified	one	ui/input#the-handlers	
+0x7665c0	134	CSimpleTop::OnWindowSize		ui	orchestration		Handles category 0x1c: refreshes the fonts and every frame's regions, then the host's size callback	inferred	none	ui/input#the-handlers	
+0x766650	68	CSimpleTop::OnFocusLost		ui	orchestration		Handles category 2: calls a window-code function, then the host's callback at +0x1134	inferred	none	ui/input#the-handlers	
+0x7666a0	162	PixelAlignX		ui	primitive		Rounds a horizontal size to a whole number of screen pixels	inferred	none		
+0x766750	162	PixelAlignY		ui	primitive		Rounds a vertical size to a whole number of screen pixels	inferred	none		
+0x766800	5	TopInitTwoPiThunk		ui	orchestration		Jumps to 0x766810; a static initializer	verified	one	ui/README#static-initializers	
+0x766810	15	TopInitTwoPi		ui	primitive		Stores 3.1415927 + 3.1415927 as a float in a global	verified	one	ui/README#static-initializers	
+0x766820	5	TopInitInvTwoPiThunk		ui	orchestration		Jumps to 0x766830; a static initializer	verified	one	ui/README#static-initializers	
+0x766830	19	TopInitInvTwoPi		ui	primitive		Stores 1 divided by a global set just before as a float in a global	verified	one	ui/README#static-initializers	
+0x766850	33	InitBatchList		ui	orchestration		Makes an empty list with link offset 0x28	verified	one	ui/strata#strata-records-and-level-nodes	
+0x766880	60	UnlinkStrataLink		ui	orchestration		Unlinks a list link and zeroes it	verified	one	ui/strata#joining-and-leaving-a-level	
+0x7668c0	181	LinkStrataFrame		ui	orchestration		Links a frame link before or after another link of a list, or the terminator	verified	one	ui/strata#joining-and-leaving-a-level	
+0x766980	23	FreeStrataNodeArray		ui	host		Frees a level node array's data	verified	one	ui/strata#construction-and-teardown	
+0x7669a0	41	GetPreviousLinkA		ui	orchestration		Returns the link before a link, or the untagged terminator	inferred	none		
+0x7669d0	60	UnlinkBatchLink		ui	orchestration		Unlinks a batch list link and zeroes it	inferred	none		
+0x766a10	77	UnlinkAllBatches		ui	orchestration		Unlinks every link of a batch list	verified	one	ui/strata#construction-and-teardown	
+0x766a60	41	GetPreviousLinkB		ui	orchestration		Returns the link before a link, or the untagged terminator	inferred	none		
+0x766a90	12	MakeListTerminator		ui	orchestration		Points a list's terminator at itself, marked by bit 0	verified	one	ui/strata#strata-records-and-level-nodes	
+0x766aa0	25	GetFrameLink		ui	orchestration		Returns a frame's link of a list, or the list's terminator for null	verified	one	ui/strata#joining-and-leaving-a-level	
+0x766ac0	25	FillRect		ui	orchestration		Stores one value in all four edges of a rectangle	inferred	none		
+0x766ae0	33	InitFrameList		ui	orchestration		Makes an empty list with link offset 0	verified	one	ui/strata#strata-records-and-level-nodes	
+0x766b10	23	FreeInputListArray		ui	host		Frees an input list's entry array	verified	one	ui/strata#construction-and-teardown	
+0x766b30	133	SetStrataNodeCapacity		ui	orchestration		Reallocates a level node array to a capacity, copying when it must move	verified	one	ui/strata#strata-records-and-level-nodes	
+0x766bc0	34	RectIsNotEmpty		ui	orchestration		Answers whether a rectangle's bottom is below its top and its left is left of its right	verified	one	ui/strata#raising-a-frame	
+0x766bf0	127	RectIntersection		ui	orchestration		Writes the intersection of two rectangles	inferred	none		
+0x766c70	158	RectIntersect		ui	orchestration		Intersects a rectangle with another in place and writes the result	verified	one	ui/strata#raising-a-frame	
+0x766d10	56	DeleteInputList		ui	host		Frees an input list's array and the list when asked	verified	one	ui/strata#construction-and-teardown	
+0x766d50	56	DeleteStrataNodeArray		ui	host		Frees a level node array's data and the array when asked	verified	one	ui/strata#construction-and-teardown	
+0x766d90	226	ReserveInputList		ui	primitive		Grows an input list's capacity by a count, rounded to its quantum	verified	one	ui/input#input-lists	
+0x766e80	57	ChooseInputListQuantum		ui	primitive		Returns the grow quantum for a count: its lowest set bit below 64, else 64	verified	one	ui/input#input-lists	
+0x766ec0	31	RoundCountToQuantum		ui	primitive		Rounds a count up to a multiple of a quantum	verified	one	ui/input#input-lists	
+0x766ee0	133	SetInputListCapacity		ui	orchestration		Reallocates an input list's array to a capacity, copying when it must move	verified	one	ui/input#input-lists	
+0x766f70	78	UiCopyMouseEvent		ui	orchestration		Copies a mouse payload into an interface event and scales its position through 0x41ad80	verified	one	ui/input#mouse-move-and-the-hover-pick	
+0x766fc0	3	CLayoutFrame::GetLayoutParent		ui	orchestration		Returns 0: a layout frame without a script part has no parent	verified	one	ui/strata#construction-and-teardown	
+0x766fd0	5	CLayoutFrame::GetLayoutFrameByName		ui	orchestration		Returns 0, popping the name	verified	one	ui/strata#construction-and-teardown	
+0x766fe0	45	GetToplevelAncestor		ui	orchestration		Returns the frame, else its nearest ancestor, with the toplevel bit, or 0	inferred	none	ui/input#moving-and-sizing	
+0x767010	45	IsAncestorOf		ui	orchestration		Answers whether a frame appears in another frame's parent chain	verified	one	ui/strata#raising-a-frame	
+0x767040	5	TopInitSquareThunk		ui	orchestration		Jumps to 0x767050; a static initializer	verified	one	ui/README#static-initializers	
+0x767050	19	TopInitSquare		ui	primitive		Stores a constant squared as a float in a global	verified	one	ui/README#static-initializers	
+0x767070	5	TopInitHalfTenthThunk		ui	orchestration		Jumps to 0x767080; a static initializer	verified	one	ui/README#static-initializers	
+0x767080	19	TopInitHalfTenth		ui	primitive		Stores 0.5 divided by 10 as a float in a global	verified	one	ui/README#this-rounds-object-files	
+0x7670a0	10	LayoutInitQueueThunk		ui	orchestration		Calls 0x7670b0, then registers the queue's exit handler; a static initializer	verified	one	ui/anchors#construction-and-the-xml-anchors	
+0x7670b0	34	InitLayoutQueue		ui	orchestration		Makes the layout queue empty with link offset 0x6c	verified	one	ui/anchors#construction-and-the-xml-anchors	
+0x7670e0	12	RegisterDestroyLayoutQueue		ui	orchestration		Registers 0x7670f0 with _atexit	verified	one	ui/anchors#construction-and-the-xml-anchors	
+0x7670f0	165	DestroyLayoutQueue		ui	orchestration		Unlinks every queued frame and the queue's terminator at exit	verified	one	ui/anchors#construction-and-the-xml-anchors	
+0x7671a0	78	CLayoutFrame::GetPointX		ui	orchestration		Returns the first x a point of a list of point indices gives that is not +inf	verified	one	ui/anchors#edge-resolution-from-points	
+0x7671f0	78	CLayoutFrame::GetPointY		ui	orchestration		Returns the first y a point of a list of point indices gives that is not +inf	verified	one	ui/anchors#edge-resolution-from-points	
+0x767240	5	LayoutInitInfinityThunk		ui	orchestration		Jumps to 0x767250; a static initializer	verified	one	ui/README#this-rounds-object-files	
+0x767250	11	LayoutInitInfinity		ui	orchestration		Copies +inf into a global of the file	verified	one	ui/README#static-initializers	
+0x767260	100	CLayoutFrame::GetCenterX		ui	primitive		Resolves the horizontal centre from points 1, 4, 7, else from left, right and width	verified	one	ui/anchors#edge-resolution-from-points	
+0x7672d0	141	CombineCenter		ui	primitive		Returns (near+far)·0.5, near+d·0.5 or far−d·0.5, or +inf, by which inputs are finite	verified	one	ui/anchors#edge-resolution-from-size	
+0x767360	100	CLayoutFrame::GetCenterY		ui	primitive		Resolves the vertical centre from points 3, 4, 5, else from bottom, top and height	verified	one	ui/anchors#edge-resolution-from-points	
+0x7673d0	102	CLayoutFrame::GetLeft		ui	primitive		Resolves the left edge from points 0, 3, 6, else from right, centre and width	verified	one	ui/anchors#edge-resolution-from-points	
+0x767440	132	CombineEdge		ui	primitive		Returns b+c, a+c·0.5 or 2a−b, or +inf, by which inputs are finite and c nonzero	verified	one	ui/anchors#edge-resolution-from-size	
+0x7674d0	100	CLayoutFrame::GetTop		ui	primitive		Resolves the top edge from points 0, 1, 2, else from bottom, centre and height	verified	one	ui/anchors#edge-resolution-from-points	
+0x767540	100	CLayoutFrame::GetRight		ui	primitive		Resolves the right edge from points 2, 5, 8, else from left, centre and width	verified	one	ui/anchors#edge-resolution-from-points	
+0x7675b0	102	CLayoutFrame::GetBottom		ui	primitive		Resolves the bottom edge from points 6, 7, 8, else from top, centre and height	verified	one	ui/anchors#edge-resolution-from-points	
+0x767620	84	CLayoutFrame::ClearAllPoints		ui	orchestration		Frees all nine points, telling each relative frame its dependent left	verified	one	ui/anchors#point-slots-and-point-names	
+0x767680	100	CLayoutFrame::CLayoutFrame		ui	orchestration		Zeroes points, rectangle, size and links, empties the dependents and sets the scale to 1.0	verified	one	ui/frames#vtables-and-the-two-parts	
+0x7676f0	43	CLayoutFrame::DeletingDestructor		ui	orchestration		Destroys a layout frame and frees it when bit 0 of the argument is set	verified	one	ui/anchors#construction-and-the-xml-anchors	
+0x767720	211	CLayoutFrame::~CLayoutFrame		ui	orchestration		Destroys the points and dependents, unlinks the queue link and empties the dependents list	verified	one	ui/anchors#construction-and-the-xml-anchors	
+0x767800	544	CLayoutFrame::LoadXML		ui	orchestration		Reads Size, setAllPoints and the Anchors of an XML node, then lays the frame out	verified	one	ui/frames#loading-from-xml	
+0x767a20	303	CLayoutFrame::CalculateRect		ui	primitive		Resolves left, bottom, right and top and moves the rectangle onto the screen when clamped	verified	one	ui/anchors#rectangle-calculation-and-screen-clamp	
+0x767b50	137	CLayoutFrame::SetAbsolutePoint		ui	unreached		Replaces a point with an offset that names no frame; nothing reaches it	verified	one	ui/anchors#absolute-and-relative-points	
+0x767be0	3	AnchorPointGetNoFrame		ui	orchestration		Returns 0: the point names no frame	verified	one	ui/anchors#absolute-and-relative-points	
+0x767bf0	6	AbsolutePointGetX		ui	unreached		Returns the stored x, ignoring the scale; a slot of 0x81c42c, which only unreached code installs	verified	one	ui/anchors#absolute-and-relative-points	
+0x767c00	6	AbsolutePointGetY		ui	unreached		Returns the stored y, ignoring the scale; a slot of 0x81c42c, which only unreached code installs	verified	one	ui/anchors#absolute-and-relative-points	
+0x767c10	40	DeleteAbsolutePoint		ui	unreached		Restores the point base vtable and frees the point when asked; a slot of 0x81c42c, which only unreached code installs	verified	one	ui/anchors#absolute-and-relative-points	
+0x767c40	40	DeleteAnchorPoint		ui	orchestration		Restores the point base vtable and frees the point when asked	verified	one	ui/anchors#absolute-and-relative-points	
+0x767c70	245	CLayoutFrame::SetPoint		ui	primitive		Sets a point relative to another frame and point with an offset, recording the dependency	verified	one	ui/anchors#absolute-and-relative-points	
+0x767d70	4	RelativePointGetFrame		ui	orchestration		Returns the frame the point is relative to	verified	one	ui/anchors#absolute-and-relative-points	
+0x767d80	40	DeleteRelativePoint		ui	orchestration		Restores the point base vtable and frees the point when asked	verified	one	ui/anchors#absolute-and-relative-points	
+0x767db0	182	CLayoutFrame::SetAllPoints		ui	orchestration		Pins points 0 and 8 to the same points of another frame with no offset	verified	one	ui/anchors#dependents	
+0x767e70	88	CLayoutFrame::ClearPointsTo		ui	orchestration		Frees every point relative to a frame and lays the frame out when asked	verified	one	ui/anchors#dependents	
+0x767ed0	5	CLayoutFrame::ClearAllPointsThunk		ui	orchestration		Jumps to 0x767620	inferred	none	ui/methods#region-parent-and-anchor-methods	
+0x767ee0	189	CLayoutFrame::AddDependent		ui	orchestration		Records a frame and point mask in the dependents list, ORing into an existing node	verified	one	ui/anchors#dependents	
+0x767fa0	111	CLayoutFrame::RemoveDependent		ui	orchestration		Clears a point mask of a dependent and frees its node when no bit remains	verified	one	ui/anchors#dependents	
+0x768010	77	CLayoutFrame::IsAnchoredTo		ui	orchestration		Answers whether any chain of relative points reaches a frame	verified	one	ui/anchors#dependents	
+0x768060	119	CLayoutFrame::SetDeferResize		ui	orchestration		Defers layout and leaves the queue, or ends the deferral and lays out a pending frame	verified	one	ui/anchors#deferred-layout	
+0x7680e0	203	CLayoutFrame::Resize		ui	orchestration		Resolves now when forced, else marks pending and queues the frame or its dependents	verified	one	ui/anchors#invalidation-and-the-layout-queue	
+0x7681b0	345	CLayoutFrame::QueueResize		ui	orchestration		Queues a frame before the first queued frame relative to it, else at the tail	verified	one	ui/anchors#invalidation-and-the-layout-queue	
+0x768310	7	CLayoutFrame::IsResizePending		ui	orchestration		Returns flag 4 of +0x3c, set while a layout is pending	verified	one	ui/anchors#invalidation-and-the-layout-queue	
+0x768320	55	CLayoutFrame::GetRect		ui	orchestration		Copies the resolved rectangle and answers whether it is valid	verified	one	ui/anchors#relative-point-coordinates	
+0x768360	110	CLayoutFrame::SetLayoutScale		ui	primitive		Stores a nonzero scale that changed by 2^-22 or more, invalidating the rectangle	verified	one	ui/anchors#size-scale-and-stored-rectangle	
+0x7683d0	29	CLayoutFrame::SetWidth		ui	orchestration		Stores the width, clears flag 8 and lays the frame out	verified	one	ui/anchors#size-scale-and-stored-rectangle	
+0x7683f0	29	CLayoutFrame::SetHeight		ui	orchestration		Stores the height, clears flag 8 and lays the frame out	verified	one	ui/anchors#size-scale-and-stored-rectangle	
+0x768410	4	CLayoutFrame::GetHeight		ui	orchestration		Returns the height +0x54	verified	one	ui/anchors#size-scale-and-stored-rectangle	
+0x768420	4	CLayoutFrame::GetWidth		ui	orchestration		Returns the width +0x50	verified	one	ui/anchors#size-scale-and-stored-rectangle	
+0x768430	287	CLayoutFrame::PinToParentOffset		ui	primitive		Anchors a point to the parent at the frame's current offset and sets the given size	inferred	none	ui/input#moving-and-sizing	
+0x768550	409	CLayoutFrame::ResizeByFactor		ui	unreached		Scales a frame's size about a point, clamped to its resize bounds; nothing live reaches it	verified	one	ui/README#starts-the-listing-hides	
+0x768710	1331	CLayoutFrame::ApplyDragDelta		ui	primitive		Moves or resizes a frame by a cursor difference at a point, clamped to its resize bounds	inferred	none	ui/README#starts-the-listing-hides	
+0x768c70	77	CLayoutFrame::IsPointInRect		ui	orchestration		Answers whether a point lies in the valid rectangle, all four edges inclusive and NaN outside	verified	one	ui/input#mouse-buttons	
+0x768cc0	47	CLayoutFrame::SetClampedToScreen		ui	orchestration		Sets or clears flag 0x10 and lays the frame out	verified	one	ui/anchors#size-scale-and-stored-rectangle	
+0x768cf0	44	CLayoutFrame::OnFrameSizeChanged		ui	orchestration		Lays out every dependent frame	verified	one	ui/anchors#resolving-and-the-changed-callback	
+0x768d20	252	CLayoutFrame::OnFrameResize		ui	primitive		Resolves the rectangle, stores it and calls slot 0 when it moved by 1e-5 or more	verified	one	ui/anchors#resolving-and-the-changed-callback	
+0x768e20	167	CLayoutFrame::DestroyLayout		ui	orchestration		Clears the frame's points, every point relative to it, its dependents and its queue link	verified	one	ui/anchors#dependents	
+0x768ed0	145	LayoutPendingFrames		ui	orchestration		Resolves the queued frames in up to 32 passes, each failure costing one of six retries	verified	one	ui/anchors#the-queue-drain	
+0x768f70	5	LayoutInitTwoPiThunk		ui	orchestration		Jumps to 0x768f80; a static initializer	verified	one	ui/README#static-initializers	
+0x768f80	15	LayoutInitTwoPi		ui	primitive		Stores 3.1415927 + 3.1415927 as a float in a global	verified	one	ui/README#static-initializers	
+0x768f90	5	LayoutInitInvTwoPiThunk		ui	orchestration		Jumps to 0x768fa0; a static initializer	verified	one	ui/README#static-initializers	
+0x768fa0	19	LayoutInitInvTwoPi		ui	primitive		Stores 1 divided by a global set just before as a float in a global	verified	one	ui/README#static-initializers	
+0x768fc0	41	GetPreviousQueueLink		ui	orchestration		Returns the link before a queue link, or the untagged terminator	verified	one	ui/anchors#dependents	
+0x768ff0	60	UnlinkDependentLink		ui	orchestration		Unlinks a dependents-list link and zeroes it	verified	one	ui/anchors#dependents	
+0x769030	5	LayoutInitSquareThunk		ui	orchestration		Jumps to 0x769040; a static initializer	verified	one	ui/README#static-initializers	
+0x769040	19	LayoutInitSquare		ui	primitive		Stores a constant squared as a float in a global	verified	one	ui/README#static-initializers	
+0x769060	5	LayoutInitHalfTenthThunk		ui	orchestration		Jumps to 0x769070; a static initializer	verified	one	ui/README#static-initializers	
+0x769070	19	LayoutInitHalfTenth		ui	primitive		Stores 0.5 divided by 10 as a float in a global	verified	one	ui/README#this-rounds-object-files	
+0x769090	715	CSimpleFrame::CSimpleFrame	idb	ui	orchestration		Builds a frame, joins the top's frame list and the parent, and makes it visible	verified	one	ui/frames#vtables-and-the-two-parts	
+0x769360	5	FrameInitInfinityThunk		ui	orchestration		Jumps to 0x769370; a static initializer	verified	one	ui/README#static-initializers	
+0x769370	11	FrameInitInfinity		ui	orchestration		Copies +inf into a global of the file	verified	one	ui/README#static-initializers	
+0x769380	43	CSimpleFrame::DeletingDestructor		ui	orchestration		Destroys a frame and frees it when bit 0 of the argument is set	verified	one	ui/frames#destruction	
+0x7693b0	958	CSimpleFrame::~CSimpleFrame		ui	orchestration		Releases the frame's table, title region, regions, children, slots and lists	verified	one	ui/frames#destruction	
+0x769770	168	CSimpleFrame::PreLoadXML		ui	orchestration		Sets the name and id from an XML node, marks the frame loading and defers its layout	verified	one	ui/visibility#show-and-hide-scripts	
+0x769820	1297	CSimpleFrame::LoadXML		ui	orchestration		Applies an XML node's inheritance, layout, attributes and child elements to a frame	verified	one	ui/frames#loading-from-xml	
+0x769d40	43	DeleteTitleRegion		ui	orchestration		Destroys a title region and frees it when asked	verified	one	ui/frames#destruction	
+0x769d70	369	CSimpleFrame::LoadXMLLayers		ui	orchestration		Creates each Texture and FontString of each Layer of an XML node in its draw layer	verified	one	ui/frames#loading-from-xml	
+0x769ef0	363	CSimpleFrame::LoadXMLScripts		ui	orchestration		Compiles each script element and enables the input kinds the handlers need	verified	one	ui/frames#loading-from-xml	
+0x76a060	104	CSimpleFrame::LoadXMLChildren		ui	orchestration		Creates the Frames children of an XML node, inherited nodes first	verified	one	ui/frames#loading-from-xml	
+0x76a0d0	544	CSimpleFrame::GetScriptByName		ui	orchestration		Returns the script slot of a handler name, OnEvent included, or 0	verified	one	ui/frames#script-slots-by-name	
+0x76a2f0	206	CSimpleFrame::PostLoadXML		ui	orchestration		Ends the load: undefers layout, loads children, runs OnLoad, then OnShow when visible	verified	one	ui/visibility#show-and-hide-scripts	
+0x76a3c0	54	CSimpleFrame::SetFrameFlag		ui	orchestration		Sets or clears bits of the frame flags +0xb4	inferred	none	ui/frames#frame-fields	
+0x76a400	111	CSimpleFrame::SetDrawsItself		ui	orchestration		Sets the draw-itself bits of a frame and its descendants, marking its own layers dirty	verified	one	ui/visibility#parent-change	
+0x76a470	126	CSimpleFrame::SetFrameStrata		ui	orchestration		Moves a frame and its children to a stratum	verified	one	ui/visibility#parent-change	
+0x76a4f0	182	CSimpleFrame::SetFrameLevel		ui	orchestration		Moves a frame to a level of at least 0, children of its stratum following when asked	verified	one	ui/methods#what-the-frame-methods-call	
+0x76a5b0	15	CSimpleFrame::Raise		ui	orchestration		Asks the top to raise the frame with the overlap check	verified	one	ui/input#mouse-buttons	
+0x76a5c0	13	CSimpleFrame::Lower		ui	orchestration		Asks the top to lower the frame, which does nothing	verified	one	ui/methods#what-the-frame-methods-call	
+0x76a5d0	90	CSimpleFrame::SetBackdrop		ui	orchestration		Replaces the frame's backdrop object	inferred	none		
+0x76a630	34	CSimpleFrame::ResizeByFactor		ui	unreached		Passes a size factor and point to 0x768550; nothing reaches it	verified	one	ui/README#unreached-functions	
+0x76a660	34	CSimpleFrame::ApplyDragDelta		ui	orchestration		Passes a cursor difference and point to 0x768710 on the frame's layout part	inferred	none		
+0x76a690	128	CSimpleFrame::SetAlpha		ui	orchestration		Stores the alpha byte and, on a change, refreshes the regions and gives every child the same byte	verified	one	ui/visibility#alpha	
+0x76a710	27	CSimpleFrame::EnableDrawLayer		ui	orchestration		Switches a draw layer on and marks it dirty	inferred	none		
+0x76a730	27	CSimpleFrame::DisableDrawLayer		ui	orchestration		Switches a draw layer off and marks it dirty	inferred	none		
+0x76a750	154	CSimpleFrame::AddRegion		ui	orchestration		Adds a region node to the frame's region list	inferred	none	ui/frames#frame-fields	
+0x76a7f0	104	CSimpleFrame::RemoveRegion		ui	orchestration		Frees the region node of a region	inferred	none	ui/frames#frame-fields	
+0x76a860	173	CSimpleFrame::AddRegionToLayer		ui	orchestration		Gives a region the frame's scale and adds it to a draw layer's list, marking the layer dirty	inferred	none	ui/frames#frame-fields	
+0x76a910	113	CSimpleFrame::RemoveRegionFromLayer		ui	orchestration		Removes a region from a draw layer's list, marking the layer dirty	inferred	none	ui/frames#frame-fields	
+0x76a990	63	CSimpleFrame::NotifyLayerChanged		ui	orchestration		Marks a draw layer dirty in the frame's own mask or its level node	verified	one	ui/strata#dirty-marks	
+0x76a9d0	78	CSimpleFrame::NotifyAllLayersChanged		ui	unreached		Marks all five draw layers dirty; nothing reaches it	verified	one	ui/README#unreached-functions	
+0x76aa20	142	CSimpleFrame::AddChild		ui	orchestration		Adds a child frame node to the frame's children	verified	one	ui/visibility#parent-change	
+0x76aab0	96	CSimpleFrame::RemoveChild		ui	orchestration		Frees the child node of a frame	verified	one	ui/visibility#parent-change	
+0x76ab10	249	CSimpleFrame::SetParent		ui	orchestration		Moves a frame under a new parent, taking its stratum, level plus one and scale	verified	one	ui/visibility#parent-change	
+0x76ac10	62	SetFrameScale		ui	primitive		Stores the frame's own scale and recomputes the effective scale	verified	one	ui/visibility#scale	
+0x76ac50	62	CSimpleFrame::SetParentScale		ui	primitive		Stores the parent's effective scale and recomputes the effective scale	verified	one	ui/visibility#scale	
+0x76ac90	182	CSimpleFrame::UpdateScale		ui	primitive		Multiplies the two scales and passes a changed result to the layout, regions and children	verified	one	ui/visibility#scale	
+0x76ad50	184	CSimpleFrame::Hide		ui	orchestration		Makes a visible frame invisible: defers layout, leaves its level, hides regions and children	verified	one	ui/visibility#hiding-a-frame	
+0x76ae10	239	SimpleFrameShowNow		ui	orchestration		Makes a shown frame with a visible parent visible: joins its level, shows regions and children	verified	one	ui/visibility#showing-a-frame	
+0x76af00	68	CSimpleFrame::EnableEvent	idb	ui	orchestration		Enables an input kind, entering the frame into its list when visible	verified	one	ui/input#input-lists	
+0x76af50	74	CSimpleFrame::DisableEvent		ui	orchestration		Disables an input kind, removing the frame from its list when visible	verified	one	ui/input#input-lists	
+0x76afa0	62	CSimpleFrame::RegisterForEvents		ui	orchestration		Enters the frame into the list of each enabled input kind	verified	one	ui/input#input-lists	
+0x76afe0	60	CSimpleFrame::UnregisterForEvents		ui	orchestration		Removes the frame from the list of each enabled input kind	verified	one	ui/input#input-lists	
+0x76b020	392	CSimpleFrame::IsMouseOver		ui	orchestration		Answers whether a point lies in the hit rectangle, or its intersection with the nearest non-drawing ancestor's	verified	one	ui/input#wheel-keys-and-characters	
+0x76b1b0	43	CSimpleFrame::SetHitRectInsets		ui	orchestration		Stores the four hit insets	verified	one	ui/input#hit-test	
+0x76b1e0	51	CSimpleFrame::GetHitRectInsets		ui	orchestration		Writes the four hit insets	verified	one	ui/input#hit-test	
+0x76b220	58	CSimpleFrame::GetHitRect		ui	orchestration		Copies the hit rectangle and answers whether the layout is valid	verified	one	ui/input#hit-test	
+0x76b260	33	CSimpleFrame::OnFrameShow		ui	orchestration		Runs the OnShow script unless the frame is loading; slot 0x30	verified	one	ui/visibility#show-and-hide-scripts	
+0x76b290	33	CSimpleFrame::OnFrameHide		ui	orchestration		Runs the OnHide script unless the frame is loading; slot 0x34	verified	one	ui/visibility#show-and-hide-scripts	
+0x76b2c0	47	CSimpleFrame::OnFrameUpdate		ui	orchestration		Runs the OnUpdate script with the elapsed time; slot 0x38	inferred	none		
+0x76b2f0	5	FrameInitDragThresholdThunk		ui	orchestration		Jumps to 0x76b300; a static initializer	verified	one	ui/README#static-initializers	
+0x76b300	19	FrameInitDragThreshold		ui	primitive		Stores 0.01 squared in 0xcf0c14, the squared drag-start distance	verified	one	ui/README#static-initializers	
+0x76b320	125	CSimpleFrame::OnMouseMove		ui	primitive		Starts a drag past the threshold and answers the hit test; slot 0x3c	inferred	none		
+0x76b3a0	79	SimpleFrameRegisterLayer		ui	orchestration		Adds the regions of one enabled draw layer to a batch	inferred	none		
+0x76b3f0	306	CSimpleFrame::OnFrameRender		ui	orchestration		Rebuilds and draws a self-drawing frame's own batches, then its children	inferred	none		
+0x76b530	25	CSimpleFrame::MarkLayerDirty		ui	orchestration		Sets a bit of the frame's own dirty-layer mask +0x1f8	verified	one	ui/visibility#parent-change	
+0x76b550	42	CSimpleFrame::RefreshRegions		ui	orchestration		Calls slot 0x24 of each region	inferred	none		
+0x76b580	212	CSimpleFrame::OnFrameSizeChanged		ui	primitive		Lays out dependents, computes the hit rectangle and runs the size callback on a size change	verified	one	ui/input#hit-test	
+0x76b660	54	CSimpleFrame::OnSizeChanged		ui	orchestration		Runs the OnSizeChanged script with the width and height	inferred	none		
+0x76b6a0	76	CSimpleFrame::OnEnter		ui	orchestration		Shows the +0xa4 frame, switches layer 4 on and runs OnEnter	inferred	none		
+0x76b6f0	109	CSimpleFrame::OnLeave		ui	orchestration		Hides the +0xa4 frame, switches layer 4 off, may end a drag and runs OnLeave	inferred	none		
+0x76b760	97	CSimpleFrame::OnChar		ui	orchestration		Runs OnChar with the character as text when visible	inferred	none		
+0x76b7d0	615	CSimpleFrame::OnKeyDown		ui	orchestration		Runs OnKeyDown with the key's name when visible	inferred	none		
+0x76bba0	605	CSimpleFrame::OnKeyUp		ui	orchestration		Runs OnKeyUp with the key's name when visible	inferred	none		
+0x76bf70	167	CSimpleFrame::OnMouseDown		ui	orchestration		Arms a drag for a registered button and runs OnMouseDown with the button name	inferred	none	ui/README#starts-the-listing-hides	
+0x76c040	194	CSimpleFrame::OnMouseUp		ui	orchestration		Ends a drag with the drag-stop and receive slots, else runs OnMouseUp with the button name	inferred	none	ui/README#starts-the-listing-hides	
+0x76c130	5	FrameInitTwoPiThunk		ui	orchestration		Jumps to 0x76c140; a static initializer	verified	one	ui/README#static-initializers	
+0x76c140	15	FrameInitTwoPi		ui	primitive		Stores 3.1415927 + 3.1415927 as a float in a global	verified	one	ui/README#static-initializers	
+0x76c150	5	FrameInitInvTwoPiThunk		ui	orchestration		Jumps to 0x76c160; a static initializer	verified	one	ui/README#static-initializers	
+0x76c160	19	FrameInitInvTwoPi		ui	primitive		Stores 1 divided by a global set just before as a float in a global	verified	one	ui/README#static-initializers	
+0x76c180	81	CSimpleFrame::OnMouseWheel		ui	orchestration		Runs OnMouseWheel with 1 or -1 when visible	inferred	none		
+0x76c1e0	138	CSimpleFrame::OnDragStart		ui	orchestration		Runs OnDragStart with the name of the lowest held button	inferred	none		
+0x76c2a0	25	CSimpleFrame::OnDragStop		ui	orchestration		Runs the OnDragStop script	inferred	none		
+0x76c2c0	25	CSimpleFrame::OnReceiveDrag		ui	orchestration		Runs the OnReceiveDrag script	inferred	none		
+0x76c2e0	57	CSimpleFrame::SetHighlightLocked		ui	orchestration		Stores +0xf8 and switches layer 4 on, or off unless hovered	inferred	none	ui/frames#frame-fields	
+0x76c320	60	UnlinkRegionLink		ui	orchestration		Unlinks a region list link and zeroes it	inferred	none		
+0x76c360	60	UnlinkChildLink		ui	orchestration		Unlinks a child list link and zeroes it	inferred	none		
+0x76c3a0	17	GetRegionLinkOrTerminator		ui	orchestration		Returns a link, or the list's terminator for null	inferred	none		
+0x76c3c0	25	GetRegionLink		ui	orchestration		Returns a node's link of a list, or the list's terminator for null	inferred	none		
+0x76c3e0	41	GetPreviousRegionLink		ui	orchestration		Returns the link before a link, or the untagged terminator	inferred	none		
+0x76c410	8	CSimpleFrame::LayoutDeletingDestructorThunk		ui	orchestration		Moves this back by 0x24 to the frame and runs its deleting destructor	verified	one	ui/frames#vtables-and-the-two-parts	
+0x76c420	8	CSimpleFrame::LayoutThunk		ui	orchestration		Moves this back by 0x24 to the frame and jumps to its slot	verified	one	ui/frames#vtables-and-the-two-parts	
+0x76c430	16	CScriptRegion::SetParent		ui	orchestration		Stores the parent at +0x9c	verified	one	ui/frames#vtables-and-the-two-parts	
+0x76c440	23	CScriptRegion::IsA		ui	orchestration		Answers whether a type id is the region type id 0xcf0c3c	verified	one	ui/frames#vtables-and-the-two-parts	
+0x76c460	32	CScriptRegion::IsObjectType		ui	orchestration		Answers whether a name equals Region, ignoring case	verified	one	ui/frames#vtables-and-the-two-parts	
+0x76c480	6	CScriptRegion::GetObjectType		ui	orchestration		Returns the string Region	verified	one	ui/frames#vtables-and-the-two-parts	
+0x76c490	5	FrameInitSquareThunk		ui	orchestration		Jumps to 0x76c4a0; a static initializer	verified	one	ui/README#static-initializers	
+0x76c4a0	19	FrameInitSquare		ui	primitive		Stores a constant squared as a float in a global	verified	one	ui/README#static-initializers	
+0x76c4c0	5	FrameInitHalfTenthThunk		ui	orchestration		Jumps to 0x76c4d0; a static initializer	verified	one	ui/README#static-initializers	
+0x76c4d0	19	FrameInitHalfTenth		ui	primitive		Stores 0.5 divided by 10 as a float in a global	verified	one	ui/README#this-rounds-object-files	
+0x76c4f0	50	CScriptRegion::CScriptRegion		ui	orchestration		Builds the script object and layout parts and stores the region vtables	verified	one	ui/frames#vtables-and-the-two-parts	
+0x76c530	43	CScriptRegion::DeletingDestructor		ui	orchestration		Destroys a region and frees it when bit 0 of the argument is set	verified	one	ui/frames#destruction	
+0x76c560	67	CScriptRegion::~CScriptRegion		ui	orchestration		Releases the region's table and name and destroys its layout and script parts	verified	one	ui/frames#destruction	
+0x76c5b0	153	CScriptRegion::ExpandName		ui	orchestration		Writes a name with a leading $parent replaced by the nearest named ancestor's name	verified	one	ui/frames#names-and-lookup-by-name	
+0x76c650	132	CScriptRegion::SetName		ui	orchestration		Stores the expanded name and makes it a Lua global for the region's table when unset	verified	one	ui/frames#names-and-lookup-by-name	
+0x76c6e0	20	CScriptRegion::GetLayoutParent		ui	orchestration		Returns the parent's layout part, or 0	inferred	none	ui/frames#vtables-and-the-two-parts	
+0x76c700	94	CScriptRegion::GetLayoutFrameByName		ui	orchestration		Returns the layout part of the region a name finds after $parent expansion	verified	one	ui/frames#vtables-and-the-two-parts	
+0x76c760	124	FindFrameOfType		ui	orchestration		Returns the object a global of a name holds when it is a table passing a type test	verified	one	ui/frames#names-and-lookup-by-name	
+0x76c7e0	5	RegionInitInfinityThunk		ui	orchestration		Jumps to 0x76c7f0; a static initializer	verified	one	ui/README#static-initializers	
+0x76c7f0	11	RegionInitInfinity		ui	orchestration		Copies +inf into a global of the file	verified	one	ui/README#static-initializers	
+0x76c800	5	RegionInitTwoPiThunk		ui	orchestration		Jumps to 0x76c810; a static initializer	verified	one	ui/README#static-initializers	
+0x76c810	15	RegionInitTwoPi		ui	primitive		Stores 3.1415927 + 3.1415927 as a float in a global	verified	one	ui/README#static-initializers	
+0x76c820	5	RegionInitInvTwoPiThunk		ui	orchestration		Jumps to 0x76c830; a static initializer	verified	one	ui/README#static-initializers	
+0x76c830	19	RegionInitInvTwoPi		ui	primitive		Stores 1 divided by a global set just before as a float in a global	verified	one	ui/README#static-initializers	
+0x76c850	8	CScriptRegion::LayoutDeletingDestructorThunk		ui	orchestration		Moves this back by 0x24 and runs the region's deleting destructor	inferred	none		
+0x76c860	5	RegionInitSquareThunk		ui	orchestration		Jumps to 0x76c870; a static initializer	verified	one	ui/README#static-initializers	
+0x76c870	19	RegionInitSquare		ui	primitive		Stores a constant squared as a float in a global	verified	one	ui/README#static-initializers	
+0x76c890	5	RegionInitHalfTenthThunk		ui	orchestration		Jumps to 0x76c8a0; a static initializer	verified	one	ui/README#static-initializers	
+0x76c8a0	19	RegionInitHalfTenth		ui	primitive		Stores 0.5 divided by 10 as a float in a global	verified	one	ui/README#this-rounds-object-files	
+0x76c8e0	311	CSimpleModel::CSimpleModel		ui	orchestration		Constructs a model frame and stores its two vtables	inferred	none		
+0x76ca50	108	DestroyModelFrame		ui	orchestration		Destroys a model frame's members; the ModelFFX destructor calls it	inferred	none		
+0x76cce0	68	SimpleModelLoadFile		ui	orchestration		Loads a model file into a model frame's scene and hands the model to slot 36	inferred	none		
+0x76cd30	144	SimpleModelSetModel		ui	primitive		Stores a model frame's scene model at +0x318 and installs its callbacks	inferred	none		
+0x76cec0	100	SimpleModelSetCamera		ui	orchestration		Selects a camera of a model frame's scene model by index	inferred	none		
+0x76cfc0	32	SimpleModelGetScene		ui	orchestration		Returns a model frame's M2 scene, creating it on first use	inferred	none		
+0x76d160	56	SimpleModelRegisterLayer		ui	orchestration		Registers a model frame's layers, with its model draw for layer 2	inferred	none		
+0x76d240	1078	SimpleModelDraw		ui	primitive		Draws a model frame's scene	inferred	none		
+0x76d680	368	SimpleModelLightCallback		ui	primitive		Lights a model frame's scene model; the callback the frame installs on its own model	inferred	none		
+0x773110	142	RegisterLayerCallback		ui	primitive		Adds a draw callback and its argument to a layer's list	inferred	none		
+0x773640	182	Frame::GetFrameType	idb	ui	orchestration		Implements the Frame method GetFrameType, its pair in the table 0x878ec0	verified	one	ui/README#this-rounds-object-files	
+0x773700	256	Frame::IsFrameType	idb	ui	orchestration		Implements the Frame method IsFrameType, its pair in the table 0x878ec0	inferred	none		
+0x773800	5	FrameMethodsInitInfinityThunk		ui	orchestration		Jumps to 0x773810; a static initializer	verified	one	ui/README#static-initializers	
+0x773810	11	FrameMethodsInitInfinity		ui	orchestration		Copies +inf into a global of the file	verified	one	ui/README#static-initializers	
+0x773820	225	Frame::GetTitleRegion	idb	ui	orchestration		Implements the Frame method GetTitleRegion, its pair in the table 0x878ec0	inferred	none		
+0x773910	272	Frame::CreateTitleRegion	idb	ui	orchestration		Implements the Frame method CreateTitleRegion, its pair in the table 0x878ec0	inferred	none		
+0x773a20	520	Frame::CreateTexture	idb	ui	orchestration		Implements the Frame method CreateTexture, its pair in the table 0x878ec0	inferred	none		
+0x773c30	558	Frame::CreateFontString	idb	ui	orchestration		Implements the Frame method CreateFontString, its pair in the table 0x878ec0	inferred	none		
+0x773e60	242	Frame::GetNumRegions	idb	ui	orchestration		Implements the Frame method GetNumRegions, its pair in the table 0x878ec0	inferred	none		
+0x773f60	288	Frame::GetRegions	idb	ui	orchestration		Implements the Frame method GetRegions, its pair in the table 0x878ec0	inferred	none		
+0x774080	242	Frame::GetNumChildren	idb	ui	orchestration		Implements the Frame method GetNumChildren, its pair in the table 0x878ec0	inferred	none		
+0x774180	288	Frame::GetChildren	idb	ui	orchestration		Implements the Frame method GetChildren, its pair in the table 0x878ec0	inferred	none		
+0x7742a0	188	Frame::GetFrameStrata	idb	ui	orchestration		Implements the Frame method GetFrameStrata, its pair in the table 0x878ec0	inferred	none		
+0x774360	310	Frame::SetFrameStrata	idb	ui	orchestration		Implements the Frame method SetFrameStrata, its pair in the table 0x878ec0	verified	one	ui/methods#what-the-frame-methods-call	
+0x7744a0	187	Frame::GetFrameLevel	idb	ui	orchestration		Implements the Frame method GetFrameLevel, its pair in the table 0x878ec0	inferred	none		
+0x774560	279	Frame::SetFrameLevel	idb	ui	orchestration		Implements the Frame method SetFrameLevel, its pair in the table 0x878ec0	verified	one	ui/methods#what-the-frame-methods-call	
+0x774680	256	Frame::HasScript		ui	orchestration		Implements the Frame method HasScript, its pair in the table 0x878ec0	inferred	none		
+0x774780	327	Frame::GetScript		ui	orchestration		Implements the Frame method GetScript, its pair in the table 0x878ec0	inferred	none		
+0x7748d0	368	Frame::SetScript		ui	orchestration		Implements the Frame method SetScript, its pair in the table 0x878ec0	inferred	none		
+0x774a40	238	Frame::RegisterEvent	idb	ui	orchestration		Implements the Frame method RegisterEvent, its pair in the table 0x878ec0	verified	one	ui/methods#what-the-frame-methods-call	
+0x774b30	238	Frame::UnregisterEvent	idb	ui	orchestration		Implements the Frame method UnregisterEvent, its pair in the table 0x878ec0	verified	one	ui/methods#what-the-frame-methods-call	
+0x774c20	197	Frame::RegisterAllEvents	idb	ui	orchestration		Implements the Frame method RegisterAllEvents, its pair in the table 0x878ec0	verified	one	ui/methods#what-the-frame-methods-call	
+0x774cf0	197	Frame::UnregisterAllEvents	idb	ui	orchestration		Implements the Frame method UnregisterAllEvents, its pair in the table 0x878ec0	verified	one	ui/methods#what-the-frame-methods-call	
+0x774dc0	207	Frame::GetAlpha	idb	ui	orchestration		Implements the Frame method GetAlpha, its pair in the table 0x878ec0	inferred	none		
+0x774e90	293	Frame::SetAlpha	idb	ui	primitive		Implements the Frame method SetAlpha, its pair in the table 0x878ec0	verified	one	ui/visibility#alpha	
+0x774fc0	184	Frame::GetEffectiveScale	idb	ui	orchestration		Implements the Frame method GetEffectiveScale, its pair in the table 0x878ec0	inferred	none		
+0x775080	187	Frame::GetScale	idb	ui	orchestration		Implements the Frame method GetScale, its pair in the table 0x878ec0	inferred	none		
+0x775140	320	Frame::SetScale	idb	ui	orchestration		Implements the Frame method SetScale, its pair in the table 0x878ec0	verified	one	ui/visibility#scale	
+0x775280	187	Frame::GetID	idb	ui	orchestration		Implements the Frame method GetID, its pair in the table 0x878ec0	inferred	none		
+0x775340	241	Frame::SetID	idb	ui	orchestration		Implements the Frame method SetID, its pair in the table 0x878ec0	inferred	none		
+0x775440	163	Frame::SetToplevel	idb	ui	orchestration		Implements the Frame method SetToplevel, its pair in the table 0x878ec0	inferred	none		
+0x7754f0	177	Frame::IsToplevel	idb	ui	orchestration		Implements the Frame method IsToplevel, its pair in the table 0x878ec0	inferred	none		
+0x7755b0	202	Frame::EnableDrawLayer	idb	ui	orchestration		Implements the Frame method EnableDrawLayer, its pair in the table 0x878ec0	inferred	none		
+0x775680	202	Frame::DisableDrawLayer	idb	ui	orchestration		Implements the Frame method DisableDrawLayer, its pair in the table 0x878ec0	inferred	none		
+0x775750	183	Frame::Show	idb	ui	orchestration		Implements the Frame method Show, its pair in the table 0x878ec0	verified	one	ui/visibility#showing-a-frame	
+0x775810	183	Frame::Hide	idb	ui	orchestration		Implements the Frame method Hide, its pair in the table 0x878ec0	verified	one	ui/visibility#hiding-a-frame	
+0x7758d0	178	Frame::IsVisible	idb	ui	orchestration		Implements the Frame method IsVisible, its pair in the table 0x878ec0	inferred	none		
+0x775990	178	Frame::IsShown	idb	ui	orchestration		Implements the Frame method IsShown, its pair in the table 0x878ec0	inferred	none		
+0x775a50	197	Frame::Raise	idb	ui	orchestration		Implements the Frame method Raise, its pair in the table 0x878ec0	verified	one	ui/methods#what-the-frame-methods-call	
+0x775b20	197	Frame::Lower	idb	ui	orchestration		Implements the Frame method Lower, its pair in the table 0x878ec0	verified	one	ui/methods#what-the-frame-methods-call	
+0x775bf0	342	Frame::GetHitRectInsets	idb	ui	orchestration		Implements the Frame method GetHitRectInsets, its pair in the table 0x878ec0	inferred	none	ui/methods#coordinates-the-methods-convert	
+0x775d50	463	Frame::SetHitRectInsets	idb	ui	orchestration		Implements the Frame method SetHitRectInsets, its pair in the table 0x878ec0	inferred	none	ui/methods#coordinates-the-methods-convert	
+0x775f20	252	Frame::GetMinResize	idb	ui	orchestration		Implements the Frame method GetMinResize, its pair in the table 0x878ec0	inferred	none		
+0x776020	369	Frame::SetMinResize	idb	ui	orchestration		Implements the Frame method SetMinResize, its pair in the table 0x878ec0	inferred	none	ui/methods#coordinates-the-methods-convert	
+0x7761a0	252	Frame::GetMaxResize	idb	ui	orchestration		Implements the Frame method GetMaxResize, its pair in the table 0x878ec0	inferred	none		
+0x7762a0	369	Frame::SetMaxResize	idb	ui	orchestration		Implements the Frame method SetMaxResize, its pair in the table 0x878ec0	inferred	none	ui/methods#coordinates-the-methods-convert	
+0x776420	166	Frame::SetMovable	idb	ui	orchestration		Implements the Frame method SetMovable, its pair in the table 0x878ec0	inferred	none		
+0x7764d0	179	Frame::IsMovable		ui	orchestration		Implements the Frame method IsMovable, its pair in the table 0x878ec0	inferred	none		
+0x776590	166	Frame::SetResizable	idb	ui	orchestration		Implements the Frame method SetResizable, its pair in the table 0x878ec0	inferred	none		
+0x776640	179	Frame::IsResizable	idb	ui	orchestration		Implements the Frame method IsResizable, its pair in the table 0x878ec0	inferred	none		
+0x776700	303	Frame::StartMoving	idb	ui	orchestration		Implements the Frame method StartMoving, its pair in the table 0x878ec0	inferred	none		
+0x776830	350	Frame::StartSizing	idb	ui	orchestration		Implements the Frame method StartSizing, its pair in the table 0x878ec0	inferred	none		
+0x776990	184	Frame::StopMovingOrSizing	idb	ui	orchestration		Implements the Frame method StopMovingOrSizing, its pair in the table 0x878ec0	inferred	none		
+0x776a50	240	Frame::SetUserPlaced	idb	ui	orchestration		Implements the Frame method SetUserPlaced, its pair in the table 0x878ec0	inferred	none		
+0x776b40	179	Frame::IsUserPlaced	idb	ui	orchestration		Implements the Frame method IsUserPlaced, its pair in the table 0x878ec0	inferred	none		
+0x776c00	162	Frame::SetClampedToScreen	idb	ui	orchestration		Implements the Frame method SetClampedToScreen, its pair in the table 0x878ec0	inferred	none		
+0x776cb0	174	Frame::IsClampedToScreen	idb	ui	orchestration		Implements the Frame method IsClampedToScreen, its pair in the table 0x878ec0	inferred	none		
+0x776d60	338	Frame::RegisterForDrag	idb	ui	orchestration		Implements the Frame method RegisterForDrag, its pair in the table 0x878ec0	inferred	none		
+0x776ec0	201	Frame::EnableKeyboard	idb	ui	orchestration		Implements the Frame method EnableKeyboard, its pair in the table 0x878ec0	verified	one	ui/methods#what-the-frame-methods-call	
+0x776f90	218	Frame::IsKeyboardEnabled	idb	ui	orchestration		Implements the Frame method IsKeyboardEnabled, its pair in the table 0x878ec0	inferred	none		
+0x777070	181	Frame::EnableMouse	idb	ui	orchestration		Implements the Frame method EnableMouse, its pair in the table 0x878ec0	verified	one	ui/methods#what-the-frame-methods-call	
+0x777130	182	Frame::IsMouseEnabled	idb	ui	orchestration		Implements the Frame method IsMouseEnabled, its pair in the table 0x878ec0	inferred	none		
+0x7771f0	181	Frame::EnableMouseWheel	idb	ui	orchestration		Implements the Frame method EnableMouseWheel, its pair in the table 0x878ec0	verified	one	ui/methods#what-the-frame-methods-call	
+0x7772b0	182	Frame::IsMouseWheelEnabled	idb	ui	orchestration		Implements the Frame method IsMouseWheelEnabled, its pair in the table 0x878ec0	inferred	none		
+0x777370	870	Frame::GetBackdrop	idb	ui	orchestration		Implements the Frame method GetBackdrop, its pair in the table 0x878ec0	inferred	none		
+0x7776e0	1243	Frame::SetBackdrop	idb	ui	orchestration		Implements the Frame method SetBackdrop, its pair in the table 0x878ec0	inferred	none		
+0x777bc0	358	Frame::GetBackdropColor	idb	ui	orchestration		Implements the Frame method GetBackdropColor, its pair in the table 0x878ec0	inferred	none		
+0x777d30	545	Frame::SetBackdropColor	idb	ui	orchestration		Implements the Frame method SetBackdropColor, its pair in the table 0x878ec0	inferred	none		
+0x777f60	358	Frame::GetBackdropBorderColor	idb	ui	orchestration		Implements the Frame method GetBackdropBorderColor, its pair in the table 0x878ec0	inferred	none		
+0x7780d0	545	Frame::SetBackdropBorderColor	idb	ui	orchestration		Implements the Frame method SetBackdropBorderColor, its pair in the table 0x878ec0	inferred	none		
+0x778300	10	InitFrameMethodHashThunk		ui	orchestration		Builds the Frame method hash table, then registers its exit handler; a static initializer	verified	one	ui/README#static-initializers	
+0x778310	190	InitFrameMethodHash		ui	orchestration		Builds the empty Frame method hash table at 0xcf4d38	verified	one	ui/README#static-initializers	
+0x7783d0	12	RegisterDestroyFrameMethodHash		ui	orchestration		Registers 0x7783e0 with _atexit	verified	one	ui/README#static-initializers	
+0x7783e0	375	DestroyFrameMethodHash		ui	orchestration		Unlinks and frees the Frame method hash table's nodes at exit	verified	one	ui/README#static-initializers	
+0x778560	21	CSimpleFrame::RegisterScriptMethods		ui	orchestration		Adds the 68 Frame methods of 0x878ec0 to the Frame method hash	verified	one	ui/methods#method-tables-and-lookup	
+0x778580	10	CSimpleFrame::UnregisterScriptMethods		ui	orchestration		Empties the Frame method hash	verified	one	ui/methods#method-tables-and-lookup	
+0x778590	60	CSimpleFrame::GetScriptMethod		ui	orchestration		Pushes a method from the Frame hash, else from the Region hash	verified	one	ui/methods#method-tables-and-lookup	
+0x7785d0	5	FrameMethodsInitTwoPiThunk		ui	orchestration		Jumps to 0x7785e0; a static initializer	verified	one	ui/README#static-initializers	
+0x7785e0	15	FrameMethodsInitTwoPi		ui	primitive		Stores 3.1415927 + 3.1415927 as a float in a global	verified	one	ui/README#static-initializers	
+0x7785f0	5	FrameMethodsInitInvTwoPiThunk		ui	orchestration		Jumps to 0x778600; a static initializer	verified	one	ui/README#static-initializers	
+0x778600	19	FrameMethodsInitInvTwoPi		ui	primitive		Stores 1 divided by a global set just before as a float in a global	verified	one	ui/README#static-initializers	
+0x778620	5	FrameMethodsInitSquareThunk		ui	orchestration		Jumps to 0x778630; a static initializer	verified	one	ui/README#static-initializers	
+0x778630	19	FrameMethodsInitSquare		ui	primitive		Stores a constant squared as a float in a global	verified	one	ui/README#static-initializers	
+0x778650	5	FrameMethodsInitHalfTenthThunk		ui	orchestration		Jumps to 0x778660; a static initializer	verified	one	ui/README#static-initializers	
+0x778660	19	FrameMethodsInitHalfTenth		ui	primitive		Stores 0.5 divided by 10 as a float in a global	verified	one	ui/README#this-rounds-object-files	
+0x78dc60	21			ui	orchestration		Registers a table of three script functions	inferred	none		
+0x78dc80	10			ui	orchestration		Unregisters the table of three script functions	inferred	none		
+0x7a11d0	182	Region::GetObjectType	idb	ui	orchestration		Implements the Region method GetObjectType, its pair in the table 0x87c9b8	verified	one	ui/frames#the-region-type-id	
+0x7a1290	256	Region::IsObjectType	idb	ui	orchestration		Implements the Region method IsObjectType, its pair in the table 0x87c9b8	inferred	none	ui/methods#region-parent-and-anchor-methods	
+0x7a1390	205	Region::GetName	idb	ui	orchestration		Implements the Region method GetName, its pair in the table 0x87c9b8	inferred	none	ui/methods#region-parent-and-anchor-methods	
+0x7a1460	225	Region::GetParent	idb	ui	orchestration		Implements the Region method GetParent, its pair in the table 0x87c9b8	inferred	none	ui/methods#region-parent-and-anchor-methods	
+0x7a1550	669	Region::SetParent	idb	ui	orchestration		Implements the Region method SetParent, its pair in the table 0x87c9b8	inferred	none	ui/methods#region-parent-and-anchor-methods	
+0x7a17f0	5	RegionMethodsInitInfinityThunk		ui	orchestration		Jumps to 0x7a1800; a static initializer	verified	one	ui/README#static-initializers	
+0x7a1800	11	RegionMethodsInitInfinity		ui	orchestration		Copies +inf into a global of the file	verified	one	ui/README#static-initializers	
+0x7a1810	364	Region::GetCenter	idb	ui	orchestration		Implements the Region method GetCenter, its pair in the table 0x87c9b8	inferred	none	ui/methods#coordinates-the-methods-convert	
+0x7a1980	282	Region::GetLeft	idb	ui	orchestration		Implements the Region method GetLeft, its pair in the table 0x87c9b8	inferred	none	ui/methods#coordinates-the-methods-convert	
+0x7a1aa0	282	Region::GetRight	idb	ui	orchestration		Implements the Region method GetRight, its pair in the table 0x87c9b8	inferred	none	ui/methods#coordinates-the-methods-convert	
+0x7a1bc0	282	Region::GetTop	idb	ui	orchestration		Implements the Region method GetTop, its pair in the table 0x87c9b8	inferred	none	ui/methods#coordinates-the-methods-convert	
+0x7a1ce0	282	Region::GetBottom	idb	ui	orchestration		Implements the Region method GetBottom, its pair in the table 0x87c9b8	inferred	none	ui/methods#coordinates-the-methods-convert	
+0x7a1e00	286	Region::GetWidth	idb	ui	orchestration		Implements the Region method GetWidth, its pair in the table 0x87c9b8	inferred	none	ui/methods#coordinates-the-methods-convert	
+0x7a1f20	264	Region::SetWidth	idb	ui	orchestration		Implements the Region method SetWidth, its pair in the table 0x87c9b8	inferred	none	ui/methods#coordinates-the-methods-convert	
+0x7a2030	286	Region::GetHeight	idb	ui	orchestration		Implements the Region method GetHeight, its pair in the table 0x87c9b8	inferred	none	ui/methods#coordinates-the-methods-convert	
+0x7a2150	264	Region::SetHeight	idb	ui	orchestration		Implements the Region method SetHeight, its pair in the table 0x87c9b8	inferred	none	ui/methods#coordinates-the-methods-convert	
+0x7a2260	219	Region::GetNumPoints	idb	ui	orchestration		Implements the Region method GetNumPoints, its pair in the table 0x87c9b8	inferred	none	ui/methods#region-parent-and-anchor-methods	
+0x7a2340	507	Region::GetPoint	idb	ui	orchestration		Implements the Region method GetPoint, its pair in the table 0x87c9b8	inferred	none	ui/methods#region-parent-and-anchor-methods	
+0x7a2540	1022	Region::SetPoint	idb	ui	orchestration		Implements the Region method SetPoint, its pair in the table 0x87c9b8	inferred	none	ui/methods#region-parent-and-anchor-methods	
+0x7a2940	553	Region::SetAllPoints	idb	ui	orchestration		Implements the Region method SetAllPoints, its pair in the table 0x87c9b8	inferred	none	ui/methods#region-parent-and-anchor-methods	
+0x7a2b70	147	Region::ClearAllPoints	idb	ui	orchestration		Implements the Region method ClearAllPoints, its pair in the table 0x87c9b8	inferred	none	ui/methods#region-parent-and-anchor-methods	
+0x7a2c10	10	InitRegionMethodHashThunk		ui	orchestration		Builds the Region method hash table, then registers its exit handler; a static initializer	verified	one	ui/README#static-initializers	
+0x7a2c20	190	InitRegionMethodHash		ui	orchestration		Builds the empty Region method hash table at 0xcf54b4	verified	one	ui/README#static-initializers	
+0x7a2ce0	12	RegisterDestroyRegionMethodHash		ui	orchestration		Registers 0x7a2cf0 with _atexit	verified	one	ui/README#static-initializers	
+0x7a2cf0	375	DestroyRegionMethodHash		ui	orchestration		Unlinks and frees the Region method hash table's nodes at exit	verified	one	ui/README#static-initializers	
+0x7a2e70	21	CScriptRegion::RegisterScriptMethods		ui	orchestration		Adds the 19 Region methods of 0x87c9b8 to the Region method hash	verified	one	ui/methods#method-tables-and-lookup	
+0x7a2e90	10	CScriptRegion::UnregisterScriptMethods		ui	orchestration		Empties the Region method hash	verified	one	ui/methods#method-tables-and-lookup	
+0x7a2ea0	23	CScriptRegion::GetScriptMethod		ui	orchestration		Pushes a method from the Region hash and answers whether found	verified	one	ui/methods#method-tables-and-lookup	
+0x7a2ec0	5	RegionMethodsInitTwoPiThunk		ui	orchestration		Jumps to 0x7a2ed0; a static initializer	verified	one	ui/README#static-initializers	
+0x7a2ed0	15	RegionMethodsInitTwoPi		ui	primitive		Stores 3.1415927 + 3.1415927 as a float in a global	verified	one	ui/README#static-initializers	
+0x7a2ee0	5	RegionMethodsInitInvTwoPiThunk		ui	orchestration		Jumps to 0x7a2ef0; a static initializer	verified	one	ui/README#static-initializers	
+0x7a2ef0	19	RegionMethodsInitInvTwoPi		ui	primitive		Stores 1 divided by a global set just before as a float in a global	verified	one	ui/README#static-initializers	
+0x7a2f10	5	RegionMethodsInitSquareThunk		ui	orchestration		Jumps to 0x7a2f20; a static initializer	verified	one	ui/README#static-initializers	
+0x7a2f20	19	RegionMethodsInitSquare		ui	primitive		Stores a constant squared as a float in a global	verified	one	ui/README#static-initializers	
+0x7a2f40	5	RegionMethodsInitHalfTenthThunk		ui	orchestration		Jumps to 0x7a2f50; a static initializer	verified	one	ui/README#static-initializers	
+0x7a2f50	19	RegionMethodsInitHalfTenth		ui	primitive		Stores 0.5 divided by 10 as a float in a global	verified	one	ui/README#this-rounds-object-files	
+0x7a2f70	5	FramePointInitInfinityThunk		ui	orchestration		Jumps to 0x7a2f80; a static initializer	verified	one	ui/README#this-rounds-object-files	
+0x7a2f80	11	FramePointInitInfinity		ui	orchestration		Copies +inf into 0xcf550c, the undefined coordinate of the layout	verified	one	ui/README#static-initializers	
+0x7a2f90	194	RelativePointGetX		ui	primitive		Returns the x of a relative point: the relative frame's edge or centre plus the scaled offset	verified	one	ui/anchors#relative-point-coordinates	
+0x7a3070	194	RelativePointGetY		ui	primitive		Returns the y of a relative point: the relative frame's edge or centre plus the scaled offset	verified	one	ui/anchors#relative-point-coordinates	
+0x7a3150	5	FramePointInitInfinity2Thunk		ui	orchestration		Jumps to 0x7a3160; a static initializer	verified	one	ui/README#static-initializers	
+0x7a3160	11	FramePointInitInfinity2		ui	orchestration		Copies +inf into a global of the file	verified	one	ui/README#static-initializers	
+0x7a3170	5	FramePointInitTwoPiThunk		ui	orchestration		Jumps to 0x7a3180; a static initializer	verified	one	ui/README#static-initializers	
+0x7a3180	15	FramePointInitTwoPi		ui	primitive		Stores 3.1415927 + 3.1415927 as a float in a global	verified	one	ui/README#static-initializers	
+0x7a3190	5	FramePointInitInvTwoPiThunk		ui	orchestration		Jumps to 0x7a31a0; a static initializer	verified	one	ui/README#static-initializers	
+0x7a31a0	19	FramePointInitInvTwoPi		ui	primitive		Stores 1 divided by a global set just before as a float in a global	verified	one	ui/README#static-initializers	
+0x7a31c0	5	FramePointInitSquareThunk		ui	orchestration		Jumps to 0x7a31d0; a static initializer	verified	one	ui/README#static-initializers	
+0x7a31d0	19	FramePointInitSquare		ui	primitive		Stores a constant squared as a float in a global	verified	one	ui/README#static-initializers	
+0x7a31f0	5	FramePointInitHalfTenthThunk		ui	orchestration		Jumps to 0x7a3200; a static initializer	verified	one	ui/README#static-initializers	
+0x7a3200	19	FramePointInitHalfTenth		ui	primitive		Stores 0.5 divided by 10 as a float in a global	verified	one	ui/README#static-initializers	
+0x7a3220	5	HyperlinkedFrameInitInfinityThunk		ui	orchestration		Jumps to 0x7a3230; the first static initializer of CSimpleHyperlinkedFrame.cpp	verified	one	ui/README#this-rounds-object-files	
+0x7a3230	11	HyperlinkedFrameInitInfinity		ui	orchestration		Copies +inf into a global of CSimpleHyperlinkedFrame.cpp	verified	one	ui/README#this-rounds-object-files	
 0x7a5700	41	Sound::Stop	idb	sound			Stops a sound	inferred	none		
 0x7a6ee0	21	HttpGetAsync		client			Starts a background HTTP download of a URL with a 5000 ms timeout and a chunk callback	inferred	none		
 0x7abbe0	61	NormalizeAngle		camera	primitive	float __stdcall (float angle)	Returns x - 2π·trunc(x/2π), plus 2π when x < 0, at 53-bit precision	verified	two	camera#angle-properties	camera::camera_normalize_2pi
@@ -8190,8 +8663,8 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x7c78b0	19	InitSharedPoint05		collision	primitive	void __cdecl (void)	Stores 0.5/10 = 0.05 as a float	verified	one	collision/overview#shared-file-initializers	
 0x7c78d0	5	InitSharedInfinityThunk		collision	orchestration	void __cdecl (void)	Jumps to 0x7c78e0, a static initializer of the file	verified	one	collision/overview#shared-file-initializers	
 0x7c78e0	11	InitSharedInfinity		collision	orchestration	void __cdecl (void)	Copies +∞ (0x7f800000) from a constant into its global	verified	one	collision/overview#shared-file-initializers	
-0x7cba30	56			ui			Returns 0 while targeting a position with no unit bit, else defers to its base method	inferred	none	spell/targeting#flag-word-predicates	
-0x7cba70	40			ui		void __thiscall (void *frame)	Stores 5000 at +0x514 and passes 0xffff0000 to a call on the object at +0x4fc	inferred	none		
+0x7cba30	56			ui	orchestration		Returns 0 while targeting a position with no unit bit, else defers to its base method	inferred	none	spell/targeting#flag-word-predicates	
+0x7cba70	40			ui	orchestration	void __thiscall (void *frame)	Stores 5000 at +0x514 and passes 0xffff0000 to a call on the object at +0x4fc	inferred	none		
 0x7e4e10	192			objectlayer	orchestration		Writes a cast target block: a 16-bit mask, then the guids, positions and text the mask names	verified	one	spell/cast#cast-request-packets	
 0x7e4ed0	187	ReadSpellCastTargets		net	orchestration	void __fastcall (void *targets, void *msg)	Reads a spell target block: a mask, then guids, points and a string as its bits say	verified	one	spell/handlers#target-block	
 0x7fb310	317	math_random		lua			Returns a Lua random number drawn from rand	inferred	none	random#the-c-runtime-rand	

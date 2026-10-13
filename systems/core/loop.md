@@ -257,15 +257,14 @@ unlinks every entry and destroys them. `0x420a20` makes `0x883ee8` an empty list
 These have no call, jump or stored address outside unreached code: the non-interactive context
 creator, a worker thread's registration, a second loop body and its exit, and an array teardown.
 
-Addresses: `0x41f600`, `0x422500`, `0x422540`, `0x422710`, `0x421c30`, `0x765bf0`, `0x765df0`, `0x765f10`, `0x766070`, `0x7660d0`
+Addresses: `0x41f600`, `0x422500`, `0x422540`, `0x422710`, `0x421c30`
 Confidence: verified
 Proof: one
 Test: none
 
 The census is two scans over the whole image: every `e8`/`e9` whose target is one of them, and every
-dword equal to one of their addresses at any byte alignment, since live code holds unaligned handler
-addresses (`0x765c6d`), outside the import tables. Both find nothing outside this list; the control
-is `0x420c00`, whose address is the immediate of the `mov ecx` at `0x421b5b` and the target of the
-call at `0x420bec`; both appear. `0x422540` repeats the tick of `0x420c00` with its own calls of
-`0x428510`, `0x423920` and `0x420f70`, and nothing calls it; `0x422500` only names and registers its
-thread and returns (`0x42253b`).
+dword equal to one of their addresses at any byte alignment, outside the import tables. Both find
+nothing outside this list; the control is `0x420c00`, whose address is the immediate of the
+`mov ecx` at `0x421b5b` and the target of the call at `0x420bec`; both appear. `0x422540` repeats
+the tick of `0x420c00` with its own calls of `0x428510`, `0x423920` and `0x420f70`, and nothing calls
+it; `0x422500` only names and registers its thread and returns (`0x42253b`).
