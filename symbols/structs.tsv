@@ -1,4 +1,5 @@
 name	size	vtable	system	meaning	confidence	proof	finding
+BlizzardObject	324		spell	Holds an area shard emitter: link, model path, world object, position, radius, accumulator, rate and shard list	verified	one	spell/visuals#area-shard-emitter-creation
 CBaseManaged	28	0x81d7f0	camera	Holds a property's header: vtable, update-list link, type, flags and producer	verified	one	camera#property-updates
 CCamera	368	0x81d7c0	camera	Holds a camera: the property slots and update list, then nine properties	verified	one	camera#lifetime
 CInputControl	28		input	Holds the world input state: held commands, travel sums, times and the armed click	verified	one	input#input-state
@@ -8,8 +9,20 @@ ClientConnection	6948	0x80a398	net	Holds the world session: a RealmConnection wi
 ClientLink	548	0x80a7dc	net	Holds the logon link: its connection, state, receive buffer, SRP6 object and owner	verified	one	net/login#logon-commands
 EvtContext	532	0x801364	core	Holds a scheduled context: its run state, due time, flags, handler lists, messages, held input and timers	verified	one	core/loop#contexts
 EvtHandler	24		core	Holds a registered handler: its link, function, argument, priority and skip flag	verified	two	core/events#handler-records
+ITEMCOOLDOWNHASHNODE	36		spell	Holds one item-cooldown hash node: key, slot link, node-list link and payload	verified	one	spell/cooldowns#item-cooldown-table
+LightningObject	80		spell	Holds a chain effect: link, GUID and hop arrays, end time, chain record values, texture, spell, flag and references	verified	one	spell/visuals#chain-effect-creation
+LightningObject::Bolt	16		spell	Holds one hop of a chain: endpoint indices, start and end time and renderer handle	verified	one	spell/visuals#chain-hop-table
 MovementGlobals	312		collision	Holds the movement manager: log path and files, the mover list, the tick clock and the heartbeat deadline	verified	one	collision/mover#movement-manager
 NETEVENTQUEUENODE	24		net	Holds one queued network event: link, type, time, data copy and length	verified	one	net/dispatch#network-thread-handoff
 NTempest::CRndSeed	8		random	Holds a random state: an accumulator and four lane indices	verified	two	random#state-and-seeding
+RACECLASSINFO	32		spell	Holds a race-class index node: skill line, two links, and a run of SkillRaceClassInfo rows	verified	one	spell/tables#startup-build-of-the-indexes
+SKILLCOSTSINFO	32		spell	Holds a skill-cost index node: cost-set id, two links, and a run of SkillCostsData rows	verified	one	spell/tables#startup-build-of-the-indexes
+SKILLLINEREC	28		spell	Holds an ability index node: spell, two links, race, class and a SkillLineAbility row	verified	one	spell/tables#spell-ability-index-by-race
+SPELLHISTORY	48		spell	Holds one spell-history record: link, spell, item, three timers and a held flag	verified	one	spell/cooldowns#history-record-layout
+Shard	32		spell	Holds one shard: link, position, model, start time and started flag	verified	one	spell/visuals#shard-model-start-and-end
+SpellCastTimesRec	16		dbc	Holds one SpellCastTimes.dbc row: id, base, per-level and minimum cast time in ms	inferred	none	spell/records#cast-time
+SpellDurationRec	16		dbc	Holds one SpellDuration.dbc row: id, duration, per-level duration and maximum in ms	inferred	none	spell/records#duration
+SpellRangeRec	88		dbc	Holds one SpellRange.dbc row: id, minimum and maximum range, flags and names	inferred	none	spell/records#range
+SpellRec	692		dbc	Holds one Spell.dbc row	inferred	none	spell/records#record-lookups
 WowConnection	304		net	Holds one socket connection: state, handler, receive buffer, send queue and header cipher	verified	one	net/wire#header-cipher
 luaL_reg	8		lua	Pairs a function's name with its C function in a Lua library table	inferred	none	

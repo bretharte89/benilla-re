@@ -1,4 +1,14 @@
 struct	offset	size	type	name	system	meaning	confidence	proof	finding
+BlizzardObject	0x0000	4	void *	m_prevLink	spell	Holds the address of the previous link in the emitter list	verified	one	spell/visuals#area-shard-emitter-creation
+BlizzardObject	0x0004	4	void *	m_next	spell	Holds the next emitter, or the terminator address marked by bit 0	verified	one	spell/visuals#area-shard-emitter-creation
+BlizzardObject	0x0008	260	char[260]	m_modelPath	spell	Holds the shard model path 0x6eb930 copies	verified	one	spell/visuals#emitter-initialization
+BlizzardObject	0x010c	4	void *	m_worldObject	spell	Holds the world object 0x670db0 creates with the draw callback	verified	one	spell/visuals#emitter-initialization
+BlizzardObject	0x0110	12	float[3]	m_position	spell	Holds the emitter position	verified	one	spell/visuals#emitter-initialization
+BlizzardObject	0x011c	4	float	m_radius	spell	Holds the spread radius the shard placement multiplies	verified	one	spell/visuals#shard-placement
+BlizzardObject	0x0120	4	float	m_accumulator	spell	Holds the fractional shards carried between updates, zeroed at creation	verified	one	spell/visuals#shard-emission-rate
+BlizzardObject	0x0124	4	float	m_rate	spell	Holds the shards per second after the spellEffectLevel scale; 0.0 once stopped	verified	one	spell/visuals#shard-emission-rate
+BlizzardObject	0x0128	16	uint32_t[4]	m_unused128	spell	Holds four dwords 0x6ece30 zeroes and no function of this file reads	verified	one	spell/visuals#area-shard-emitter-creation
+BlizzardObject	0x0138	12	uint32_t[3]	m_shards	spell	Holds the shard list: link offset 0, then the terminator link	verified	one	spell/visuals#area-shard-emitter-creation
 CBaseManaged	0x0000	4	void **	__vfptr	camera	Holds the vtable: delete, evaluate, verify, store	verified	one	camera#property-updates
 CBaseManaged	0x0004	8	void *[2]	m_link	camera	Holds the property's link in the update list	verified	one	camera#lifetime
 CBaseManaged	0x000c	1	uint8_t	m_type	camera	Holds the property type: 3 vector, 6 scalar or angle in the camera	verified	one	camera#property-updates
@@ -133,6 +143,28 @@ EvtHandler	0x0008	4	void *	m_handler	core	Holds the function, called as fastcall
 EvtHandler	0x000c	4	void *	m_argument	core	Holds the argument passed in edx	verified	two	core/events#handler-records
 EvtHandler	0x0010	4	float	m_priority	core	Holds the priority; higher runs first	verified	two	core/events#handler-order
 EvtHandler	0x0014	4	uint32_t	m_skip	core	Holds nonzero for a record the dispatch and registration pass over	verified	two	core/events#handler-order
+ITEMCOOLDOWNHASHNODE	0x0000	4	uint32_t	m_hashVal	spell	Holds the key whose low bits pick the slot	verified	one	spell/cooldowns#item-cooldown-table-internals
+ITEMCOOLDOWNHASHNODE	0x0004	8	void *[2]	m_linkToSlot	spell	Holds the node's link in its slot list	verified	one	spell/cooldowns#item-cooldown-table
+ITEMCOOLDOWNHASHNODE	0x000c	8	void *[2]	m_linkToFull	spell	Holds the node's link in the table's node list	verified	one	spell/cooldowns#item-cooldown-table
+ITEMCOOLDOWNHASHNODE	0x0014	1	uint8_t	m_flagHighByte	spell	Holds the high byte of the insert's flag argument, set only on a new node; 0 from the spell go	verified	one	spell/go#pending-item-cooldowns
+ITEMCOOLDOWNHASHNODE	0x0018	4	uint32_t	m_spellId	spell	Holds the spell whose item cooldown waits for the item record	verified	one	spell/go#pending-item-cooldowns
+ITEMCOOLDOWNHASHNODE	0x001c	4	uint32_t	m_time	spell	Holds the time the pending cooldown starts from	verified	one	spell/go#pending-item-cooldowns
+ITEMCOOLDOWNHASHNODE	0x0020	1	uint8_t	m_onHold	spell	Holds the on-hold flag the pending cooldown is inserted with	verified	one	spell/go#pending-item-cooldowns
+LightningObject	0x0000	8	void *[2]	m_link	spell	Holds the chain's link in the chain list	verified	one	spell/visuals#chain-effect-creation
+LightningObject	0x0008	16	uint32_t[4]	m_guids	spell	Holds the uint64 GUID array: capacity, count, data, quantum	verified	one	spell/visuals#chain-hop-table
+LightningObject	0x0018	16	uint32_t[4]	m_bolts	spell	Holds the hop array: capacity, count, data, quantum	verified	one	spell/visuals#chain-hop-table
+LightningObject	0x0028	4	uint32_t	m_endTime	spell	Holds the end time, now plus hops times life; set to now by 0x6ece10	verified	one	spell/visuals#chain-update-per-frame
+LightningObject	0x002c	16	uint32_t[4]	m_chainFields	spell	Holds the chain record's fields 1 to 4 as copied dwords, passed to 0x7b07f0	verified	one	spell/visuals#chain-update-per-frame
+LightningObject	0x003c	4	float	m_lifeSeconds	spell	Holds the chain record's +0x14 times 0.001	verified	one	spell/visuals#chain-effect-creation
+LightningObject	0x0040	4	void *	m_texture	spell	Holds the texture of the chain record's +0x1c	verified	one	spell/visuals#chain-effect-creation
+LightningObject	0x0044	4	uint32_t	m_spellId	spell	Holds the spell id 0x6ec780 places target ends with	verified	one	spell/visuals#chain-endpoints
+LightningObject	0x0048	1	uint8_t	m_persistent	spell	Holds 1 for a chain that ignores its hop windows and end time	verified	one	spell/visuals#chain-update-per-frame
+LightningObject	0x004c	4	uint32_t	m_refCount	spell	Holds the reference count, 1 at creation	verified	one	spell/visuals#chain-lifetime
+LightningObject::Bolt	0x0000	2	uint16_t	m_from	spell	Holds the GUID index of the hop's start, 0xffff until set	verified	one	spell/visuals#chain-hop-table
+LightningObject::Bolt	0x0002	2	uint16_t	m_to	spell	Holds the GUID index of the hop's end, 0xffff until set	verified	one	spell/visuals#chain-hop-table
+LightningObject::Bolt	0x0004	4	uint32_t	m_startTime	spell	Holds the time the hop starts	verified	one	spell/visuals#chain-hop-table
+LightningObject::Bolt	0x0008	4	uint32_t	m_endTime	spell	Holds the time the hop ends	verified	one	spell/visuals#chain-hop-table
+LightningObject::Bolt	0x000c	4	uint32_t	m_handle	spell	Holds the renderer bolt handle, -1 for none	verified	one	spell/visuals#chain-update-per-frame
 MovementGlobals	0x0000	260	char[260]	m_logPath	collision	Holds the movement log path copied by 0x616860	verified	one	collision/mover#initialisation-and-teardown
 MovementGlobals	0x0104	4	void *	m_logFile	collision	Holds a log file handle, closed by 0x7c4e90 and 0x616910	inferred	none	collision/mover#initialisation-and-teardown
 MovementGlobals	0x0108	4	void *	m_fallLogFile	collision	Holds a second log file handle, closed by 0x616910	inferred	none	collision/mover#initialisation-and-teardown
@@ -147,6 +179,76 @@ NETEVENTQUEUENODE	0x0010	4	void *	m_data	net	Holds the node's own copy of the pa
 NETEVENTQUEUENODE	0x0014	4	uint32_t	m_length	net	Holds the length of the copied bytes	verified	one	net/dispatch#network-thread-handoff
 NTempest::CRndSeed	0x0000	4	uint32_t	m_accumulator	random	Holds the sum the advance returns; the seed after seeding	verified	two	random#state-and-seeding
 NTempest::CRndSeed	0x0004	4	uint32_t	m_lanes	random	Holds four lane indices, byte k a byte offset into the table	verified	two	random#state-and-seeding
+RACECLASSINFO	0x0000	4	uint32_t	m_hashVal	spell	Holds the hash, the skill line of the run	verified	one	spell/tables#startup-build-of-the-indexes
+RACECLASSINFO	0x0004	8	void *[2]	m_linkToSlot	spell	Holds the link in the node's slot list, offset 4	verified	one	spell/tables#hash-table-layout
+RACECLASSINFO	0x000c	8	void *[2]	m_linkToFull	spell	Holds the link in the table's node list, offset 0x0c	verified	one	spell/tables#hash-table-layout
+RACECLASSINFO	0x0014	1	uint8_t	m_key	spell	Holds an uninitialized stack byte the build copies; nothing reads it	verified	one	spell/tables#startup-build-of-the-indexes
+RACECLASSINFO	0x0018	4	void *	m_firstRow	spell	Holds the run's first SkillRaceClassInfo.dbc row	verified	one	spell/tables#startup-build-of-the-indexes
+RACECLASSINFO	0x001c	4	uint32_t	m_rowCount	spell	Holds the number of consecutive rows in the run	verified	one	spell/tables#startup-build-of-the-indexes
+SKILLCOSTSINFO	0x0000	4	uint32_t	m_hashVal	spell	Holds the hash, the cost-set id of the run	verified	one	spell/tables#startup-build-of-the-indexes
+SKILLCOSTSINFO	0x0004	8	void *[2]	m_linkToSlot	spell	Holds the link in the node's slot list, offset 4	verified	one	spell/tables#hash-table-layout
+SKILLCOSTSINFO	0x000c	8	void *[2]	m_linkToFull	spell	Holds the link in the table's node list, offset 0x0c	verified	one	spell/tables#hash-table-layout
+SKILLCOSTSINFO	0x0014	1	uint8_t	m_key	spell	Holds an uninitialized stack byte the build copies; nothing reads it	verified	one	spell/tables#startup-build-of-the-indexes
+SKILLCOSTSINFO	0x0018	4	void *	m_firstRow	spell	Holds the run's first SkillCostsData.dbc row	verified	one	spell/tables#startup-build-of-the-indexes
+SKILLCOSTSINFO	0x001c	4	uint32_t	m_rowCount	spell	Holds the number of consecutive rows in the run	verified	one	spell/tables#startup-build-of-the-indexes
+SKILLLINEREC	0x0000	4	uint32_t	m_hashVal	spell	Holds the hash, the spell id	verified	one	spell/tables#spell-ability-index-by-race
+SKILLLINEREC	0x0004	8	void *[2]	m_linkToSlot	spell	Holds the link in the node's slot list, offset 4	verified	one	spell/tables#hash-table-layout
+SKILLLINEREC	0x000c	8	void *[2]	m_linkToFull	spell	Holds the link in the table's node list, offset 0x0c	verified	one	spell/tables#hash-table-layout
+SKILLLINEREC	0x0014	1	uint8_t	m_race	spell	Holds the race the node was added for	verified	one	spell/tables#spell-ability-index-by-race
+SKILLLINEREC	0x0015	1	uint8_t	m_class	spell	Holds the class the node was added for	verified	one	spell/tables#spell-ability-index-by-race
+SKILLLINEREC	0x0016	2	uint16_t	m_spellLow	spell	Holds the spell id's low 16 bits	verified	one	spell/tables#spell-ability-index-by-race
+SKILLLINEREC	0x0018	4	void *	m_ability	spell	Holds the SkillLineAbility.dbc row	verified	one	spell/tables#spell-ability-index-by-race
+SPELLHISTORY	0x0000	8	void *[2]	m_link	spell	Holds the record's link in its record or free list	verified	one	spell/cooldowns#history-record-layout
+SPELLHISTORY	0x0008	4	int32_t	m_spellId	spell	Holds the spell the record is for	verified	one	spell/cooldowns#history-record-layout
+SPELLHISTORY	0x000c	4	int32_t	m_itemId	spell	Holds the item entry the record is for, 0 for a spell alone	verified	one	spell/cooldowns#history-record-layout
+SPELLHISTORY	0x0010	4	uint32_t	m_recoveryStart	spell	Holds the recovery's start time, which the global leg also reads	verified	one	spell/cooldowns#history-record-layout
+SPELLHISTORY	0x0014	4	uint32_t	m_recoveryTime	spell	Holds the recovery's length in milliseconds	verified	one	spell/cooldowns#history-record-layout
+SPELLHISTORY	0x0018	4	int32_t	m_category	spell	Holds the category whose spells share the category recovery	verified	one	spell/cooldowns#history-record-layout
+SPELLHISTORY	0x001c	4	uint32_t	m_categoryStart	spell	Holds the category recovery's start time	verified	one	spell/cooldowns#history-record-layout
+SPELLHISTORY	0x0020	4	uint32_t	m_categoryTime	spell	Holds the category recovery's length in milliseconds	verified	one	spell/cooldowns#history-record-layout
+SPELLHISTORY	0x0024	1	uint8_t	m_onHold	spell	Holds 1 while the record waits for the server to start it	verified	one	spell/cooldowns#history-record-layout
+SPELLHISTORY	0x0028	4	int32_t	m_gcdCategory	spell	Holds the global-cooldown category the record blocks	verified	one	spell/cooldowns#history-record-layout
+SPELLHISTORY	0x002c	4	uint32_t	m_gcdTime	spell	Holds the global cooldown's length in milliseconds	verified	one	spell/cooldowns#history-record-layout
+Shard	0x0000	8	void *[2]	m_link	spell	Holds the shard's link in its emitter's shard list	verified	one	spell/visuals#shard-model-start-and-end
+Shard	0x0008	12	float[3]	m_position	spell	Holds the shard position the second trace writes	verified	one	spell/visuals#shard-placement
+Shard	0x0014	4	void *	m_model	spell	Holds the shard's model	verified	one	spell/visuals#shard-model-start-and-end
+Shard	0x0018	4	uint32_t	m_startTime	spell	Holds the world time at which the shard starts, never 0	verified	one	spell/visuals#shard-model-start-and-end
+Shard	0x001c	1	uint8_t	m_started	spell	Holds 1 once the shard's animation has started	verified	one	spell/visuals#shard-model-start-and-end
+SpellCastTimesRec	0x0004	4	int32_t	m_base	dbc	Holds the cast time at the base level, in ms	verified	one	spell/records#cast-time
+SpellCastTimesRec	0x0008	4	int32_t	m_perLevel	dbc	Holds the cast time added per level above the base level	verified	one	spell/records#cast-time
+SpellCastTimesRec	0x000c	4	int32_t	m_minimum	dbc	Holds the floor the level-scaled cast time is raised to	verified	one	spell/records#cast-time
+SpellDurationRec	0x0004	4	int32_t	m_duration	dbc	Holds the duration at the base level, in ms	verified	one	spell/records#duration
+SpellDurationRec	0x0008	4	int32_t	m_durationPerLevel	dbc	Holds the duration added per level above the base level	verified	one	spell/records#duration
+SpellDurationRec	0x000c	4	int32_t	m_maxDuration	dbc	Holds the cap the level-scaled duration is lowered to	verified	one	spell/records#duration
+SpellRangeRec	0x0004	4	float	m_rangeMin	dbc	Holds the minimum range, copied when flag bit 0 is clear	verified	one	spell/records#range
+SpellRangeRec	0x0008	4	float	m_rangeMax	dbc	Holds the maximum range, copied when flag bit 0 is clear	verified	one	spell/records#range
+SpellRangeRec	0x000c	4	uint32_t	m_flags	dbc	Holds flags; bit 0 selects the reach-based range	verified	one	spell/records#range
+SpellRec	0x0000	4	uint32_t	m_id	dbc	Holds the record's id, which the level lookup and the histories take	verified	one	spell/records#effect-amount-formula
+SpellRec	0x0004	4	uint32_t	m_school	dbc	Indexes the unit's per-school cost modifier and multiplier	verified	one	spell/records#power-cost
+SpellRec	0x0018	4	uint32_t	m_attributes	dbc	Holds flags: 0x404 fixes the range, 0x30 skips cast speed, bit 1 the ranged item, bit 25 the held flag	verified	one	spell/records#range
+SpellRec	0x0024	4	uint32_t	m_attributesEx3	dbc	Holds flags; bit 29 makes the record take no talent modifier	verified	one	spell/records#modifier-sums
+SpellRec	0x0048	4	uint32_t	m_castingTimeIndex	dbc	Names the SpellCastTimes row	verified	one	spell/records#cast-time
+SpellRec	0x006c	4	int32_t	m_maxLevel	dbc	Caps the slot 42 level value at itself times 5 when positive	verified	one	spell/records#caster-level
+SpellRec	0x0070	4	int32_t	m_baseLevel	dbc	Is subtracted from the caster level in every level term	verified	one	spell/records#effect-amount-formula
+SpellRec	0x0078	4	uint32_t	m_durationIndex	dbc	Names the SpellDuration row	verified	one	spell/records#duration
+SpellRec	0x007c	4	int32_t	m_powerType	dbc	Selects the base a percentage cost scales	verified	one	spell/records#power-cost
+SpellRec	0x0080	4	int32_t	m_manaCost	dbc	Holds the base power cost	verified	one	spell/records#power-cost
+SpellRec	0x0084	4	int32_t	m_manaCostPerLevel	dbc	Holds the power cost added per level	verified	one	spell/records#power-cost
+SpellRec	0x0088	4	int32_t	m_manaPerSecond	dbc	Holds the base power per second	verified	one	spell/records#power-cost
+SpellRec	0x008c	4	int32_t	m_manaPerSecondPerLevel	dbc	Holds the power per second added per level	verified	one	spell/records#power-cost
+SpellRec	0x0090	4	uint32_t	m_rangeIndex	dbc	Names the SpellRange row	verified	one	spell/records#range
+SpellRec	0x00f4	12	uint32_t[3]	m_effect	dbc	Holds each effect's code, which the effect classifier reads	verified	one	spell/records#effect-amount-formula
+SpellRec	0x0100	12	int32_t[3]	m_effectDieSides	dbc	Multiplies the dice count in each effect's maximum	verified	one	spell/records#effect-amount-formula
+SpellRec	0x010c	12	int32_t[3]	m_effectBaseDice	dbc	Holds each effect's dice count at the base level	verified	one	spell/records#effect-amount-formula
+SpellRec	0x0118	12	int32_t[3]	m_effectDicePerLevel	dbc	Holds each effect's dice added per level	verified	one	spell/records#effect-amount-formula
+SpellRec	0x0124	12	float[3]	m_effectRealPointsPerLevel	dbc	Holds each effect's float amount added per level	verified	one	spell/records#effect-amount-formula
+SpellRec	0x0130	12	int32_t[3]	m_effectBasePoints	dbc	Holds each effect's integer base amount	verified	one	spell/records#effect-amount-formula
+SpellRec	0x016c	12	uint32_t[3]	m_effectApplyAuraName	dbc	Holds each effect's aura code, which selects the effect amount's modifier ops	verified	one	spell/records#effect-amount-modifiers-and-rounding
+SpellRec	0x0270	4	int32_t	m_manaCostPct	dbc	Holds the percent of the power base added to the cost	verified	one	spell/records#power-cost
+SpellRec	0x0274	4	uint32_t	m_startRecoveryCategory	dbc	Holds the global cooldown category	verified	one	spell/records#global-cooldown-start
+SpellRec	0x0278	4	int32_t	m_startRecoveryTime	dbc	Holds the global cooldown time in ms, before op 21	verified	one	spell/records#global-cooldown-start
+SpellRec	0x0280	4	uint32_t	m_spellClassSet	dbc	Holds the spell family the modifier sums compare with the class's	verified	one	spell/records#modifier-sums
+SpellRec	0x0284	8	uint32_t[2]	m_spellClassMask	dbc	Holds the 64-bit family mask, low dword first, whose bits select modifier cells	verified	one	spell/records#modifier-sums
 WowConnection	0x0010	4	uint32_t	m_state	net	Holds the socket state: 5 connected, 6 closed, 7 closing	verified	one	net/wire#sending
 WowConnection	0x001c	4	uint8_t *	m_recvBuffer	net	Holds the receive buffer	verified	one	net/wire#receive-loop
 WowConnection	0x0020	4	uint32_t	m_recvFill	net	Holds the count of bytes in the receive buffer	verified	one	net/wire#receive-loop

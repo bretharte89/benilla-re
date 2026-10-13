@@ -1,12 +1,15 @@
 address	size	name	name_from	system	class	signature	meaning	confidence	proof	finding	test
+0x401570	646	ClientInitializeGame	idb	client			Initializes the game systems, among them the spell tables through 0x6dda50	inferred	none	spell/tables#startup-build-of-the-indexes	
 0x401a40	187	MovementInit	idb	client		void __cdecl (void)	Runs 0x616860 on the movement log path and registers 0x616800 as the handler of event 5	verified	one	collision/mover#initialisation-and-teardown	
 0x401bc0	325	LoadNewWorld	idb	client			Calls 0x616910 and then unregisters 0x616800 from event 5, among other teardown	verified	one	collision/mover#initialisation-and-teardown	
+0x401ee0	443	ClientDestroyGame	idb	client			Shuts the game systems down, among them the spell tables through 0x6dde30	inferred	none	spell/tables#teardown-at-shutdown	
 0x402120	222	ClientMain		client			Runs the client: creates the time manager, initializes, runs the event loop through 0x41f5c0 and shuts down	inferred	none	core/loop#startup-and-shutdown	
 0x402350	1253	InitializeGlobal	idb	client			Initializes the client's systems, then the event library and its interactive context	inferred	none	core/loop#startup-and-shutdown	
 0x402840	437	ClientContextStart		client			Handles the context's start event; installs the confirm-close callback through 0x63b460	inferred	none	core/input#close-and-quit	
 0x402ad0	195			client			Initializes the client's systems at startup and ends by registering 0x403620 for event category 6	verified	one	net/dispatch#main-thread-drain	
 0x403620	20	PollNet	idb	client		uint32_t __cdecl (void)	Polls every NetClient's event queue through 0x5b3db0, then runs one more poll, and returns 1	verified	one	net/dispatch#main-thread-drain	
 0x403640	88	ClientContextStop		client			Handles the context's stop event; removes the confirm-close callback through 0x63c9b0	inferred	none	core/input#close-and-quit	
+0x4036c0	100	DestroyClientSystems		client			Shuts down client systems at context stop, 0x6ec130 among them	inferred	none	spell/visuals#startup-and-shutdown	
 0x403bc0	167	DestroyGlobal		client			Shuts the client's systems down, the time manager and the event library among them	inferred	none	core/loop#startup-and-shutdown	
 0x404100	33	_WinMain@16	idb	client		int __stdcall (void *instance, void *previous, char *command_line, int show)	Sets the x87 control word to 0x027F through 0x409bf2 and 0x409c06, then runs the client	verified	one	METHOD#the-harness	
 0x4044b0	49	__ehvec_dtor		crt	boundary		Calls a destructor on each element of an array, last first	inferred	none	camera#unprojection	
@@ -17,13 +20,28 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x409c06	53	__control87	idb	crt	boundary	unsigned int __cdecl (unsigned int value, unsigned int mask)	Sets the x87 control word: the bits in mask from value, the rest kept; returns the new word in abstract form	verified	one	METHOD#the-harness	
 0x40a1a4	20	_finite	idb	crt	boundary	int __cdecl (double x)	Returns nonzero when x is finite	inferred	none	collision/mover#position-validity	
 0x40a1b8	46	_isnan	idb	crt	boundary	int __cdecl (double x)	Returns nonzero when x is NaN	inferred	none	collision/mover#local-player-step	
+0x40a280	47	__alloca_probe	idb	crt	boundary		Allocates eax bytes on the stack, touching each page	inferred	none	spell/go#spell-go-packet	
 0x40a2b0	39	__ftol	idb	crt	boundary		Converts st0 to a 64-bit integer by truncation and returns its low dword	verified	one	camera#angle-properties	
 0x40a2e0	45	__cinit	idb	crt	boundary	void __cdecl (void)	Runs the C and C++ static initializer tables through __initterm	verified	one	random#static-initializers	
 0x40a404	26	__initterm	idb	crt	boundary	void __cdecl (void (**begin)(void), void (**end)(void))	Calls every non-null pointer in [begin, end) in ascending order	verified	one	random#static-initializers	
 0x40acbb	103	__getptd	idb	crt	boundary		Returns the C runtime's per-thread data	inferred	none	random#the-c-runtime-rand	
 0x4134e3	27			crt	boundary		Formats a broken-down time with a format string into a buffer	inferred	none	core/time#calendar-time	
+0x418070	82	CDataStore::PutInt8	idb	base			Appends one byte to a data store	verified	one	spell/cast#cast-request-packets	
+0x418130	85	CDataStore::PutUInt16		base			Appends two bytes to a data store	verified	one	spell/cast#cast-request-packets	
+0x418190	83	CDataStore::PutUInt32	idb	base			Appends four bytes to a data store	verified	one	spell/cast#cast-request-packets	
+0x418370	90	CDataStore::PutGuid	idb	base			Appends a 64-bit value, low dword first, to a data store	verified	one	spell/cast#cast-request-packets	
+0x4183d0	88	CDataStore::PutFloat		base			Appends a 32-bit float to a data store	verified	one	spell/cast#cast-request-packets	
+0x418570	267	CDataStore::PutData		base			Appends a given number of raw bytes to a data store	verified	one	spell/cast#cast-request-packets	
+0x418cb0	120	CDataStore::GetUInt8	idb	base		CDataStore *__thiscall (CDataStore *this, uint8_t *out)	Reads one byte at the cursor and advances it; a short store moves the cursor past its end and leaves out unwritten	verified	one	spell/failures#spell-failure-packets	
+0x418db0	123	CDataStore::GetUInt16	idb	base		void *__thiscall (void *store, uint16_t *out)	Reads a little-endian 16-bit word from a data store, or moves past the end and writes nothing	verified	one	spell/handlers#handler-calling-convention	
+0x418e30	121	CDataStore::GetInt32	idb	base		CDataStore *__thiscall (CDataStore *this, uint32_t *out)	Reads four bytes at the cursor and advances it; a short store moves the cursor past its end and leaves out unwritten	verified	one	spell/failures#spell-failure-packets	
+0x418eb0	121	CDataStore::GetUInt32	idb	base		void *__thiscall (void *store, uint32_t *out)	Reads a little-endian dword from a data store, or moves past the end and writes nothing	verified	one	spell/handlers#handler-calling-convention	
+0x418fb0	121	CDataStore::GetUInt32_2	idb	base		void *__thiscall (void *store, uint32_t *out)	Reads a little-endian dword from a data store, or moves past the end and writes nothing	verified	one	spell/handlers#handler-calling-convention	
+0x4190b0	128	CDataStore::GetGuid	idb	base		CDataStore *__thiscall (CDataStore *this, uint64_t *out)	Reads eight bytes at the cursor and advances it; a short store moves the cursor past its end and leaves out unwritten	verified	one	spell/failures#spell-failure-packets	
+0x419130	121	CDataStore::GetFloat	idb	base			Reads four bytes from a data store into a destination, a float by its community name	verified	one	spell/cast#small-spell-helpers	
 0x41ad10	65	SetScreenAspect		screencoord	primitive	void __stdcall (float aspect)	Stores the aspect a, a·0.75, and the scales K2 = 1/sqrt(a² + 1), K1 = a·K2	verified	one	input#click-versus-drag	
 0x41ad80	37	ScaleScreenDelta		screencoord	primitive	void __fastcall (float *out_x, float *out_y, float x, float y)	Writes K1·x and K2·y to whichever outputs are not null	verified	one	input#click-versus-drag	
+0x41aed0	19	HandleClose	idb	base			Closes a handle	inferred	none	spell/visuals#chain-lifetime	
 0x41af10	20	CreateHandle		base			Returns a handle for an object, or 0 with error 0x57 for a null object	inferred	none	camera#lifetime	
 0x41db50	13	SetThreadPropContext		base			Stores a value in the calling thread's property slot through 0x436db0	verified	one	core/loop#one-tick	
 0x41db90	27	PropGet	idb	base			Returns an entry of the calling thread's property array, read through TlsGetValue	inferred	none	core/loop#one-tick	
@@ -508,6 +526,10 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x437560	181	UnbindContextFromThread		os			Unbinds a context's record from the calling thread's record	inferred	none	core/loop#one-tick	
 0x43f050	25	PollingWait		net	orchestration		Runs the network pump for a time when it exists, else sleeps for that time	inferred	none	core/loop#the-loop	
 0x442a70	3	ReturnZero		client	orchestration	uint32_t __cdecl (void)	Returns 0; a shared vtable slot	verified	one	camera#lifetime	
+0x449d90	281	TextureCreate	idb	gx			Creates a texture from a file name	inferred	none	spell/visuals#chain-effect-creation	
+0x44cbd0	44	SysMsgPrintf	idb	console			Prints a formatted system message	inferred	none	spell/go#cast-visual-and-dest-effect	
+0x44cd40	15			sysmsg			Stores 0 in a global and tail-calls 0x44cd60	inferred	none		
+0x44cd60	1			sysmsg			Returns at once	inferred	none		
 0x44ea80	85	NTempest::CRndSeed::SetSeed	idb	random	primitive	void __thiscall (NTempest::CRndSeed *this, uint32_t seed)	Seeds a state: accumulator = seed, lane k = 4·(seed mod 61, 59, 53, 47) from byte 0 up	verified	two	random#state-and-seeding	random::srand_seed_state_init
 0x44eae0	5	InitRandomInfinityThunk		random	orchestration	void __cdecl (void)	Jumps to 0x44eaf0; a static initializer	verified	one	random#static-initializers	
 0x44eaf0	11	InitRandomInfinity		random	orchestration	void __cdecl (void)	Copies +inf into 0xb05d68	verified	one	random#static-initializers	
@@ -581,21 +603,70 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x4549f0	31	Vector3LengthSquared		cmath		float __thiscall (const float *v)	Returns x·x + y·y + z·z of a 3D vector	verified	one	collision/walking#horizontal-push-out-from-a-wall	
 0x454c80	186	FastLog2		fastmath	primitive	double __stdcall (double x)	Returns log2 x from the exponent field, a table and a polynomial	inferred	none		
 0x455c70	7	MulHigh32		cmath	primitive	uint32_t __fastcall (uint32_t a, uint32_t b)	Returns the high dword of the 64-bit product a·b	inferred	none		
+0x457fb0	54	SndInterfacePlayItemSound	idb	sound			Plays an item sound of a kind for an item	inferred	none	spell/cast#cast-attempt-commit	
+0x458030	187	SndInterfacePlayInterfaceSound	idb	sound			Plays the interface sound a name gives	inferred	none	spell/cast#cast-attempt-refusals	
+0x458850	23	SndInterfacePlaySound	idb	sound			Plays a sound and returns whether it started	inferred	none		
+0x458870	27	PlaySoundAtArgs		sound			Plays a sound from two arguments with a volume	inferred	none	spell/visuals#shard-model-start-and-end	
+0x458a50	96	PlaySpellSchoolSound		sound		void __fastcall (uint32_t spell, void *unit)	Passes the sound id of the Resistances.dbc row of a spell's school, with a unit, to 0x458870	inferred	none	spell/failures#reporter-inputs-and-first-effects	
 0x4621a0	1	DestroyVector3		cmath	orchestration	void __thiscall (float *this)	Returns; the element destructor of vector arrays	verified	one	camera#unprojection	
-0x468460	38	ClntObjMgrObjectPtr	idb	objectlayer			Returns the object with a GUID and type mask, or null	inferred	none	collision/handlers#state-change-broadcaster	
+0x468460	38	ClntObjMgrObjectPtr	idb	objectlayer		void *__fastcall (uint32_t typeMask, const char *file, uint64_t guid, uint32_t line)	Returns the object a GUID names when the type word at its descriptor +0x08 shares a bit with the mask, else null	inferred	none	collision/handlers#state-change-broadcaster	
+0x468550	28	ClntObjMgrGetActivePlayer	idb	objectlayer		uint64_t __cdecl (void)	Returns the active player's GUID, 0 when there is no object manager	verified	one	spell/failures#reporter-inputs-and-first-effects	
 0x4685e0	17	ClntObjMgrGetMovementGlobals	idb	objectmgr		void * __cdecl (void)	Returns the dword at +0xd4 of the object manager 0xb41414, or 0 when there is none	verified	one	collision/mover#movement-manager	
 0x468600	16	ClntObjMgrSetMovementGlobals	idb	objectmgr		void __fastcall (void *globals)	Stores ecx at +0xd4 of the object manager 0xb41414 when there is one	verified	one	collision/mover#movement-manager	
 0x46ab40	98	GetScreenAspect		screencoord	primitive	float __cdecl (void)	Returns gxResolution's width over height while widescreen is on, else 4/3	verified	one	input#click-versus-drag	
 0x46b0c0	37	SubmitPin		glue	orchestration	void __fastcall (uint32_t count, const uint8_t *digits)	Signals script event 3 with CANCEL, then tail-jumps to 0x5ab5a0 with the PIN digits	verified	one	random#the-c-runtime-rand	
 0x46c540	345	CGlueMgr::NetDisconnectHandler	idb	glue			Handles the session's disconnect for the login screens	inferred	none	net/session#disconnecting	
 0x46d1c0	169	Script::PINEntered	idb	glue	orchestration		Reads 4 to 10 numbers as PIN digits and passes them to 0x46b0c0; a Lua error otherwise	verified	one	random#the-c-runtime-rand	
+0x47bf60	6	ReadGuidAt		objectlayer		uint64_t __thiscall (const uint64_t *this)	Returns the 64-bit value at its argument	verified	one	spell/records#range	
 0x47f220	141			cmath			Returns the heading from the point at ecx to the point at edx	inferred	none	collision/handlers#state-change-broadcaster	
+0x480780	187			worldframe			Returns whether the world pick admits an object of type unit, player, game object or corpse	inferred	none	spell/targeting#object-pick-filters	
+0x481050	318			worldframe			Returns the world pick mask, built from the flag word predicates while targeting	inferred	none	spell/targeting#flag-word-predicates	
+0x481790	338			worldframe			Sets the world cursor from the pick result, the targeting cursor included	inferred	none	spell/targeting#the-targeting-cursor	
 0x4818f0	12	GetActiveCamera		worldframe		void * __cdecl (void)	Returns the camera object whose +0x88 holds the GUID it follows	inferred	none	collision/world#camera-notices	
 0x481f00	87	PickObjectUnderCursor		worldframe			Picks the world object under the cursor for the armed click	inferred	none	input#mouse-commands	
 0x481f60	301	DispatchWorldClick		worldframe			Runs world click action 1 or 4 on the object picked at the press	inferred	none	input#click-versus-drag	
+0x4820f0	264			worldframe			Places the area reticle and the targeting cursor over a picked position	inferred	none	spell/targeting#the-targeting-cursor	
+0x4828d0	309			worldframe			Sets the targeting cursor over a hovered object from 0x6e6460	inferred	none	spell/targeting#the-targeting-cursor	
+0x483460	839	RenderWorldFrame		worldframe			Renders the world; calls 0x6ecb20 and then 0x6eca20	inferred	none	spell/visuals#frame-update	
+0x4837b0	442			worldframe			Draws the placement preview model 0xceca8c	inferred	none	spell/targeting#placement-model-and-rotation	
 0x4841f0	36	SubtractVector3		cmath	primitive	float * __fastcall (float *out, const float *a, const float *b)	Writes a - b	verified	one	camera#unprojection	
+0x48ad70	285	Script::UseSoulstone		ui			Implements the Lua function UseSoulstone	inferred	none	spell/cancel#who-cancels-a-cast	
+0x48d330	8	Script::ReplaceTradeEnchant	idb	gameui			Calls 0x6e6900 and returns no Lua results	verified	one	spell/targeting#binding-the-trade-slot	
+0x492580	76			gameui			Binds a clicked position through 0x6e60f0 for a click record whose +0xc is 1	inferred	none	spell/targeting#binding-a-clicked-location	
+0x492c20	90			gameui			Rotates the placement or stops targeting for a world input whose +0x14 is 4	inferred	none	spell/targeting#placement-model-and-rotation	
+0x493540	966			ui			Selects the unit of a guid as the player's target	inferred	none	spell/handlers#spell-start	
+0x494720	28			ui			Passes a miss reason below 12, mapped through a table, with a guid to the UI	inferred	none	spell/go#inline-miss-report	
 0x494a50	247	CheckActivePlayer		gameui			Returns 0 or 1 from a check chosen by its argument, 0 to 11, through a jump table	inferred	none	input#mouse-commands	
+0x4958e0	54	SetPlayerControl		ui			Stores the player-control flag 0xb4b3e4 and signals PLAYER_CONTROL_GAINED or PLAYER_CONTROL_LOST on a change	verified	one	spell/checks#lost-control-exemption	
+0x495920	24			gameui			Clears the cursor, then cancels the cast with failed and send set	verified	one	spell/cancel#who-cancels-a-cast	
+0x495d60	1026			gameui			Checks an item against the pending spell's enchant effects, then binds it through 0x6e5b40	inferred	none	spell/targeting#flag-word-predicates	
+0x496170	204			gameui			Binds the trade slot through 0x6e6900 unless the spell would replace the slot's enchantment	inferred	none	spell/targeting#binding-the-trade-slot	
+0x496720	357	CGGameUI::DisplayError	idb	ui		void __cdecl (uint32_t id, ...)	Formats a catalogue message with its arguments, copies the text to 0xb4da40 and shows it by the message kind	verified	one	spell/failures#display-log-and-events	
+0x4968a0	6	GetLastDisplayedMessage		ui		const char *__cdecl (void)	Returns 0xb4da40, the text DisplayError last formatted	verified	one	spell/failures#display-log-and-events	
+0x4b31b0	15	FireCooldownEvents		ui		void __cdecl (void)	Signals ACTIONBAR_UPDATE_COOLDOWN, then SPELL_UPDATE_COOLDOWN	verified	one	spell/records#global-cooldown-start	
+0x4b31c0	144	FireUsableEvents		ui			Refreshes the action and spell usable state, signalling ACTIONBAR_UPDATE_USABLE on a change, then SPELL_UPDATE_USABLE	verified	one	spell/cooldowns#cooldown-events-fired	
+0x4b3250	15			gameui			Calls a game UI function, then fires CURRENT_SPELL_CAST_CHANGED	verified	one	spell/cast#the-in-flight-spell	
+0x4b45c0	577	Script::GetShapeshiftFormInfo	idb	ui			Returns a form-bar entry's icon, name, active and castable values to Lua	inferred	none	spell/checks#usability-callers-and-events	
+0x4b5390	300			ui			Sets a bit of a flag set when the set exists and the bit is clear	inferred	none	spell/failures#player-unit-cleanup	
+0x4bce90	10	FirePetBarCooldownEvent		ui		void __cdecl (void)	Signals PET_BAR_UPDATE_COOLDOWN	verified	one	spell/records#global-cooldown-start	
+0x4bd1d0	765			ui			Handles a pet bar action press; calls 0x6e2de0 with pet 1 for a spell	inferred	none	spell/records#global-cooldown-start	
+0x4c7300	1634			ui			Passes an inventory item to 0x495d60 while the flag word wants an item	inferred	none	spell/targeting#flag-word-predicates	
+0x4d7d40	1733			ui			Rebuilds state for the open trainer after a talent modifier changes	inferred	none	spell/records#talent-modifier-tables	
+0x4e5050	480	GetActionSlotUsable		ui			Computes an action slot's usable and no-power pair, through 0x6e3d60 for a spell	inferred	none	spell/checks#usability-callers-and-events	
+0x4e56f0	212	GetActionSlotInRange		ui			Computes an action slot's range answer through the range pre-check 0x6e4440	inferred	none	spell/checks#range-pre-check	
+0x4e5bf0	10			gameui			Signals event 214 through 0x703e50	verified	one	spell/targeting#the-binds-range-test	
+0x4e5c00	92	RefreshActionBarUsable		ui			Recomputes the 120 action slots' usable pairs and signals ACTIONBAR_UPDATE_USABLE on a change	verified	one	spell/checks#usability-callers-and-events	
+0x4e5c60	10	FireActionBarCooldownEvent		ui			Signals ACTIONBAR_UPDATE_COOLDOWN	verified	one	spell/cooldowns#cooldown-events-fired	
+0x4eeca0	805	Script::PingLocation		ui			Binds the clicked minimap point through 0x6e60f0 while the flag word wants a position	inferred	none	spell/targeting#binding-a-clicked-location	
+0x4f6000	69			ui			Toggles the craft window: closes it with CRAFT_CLOSE for the current profession, else opens it with CRAFT_SHOW	inferred	none	spell/cast#cast-attempt-refusals	
+0x4f93d0	10	FireBagCooldownEvent		ui		void __cdecl (void)	Signals BAG_UPDATE_COOLDOWN	verified	one	spell/records#cooldown-queries	
+0x4f9b30	1085	Script::PickupContainerItem		ui			Passes a container item to 0x495d60 while the flag word wants an item	inferred	none	spell/targeting#flag-word-predicates	
+0x4fc910	150			ui			Toggles the trade-skill window: TRADE_SKILL_CLOSE for the current skill, else TRADE_SKILL_SHOW when a count is nonzero	inferred	none	spell/cast#cast-attempt-refusals	
+0x4fd790	30	ClearTradeSkillRecast		ui		void __cdecl (void)	Clears the trade-skill repeat spell when one is set and fires UPDATE_TRADESKILL_RECAST	verified	one	spell/failures#reporter-inputs-and-first-effects	
+0x4fd7b0	60			ui			Runs the post-cast step of a repeated trade skill cast for a spell id	inferred	none	spell/go#player-cast-tail	
+0x511d40	81	CameraAddShake		worldframe			Adds a camera shake by id at a position to a camera	inferred	none	spell/visuals#camera-shake-groups	
 0x511da0	237	SetCameraTransport		uicamera		void __thiscall (void *camera, uint64_t transport)	Stores the camera's transport GUID, turning the camera by the old and new transports' facings	inferred	none	collision/world#camera-notices	
+0x513bd0	376	Script::Jump		input	orchestration		Implements the Lua function Jump	inferred	none	spell/cancel#who-cancels-a-cast	
 0x514120	54	Script::TurnOrActionStart	idb	input	orchestration		Arms click mode 2 and presses command bit 0x1, when 0x494a50(0) allows	verified	one	input#mouse-commands	
 0x514190	54	Script::CameraOrSelectOrMoveStart	idb	input	orchestration		Arms click mode 1 and presses command bit 0x2, when 0x494a50(0) allows	verified	one	input#mouse-commands	
 0x5143c0	25	CInputControl::CInputControl		input	orchestration	CInputControl * __thiscall (CInputControl *this)	Clears the held commands, press time and click mode, and stores the client clock at +0x00	verified	one	input#input-state	
@@ -608,7 +679,13 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x514b40	44	CInputControl::IsDragging		input	orchestration	uint32_t __thiscall (CInputControl *this)	Returns 1 when 0x514ae0 says drag at the current clock and the motion stamp is recent	verified	one	input#click-versus-drag	
 0x514b70	559	CInputControl::ReleaseCommands		input	orchestration	uint32_t __thiscall (CInputControl *this, uint32_t commands, uint32_t time, uint32_t extra)	Releases command bits; on the last primary, dispatches the armed click unless 0x514ae0 says drag	verified	one	input#click-versus-drag	
 0x515090	284	CInputControl::SetCommands		input	orchestration	uint32_t __thiscall (CInputControl *this, uint32_t commands, uint32_t press, uint32_t time, uint32_t extra)	Sends commands to 0x514840 when press is nonzero, else to 0x514b70	verified	one	input#mouse-commands	
+0x515940	34			ui			Returns the unit a unit token names through 0x515970 and 0x468460, or null	inferred	none	spell/targeting#lua-targeting-functions	
+0x515970	725	Script::GetGUIDFromName	idb	ui			Returns the guid a unit token names	inferred	none	spell/targeting#lua-targeting-functions	
 0x51d910	352	WriteAddonInfo	idb	ui			Appends the add-on block to an auth session packet	inferred	none	net/session#session-challenge	
+0x523790	130			ui			Copies the cursor image chosen by the current state into the device and refreshes it through 0x58b5c0	inferred	none		
+0x523c20	20			ui			Sets the current cursor index and refreshes the cursor when it changes	inferred	none	spell/cast#targeting-refusal-or-cursor	
+0x523d20	7			ui			Stores the default cursor index	verified	one	spell/cast#targeting-refusal-or-cursor	
+0x523d30	11			ui			Sets the shown cursor to the base cursor through 0x523c20	inferred	none	spell/targeting#the-targeting-cursor	
 0x536eb0	5	InitCopy1Thunk		net	orchestration	void __cdecl (void)	Jumps to 0x536ec0; a static initializer	verified	one	net/layout#static-initializers	
 0x536ec0	11	InitCopy1		net	orchestration	void __cdecl (void)	Copies the constant +inf into a global	verified	one	net/layout#static-initializers	
 0x536ed0	5	InitDouble1Thunk		net	orchestration	void __cdecl (void)	Jumps to 0x536ee0; a static initializer	verified	one	net/layout#static-initializers	
@@ -756,13 +833,22 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x538790	218	NETEVENTQUEUE::AddEvent		net	primitive	void __thiscall (NETEVENTQUEUE *this, uint32_t type, void *source, NetClient *client, const void *data, uint32_t size)	Appends an event with a private copy of the data and a timestamp, and takes a reference on the client	verified	one	net/dispatch#network-thread-handoff	
 0x538870	41	NextEventQueueLink		net	orchestration	void * __thiscall (void *link, int32_t linkOffset)	Returns the link inside the next node: the untagged end pointer, or next plus the link offset	inferred	none		
 0x5388a0	60	TSLink_NETEVENTQUEUENODE_::Unlink	idb	net	orchestration	void __thiscall (void *link)	Unlinks an event-queue link from its neighbours and zeroes it	verified	one	net/layout#object-files	
+0x541620	535			dbc			Loads CharBaseInfo.dbc into the store 0xc0df8c as 8-byte records	inferred	none	spell/tables#startup-build-of-the-indexes	
+0x542360	570			dbc			Loads ChrClasses.dbc into the store at 0xc0deec	inferred	none	spell/records#record-lookups	
+0x5425a0	570			dbc			Loads ChrRaces.dbc into the store 0xc0ded8, keying its id map by record +0x00	inferred	none	spell/tables#startup-build-of-the-indexes	
+0x55ba30	534	DBCache_ItemStats_C_int_HASHKEY_INT_::GetRecord	idb	dbc			Returns a cached item record by id, or requests it with an optional callback	inferred	none	spell/cooldowns#reading-a-cooldown	
+0x55bc70	308			dbc			Stores an arrived item record and calls each pending callback with its stored argument	inferred	none	spell/go#pending-item-cooldowns	
+0x575280	6			dbc		const char * __cdecl (void)	Returns the path DBFilesClient\CharBaseInfo.dbc	verified	one	spell/tables#startup-build-of-the-indexes	
+0x5764f0	6			dbc		const char * __cdecl (void)	Returns the path DBFilesClient\ChrRaces.dbc	verified	one	spell/tables#startup-build-of-the-indexes	
 0x589ca0	11	QueryDevice		gx	host	uint32_t __cdecl (void)	Returns the graphics device's dword at +0x1fc through a tail call to 0x592120	verified	one	camera#orthographic-setup	
 0x58a250	15	GxCapsScreenSize	idb	gx	host		Writes the screen rectangle as four floats	inferred	none	camera#orthographic-setup	
 0x58b040	15	SetDeviceProjection		gx	host	void __fastcall (const float *matrix)	Passes a matrix to device vtable slot +0x70	verified	one	camera#view-and-projection	
 0x58b050	15	SetDeviceView		gx	host	void __fastcall (const float *matrix)	Passes a matrix to device vtable slot +0x74	verified	one	camera#view-and-projection	
 0x58b090	13	GetDeviceProjection		gx	host	void __fastcall (float *out)	Copies the device matrix at +0xf50	verified	one	camera#unprojection	
 0x58b0b0	13	GetDeviceView		gx	host	void __fastcall (float *out)	Copies the top of the device matrix stack at +0x1ac8	verified	one	camera#unprojection	
+0x58b5c0	21			gx			Calls slot 61 of a global device object with its two register arguments	inferred	none		
 0x592120	7	ReadDevice1fc		gx	host	uint32_t __thiscall (void *device)	Returns the dword at +0x1fc of the device	verified	one	camera#orthographic-setup	
+0x597ac0	16	CopyColor		gx			Copies a colour dword into this	inferred	none	spell/visuals#screen-tint	
 0x597ad0	38	SetPlane		cmath		float * __thiscall (float *plane, const float *normal, float d)	Stores a normal and a distance as a plane	verified	one	collision/contact#facet-gather	
 0x5995c0	335	CreateD3dDevice		gx			Creates the Direct3D 9 device with behaviour flags 0x22 or 0x52, both with FPU_PRESERVE	verified	one	METHOD#the-harness	
 0x5a9e00	5	InitCopy3Thunk		net	orchestration	void __cdecl (void)	Jumps to 0x5a9e10; a static initializer	verified	one	net/layout#static-initializers	
@@ -1772,11 +1858,35 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x5d3f00	7	BigNumberIsPrime		net	unreached	int32_t __fastcall (void *a)	Returns Storm's primality verdict on a big number	inferred	none	net/layout#unreached-functions	
 0x5d3f10	7	BigNumberFree		net	orchestration	void __fastcall (void *num)	Frees a Storm big number	inferred	none		
 0x5d3f20	21	BigNumberBitLength		net	orchestration	uint32_t __fastcall (void *num)	Returns the bit length of a big number	verified	one	net/layout#object-files	
+0x5d55c0	263	DynamicObjectStartAreaKit		objectlayer			Starts a dynamic object's spell kit: the kind-9 emitter through 0x6ece30 and the kit sound	inferred	none	spell/visuals#area-shard-emitter-creation	
+0x5d5700	32	DynamicObjectStopAreaKit		objectlayer			Stops a dynamic object's emitter through 0x6ecf20 and tail-calls its sound stop	inferred	none	spell/visuals#area-shard-emitter-creation	
+0x5d8660	367			objectlayer			Holds an item vtable slot that cancels the cast when the item is the pending cast's	inferred	none	spell/cancel#who-cancels-a-cast	
+0x5d9f30	88	GetItemClass		objectlayer			Returns the first field of an item's stats record, or 0 without one	inferred	none	spell/checks#equipped-item-and-ammo	
+0x5d9f90	89	GetItemSubClass		objectlayer			Returns the second field of an item's stats record, or 0 without one	inferred	none	spell/checks#equipped-item-and-ammo	
+0x5da2a0	22			objectlayer			Returns the flags dword +0x20 of an item's cached record, 0 when absent	inferred	none	spell/cast#cast-attempt-commit	
+0x5dd2e0	530	SetupPlayerInventory		objectlayer			Sets up a player's inventory fields, 113 slots for the active player	inferred	none	spell/checks#totems-and-reagents	
+0x5e13b0	76	CGPlayer_C::FindSlotIndex	idb	objectlayer			Returns the bag index of a container guid for a player	inferred	none	spell/cast#item-use-fields	
+0x5e38c0	4661			objectlayer			Handles a group of server messages, one of which cancels the cast of the in-flight item	inferred	none	spell/cancel#who-cancels-a-cast	
+0x5e99b0	229			objectlayer			Clears the target and then cancels the cast with failed and send set	inferred	none	spell/cancel#who-cancels-a-cast	
+0x5ea5d0	186			objectlayer			Returns the spell id a player's level lookup uses in place of a spell id	inferred	none	spell/records#caster-level	
+0x5ea690	104			objectlayer		uint32_t __thiscall (void *this, uint32_t spellId)	Returns a player's skill value for a spell, capped at its maximum level times 5; slot 42	inferred	none	spell/records#caster-level	
+0x5ecac0	172			objectlayer			Stops the melee attack, sending CMSG_ATTACKSTOP when attacking, and ends in 0x6e6f30	inferred	none	spell/cancel#cancelling-next-swing-spells	
+0x5ecb70	563			objectlayer			Starts a melee attack, cancelling an in-flight spell with Attributes 0x2	inferred	none	spell/cancel#who-cancels-a-cast	
+0x5ed5f0	51			objectlayer			Arms the player's loot target with a chest's guid	inferred	none	spell/go#player-cast-tail	
+0x5ee290	755			objectlayer			Answers the gate the aura cancel tests for AttributesEx 0x2000	inferred	none	spell/cancel#channel-and-aura-cancels	
+0x5f0c50	270	FindEquippedItemForSpell		objectlayer			Returns the first unbroken item in masked equipment slots matching a spell's item class and subclass mask	verified	one	spell/checks#equipped-item-and-ammo	
 0x5f5f10	841			objectlayer			Walks a transport game object's list and calls 0x6343b0 on each entry with a distance, direction and matrix	inferred	none	collision/resolve#carrier-push	
+0x5f8180	69			objectlayer			Returns a game object's Lock.dbc record, or null	inferred	none	spell/go#player-cast-tail	
+0x5f8260	359			objectlayer			Returns whether a game object passes the pending spell's lock-opening effects	inferred	none	spell/targeting#testing-an-object-without-binding	
+0x5f8bd0	41			objectlayer		void __thiscall (void *go, uint32_t state)	Stores a game object's state at +0x27c and notifies its model when it changes	verified	one	spell/go#player-cast-tail	
+0x5f8c00	16			objectlayer		void __thiscall (void *go)	Passes a game object's descriptor state dword to 0x5f8bd0	verified	one	spell/handlers#small-spell-handlers	
 0x5f8cf0	34	ScaleVector3		cmath	primitive	float * __fastcall (float *out, const float *v, float s)	Writes s·v	verified	one	camera#unprojection	
 0x5fa550	153	IsUnitPlayerDriven		objectlayer		uint8_t __thiscall (void *unit)	Returns 1 for a player type with no GUID at +0x10 and flag 1 clear, or through the unit its GUID names under 0x1000000	verified	one	collision/contact#collision-class-mask	
+0x5fa6d0	36	IsActivePlayerUnit		objectlayer		uint32_t __fastcall (void *unit)	Returns 1 when a unit's GUID is the active player's, else 0	verified	one	spell/failures#spell-failure-packets	
 0x5fac70	146			objectlayer		void __thiscall (void *unit, uint32_t time, uint32_t flag)	Takes the frame time after a mover's steps; not read here	inferred	none	collision/mover#local-player-step	
 0x5fad50	1137			objectlayer			Builds a unit, its CMovement at +0x9a8 through 0x616fa0 and -1 at +0xb08	inferred	none	collision/mover#construction	
+0x5fc350	55			objectlayer		uint32_t __thiscall (void *this)	Returns 0 when twice the unit's +0xa30 float is below its current speed, else 1	verified	one	spell/records#range-bonuses-and-modifier	
+0x5fd9e0	161			objectlayer			Updates a unit's animation for a state; the failure reporter passes -1	inferred	none	spell/failures#player-unit-cleanup	
 0x600a30	219	SendMovementPacket		objectlayer			Builds a movement packet for an opcode and sends it	inferred	none	collision/events#movement-key-tags	
 0x600b10	203	SendSplineDone		objectlayer		uint32_t __thiscall (void *unit, uint32_t time, uint32_t splineId, float fraction)	Builds opcode 0x2c9 with a spline id and a float and sends it	inferred	none	collision/status#spline-completion	
 0x600be0	197	SendMoveTimeSkipped		objectlayer		uint32_t __thiscall (void *unit, uint32_t skipped)	Sends opcode 0x2ce with the GUID and skipped for the active mover off a live spline and returns 1, else 0	verified	one	collision/mover#heartbeat-and-skipped-time	
@@ -1792,9 +1902,46 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x602d00	299			objectlayer			Handles a landing: reads the fall height from 0x7c60c0 and tests it against thresholds	inferred	none	collision/falling#fall-height-from-the-apex	
 0x602f30	93			objectlayer			Flushes the unit's queue and places it through 0x618680; nothing reaches it	inferred	none	collision/eventapply#unreached-functions	
 0x6030c0	321			objectlayer			Decides the swim start and stop from the liquid depth; skips the start while 0x7c5de0 returns 1	inferred	none	collision/falling#apex-time-and-rising-test	
+0x605570	101	GetUnitCreatureType		objectlayer			Returns a unit's creature type from its form, its creature record or its race	inferred	none	spell/checks#range-pre-check-for-units	
+0x605710	107			objectlayer			Updates a unit's channel target and refills its chain-target array through 0x605780	inferred	none	spell/handlers#small-spell-handlers	
+0x605780	216	FillUnitChainTargets		objectlayer			Fills a unit's chain target array at +0xd44 from a GUID list read from its end, skipping the unit's own GUID	inferred	none	spell/visuals#chain-hop-table	
+0x605860	254			objectlayer			Cancels the cast with reason 0x65 when the unit is the pending cast's target	inferred	none	spell/cancel#who-cancels-a-cast	
+0x605f30	52	IsDeadOrGhost		objectlayer			Returns 1 for a unit with health 0 or below or a player whose PLAYER_FLAGS has 0x10	verified	one	spell/checks#usability-predicate	
+0x6066f0	224	CGUnit_C::CanAssist_Unit	idb	objectlayer			Returns whether a unit may assist another	inferred	none	spell/checks#range-pre-check-for-units	
+0x6067d0	22	CGUnit_C::CanAssist_Corpse	idb	objectlayer			Returns whether a unit may assist a corpse, a reaction of 4 or more	inferred	none	spell/checks#range-pre-check	
+0x606980	543	CGUnit_C::CanAttack	idb	objectlayer			Returns whether a unit may attack another	inferred	none	spell/checks#range-pre-check-for-units	
+0x606c20	254	IsInSamePartyAs		objectlayer			Returns whether two units share a party	inferred	none	spell/checks#range-pre-check-for-units	
+0x606d20	254	IsInSameRaidAs		objectlayer			Returns whether two units share a raid	inferred	none	spell/checks#range-pre-check-for-units	
+0x607140	227			objectlayer			Shows a miss reason over a unit	inferred	none	spell/go#inline-miss-report	
+0x6094f0	2908	CheckCasterStateForSpell		objectlayer			Refuses a cast for the caster's state: cooldowns, power, crowd control and more, reporting through 0x6e1a00	inferred	none	spell/checks#crowd-control-use-in-the-validator	
+0x60a3d0	827			objectlayer			Launches one spell missile from a unit	inferred	none	spell/go#missile-launch	
 0x60b270	426			objectlayer		uint32_t __thiscall (void *unit, uint32_t flag)	Sizes a unit's mover from its model record and scale through 0x617460 and 0x6174b0	inferred	none	collision/mover#collision-size	
+0x60ba30	256			objectlayer			Takes the ammo display id a ranged spell start carries	inferred	none	spell/handlers#spell-start	
+0x60c9b0	229			objectlayer			Updates a unit's cast state at the player's spell start and after missiles launch	inferred	none	spell/handlers#player-cast-start	
+0x60cd80	69			objectlayer		uint32_t __thiscall (void *this, uint32_t spellId)	Returns a unit's level times 5, capped at the spell's maximum level times 5; slot 42	verified	one	spell/records#caster-level	
+0x60d020	26	UnitSetPrecastSpell		objectlayer			Stores a spell id at a unit's +0xc8c and sets 0x400 in +0xd58	inferred	none	spell/visuals#precast-visual-at-cast-start	
+0x60d040	213	UnitClearPrecastSpell		objectlayer			Clears a unit's +0xc8c and its 0x400 bit when they hold the given spell id	inferred	none	spell/visuals#unreached-functions	
+0x60d450	278	UnitGetSpellVisual		objectlayer			Returns the SpellVisual record a unit shows for a spell, starting from 0x6ec1e0	inferred	none	spell/visuals#chain-endpoints	
+0x60d7c0	1083	PlayKitCharProcs		objectlayer			Runs a visual kit's four character procedures through a switch on their kinds	inferred	none	spell/visuals#chain-effect-creation	
+0x60dd00	114			objectlayer			Sends the channel cancel for a unit's channel spell with AttributesEx 0x4000	inferred	none	spell/cancel#channel-and-aura-cancels	
 0x60e0a0	857	ProcessLocalMoveEvent	idb	objectlayer		int __thiscall (void *unit, uint32_t time, uint32_t opcode, uint8_t send, float value, uint32_t counter)	Sends a movement opcode for a unit when send is nonzero, then runs the unit's reaction to it	inferred	none	collision/events#tags-and-wire-opcodes	
+0x60ea70	386			objectlayer			Plays a wound reaction on a unit	inferred	none	spell/go#missile-and-impact-legs	
+0x60ecb0	24			objectlayer			Returns 1 when the guid of the object at +0xc48 is nonzero	inferred	none	spell/cast#cast-attempt-gates	
+0x60edf0	1798	PlayUnitSpellVisualKit		objectlayer			Plays a spell visual kit on a unit	inferred	none	spell/visuals#camera-shake-groups	
+0x60f530	116			objectlayer			Clears bit 14 of a unit's +0xd58 and resets its ranged animation	inferred	none	spell/failures#player-unit-cleanup	
+0x60fb60	226	UnitPrecastEndB		objectlayer			Acts on a unit with two flags; reached from 0x6ec350	inferred	none	spell/visuals#unreached-functions	
+0x60fc50	107	UnitPrecastEndA		objectlayer			Acts on the active player's unit; reached from 0x6ec350	inferred	none	spell/visuals#unreached-functions	
+0x60fed0	436	UnitSetSpellTargetGuid		objectlayer			Acts on a unit with a target GUID when the unit is the active player	inferred	none	spell/visuals#precast-visual-at-cast-start	
+0x611590	75	UnitPrecastTest		objectlayer			Tests a unit with a flag; reached from 0x6ec350	inferred	none	spell/visuals#unreached-functions	
 0x6115e0	128			objectlayer		void __thiscall (void *unit, const float *matrix, float angle)	Takes the transform and facing change of a transport switch; not read here	inferred	none	collision/mover#transport-change	
+0x611cf0	276			objectlayer			Sets a unit's sheathe state	inferred	none	spell/cast#after-the-send	
+0x612480	174	CheckSpellShapeshiftForm		objectlayer			Refuses a spell for the unit's form with reason 0x3d or 0x56 written to an out pointer	inferred	none	spell/checks#usability-predicate	
+0x6126f0	32			objectlayer			Returns the 64-bit value at +0x1d28 of the active player, else 0	verified	one	spell/cast#cast-attempt-refusals	
+0x612c50	77			objectlayer		int32_t __thiscall (void *this, int32_t powerType)	Returns the base a percentage cost scales: base mana, base health, 1000 or 100 by power type	verified	one	spell/records#power-cost	
+0x612df0	939			objectlayer			Picks or keeps an attack target for a spell press	inferred	none	spell/cast#cast-attempt-gates	
+0x6131a0	134			objectlayer			Starts or toggles a melee attack on a target	inferred	none	spell/cast#cast-attempt-refusals	
+0x6135f0	23	FreeUint64Array		objectlayer			Frees a uint64 array's data when present, tagged ._K	inferred	none	spell/visuals#chain-lifetime	
+0x614150	154			objectlayer			Stops a unit's visual kits of a spell, by spell id	inferred	none	spell/failures#player-unit-cleanup	
 0x6151f0	5	InitMovementTwoPiThunk		collision	orchestration	void __cdecl (void)	Jumps to 0x615200, a static initializer of the file	verified	one	collision/overview#movementcpp-initializers	
 0x615200	15	InitMovementTwoPi		collision	primitive	void __cdecl (void)	Stores 2π as π + π in floats, 6.2831855 (0x40c90fdb)	verified	one	collision/overview#movementcpp-initializers	
 0x615210	5	InitMovementInvTwoPiThunk		collision	orchestration	void __cdecl (void)	Jumps to 0x615220, a static initializer of the file	verified	one	collision/overview#movementcpp-initializers	
@@ -2092,7 +2239,21 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x61b110	19	InitMovementBSq1p5		collision	primitive	void __cdecl (void)	Stores 1.5² = 2.25 as a float	verified	one	collision/overview#movementcpp-initializers	
 0x61b130	5	InitMovementBInfinityThunk		collision	orchestration	void __cdecl (void)	Jumps to 0x61b140, a static initializer of the file	verified	one	collision/overview#movementcpp-initializers	
 0x61b140	11	InitMovementBInfinity		collision	orchestration	void __cdecl (void)	Copies +∞ (0x7f800000) from a constant into its global	verified	one	collision/overview#movementcpp-initializers	
+0x61f490	129			objectlayer			Constructs the 0x90-byte spell effect object	inferred	none	spell/go#cast-visual-and-dest-effect	
+0x61fcf0	219			objectlayer			Places and starts a spell effect object at a point	inferred	none	spell/go#cast-visual-and-dest-effect	
+0x6208b0	42	StopEffectObjectChains		objectlayer			Stops the three chains in an effect object's slots +0x30 through 0x6ece10 and clears each slot	inferred	none	spell/visuals#chain-lifetime	
+0x620be0	1269	UpdateSpellEffectObject		objectlayer			Updates a spell effect object; plays its camera shakes through 0x6ecb40	inferred	none	spell/visuals#camera-shake-groups	
+0x6210e0	33			objectlayer			Releases a reference to a spell effect object and frees it at zero	inferred	none	spell/go#cast-visual-and-dest-effect	
 0x621160	36	AddVector3		cmath	primitive	float * __fastcall (float *out, const float *a, const float *b)	Writes a + b	verified	one	camera#unprojection	
+0x622130	46	CountInventoryItemsByEntry		objectlayer			Sums the stack counts of the inventory's items of an entry through the walk 0x622420	verified	one	spell/checks#totems-and-reagents	
+0x622270	38	FindInventoryItemByEntry		objectlayer			Returns the first inventory item of an entry through the walk 0x622420	verified	one	spell/checks#totems-and-reagents	
+0x622420	425	WalkInventory		objectlayer			Calls a callback on each unbroken item of an inventory's masked slots and bags until it returns nonzero	verified	one	spell/checks#totems-and-reagents	
+0x6228a0	109			objectlayer			Returns the item object an inventory holds in a slot, or 0	inferred	none	spell/cooldowns#category-recovery-adjustment	
+0x624f20	10			objectlayer		uint32_t __thiscall (void *unit, uint32_t value)	Returns its stack argument unchanged	verified	one	spell/go#missile-and-impact-legs	
+0x62b1b0	676	CombatLogSpellCast		objectlayer			Writes a combat-log entry for a spell and a unit GUID, reading the CombatDeathLogRange CVar	inferred	none	spell/visuals#precast-visual-at-cast-start	
+0x62bab0	824			objectlayer			Writes the combat log line for a spell miss	inferred	none	spell/go#inline-miss-report	
+0x62c360	643	LogCastFailure		objectlayer		void __fastcall (void *unit, uint32_t spell, const char *reason)	Writes a unit's cast failure line to the combat log under a SPELLFAILCAST or SPELLFAILPERFORM key	inferred	none	spell/failures#display-log-and-events	
+0x630170	58			net	orchestration		Handles opcode 0x1d6 by reading its body into a local and discarding it	verified	one	spell/cast#small-spell-helpers	
 0x6307a0	3	MovementNotifyZoneMgr	idb	collision	orchestration	void __stdcall (uint64_t guid)	Returns without effect; the anchor snapshot passes it the owner's GUID	verified	one	collision/world#empty-notices	
 0x6307b0	10	InitMovementCStaticListThunk		collision	orchestration	void __cdecl (void)	Calls 0x6307c0, then jumps to 0x6307f0 to register the list teardown at exit	verified	one	collision/overview#movement_ccpp-initializers	
 0x6307c0	34	InitMovementCStaticList		collision	orchestration	void __cdecl (void)	Sets an intrusive list head to empty with link offset 0x208	verified	one	collision/overview#movement_ccpp-initializers	
@@ -2314,13 +2475,22 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x63b460	352	ConsoleScreenInitialize	idb	console			Initializes the console screen and installs the confirm-close callback 0x63c9a0	inferred	none	core/input#close-and-quit	
 0x63c9a0	8	ConfirmCloseCallback		console			Closes the current context through 0x63cdf0 and returns 0	verified	one	core/input#close-and-quit	
 0x63c9b0	203	ConsoleScreenShutdown		console			Shuts the console screen down and removes the confirm-close callback	inferred	none	core/input#close-and-quit	
+0x63cb50	422	ConsoleWrite	idb	console			Writes a line to the console	inferred	none	spell/cast#item-use-fields	
+0x63cd00	74	ConsoleWriteA	idb	console			Writes a formatted line to the console	inferred	none	spell/cooldowns#spell-id-by-name	
 0x63cd50	73	ConsolePrintf		console		void __cdecl (const char *format, ...)	Formats a message into 1024 bytes and writes it to the console when the console exists	inferred	none	collision/mover#local-player-step	
 0x63cdf0	12	CloseCurrentContext		console			Closes the current context: 0x41f6e0, then a jump to 0x41f9b0	verified	one	core/input#close-and-quit	
+0x63db90	585	CVar::Register	idb	cvar			Registers a console variable and returns its record	inferred	none	spell/handlers#system-initialization-and-teardown	
+0x63de30	136	CVar::Lookup	idb	console			Returns the CVar record of a name	inferred	none	spell/visuals#startup-and-shutdown	
+0x642e10	118			base			Appends a packed guid: a mask byte, then each nonzero byte from the lowest	verified	one	spell/cast#cast-request-packets	
+0x642ec0	15			base			Appends a packed guid to a data store through 0x642e10	verified	one	spell/cast#cast-request-packets	
+0x642ed0	105	CDataStore::GetPackGuid	idb	base		void *__fastcall (void *store, uint64_t *out)	Reads a packed guid: a mask byte, then one byte for each set bit, low bit first	verified	one	spell/handlers#handler-calling-convention	
 0x6462e0	61	SMemAlloc	idb	storm	boundary		Allocates memory tagged with a name and line	inferred	none		
 0x646320	261	SMemReAlloc		storm	boundary		Reallocates tagged memory	inferred	none		
 0x646430	34	SMemFree	idb	storm	boundary		Frees tagged memory	inferred	none		
+0x64a4c0	56	SStrCmpI	idb	storm			Compares two strings ignoring case up to a length	inferred	none	spell/cooldowns#spell-id-by-name	
 0x64a5a0	123	SStrCopy	idb	storm	boundary		Copies a string up to a length	inferred	none	collision/mover#initialisation-and-teardown	
 0x64a6f0	46	SStrLen	idb	storm	boundary	uint32_t __stdcall (const char *text)	Returns the length of a C string	inferred	none		
+0x64a7f0	43	SStrPrintf	idb	storm			Formats into a buffer of a given size	inferred	none	spell/failures#reason-text-and-pet-variant	
 0x64b460	19	SStrUpper		storm	boundary	void __stdcall (char *text)	Converts a C string to upper case in place through the C runtime's _strupr	verified	one	net/login#logon-challenge	
 0x64de00	36			storm			Reports an error with a code and a formatted message; not read here	inferred	none	collision/mover#unreached-functions	
 0x64e850	22	SErrSetLastError	idb	storm	boundary	void __stdcall (uint32_t code)	Stores an error code and passes it to SetLastError	inferred	none		
@@ -2336,12 +2506,552 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x65ae90	9	SAtomicRead64		storm	boundary		Reads a qword atomically with lock cmpxchg8b	inferred	none	core/time#calendar-time	
 0x65aec0	27	SAtomicCompareExchange64		storm	boundary		Compares and exchanges a qword atomically with lock cmpxchg8b	inferred	none	core/time#calendar-time	
 0x665910	329			storm	boundary		Loads a big number from little-endian bytes: byte i into bits 8(i mod 4) of word i/4	verified	one	net/login#srp6-client	
+0x66fcc0	132	SetWorldTime		world			Stores the world time in milliseconds and the frame time in seconds for the world update	inferred	none	spell/visuals#shard-emission-rate	
+0x670db0	599	CreateWorldCallbackObject		world			Creates a world object with a draw callback and its argument	inferred	none	spell/visuals#emitter-initialization	
+0x6717d0	689	SetWorldObjectBounds		world			Sets a world object's transform and bounding box	inferred	none	spell/visuals#emitter-initialization	
+0x671ac0	100	ReleaseWorldObject		world			Releases a world object	inferred	none	spell/visuals#shard-model-start-and-end	
+0x672170	24	TraceWorldSegment		world			Passes a segment, a point output, a fraction and flags to 0x69bff0, dropping its first stack argument	inferred	none	spell/visuals#shard-placement	
 0x6721b0	411	QueryWorldTriangles		world		bool __fastcall (const float *box, void *list, uint32_t mask, void *out)	Clears a triangle list and fills it with the world triangles inside a box under a class mask	inferred	none	collision/resolve#world-query-and-results	
 0x688fb0	77	HandleParticleDensityOption		cvar			Handles the particleDensity option by storing its value through 0x7adfb0	inferred	none	camera#particle-density	
 0x689510	145	HandleSpellEffectLevelOption		cvar			Handles the spellEffectLevel option, storing a density through 0x7adfb0	inferred	none	camera#particle-density	
+0x69bff0	215	TraceWorldSegmentBody		world			Traces a segment against the world, writing the hit point and fraction	inferred	none	spell/visuals#shard-placement	
+0x6a0a70	91			world			Unlinks a world object from its list, calls its slot 0 and tail-calls a free	inferred	none		
+0x6acdd0	14	SetColor		gx			Stores a colour dword into this	inferred	none	spell/visuals#chain-update-per-frame	
+0x6c5af0	92	OnViolenceLevelChanged		client			Stores the violenceLevel CVar value in 0xce8534, clamped to the region's maximum	inferred	none	spell/visuals#spell-visual-record-choice	
+0x6c5b50	6	GetViolenceLevel		client			Returns the stored violenceLevel 0xce8534	inferred	none	spell/visuals#spell-visual-record-choice	
+0x6d45c0	45	SetSpellScreenTint		worldframe			Stores a colour and the byte of 255 times a level used as the screen tint	inferred	none	spell/visuals#screen-tint	
+0x6dd270	5	SpellTablesInitCopy1Thunk		spell	orchestration	void __cdecl (void)	Jumps to 0x6dd280; a static initializer	verified	one	spell/layout#static-initializers	
+0x6dd280	11	SpellTablesInitCopy1		spell	orchestration	void __cdecl (void)	Copies the constant +inf into a global	verified	one	spell/layout#static-initializers	
+0x6dd290	5	SpellTablesInitCopy2Thunk		spell	orchestration	void __cdecl (void)	Jumps to 0x6dd2a0; a static initializer	verified	one	spell/layout#static-initializers	
+0x6dd2a0	11	SpellTablesInitCopy2		spell	orchestration	void __cdecl (void)	Copies the constant +inf into a global	verified	one	spell/layout#static-initializers	
+0x6dd2b0	10	ConstructRaceClassInfoTableThunk		spell	orchestration	void __cdecl (void)	Calls 0x6dd2c0, then jumps to 0x6dd380; a static initializer	verified	one	spell/layout#static-initializers	
+0x6dd2c0	190	ConstructRaceClassInfoTable		spell	orchestration	void __cdecl (void)	Builds the empty race-class table at 0xceab3c with vtable 0x811818	verified	one	spell/tables#hash-table-layout	
+0x6dd380	12	RegisterDestroyRaceClassInfoTable		spell	orchestration	void __cdecl (void)	Registers 0x6dd390 with _atexit	verified	one	spell/layout#static-initializers	
+0x6dd390	359	DestroyRaceClassInfoTable		spell	orchestration	void __cdecl (void)	Unlinks the race-class table at exit and frees its slot array, freeing no node	verified	one	spell/tables#teardown-at-shutdown	
+0x6dd500	10	ConstructSkillCostsInfoTableThunk		spell	orchestration	void __cdecl (void)	Calls 0x6dd510, then jumps to 0x6dd5d0; a static initializer	verified	one	spell/layout#static-initializers	
+0x6dd510	190	ConstructSkillCostsInfoTable		spell	orchestration	void __cdecl (void)	Builds the empty skill-cost table at 0xceab80 with vtable 0x811828	verified	one	spell/tables#hash-table-layout	
+0x6dd5d0	12	RegisterDestroySkillCostsInfoTable		spell	orchestration	void __cdecl (void)	Registers 0x6dd5e0 with _atexit	verified	one	spell/layout#static-initializers	
+0x6dd5e0	359	DestroySkillCostsInfoTable		spell	orchestration	void __cdecl (void)	Unlinks the skill-cost table at exit and frees its slot array, freeing no node	verified	one	spell/tables#teardown-at-shutdown	
+0x6dd750	10	ConstructSkillLineRecTableThunk		spell	orchestration	void __cdecl (void)	Calls 0x6dd760, then jumps to 0x6dd830; a static initializer	verified	one	spell/layout#static-initializers	
+0x6dd760	200	ConstructSkillLineRecTable		spell	orchestration	void __cdecl (void)	Builds the empty ability table at 0xceabec, ending with the pooled vtable 0x811838	verified	one	spell/tables#hash-table-layout	
+0x6dd830	12	RegisterDestroySkillLineRecTable		spell	orchestration	void __cdecl (void)	Registers 0x6dd840 with _atexit	verified	one	spell/layout#static-initializers	
+0x6dd840	355	DestroySkillLineRecTable		spell	orchestration	void __cdecl (void)	Unlinks the ability table at exit and frees its slot array, freeing no node	verified	one	spell/tables#teardown-at-shutdown	
+0x6dd9b0	156	SkillLineRecPoolTableDeletingDestructor		spell	orchestration	void * __thiscall (void *this, uint32_t flags)	Unlinks every ability node, frees the slot array and frees the table on bit 0; slot 2 of 0x811838	verified	one	spell/tables#teardown-at-shutdown	
+0x6dda50	392	SpellTableInitialize	idb	spell	orchestration	void __cdecl (void)	Builds the race-class, skill-cost and ability indexes from the skill DBCs at startup	verified	one	spell/tables#startup-build-of-the-indexes	
+0x6ddbe0	483	AddSkillLineRec		spell	primitive	uint8_t __fastcall (uint32_t race, uint32_t cls, const void *ability)	Adds an ability node for a race, class and SkillLineAbility row both admit; returns 1 when added	verified	one	spell/tables#spell-ability-index-by-race	
+0x6dddd0	85	RaceClassMasksAdmit		spell	primitive	uint8_t __fastcall (uint32_t race, uint32_t cls, uint32_t raceMask, uint32_t classMask, uint32_t notRace, uint32_t notClass)	Returns 1 when the optionally complemented race and class masks are zero or hold bit race-1 and class-1	verified	one	spell/tables#race-and-class-mask-test	
+0x6dde30	340	SpellTableDestroy		spell	orchestration	void __cdecl (void)	Deletes every node of the three indexes through slot 0 and frees the ability node pool	verified	one	spell/tables#teardown-at-shutdown	
+0x6ddf90	169	FindSkillRaceClassInfo		spell	primitive	const void * __fastcall (uint32_t race, uint32_t cls, uint32_t skillLine)	Returns the first SkillRaceClassInfo row of a skill line admitting a race and class, or null	verified	one	spell/tables#skill-line-race-class-lookup	
+0x6de040	130	FindSkillLineAbility		spell	primitive	const void * __fastcall (uint32_t race, uint32_t cls, uint32_t spell)	Returns the SkillLineAbility row indexed for a spell, race and class, or null	verified	one	spell/tables#spell-ability-index-by-race	
+0x6de0d0	59	FindSkillLineAbilityBySkillLine		spell	primitive	const void * __fastcall (uint32_t skillLine, uint32_t spell)	Returns the first SkillLineAbility row with a skill line and spell, scanning the store, or null	verified	one	spell/tables#linear-ability-scan	
+0x6de110	167	GetSkillCostForRank		spell	primitive	uint32_t __fastcall (const void *raceClassRow, int32_t rank)	Returns a SkillCostsData value for a rank of a race-class row's skill line, or 0	verified	one	spell/tables#skill-costs-and-tiers	
+0x6de1c0	43	GetSkillTierValue		spell	primitive	uint32_t __fastcall (const void *raceClassRow, uint32_t index)	Returns dword 1 + index of the race-class row's SkillTiers record for an index below 16, or 0	verified	one	spell/tables#skill-costs-and-tiers	
+0x6de1f0	5	SpellTablesInitDouble1Thunk		spell	orchestration	void __cdecl (void)	Jumps to 0x6de200; a static initializer	verified	one	spell/layout#static-initializers	
+0x6de200	15	SpellTablesInitDouble1		spell	primitive	void __cdecl (void)	Stores 3.1415927 + 3.1415927 as a float in a global	verified	one	spell/layout#static-initializers	
+0x6de210	5	SpellTablesInitQuotient1Thunk		spell	orchestration	void __cdecl (void)	Jumps to 0x6de220; a static initializer	verified	one	spell/layout#static-initializers	
+0x6de220	19	SpellTablesInitQuotient1		spell	primitive	void __cdecl (void)	Stores 1 divided by a global set just before as a float in a global	verified	one	spell/layout#static-initializers	
+0x6de240	117	RaceClassInfoTableDeleteNode		spell	orchestration	void __thiscall (void *this, void *node)	Unlinks a race-class node from its slot and the node list and frees it; slot 0	verified	one	spell/tables#node-vtables	
+0x6de2c0	179	RaceClassInfoTableNewNode		spell	orchestration	void * __thiscall (void *this, void *slot, uint32_t extra, uint32_t flags)	Allocates a race-class node of 0x20 plus extra bytes and links it at a slot list's head; slot 1	verified	one	spell/tables#node-vtables	
+0x6de380	189	RaceClassInfoTableClear		spell	orchestration	void __thiscall (void *this)	Unlinks every race-class node, sets the mask to -1 and frees the slot array; slot 3, never called	verified	one	spell/tables#node-vtables	
+0x6de440	117	SkillCostsInfoTableDeleteNode		spell	orchestration	void __thiscall (void *this, void *node)	Unlinks a skill-cost node from its slot and the node list and frees it; slot 0	verified	one	spell/tables#node-vtables	
+0x6de4c0	179	SkillCostsInfoTableNewNode		spell	orchestration	void * __thiscall (void *this, void *slot, uint32_t extra, uint32_t flags)	Allocates a skill-cost node of 0x20 plus extra bytes and links it at a slot list's head; slot 1	verified	one	spell/tables#node-vtables	
+0x6de580	189	SkillCostsInfoTableClear		spell	orchestration	void __thiscall (void *this)	Unlinks every skill-cost node, sets the mask to -1 and frees the slot array; slot 3, never called	verified	one	spell/tables#node-vtables	
+0x6de640	143	SkillLineRecPoolTableDeleteNode		spell	orchestration	void __thiscall (void *this, void *node)	Unlinks an ability node from its slot and the node list and returns it to the pool 0xcfa140; slot 0	verified	one	spell/tables#node-vtables	
+0x6de6d0	179	SkillLineRecPoolTableNewNode		spell	orchestration	void * __thiscall (void *this, void *slot, uint32_t extra, uint32_t flags)	Takes a zeroed ability node from the pool 0xcfa140 and links it at a slot list's head; slot 1	verified	one	spell/tables#node-vtables	
+0x6de790	117	SkillLineRecTableDeleteNode		spell	orchestration	void __thiscall (void *this, void *node)	Unlinks an ability node from its slot and the node list and frees it; slot 0 of the base vtable	verified	one	spell/tables#node-vtables	
+0x6de810	197	SkillLineRecTableNewNode		spell	orchestration	void * __thiscall (void *this, void *slot, uint32_t extra, uint32_t flags)	Allocates an ability node of 0x1c plus extra bytes and links it at a slot list's head; base slot 1	verified	one	spell/tables#node-vtables	
+0x6de8e0	189	SkillLineRecTableClear		spell	orchestration	void __thiscall (void *this)	Unlinks every ability node, sets the mask to -1 and frees the slot array; slot 3, never called	verified	one	spell/tables#node-vtables	
+0x6de9a0	190	RaceClassInfoTableDeletingDestructor		spell	orchestration	void * __thiscall (void *this, uint32_t flags)	Unlinks every race-class node, frees the slot array and frees the table on bit 0; slot 2, never called	verified	one	spell/tables#node-vtables	
+0x6dea60	190	SkillCostsInfoTableDeletingDestructor		spell	orchestration	void * __thiscall (void *this, uint32_t flags)	Unlinks every skill-cost node, frees the slot array and frees the table on bit 0; slot 2, never called	verified	one	spell/tables#node-vtables	
+0x6deb20	190	SkillLineRecTableDeletingDestructor		spell	orchestration	void * __thiscall (void *this, uint32_t flags)	Unlinks every ability node, frees the slot array and frees the table on bit 0; base slot 2	verified	one	spell/tables#node-vtables	
+0x6debe0	372	RaceClassInfoTableNew		spell	primitive	void * __thiscall (void *this, uint32_t hash, uint32_t extra, uint32_t flags)	Makes a race-class node in slot hash & mask, growing the table when its slot is full, and returns it	verified	one	spell/tables#insertion-and-growth	
+0x6ded60	136	DestroyRaceClassInfoList		spell	orchestration	void __thiscall (void *list)	Unlinks every member of a race-class slot list, then its end link	verified	one	spell/tables#list-and-link-primitives	
+0x6dedf0	135	DestroyRaceClassInfoSlotArray		spell	orchestration	void __thiscall (void *array)	Destroys every race-class slot list of a slot array and frees its data; reached only from slot 2	verified	one	spell/tables#slot-array-growth	
+0x6dee80	372	SkillCostsInfoTableNew		spell	primitive	void * __thiscall (void *this, uint32_t hash, uint32_t extra, uint32_t flags)	Makes a skill-cost node in slot hash & mask, growing the table when its slot is full, and returns it	verified	one	spell/tables#insertion-and-growth	
+0x6df000	136	DestroySkillCostsInfoList		spell	orchestration	void __thiscall (void *list)	Unlinks every member of a skill-cost slot list, then its end link	verified	one	spell/tables#list-and-link-primitives	
+0x6df090	135	DestroySkillCostsInfoSlotArray		spell	orchestration	void __thiscall (void *array)	Destroys every skill-cost slot list of a slot array and frees its data; reached only from slot 2	verified	one	spell/tables#slot-array-growth	
+0x6df120	136	DestroySkillLineRecList		spell	orchestration	void __thiscall (void *list)	Unlinks every member of a ability slot list, then its end link	verified	one	spell/tables#list-and-link-primitives	
+0x6df1b0	135	DestroySkillLineRecSlotArray		spell	orchestration	void __thiscall (void *array)	Destroys every ability slot list of a slot array and frees its data; reached only from slot 2	verified	one	spell/tables#slot-array-growth	
+0x6df240	60	UnlinkRaceClassInfoLink		spell	orchestration	void __thiscall (void *link)	Detaches a race-class link from its neighbours and zeroes it	verified	one	spell/tables#list-and-link-primitives	
+0x6df280	25	GetRaceClassInfoLink		spell	orchestration	void * __thiscall (void *list, void *node)	Returns a race-class node's link in a list, or the list's end link for a null node	verified	one	spell/tables#list-and-link-primitives	
+0x6df2a0	60	UnlinkSkillCostsInfoLink		spell	orchestration	void __thiscall (void *link)	Detaches a skill-cost link from its neighbours and zeroes it	verified	one	spell/tables#list-and-link-primitives	
+0x6df2e0	25	GetSkillCostsInfoLink		spell	orchestration	void * __thiscall (void *list, void *node)	Returns a skill-cost node's link in a list, or the list's end link for a null node	verified	one	spell/tables#list-and-link-primitives	
+0x6df300	41	GetSkillLineRecNextLink		spell	orchestration	void * __thiscall (void *link, int32_t offset)	Returns the link of the ability node after a link, deriving the offset when it is negative	verified	one	spell/tables#list-and-link-primitives	
+0x6df330	60	UnlinkSkillLineRecLink		spell	orchestration	void __thiscall (void *link)	Detaches a ability link from its neighbours and zeroes it	verified	one	spell/tables#list-and-link-primitives	
+0x6df370	25	GetSkillLineRecLink		spell	orchestration	void * __thiscall (void *list, void *node)	Returns a ability node's link in a list, or the list's end link for a null node	verified	one	spell/tables#list-and-link-primitives	
+0x6df390	77	UnlinkAllSkillLineRec		spell	orchestration	void __thiscall (void *list)	Unlinks every member of a ability list	verified	one	spell/tables#list-and-link-primitives	
+0x6df3e0	41	GetRaceClassInfoNextLink		spell	orchestration	void * __thiscall (void *link, int32_t offset)	Returns the link of the race-class node after a link, deriving the offset when it is negative	verified	one	spell/tables#list-and-link-primitives	
+0x6df410	491	ResizeRaceClassInfoTable		spell	orchestration	void __thiscall (void *this, uint32_t slots)	Rehashes every race-class node into a new number of slots, keeping the order of equal hashes	verified	one	spell/tables#insertion-and-growth	
+0x6df600	33	ConstructRaceClassInfoList		spell	orchestration	void __thiscall (void *list)	Makes an empty race-class slot list with link offset 0xdddddddd	verified	one	spell/tables#list-and-link-primitives	
+0x6df630	176	DeleteRaceClassInfoList		spell	orchestration	void * __thiscall (void *list, uint32_t flags)	Unlinks every member and the end link of a race-class slot list and frees it on bit 0	verified	one	spell/tables#list-and-link-primitives	
+0x6df6e0	12	InitRaceClassInfoListEnd		spell	orchestration	void __thiscall (void *list)	Points a race-class list's end link at itself, its next marked by bit 0	verified	one	spell/tables#list-and-link-primitives	
+0x6df6f0	316	SetRaceClassInfoSlotCount		spell	primitive	void __thiscall (void *array, uint32_t count)	Sets the count of a race-class slot array, growing it by its rounding step and making or destroying lists	verified	one	spell/tables#slot-array-growth	
+0x6df830	41	GetSkillCostsInfoNextLink		spell	orchestration	void * __thiscall (void *link, int32_t offset)	Returns the link of the skill-cost node after a link, deriving the offset when it is negative	verified	one	spell/tables#list-and-link-primitives	
+0x6df860	491	ResizeSkillCostsInfoTable		spell	orchestration	void __thiscall (void *this, uint32_t slots)	Rehashes every skill-cost node into a new number of slots, keeping the order of equal hashes	verified	one	spell/tables#insertion-and-growth	
+0x6dfa50	33	ConstructSkillCostsInfoList		spell	orchestration	void __thiscall (void *list)	Makes an empty skill-cost slot list with link offset 0xdddddddd	verified	one	spell/tables#list-and-link-primitives	
+0x6dfa80	176	DeleteSkillCostsInfoList		spell	orchestration	void * __thiscall (void *list, uint32_t flags)	Unlinks every member and the end link of a skill-cost slot list and frees it on bit 0	verified	one	spell/tables#list-and-link-primitives	
+0x6dfb30	12	InitSkillCostsInfoListEnd		spell	orchestration	void __thiscall (void *list)	Points a skill-cost list's end link at itself, its next marked by bit 0	verified	one	spell/tables#list-and-link-primitives	
+0x6dfb40	316	SetSkillCostsInfoSlotCount		spell	primitive	void __thiscall (void *array, uint32_t count)	Sets the count of a skill-cost slot array, growing it by its rounding step and making or destroying lists	verified	one	spell/tables#slot-array-growth	
+0x6dfc80	491	ResizeSkillLineRecTable		spell	orchestration	void __thiscall (void *this, uint32_t slots)	Rehashes every ability node into a new number of slots, keeping the order of equal hashes	verified	one	spell/tables#insertion-and-growth	
+0x6dfe70	33	ConstructSkillLineRecList		spell	orchestration	void __thiscall (void *list)	Makes an empty ability slot list with link offset 0xdddddddd	verified	one	spell/tables#list-and-link-primitives	
+0x6dfea0	176	DeleteSkillLineRecList		spell	orchestration	void * __thiscall (void *list, uint32_t flags)	Unlinks every member and the end link of a ability slot list and frees it on bit 0	verified	one	spell/tables#list-and-link-primitives	
+0x6dff50	12	InitSkillLineRecListEnd		spell	orchestration	void __thiscall (void *list)	Points a ability list's end link at itself, its next marked by bit 0	verified	one	spell/tables#list-and-link-primitives	
+0x6dff60	316	SetSkillLineRecSlotCount		spell	primitive	void __thiscall (void *array, uint32_t count)	Sets the count of a ability slot array, growing it by its rounding step and making or destroying lists	verified	one	spell/tables#slot-array-growth	
+0x6e00a0	319	ReserveRaceClassInfoSlots		spell	primitive	void __thiscall (void *array, uint32_t extra, uint32_t round)	Grows a race-class slot array's capacity to hold extra more lists, optionally rounded by its step	verified	one	spell/tables#slot-array-growth	
+0x6e01e0	77	UnlinkAllRaceClassInfo		spell	orchestration	void __thiscall (void *list)	Unlinks every member of a race-class list	verified	one	spell/tables#list-and-link-primitives	
+0x6e0230	319	ReserveSkillCostsInfoSlots		spell	primitive	void __thiscall (void *array, uint32_t extra, uint32_t round)	Grows a skill-cost slot array's capacity to hold extra more lists, optionally rounded by its step	verified	one	spell/tables#slot-array-growth	
+0x6e0370	77	UnlinkAllSkillCostsInfo		spell	orchestration	void __thiscall (void *list)	Unlinks every member of a skill-cost list	verified	one	spell/tables#list-and-link-primitives	
+0x6e03c0	319	ReserveSkillLineRecSlots		spell	primitive	void __thiscall (void *array, uint32_t extra, uint32_t round)	Grows a ability slot array's capacity to hold extra more lists, optionally rounded by its step	verified	one	spell/tables#slot-array-growth	
+0x6e0500	264	ReallocRaceClassInfoSlots		spell	primitive	void __thiscall (void *array, uint32_t capacity)	Reallocates a race-class slot array to a capacity, remaking lists without members when it moves	verified	one	spell/tables#slot-array-growth	
+0x6e0610	264	ReallocSkillCostsInfoSlots		spell	primitive	void __thiscall (void *array, uint32_t capacity)	Reallocates a skill-cost slot array to a capacity, remaking lists without members when it moves	verified	one	spell/tables#slot-array-growth	
+0x6e0720	264	ReallocSkillLineRecSlots		spell	primitive	void __thiscall (void *array, uint32_t capacity)	Reallocates a ability slot array to a capacity, remaking lists without members when it moves	verified	one	spell/tables#slot-array-growth	
+0x6e0830	44	InitSkillLineRecAllocator		spell	orchestration	void __cdecl (void)	Builds the ability node pool 0xcfa140 once under bit 0 of 0xcfa128, then registers 0x6e0870	verified	one	spell/tables#ability-node-pool	
+0x6e0860	12	RegisterDestroySkillLineRecAllocator		spell	orchestration	void __cdecl (void)	Registers 0x6e0870 with _atexit	verified	one	spell/layout#static-initializers	
+0x6e0870	31	DestroySkillLineRecAllocator		spell	orchestration	void __cdecl (void)	Frees the ability node pool 0xcfa140 once under bit 0 of 0xceab2c	verified	one	spell/tables#ability-node-pool	
+0x6e0890	5	SpellTablesInitProduct1Thunk		spell	orchestration	void __cdecl (void)	Jumps to 0x6e08a0; a static initializer	verified	one	spell/layout#static-initializers	
+0x6e08a0	19	SpellTablesInitProduct1		spell	primitive	void __cdecl (void)	Stores -21 times -0.027777778 as a float in a global	verified	one	spell/layout#static-initializers	
+0x6e08c0	5	SpellTablesInitProduct2Thunk		spell	orchestration	void __cdecl (void)	Jumps to 0x6e08d0; a static initializer	verified	one	spell/layout#static-initializers	
+0x6e08d0	19	SpellTablesInitProduct2		spell	primitive	void __cdecl (void)	Stores a global set just before times -255 as a float in a global	verified	one	spell/layout#static-initializers	
+0x6e08f0	5	SpellTablesInitProduct3Thunk		spell	orchestration	void __cdecl (void)	Jumps to 0x6e0900; a static initializer	verified	one	spell/layout#static-initializers	
+0x6e0900	19	SpellTablesInitProduct3		spell	primitive	void __cdecl (void)	Stores 18 times 0.027777778 as a float in a global	verified	one	spell/layout#static-initializers	
+0x6e0920	5	SpellTablesInitProduct4Thunk		spell	orchestration	void __cdecl (void)	Jumps to 0x6e0930; a static initializer	verified	one	spell/layout#static-initializers	
+0x6e0930	19	SpellTablesInitProduct4		spell	primitive	void __cdecl (void)	Stores a global set just before times 256 as a float in a global	verified	one	spell/layout#static-initializers	
+0x6e0950	5	SpellTablesInitQuotient2Thunk		spell	orchestration	void __cdecl (void)	Jumps to 0x6e0960; a static initializer	verified	one	spell/layout#static-initializers	
+0x6e0960	19	SpellTablesInitQuotient2		spell	primitive	void __cdecl (void)	Stores 1 divided by 4.1666665 as a float in a global	verified	one	spell/layout#static-initializers	
+0x6e0980	5	SpellTablesInitSquare1Thunk		spell	orchestration	void __cdecl (void)	Jumps to 0x6e0990; a static initializer	verified	one	spell/layout#static-initializers	
+0x6e0990	19	SpellTablesInitSquare1		spell	primitive	void __cdecl (void)	Stores 10 squared as a float in a global	verified	one	spell/layout#static-initializers	
+0x6e09b0	5	SpellTablesInitQuotient3Thunk		spell	orchestration	void __cdecl (void)	Jumps to 0x6e09c0; a static initializer	verified	one	spell/layout#static-initializers	
+0x6e09c0	19	SpellTablesInitQuotient3		spell	primitive	void __cdecl (void)	Stores 0.5 divided by 10 as a float in a global	verified	one	spell/layout#static-initializers	
+0x6e09e0	5	SpellTablesInitSquare2Thunk		spell	orchestration	void __cdecl (void)	Jumps to 0x6e09f0; a static initializer	verified	one	spell/layout#static-initializers	
+0x6e09f0	19	SpellTablesInitSquare2		spell	primitive	void __cdecl (void)	Stores 10 squared as a float in a global	verified	one	spell/layout#static-initializers	
+0x6e0a10	5	SpellTablesInitSquare3Thunk		spell	orchestration	void __cdecl (void)	Jumps to 0x6e0a20; a static initializer	verified	one	spell/layout#static-initializers	
+0x6e0a20	19	SpellTablesInitSquare3		spell	primitive	void __cdecl (void)	Stores 11.111111 squared as a float in a global	verified	one	spell/layout#static-initializers	
+0x6e0a40	5	SpellTablesInitSquare4Thunk		spell	orchestration	void __cdecl (void)	Jumps to 0x6e0a50; a static initializer	verified	one	spell/layout#static-initializers	
+0x6e0a50	19	SpellTablesInitSquare4		spell	primitive	void __cdecl (void)	Stores 5.5555553 squared as a float in a global	verified	one	spell/layout#static-initializers	
+0x6e0a70	5	SpellTablesInitSquare5Thunk		spell	orchestration	void __cdecl (void)	Jumps to 0x6e0a80; a static initializer	verified	one	spell/layout#static-initializers	
+0x6e0a80	19	SpellTablesInitSquare5		spell	primitive	void __cdecl (void)	Stores 10 squared as a float in a global	verified	one	spell/layout#static-initializers	
+0x6e0aa0	5	SpellTablesInitSquare6Thunk		spell	orchestration	void __cdecl (void)	Jumps to 0x6e0ab0; a static initializer	verified	one	spell/layout#static-initializers	
+0x6e0ab0	19	SpellTablesInitSquare6		spell	primitive	void __cdecl (void)	Stores 5 squared as a float in a global	verified	one	spell/layout#static-initializers	
+0x6e0ad0	5	SpellTablesInitSquare7Thunk		spell	orchestration	void __cdecl (void)	Jumps to 0x6e0ae0; a static initializer	verified	one	spell/layout#static-initializers	
+0x6e0ae0	19	SpellTablesInitSquare7		spell	primitive	void __cdecl (void)	Stores 10 squared as a float in a global	verified	one	spell/layout#static-initializers	
+0x6e0b00	5	SpellTablesInitSquare8Thunk		spell	orchestration	void __cdecl (void)	Jumps to 0x6e0b10; a static initializer	verified	one	spell/layout#static-initializers	
+0x6e0b10	19	SpellTablesInitSquare8		spell	primitive	void __cdecl (void)	Stores 30 squared as a float in a global	verified	one	spell/layout#static-initializers	
+0x6e0b30	5	SpellTablesInitSquare9Thunk		spell	orchestration	void __cdecl (void)	Jumps to 0x6e0b40; a static initializer	verified	one	spell/layout#static-initializers	
+0x6e0b40	19	SpellTablesInitSquare9		spell	primitive	void __cdecl (void)	Stores 120 squared as a float in a global	verified	one	spell/layout#static-initializers	
+0x6e0b60	5	SpellTablesInitSquare10Thunk		spell	orchestration	void __cdecl (void)	Jumps to 0x6e0b70; a static initializer	verified	one	spell/layout#static-initializers	
+0x6e0b70	19	SpellTablesInitSquare10		spell	primitive	void __cdecl (void)	Stores 20 squared as a float in a global	verified	one	spell/layout#static-initializers	
+0x6e0b90	5	SpellTablesInitSquare11Thunk		spell	orchestration	void __cdecl (void)	Jumps to 0x6e0ba0; a static initializer	verified	one	spell/layout#static-initializers	
+0x6e0ba0	19	SpellTablesInitSquare11		spell	primitive	void __cdecl (void)	Stores 10 squared as a float in a global	verified	one	spell/layout#static-initializers	
+0x6e0bc0	5	SpellTablesInitSquare12Thunk		spell	orchestration	void __cdecl (void)	Jumps to 0x6e0bd0; a static initializer	verified	one	spell/layout#static-initializers	
+0x6e0bd0	19	SpellTablesInitSquare12		spell	primitive	void __cdecl (void)	Stores 0.5 squared as a float in a global	verified	one	spell/layout#static-initializers	
+0x6e0bf0	5	SpellTablesInitSquare13Thunk		spell	orchestration	void __cdecl (void)	Jumps to 0x6e0c00; a static initializer	verified	one	spell/layout#static-initializers	
+0x6e0c00	19	SpellTablesInitSquare13		spell	primitive	void __cdecl (void)	Stores 3 squared as a float in a global	verified	one	spell/layout#static-initializers	
+0x6e0c20	5	SpellTablesInitSquare14Thunk		spell	orchestration	void __cdecl (void)	Jumps to 0x6e0c30; a static initializer	verified	one	spell/layout#static-initializers	
+0x6e0c30	19	SpellTablesInitSquare14		spell	primitive	void __cdecl (void)	Stores 100 squared as a float in a global	verified	one	spell/layout#static-initializers	
+0x6e0c50	5	SpellTablesInitFive1Thunk		spell	orchestration	void __cdecl (void)	Jumps to 0x6e0c60; a static initializer	verified	one	spell/layout#static-initializers	
+0x6e0c60	11	SpellTablesInitFive1		spell	orchestration	void __cdecl (void)	Stores 5 as a float in a global	verified	one	spell/layout#static-initializers	
+0x6e0c70	5	SpellTablesInitSquare15Thunk		spell	orchestration	void __cdecl (void)	Jumps to 0x6e0c80; a static initializer	verified	one	spell/layout#static-initializers	
+0x6e0c80	19	SpellTablesInitSquare15		spell	primitive	void __cdecl (void)	Stores 50 squared as a float in a global	verified	one	spell/layout#static-initializers	
+0x6e0ca0	5	SpellTablesInitSquare16Thunk		spell	orchestration	void __cdecl (void)	Jumps to 0x6e0cb0; a static initializer	verified	one	spell/layout#static-initializers	
+0x6e0cb0	19	SpellTablesInitSquare16		spell	primitive	void __cdecl (void)	Stores 100 squared as a float in a global	verified	one	spell/layout#static-initializers	
+0x6e0cd0	5	SpellTablesInitSquare17Thunk		spell	orchestration	void __cdecl (void)	Jumps to 0x6e0ce0; a static initializer	verified	one	spell/layout#static-initializers	
+0x6e0ce0	19	SpellTablesInitSquare17		spell	primitive	void __cdecl (void)	Stores 40 squared as a float in a global	verified	one	spell/layout#static-initializers	
+0x6e0d00	5	SpellTablesInitSquare18Thunk		spell	orchestration	void __cdecl (void)	Jumps to 0x6e0d10; a static initializer	verified	one	spell/layout#static-initializers	
+0x6e0d10	19	SpellTablesInitSquare18		spell	primitive	void __cdecl (void)	Stores 1.5 squared as a float in a global	verified	one	spell/layout#static-initializers	
+0x6e0d30	10	SpellTablesInitCountUnit1Thunk		spell	orchestration	void __cdecl (void)	Calls 0x6e0d40, then jumps to 0x6e0d60; a static initializer	verified	one	spell/layout#static-initializers	
+0x6e0d40	22	SpellTablesInitCountUnit1		spell	primitive	void __cdecl (void)	Counts one more unit in a shared global and calls 0x5b71c0 on the first	verified	one	spell/layout#static-initializers	
+0x6e0d60	12	RegisterSpellTablesReleaseCountUnit1		spell	orchestration	void __cdecl (void)	Registers 0x6e0d70 with _atexit	verified	one	spell/layout#static-initializers	
+0x6e0d70	14	SpellTablesReleaseCountUnit1		spell	primitive	void __cdecl (void)	Counts one unit fewer in a shared global and tail-calls the empty 0x5b71d0 when it reaches zero	verified	one	spell/layout#static-initializers	
+0x6e0d80	5	SpellCInitCopy1Thunk		spell	orchestration	void __cdecl (void)	Jumps to 0x6e0d90; a static initializer	verified	one	spell/layout#static-initializers	
+0x6e0d90	11	SpellCInitCopy1		spell	orchestration	void __cdecl (void)	Copies the constant +inf into a global	verified	one	spell/layout#static-initializers	
+0x6e0da0	5	SpellCInitDouble1Thunk		spell	orchestration	void __cdecl (void)	Jumps to 0x6e0db0; a static initializer	verified	one	spell/layout#static-initializers	
+0x6e0db0	15	SpellCInitDouble1		spell	primitive	void __cdecl (void)	Stores 3.1415927 + 3.1415927 as a float in a global	verified	one	spell/layout#static-initializers	
+0x6e0dc0	5	SpellCInitQuotient1Thunk		spell	orchestration	void __cdecl (void)	Jumps to 0x6e0dd0; a static initializer	verified	one	spell/layout#static-initializers	
+0x6e0dd0	19	SpellCInitQuotient1		spell	primitive	void __cdecl (void)	Stores 1 divided by a global set just before as a float in a global	verified	one	spell/layout#static-initializers	
+0x6e0df0	10	InitItemCooldownTableThunk		spell	orchestration	void __cdecl (void)	Calls 0x6e0e00, then jumps to 0x6e0ec0; a static initializer	verified	one	spell/layout#static-initializers	
+0x6e0e00	190	InitItemCooldownTable		spell	orchestration	void __cdecl (void)	Builds the item-cooldown table 0xceca60 empty: vtable 0x811904, node-list offset 0x0c, mask -1	verified	one	spell/cooldowns#static-initializers	
+0x6e0ec0	12	RegisterDestroyItemCooldownTable		spell	orchestration	void __cdecl (void)	Registers 0x6e0ed0 with _atexit	verified	one	spell/layout#static-initializers	
+0x6e0ed0	359	DestroyItemCooldownTable		spell	orchestration	void __cdecl (void)	Unlinks every node of the item-cooldown table at exit, destroys its slot lists and frees their array	verified	one	spell/cooldowns#item-cooldown-table	
+0x6e1040	10	InitSpellHistoryListsThunk		spell	orchestration	void __cdecl (void)	Calls 0x6e1050, then jumps to 0x6e1090; a static initializer	verified	one	spell/layout#static-initializers	
+0x6e1050	62	InitSpellHistoryLists		spell	orchestration	void __cdecl (void)	Builds the player and pet spell-history list pairs at 0xcecaec and 0xcecb04 empty	verified	one	spell/cooldowns#static-initializers	
+0x6e1090	12	RegisterDestroySpellHistoryLists		spell	orchestration	void __cdecl (void)	Registers 0x6e10a0 with _atexit	verified	one	spell/layout#static-initializers	
+0x6e10a0	302	DestroySpellHistoryLists		spell	orchestration	void __cdecl (void)	Frees every record of both spell-history list pairs at exit and unlinks their end links	verified	one	spell/cooldowns#static-initializers	
+0x6e11d0	10	InitSpellCastGlobalsThunk		spell	orchestration	void __cdecl (void)	Calls 0x6e11e0, then jumps to 0x6e12a0; a static initializer	verified	one	spell/layout#static-initializers	
+0x6e11e0	185	InitSpellCastGlobals		spell	orchestration	void __cdecl (void)	Zeroes 26 dwords and two words of the cast-request globals and sets one dword to -1	verified	one	spell/cooldowns#static-initializers	
+0x6e12a0	12	RegisterSpellEmptyAtExit		spell	orchestration	void __cdecl (void)	Registers 0x6e12b0 with _atexit	verified	one	spell/layout#static-initializers	
+0x6e12b0	1	SpellEmptyAtExit		spell	orchestration	void __cdecl (void)	Returns; an empty function registered to run at exit	verified	one	spell/cooldowns#static-initializers	
+0x6e12c0	284	SpellHistory::AddRecord		spell	orchestration	void __thiscall (void *list, int spell, int item, int start, int time, int cat, int catStart, int catTime, int held, int gcdCat, int gcdTime)	Appends a spell-history record with ten values unless its three times and held flag are all zero	verified	one	spell/cooldowns#adding-a-record	
+0x6e13e0	585	SpellHistory::GetCooldown		spell	primitive	uint32_t __thiscall (void *list, int32_t spell, int32_t item, uint32_t *duration, uint32_t *start, uint32_t *enable)	Writes the latest-ending spell, category or global cooldown of a spell and returns whether it ends after now	verified	one	spell/cooldowns#reading-a-cooldown	
+0x6e1630	89	SpellHistory::ClearGlobalCooldown		spell	orchestration	void __thiscall (void *list, int32_t spell)	Zeroes a spell's global-cooldown fields; on a match runs the expiry sweep and fires the cooldown events	verified	one	spell/cooldowns#clearing-the-global-cooldown	
+0x6e1690	256	SpellHistory::HasHeldRecord		spell	orchestration	uint32_t __thiscall (void *list, int32_t spell, int32_t item)	Returns 1 for a held record of the spell and item, or of its category with a category time	verified	one	spell/cooldowns#held-records	
+0x6e1790	230	SpellHistory::StartOrRemove		spell	orchestration	void __thiscall (void *list, int32_t spell, uint32_t time, uint8_t remove)	Removes a spell's records, or without remove starts its held records at a time	verified	one	spell/cooldowns#starting-or-removing-a-spell	
+0x6e1880	129	SpellHistory::ClearHistory	idb	spell	orchestration	void __thiscall (void *list)	Moves every record of a spell-history list to its free list	verified	one	spell/cooldowns#expiry-sweep-and-whole-lists	
+0x6e1910	230	SpellHistory::RemoveExpired		spell	primitive	void __thiscall (void *list, uint32_t now)	Frees every unheld record whose recovery and category recovery have ended by now	verified	one	spell/cooldowns#expiry-sweep-and-whole-lists	
+0x6e1a00	2138	ReportCastFailure		spell	primitive	void __fastcall (uint32_t spell, uint8_t reason, int32_t arg1, int32_t arg2, uint8_t fromServer)	Reports a failed cast: picks the message id, builds and fills the reason text, shows and logs it, fires the event	verified	one	spell/failures#reporter-inputs-and-first-effects	
+0x6e2380	88	FindItemSubClassByMask		spell	primitive	void *__fastcall (int32_t itemClass, uint32_t subclassMask)	Returns the first ItemSubClass.dbc row of a class whose subclass bit is set in a mask, or null	verified	one	spell/failures#subclass-by-mask	
+0x6e23e0	898	GetCastFailureKey		spell	primitive	const char *__fastcall (uint8_t reason)	Returns the SPELL_FAILED_ GlobalStrings key of a reason, SPELL_FAILED_UNKNOWN above 0x90	verified	one	spell/failures#reason-key-switch	
+0x6e29b0	212	ShowItemCastFailure		spell	orchestration	void __fastcall (uint32_t item, void *guid, uint32_t reason, uint32_t found)	Shows a reagent or totem failure once the item cache answers, with the item's name or UNKNOWN	verified	one	spell/failures#item-cache-redisplay	
+0x6e2a90	197	ShowProspectCastFailure		spell	orchestration	void __fastcall (uint32_t item, void *guid, uint32_t count, uint32_t found)	Shows reason 0x84 once the item cache answers, with the count and the item's name or UNKNOWN	verified	one	spell/failures#item-cache-redisplay	
+0x6e2b60	256	AdjustCategoryRecovery		spell	primitive	void __fastcall (int32_t *value, void *spellRecord, uint32_t skip)	Scales a category recovery by the slot-15 item record, adds a descriptor time, then applies spell modifier 11	verified	one	spell/cooldowns#category-recovery-adjustment	
+0x6e2c60	380	SetSpellCooldownRemaining		spell	primitive	void __fastcall (int32_t spell, int32_t item, int32_t category, int32_t recovery, int32_t catRecovery, uint8_t held, uint32_t pet, uint32_t unused)	Adds a spell-history record from remaining times, back-dating the starts so the remainders hold	verified	one	spell/cooldowns#cooldowns-from-remaining-times	
+0x6e2de0	186	StartGlobalCooldown		spell	primitive	void __fastcall (uint32_t spellId, uint32_t pet)	Adds a global-cooldown entry to the player or pet history, then signals the cooldown events	verified	one	spell/records#global-cooldown-start	
+0x6e2ea0	37	GetSpellCooldown		spell	orchestration	uint32_t __fastcall (uint32_t spellId, uint32_t pet, int32_t *duration, int32_t *start, uint32_t *enabled)	Queries the player or pet history through 0x6e13e0 for a spell with item 0	verified	one	spell/records#cooldown-queries	
+0x6e2ed0	152	GetItemCooldown		spell	orchestration	uint32_t __fastcall (uint32_t itemId, int32_t *duration, int32_t *start, uint32_t *enabled)	Queries the player history for an item's first on-use spell, fetching the item record through the cache	verified	one	spell/records#cooldown-queries	
+0x6e2f70	39	OnItemCooldownRecord		spell	orchestration	void __fastcall (uint32_t itemId, const uint64_t *guid, uint32_t argument, uint8_t found)	Queries an item cooldown again when its record arrives and signals the cooldown events while one runs	verified	one	spell/records#cooldown-queries	
+0x6e2fa0	21	IsSpellCooldownOnHold		spell	orchestration	uint32_t __fastcall (const void *spell, uint32_t pet)	Returns 0x6e1690 for a spell record's id with item 0 on the player or pet history	verified	one	spell/records#cooldown-queries	
+0x6e2fc0	140	IsItemSpellHeld		spell	orchestration	uint32_t __fastcall (int32_t item)	Returns 0x6e1690 on the player's list for an item's first spell slot with a zero +0x130, or 0	verified	one	spell/cooldowns#held-records	
+0x6e3050	66	StartOrRemoveSpellCooldown		spell	orchestration	void __fastcall (int32_t spell, uint32_t time, uint32_t pet, uint32_t remove)	Starts or removes a spell's records on a list through 0x6e1790 and fires the cooldown and usable events	verified	one	spell/cooldowns#starting-or-removing-a-spell	
+0x6e30a0	140	FindSpellIdByName		spell	unreached	int32_t __fastcall (const char *name)	Returns the id of the first spell whose localized name matches ignoring case, else -1; only unreached code calls it	verified	one	spell/cooldowns#spell-id-by-name	
+0x6e3130	121	GetSpellLevel		spell	primitive	uint32_t __fastcall (uint32_t spellId, uint32_t pet)	Returns the player's or pet's vtable slot 42 for a spell divided by 5, or 0 with no unit	verified	one	spell/records#caster-level	
+0x6e31b0	335	GetSpellPowerCost		spell	primitive	int32_t __fastcall (uint32_t spellId, uint32_t pet)	Computes a spell's power cost from level, percentage, the school cost fields and op 14	verified	one	spell/records#power-cost	
+0x6e3300	57	GetSpellPowerPerSecond		spell	primitive	int32_t __fastcall (uint32_t spellId, uint32_t pet)	Computes a spell's power per second from its level terms, with no modifier	verified	one	spell/records#power-cost	
+0x6e3340	317	GetSpellCastTime		spell	primitive	int32_t __fastcall (uint32_t spellId, uint32_t pet, uint32_t allowNegative)	Computes a spell's cast time from its cast-time row, op 10 and the caster's cast-speed float	verified	one	spell/records#cast-time	
+0x6e3480	726	Spell_C::GetMinMaxRange	idb	spell	primitive	void __fastcall (void *caster, uint32_t spellId, float *minRange, float *maxRange, void *target)	Computes a spell's minimum and maximum range from its range row, reaches, motion, ranged item and op 5	verified	one	spell/records#range	
+0x6e3760	156	GetSpellEffectPointsInt		spell	primitive	void __fastcall (const void *spell, uint32_t effect, int32_t *min, int32_t *max, uint32_t level, uint32_t pet, uint32_t unmodified)	Converts the bounds 0x6e3800 returns to integers through fistp and a halving shift	verified	one	spell/records#effect-amount-as-integers	
+0x6e3800	693	GetSpellEffectPoints		spell	primitive	void __fastcall (const void *spell, uint32_t effect, float *min, float *max, uint32_t level, uint32_t pet, uint32_t unmodified)	Computes an effect's minimum and maximum amount in software floats, with modifiers and 1/128 rounding	verified	one	spell/records#effect-amount-formula	
+0x6e3b80	76	ClassifySpellEffect		spell	primitive	uint8_t __fastcall (uint32_t effect, uint32_t aura, uint8_t *integral)	Returns whether an effect takes a damage op and sets whether its amount rounds to integers	verified	one	spell/records#effect-classes	
+0x6e3d10	6	GetCastSpellId		spell	orchestration	uint32_t __cdecl (void)	Returns the in-flight spell id held at 0xceca88	verified	one	spell/checks#cast-state-accessors	
+0x6e3d20	6	GetCastItemGuidPtr		spell	orchestration	uint64_t * __cdecl (void)	Returns the address of 0xcecab0, the GUID of the item the in-flight cast came from	verified	one	spell/checks#cast-state-accessors	
+0x6e3d30	14	IsCastInFlight		spell	orchestration	uint32_t __cdecl (void)	Returns 1 when the in-flight spell id 0xceca88 is nonzero	verified	one	spell/checks#cast-state-accessors	
+0x6e3d40	6	GetPendingCastBlock		spell	orchestration	void * __cdecl (void)	Returns the address of the 256-byte pending-cast block 0xceac48	verified	one	spell/checks#cast-state-accessors	
+0x6e3d50	6	GetPendingCastTargetPtr		spell	orchestration	uint64_t * __cdecl (void)	Returns the address of the pending-cast block 0xceac48 plus 0x18	verified	one	spell/checks#cast-state-accessors	
+0x6e3d60	666	IsSpellUsable		spell	primitive	uint8_t __fastcall (const void *rec, uint32_t *noPower)	Tests twelve ordered gates for the active player using a spell; sets noPower only when the power gate fails	verified	one	spell/checks#usability-predicate	
+0x6e4000	220	CheckSpellTotemsAndReagents		spell	orchestration	uint8_t __fastcall (void *caster, const void *rec, uint8_t report)	Refuses a spell whose totems are not carried (0x78) or whose reagents are short (0x5c)	verified	one	spell/checks#totems-and-reagents	
+0x6e40e0	692	CheckSpellEquippedItem		spell	primitive	uint8_t __fastcall (void *caster, const void *rec, uint8_t checkAmmo, uint8_t report)	Refuses a spell whose required item is not equipped (0x19 to 0x1b) or whose ammo is not carried (0x2f)	verified	one	spell/checks#equipped-item-and-ammo	
+0x6e43a0	160	MatchEquippedAmmoItem		spell	orchestration	uint32_t __fastcall (void *item, void *ctx)	Accepts a carried projectile of the context's ammo type and entry, storing it in the context	verified	one	spell/checks#equipped-item-and-ammo	
+0x6e4440	775	CheckSpellTargetRange		spell	primitive	uint8_t __fastcall (void *caster, const void *rec, uint64_t guid, uint8_t report)	Refuses a target a relation admits when it is out of range (0x59) or too close (0x76)	verified	one	spell/checks#range-pre-check	
+0x6e47b0	178	IsTargetInSpellRange		spell	primitive	uint8_t __fastcall (void *caster, void *target, uint32_t id, uint8_t *tooFar)	Compares the squared caster-target distance with the spell's squared minimum and maximum range	verified	one	spell/checks#range-compare	
+0x6e4870	42	TestSpellAttributesAndFlags		spell	orchestration	uint8_t __fastcall (const void *rec, uint32_t flags)	Returns a bit from AttributesEx, AttributesEx2 and a flags word that gates the chain-target fill	verified	one	spell/checks#chain-fill-predicate	
+0x6e48a0	13	IsSpellTargeting		spell	orchestration	uint32_t __cdecl (void)	Returns 1 while the targeting word 0xcecac0 is nonzero	verified	one	spell/checks#targeting-state-predicates	
+0x6e48b0	42	IsSpellTargetingForOtherCaster		spell	orchestration	uint32_t __cdecl (void)	Returns 1 while targeting for a caster other than the active player	verified	one	spell/checks#targeting-state-predicates	
+0x6e48e0	20	GetTargetingSpellId		spell	primitive	uint32_t __cdecl (void)	Returns the pending spell id while targeting, else 0	verified	one	spell/checks#targeting-state-predicates	
+0x6e4900	21	StopSpellTargeting		spell	orchestration	void __cdecl (void)	Cancels targeting through 0x6e4940 with reason 0x1c while targeting	verified	one	spell/checks#targeting-state-predicates	
+0x6e4920	21	StopSpellTargetingForOtherCaster		spell	orchestration	void __cdecl (void)	Cancels targeting through 0x6e4940 with reason 0x1c while targeting for another caster	verified	one	spell/checks#targeting-state-predicates	
+0x6e4940	397	CancelCast		spell	primitive	void __fastcall (uint8_t failed, uint8_t send, uint32_t reason)	Drops the targeting word or sends CMSG_CANCEL_CAST, pops the in-flight spell and fires a SPELLCAST stop event	verified	one	spell/cancel#cancelling-a-cast	
+0x6e4ad0	132	SetInFlightSpell		spell	orchestration	void __fastcall (uint32_t spell, CGItem *item)	Pushes a spell and its item guid as in flight over the saved slot, or pops the saved slot back for spell 0	verified	one	spell/cast#the-in-flight-spell	
+0x6e4b60	1685	TryCastSpell		spell	primitive	uint8_t __fastcall (CGUnit *caster, uint32_t spell, CGItem *item, uint64_t target)	Runs the local cast refusals, fills the pending cast, pushes it in flight and sends or raises the cursor	verified	one	spell/cast#cast-attempt-refusals	
+0x6e5200	42	SpellHasAttackStartBits		spell	orchestration	uint8_t __fastcall (const void *record)	Returns 1 for a record with Attributes 0x404, AttributesEx 0x200 or AttributesEx2 bit 20, else 0	verified	one	spell/cast#attack-predicates	
+0x6e5230	17	SpellSuppressesAttackStart		spell	primitive	uint8_t __fastcall (const void *record)	Returns bit 20 of a spell record's AttributesEx2, 0 for a null record	verified	one	spell/cast#attack-predicates	
+0x6e5250	562	ArmCastTargets		spell	primitive	uint8_t __fastcall (CGUnit *caster, const void *record, uint64_t target)	Seeds the targeting word from Targets and the implicit target, then sends, binds a candidate or returns 0	verified	one	spell/cast#the-targeting-arm	
+0x6e54f0	1225	SendCast		spell	primitive	void __fastcall (const void *pendingCast, uint8_t flag)	Sends CMSG_USE_ITEM, CMSG_CAST_SPELL or CMSG_PET_CAST_SPELL with the target block, then starts the GCD	verified	one	spell/cast#cast-request-packets	
+0x6e59c0	203	OnPlacementObjectCached		spell	orchestration		Builds the placement preview model once the game-object cache answers, while the spell is still pending	verified	one	spell/cast#placement-model-callback	
+0x6e5a90	56	CastSpellAsActivePlayer		spell	orchestration	uint8_t __fastcall (uint32_t spell, CGItem *item, uint64_t target)	Calls the cast attempt 0x6e4b60 with the active player as caster	verified	one	spell/cast#cast-entries	
+0x6e5ad0	60	CastSpellByNameText		spell	unreached	uint8_t __fastcall (const char *name)	Casts the spell a text names, or cancels the cast for the text none	verified	one	spell/cast#unreached-functions	
+0x6e5b10	34	BindTargetByGuid		spell	orchestration	uint8_t __fastcall (const uint64_t *guid)	Binds the object a guid names to the targeting word through 0x6e5b40	verified	one	spell/cast#cast-entries	
+0x6e5b40	1445	BindSpellTargetObject		spell	primitive	uint8_t __fastcall (void *object)	Binds a clicked object to the flag word, range-tests a unit or corpse, and sends the cast when the word empties	verified	one	spell/targeting#binding-a-clicked-object	
+0x6e60f0	144	BindSpellTargetLocation		spell	primitive	uint8_t __fastcall (const float *position)	Binds a clicked position to flag bit 0x20 or 0x40 and sends the cast when the word empties	verified	one	spell/targeting#binding-a-clicked-location	
+0x6e6180	19	SpellTargetWantsUnit		spell	primitive	uint8_t __cdecl (void)	Returns whether the flag word has any of 0x878e	verified	one	spell/targeting#flag-word-predicates	
+0x6e61a0	59	SpellTargetWantsSelf		spell	primitive	uint8_t __cdecl (void)	Returns whether the flag word has any of 0x850e and the pending spell lacks AttributesEx 0x80000	verified	one	spell/targeting#flag-word-predicates	
+0x6e61e0	19	SpellTargetWantsGroupOrDead		spell	primitive	uint8_t __cdecl (void)	Returns whether the flag word has any of 0x40c	verified	one	spell/targeting#flag-word-predicates	
+0x6e6200	16	SpellTargetWantsAssistOrDead		spell	primitive	uint8_t __cdecl (void)	Returns whether the flag word has any of 0x500	verified	one	spell/targeting#flag-word-predicates	
+0x6e6210	19	SpellTargetWantsEnemyOrDead		spell	primitive	uint8_t __cdecl (void)	Returns whether the flag word has any of 0x480	verified	one	spell/targeting#flag-word-predicates	
+0x6e6230	16	SpellTargetWantsCorpseOrDead		spell	primitive	uint8_t __cdecl (void)	Returns whether the flag word has any of 0x8600	verified	one	spell/targeting#flag-word-predicates	
+0x6e6240	11	SpellTargetWantsFriendlyCorpse		spell	primitive	uint32_t __cdecl (void)	Returns bit 15 (0x8000) of the flag word	verified	one	spell/targeting#flag-word-predicates	
+0x6e6250	12	SpellTargetWantsHostileCorpse		spell	primitive	uint32_t __cdecl (void)	Returns bit 9 (0x200) of the flag word	verified	one	spell/targeting#flag-word-predicates	
+0x6e6260	112	SpellTargetCanPickCorpse		spell	primitive	uint8_t __fastcall (void *corpse)	Returns whether the world pick may take a corpse under flag bits 0x8000 or 0x200	verified	one	spell/targeting#object-pick-filters	
+0x6e62d0	16	SpellTargetWantsGameObject		spell	primitive	uint8_t __cdecl (void)	Returns whether the flag word has any of 0x4800	verified	one	spell/targeting#flag-word-predicates	
+0x6e62e0	50	SpellTargetCanPickGameObject		spell	primitive	uint8_t __fastcall (void *gameObject)	Returns whether the world pick may take a game object: flag 0x4800, the type and 0x5f8260	verified	one	spell/targeting#object-pick-filters	
+0x6e6320	16	SpellTargetWantsLocation		spell	primitive	uint8_t __cdecl (void)	Returns whether the flag word has any of 0x60	verified	one	spell/targeting#flag-word-predicates	
+0x6e6330	19	SpellTargetWantsItem		spell	primitive	uint8_t __cdecl (void)	Returns whether the flag word has any of 0x4010	verified	one	spell/targeting#flag-word-predicates	
+0x6e6350	268	GetSpellTargetAreaRadius		spell	primitive	float __cdecl (void)	Returns the larger level-scaled radius of the pending spell's first two effects after modifier 6	verified	one	spell/targeting#area-reticle-radius	
+0x6e6460	939	SpellCanTargetObject		spell	primitive	uint8_t __fastcall (const uint64_t *guid, uint8_t checkRange)	Returns whether an object would bind to the flag word and, with checkRange, is within the spell's range	verified	one	spell/targeting#testing-an-object-without-binding	
+0x6e6810	218	SpellTargetLocationInRange		spell	primitive	uint8_t __fastcall (const float *position, uint8_t checkRange)	Returns whether a position target is wanted and, with checkRange, within the spell's range of the caster	verified	one	spell/targeting#location-range-test	
+0x6e68f0	12	SpellTargetWantsString		spell	unreached	uint32_t __cdecl (void)	Returns bit 13 (0x2000) of the flag word	verified	one	spell/targeting#unreached-functions	
+0x6e6900	104	BindSpellTargetTradeSlot		spell	primitive	uint32_t __cdecl (void)	Binds trade slot 6 as an item target and sends the cast when the word empties	verified	one	spell/targeting#binding-the-trade-slot	
+0x6e6970	6	GetSpellPlacementModel		spell	orchestration	void * __cdecl (void)	Returns the placement preview model 0xceca8c	verified	one	spell/targeting#placement-model-and-rotation	
+0x6e6980	67	GetSpellPlacementFacing		spell	orchestration	float __cdecl (void)	Returns the placement facing, taking the caster's facing unless the placement is rotatable	verified	one	spell/targeting#placement-model-and-rotation	
+0x6e69d0	6	IsSpellPlacementRotatable		spell	orchestration	uint8_t __cdecl (void)	Returns the rotatable-placement flag 0xceca90	verified	one	spell/targeting#placement-model-and-rotation	
+0x6e69e0	50	RotateSpellPlacement		spell	primitive	void __cdecl (void)	Adds pi/2 to the placement facing, wrapping by 2pi at or above 2pi	verified	one	spell/targeting#placement-model-and-rotation	
+0x6e6a20	160	ShowPetTameFailure		spell	primitive	void __fastcall (uint8_t reason)	Shows ERR_TAME_FAILED with the PETTAME_ text of a reason, PETTAME_UNKNOWNERROR outside 1 to 11	verified	one	spell/failures#pet-tame-failure	
+0x6e6af0	62	ApplySpellModifierInt		spell	primitive	void __fastcall (const void *spell, int32_t *value, uint32_t op)	Applies a spell's summed modifiers for an op to an integer, flat first, then percent over 100	verified	one	spell/records#modifier-appliers	
+0x6e6b30	188	GetSpellModifiers		spell	primitive	uint8_t __fastcall (const void *spell, uint32_t op, int32_t *flat, int32_t *pct)	Sums the flat and percent modifier cells of a spell's family-mask bits for an op	verified	one	spell/records#modifier-sums	
+0x6e6bf0	50	ApplySpellModifierFloat		spell	primitive	void __fastcall (const void *spell, float *value, uint32_t op)	Applies a spell's summed modifiers for an op to a float on the x87	verified	one	spell/records#modifier-appliers	
+0x6e6c30	99	ApplySpellModifierSoftFloat		spell	orchestration	void __fastcall (const void *spell, float *value, uint32_t op)	Applies a spell's summed modifiers for an op to a float through the software float routines	verified	one	spell/records#modifier-appliers	
+0x6e6ca0	34	SetClassSpellFamily		spell	primitive	void __fastcall (uint32_t classId)	Copies a class record's spell family into the global the modifier sums compare	verified	one	spell/records#talent-modifier-tables	
+0x6e6cd0	38	Script::SpellIsTargeting	idb	spell	orchestration	int __fastcall (lua_State *L)	Returns 1 to Lua while the flag word is nonzero, else nil	verified	one	spell/targeting#lua-targeting-functions	
+0x6e6d00	130	Script::SpellCanTargetUnit	idb	spell	orchestration	int __fastcall (lua_State *L)	Returns 1 to Lua when a unit token passes 0x6e6460 with range, else nil	verified	one	spell/targeting#lua-targeting-functions	
+0x6e6d90	156	Script::SpellTargetUnit	idb	spell	primitive	int __fastcall (lua_State *L)	Binds a unit token through 0x6e5b10 while targeting, or raises reason 0x59 when it names no unit	verified	one	spell/targeting#lua-targeting-functions	
+0x6e6e30	71	Script::SpellStopTargeting	idb	spell	orchestration	int __fastcall (lua_State *L)	Stops targeting through 0x6e4900 and returns 1 to Lua if it was on, else nil	verified	one	spell/targeting#lua-targeting-functions	
+0x6e6e80	107	Script::SpellStopCasting	idb	spell	orchestration	int __fastcall (lua_State *L)	Cancels auto-repeat or aborts the in-flight cast and returns 1 to Lua, else nil	verified	one	spell/targeting#lua-targeting-functions	
+0x6e6ef0	30	RegisterSpellTargetingScripts		spell	orchestration	void __cdecl (void)	Registers the five Lua targeting functions of 0x86f950	verified	one	spell/cast#small-spell-helpers	
+0x6e6f10	24	UnregisterSpellTargetingScripts		spell	orchestration	void __cdecl (void)	Unregisters the five Lua targeting functions of 0x86f950	verified	one	spell/cast#small-spell-helpers	
+0x6e6f30	257	CancelNextSwingSpells		spell	orchestration	void __cdecl (void)	Cancels an on-next-swing spell in flight and sends CMSG_CANCEL_CAST for one in the saved slot	verified	one	spell/cancel#cancelling-next-swing-spells	
+0x6e7040	233	Spell_C::CancelAura	idb	spell	orchestration	void __fastcall (uint32_t spell)	Clears the spell locally and sends CMSG_CANCEL_AURA, unless its AttributesEx gate refuses	verified	one	spell/cancel#channel-and-aura-cancels	
+0x6e7130	17	GetPowerDisplayDivisor		spell	primitive	int32_t __fastcall (int32_t powerType)	Returns the power type's display divisor from 0x86f978, 1 for a negative type, unbounded above	verified	one	spell/cast#small-spell-helpers	
+0x6e7150	474	Spell_C::SystemInitialize	idb	spell	orchestration	void __cdecl (void)	Registers the 22 spell message handlers and the autoSelfCast CVar, and zeroes the cast slots and modifier tables	verified	one	spell/handlers#system-initialization-and-teardown	
+0x6e7330	434	CastResultHandler	idb	spell	orchestration	int __fastcall (void *context, uint32_t opcode, uint32_t time, void *msg)	Handles SMSG_CAST_RESULT: reports a failure, clears the saved and in-flight slots and casts the next spell	verified	one	spell/handlers#cast-result	
+0x6e74f0	85	SpellDelayed	idb	spell	orchestration	int __fastcall (void *context, uint32_t opcode, uint32_t time, void *msg)	Handles SMSG_SPELL_DELAYED: fires SPELLCAST_DELAYED with the delay when the guid is the player	verified	one	spell/handlers#cast-delayed	
+0x6e7550	147	SpellChannelStart	idb	spell	orchestration	int __fastcall (void *context, uint32_t opcode, uint32_t time, void *msg)	Handles MSG_CHANNEL_START: fires SPELLCAST_CHANNEL_START with the duration and a name	verified	one	spell/handlers#channel-start-and-update	
+0x6e75f0	69	SpellChannelUpdate	idb	spell	orchestration	int __fastcall (void *context, uint32_t opcode, uint32_t time, void *msg)	Handles MSG_CHANNEL_UPDATE: fires SPELLCAST_CHANNEL_UPDATE for a nonzero time, else SPELLCAST_CHANNEL_STOP	verified	one	spell/handlers#channel-start-and-update	
+0x6e7640	187	HandleSpellStartAndGo		spell	orchestration	int __fastcall (void *context, uint32_t opcode, uint32_t time, void *msg)	Reads the two packed guids and spell id of a spell start or go and calls 0x6e7700 or 0x6e7a70	verified	one	spell/handlers#start-and-go-dispatch	
+0x6e7700	870	HandleSpellStart		spell	orchestration	void __fastcall (const uint64_t *source, const uint64_t *caster, uint32_t spellId, void *msg)	Decodes a spell start, starts the caster's cast state and fires SPELLCAST_START for the player's timed cast	verified	one	spell/handlers#spell-start	
+0x6e7a70	3048	HandleSpellGo		spell	primitive	void __fastcall (const uint64_t *source, const uint64_t *caster, uint32_t spellId, void *msg)	Decodes a spell go, reports misses, plays the cast and impacts or missiles, and starts the cast's cooldowns	verified	one	spell/go#spell-go-packet	
+0x6e8660	456	PendItemCooldown		spell	primitive	void __fastcall (uint32_t itemId, uint32_t spellId, uint32_t time, uint32_t onHold)	Stores an item cooldown in the pending hash under the item id until the item record arrives	verified	one	spell/go#pending-item-cooldowns	
+0x6e8830	535	OnItemRecordForCooldown		spell	primitive	void __fastcall (uint32_t itemId, const uint64_t *guid, uint32_t arg, uint32_t found)	Inserts a pending item cooldown once the item record is cached, then frees its node	verified	one	spell/go#pending-item-cooldowns	
+0x6e8a50	404	LaunchSpellMissiles		spell	orchestration	void __fastcall (void *unit, void *rec, void *visual, int32_t ammo, int32_t ammoType, void *targets, void *list, void *reasons, void *extras)	Launches a spell missile per listed target, or one at the target location, through 0x60a3d0	verified	one	spell/go#missile-launch	
+0x6e8bf0	177	PlaySpellImpactsOnHits		spell	orchestration	void __fastcall (void *record, void *visual, void *hits)	Plays the impact kit on each hit unit and a wound for a harmful spell	verified	one	spell/go#missile-and-impact-legs	
+0x6e8cb0	90	PlaySpellImpactOnUnit		spell	orchestration	void __fastcall (void *record, void *visual, void *unit)	Plays the impact kit on one unit and a wound for a harmful spell	verified	one	spell/go#missile-and-impact-legs	
+0x6e8d10	104	RewriteMissReasons		spell	orchestration	void __fastcall (void *record, void *visual, void *list, void *reasons)	Stores 0x624f20 of each missed unit and its reason over the reason, which leaves it unchanged	verified	one	spell/go#missile-and-impact-legs	
+0x6e8d80	189	SpellFailedHandler	idb	spell	orchestration	uint32_t __fastcall (void *param, uint32_t opcode, uint32_t time, CDataStore *msg)	Handles opcode 0x133: runs the unit's failure calls and the school sound, and stops auto-repeat on ammo reasons	verified	one	spell/failures#spell-failure-packets	
+0x6e8e40	106	HandleSpellFailedOtherPacket	idb	spell	orchestration	uint32_t __fastcall (void *param, uint32_t opcode, uint32_t time, CDataStore *msg)	Handles opcode 0x2a6: calls 0x60d040 and 0x614150 on the unit with the spell id	verified	one	spell/failures#spell-failure-packets	
+0x6e8eb0	1251	PetSpellFailedHandler	idb	spell	primitive	uint32_t __fastcall (void *param, uint32_t opcode, uint32_t time, CDataStore *msg)	Handles opcode 0x138: shows the pet's failure message by its own reason table, with no log line or event	verified	one	spell/failures#pet-cast-failure-packet	
+0x6e9460	363	SpellCooldownHandler	idb	spell	primitive	uint32_t __fastcall (void *context, uint32_t opcode, uint32_t time, void *msg)	Handles SMSG_SPELL_COOLDOWN: adds a record per spell and time pair to the player's or pet's list	verified	one	spell/cooldowns#spell-cooldown-packet	
+0x6e95d0	155	ItemCooldownHandler	idb	spell	orchestration	uint32_t __fastcall (void *context, uint32_t opcode, uint32_t time, void *msg)	Handles SMSG_ITEM_COOLDOWN: adds a 30,000 ms record of the spell and the item's entry	verified	one	spell/cooldowns#item-cooldown-packet	
+0x6e9670	129	CooldownEvent	idb	spell	orchestration	uint32_t __fastcall (void *context, uint32_t opcode, uint32_t time, void *msg)	Handles SMSG_COOLDOWN_EVENT and SMSG_CLEAR_COOLDOWN through 0x6e3050 on the pet or player list	verified	one	spell/cooldowns#cooldown-event-clear-and-cheat	
+0x6e9700	38	ClearSpellHistoryList		spell	orchestration	void __fastcall (uint32_t pet)	Empties the player or pet spell-history list and fires the cooldown events	verified	one	spell/cooldowns#expiry-sweep-and-whole-lists	
+0x6e9730	92	CooldownCheat	idb	spell	orchestration	uint32_t __fastcall (void *context, uint32_t opcode, uint32_t time, void *msg)	Handles SMSG_COOLDOWN_CHEAT: empties the player's or pet's list the guid names	verified	one	spell/cooldowns#cooldown-event-clear-and-cheat	
+0x6e9790	68	HandleGameObjectResetStatePacket	idb	spell	orchestration	int __fastcall (void *context, uint32_t opcode, uint32_t time, void *msg)	Handles opcode 0x2a7: re-applies a game object's state field through 0x5f8c00	verified	one	spell/handlers#small-spell-handlers	
+0x6e97e0	32	PetTameFailure	idb	spell	orchestration	uint32_t __fastcall (void *param, uint32_t opcode, uint32_t time, CDataStore *msg)	Handles opcode 0x173: reads the reason byte and shows it through 0x6e6a20	verified	one	spell/failures#pet-tame-failure	
+0x6e9800	21	HandleFeignDeathResistedPacket	idb	spell	orchestration	int __fastcall (void *context, uint32_t opcode, uint32_t time, void *msg)	Handles opcode 0x2b4: shows the UI error 421 ERR_FEIGN_DEATH_RESISTED	verified	one	spell/handlers#small-spell-handlers	
+0x6e9820	166	HandleSpellUpdateChainTargetsPacket	idb	spell	orchestration	int __fastcall (void *context, uint32_t opcode, uint32_t time, void *msg)	Handles opcode 0x330: passes a unit's new chain-target guid list and spell to 0x605710	verified	one	spell/handlers#small-spell-handlers	
+0x6e98d0	118	PlaySpellVisualKit	idb	spell	orchestration	int __fastcall (void *context, uint32_t opcode, uint32_t time, void *msg)	Handles SMSG_PLAY_SPELL_VISUAL: plays a SpellVisualKit on a unit through 0x60edf0	verified	one	spell/handlers#small-spell-handlers	
+0x6e9950	123	HandleSetSpellModifierPacket	idb	spell	primitive	uint32_t __fastcall (void *context, uint32_t opcode, uint32_t time, void *msg)	Stores a flat or percent talent modifier cell from SMSG_SET_FLAT or SMSG_SET_PCT_SPELL_MODIFIER	verified	one	spell/records#talent-modifier-tables	
+0x6e99d0	13	HandleCancelAutoRepeatPacket	idb	spell	orchestration	int __fastcall (void *context, uint32_t opcode, uint32_t time, void *msg)	Handles opcode 0x29c: stops the auto-repeat spell through 0x6ea080	verified	one	spell/handlers#small-spell-handlers	
+0x6e99e0	225	Spell_C::Destroy	idb	spell	orchestration	void __cdecl (void)	Clears the 22 spell message handlers and tail-calls 0x6e9ad0	verified	one	spell/handlers#system-initialization-and-teardown	
+0x6e9ad0	134	ClearItemAndSpellCooldowns	idb	spell	orchestration	void __cdecl (void)	Frees every item-cooldown node and empties both spell-history lists	verified	one	spell/cooldowns#item-cooldown-table	
+0x6e9b60	10	ClearPetSpellHistory		spell	orchestration	void __cdecl (void)	Empties the pet's spell history through 0x6e1880	verified	one	spell/cast#small-spell-helpers	
+0x6e9b70	111	SendCancelChannelling		spell	orchestration	void __fastcall (uint32_t spell)	Sends CMSG_CANCEL_CHANNELLING with the spell id	verified	one	spell/cancel#channel-and-aura-cancels	
+0x6e9be0	54	SpellHasAuraEffect		spell	orchestration	uint8_t __fastcall (const void *record)	Returns 1 when one of a record's three effects is 6, 35, 119, 128 or 129	verified	one	spell/cast#small-spell-helpers	
+0x6e9c20	90	ReadGuidPairRecord		spell	orchestration	void __thiscall (void *this, CDataStore *store)	Reads two 8-byte and five 4-byte values from a data store into a record	verified	one	spell/cast#small-spell-helpers	
+0x6e9c80	28	ScanStunAuras		spell	orchestration	uint8_t __fastcall (void *unit, const void *castRec, uint32_t *mechanic)	Clears the mechanic and scans the unit's auras of type 12 through 0x6e9ca0	verified	one	spell/checks#crowd-control-aura-scans	
+0x6e9ca0	203	ScanAurasForImmunity		spell	orchestration	uint8_t __fastcall (void *unit, const void *castRec, uint32_t auraType, uint32_t *mechanic)	Returns 1 when the unit has auras of a type and the cast spell is immune to every such effect	verified	one	spell/checks#crowd-control-aura-scans	
+0x6e9d70	168	SpellGrantsImmunityToAuraEffect		spell	primitive	uint8_t __fastcall (const void *castRec, const void *auraRec, uint32_t effect)	Returns 1 when the cast spell applies a state, school, dispel or mechanic immunity covering an aura effect	verified	one	spell/checks#immunity-matcher	
+0x6e9e60	95	ScanSilenceAuras		spell	orchestration	uint32_t __fastcall (void *unit, const void *castRec, uint32_t *mechanic)	Scans aura types 27, 12 and 60 through 0x6e9ca0, returning 1 on the first exempt type	verified	one	spell/checks#crowd-control-aura-scans	
+0x6e9ec0	95	ScanPacifyAuras		spell	orchestration	uint32_t __fastcall (void *unit, const void *castRec, uint32_t *mechanic)	Scans aura types 25, 12 and 60 through 0x6e9ca0, returning 1 on the first exempt type	verified	one	spell/checks#crowd-control-aura-scans	
+0x6e9f20	28	ScanFearAuras		spell	orchestration	uint8_t __fastcall (void *unit, const void *castRec, uint32_t *mechanic)	Clears the mechanic and scans the unit's auras of type 7 through 0x6e9ca0	verified	one	spell/checks#crowd-control-aura-scans	
+0x6e9f40	28	ScanConfuseAuras		spell	orchestration	uint8_t __fastcall (void *unit, const void *castRec, uint32_t *mechanic)	Clears the mechanic and scans the unit's auras of type 5 through 0x6e9ca0	verified	one	spell/checks#crowd-control-aura-scans	
+0x6e9f60	98	ScanCharmAuras		spell	orchestration	uint32_t __fastcall (void *unit, const void *castRec, uint32_t *mechanic)	Scans aura types 6, 177 and 2 through 0x6e9ca0, returning 1 on the first exempt type	verified	one	spell/checks#crowd-control-aura-scans	
+0x6e9fd0	6	GetAutoRepeatSpell		spell	orchestration	uint32_t __cdecl (void)	Returns the auto-repeat spell id 0xceac30	verified	one	spell/cancel#auto-repeat-stop	
+0x6e9fe0	17	SpellIsAutoRepeat		spell	unreached	uint8_t __fastcall (const void *record)	Returns bit 5 of a spell record's AttributesEx2, 0 for a null record	verified	one	spell/cast#unreached-functions	
+0x6ea000	125	GetSpellDuration		spell	primitive	int32_t __fastcall (const void *spell, uint8_t pet, uint8_t unmodified)	Computes a spell's duration from its duration row, capped at the row maximum, then op 1	verified	one	spell/records#duration	
+0x6ea080	322	StopAutoRepeatSpell		spell	primitive	void __cdecl (void)	Sends CMSG_CANCEL_AUTO_REPEAT_SPELL, clears the auto-repeat spell and fires STOP_AUTOREPEAT_SPELL	verified	one	spell/cancel#auto-repeat-stop	
+0x6ea1d0	7	SetFeedPetSpell		spell	orchestration	void __fastcall (uint32_t spell)	Stores the spell id the item-on-pet click casts	verified	one	spell/cast#cast-entries	
+0x6ea1e0	159	CastFeedPetOnItem		spell	orchestration	uint8_t __fastcall (CGItem *item, CGUnit *unit)	Casts the stored feed spell when the unit was made by the active player, then binds the item	verified	one	spell/cast#cast-entries	
+0x6ea280	174	GetSpellHostility		spell	primitive	int __fastcall (const void *record)	Classifies a spell record as harmful 2, helpful 1 or neither 0 by its target flags and implicit targets	verified	one	spell/handlers#hostility-classifier	
+0x6ea450	171	LinkSpellHistoryNode		spell	orchestration	void __thiscall (void *list, void *node, int mode, void *neighbour)	Unlinks a cooldown history node and links it after a neighbour for mode 1, else before it	verified	one	spell/handlers#history-list-link	
+0x6ea500	117	DeleteItemCooldownNode		spell	orchestration	void __thiscall (void *table, void *node)	Unlinks an item-cooldown node from its node and slot lists and frees it; vtable slot 0	verified	one	spell/cooldowns#item-cooldown-table	
+0x6ea580	179	NewItemCooldownNode		spell	orchestration	void * __thiscall (void *table, void *slotList, uint32_t extra, uint32_t flags)	Allocates an item-cooldown node, clears its links and links it at a slot list's head; vtable slot 1	verified	one	spell/cooldowns#item-cooldown-table	
+0x6ea640	189	ClearItemCooldownTable		spell	orchestration	void __thiscall (void *table)	Unlinks every item-cooldown node, sets the mask to -1 and frees the slot array; vtable slot 3	verified	one	spell/cooldowns#item-cooldown-table	
+0x6ea700	5	SpellCInitProduct1Thunk		spell	orchestration	void __cdecl (void)	Jumps to 0x6ea710; a static initializer	verified	one	spell/layout#static-initializers	
+0x6ea710	19	SpellCInitProduct1		spell	primitive	void __cdecl (void)	Stores -21 times -0.027777778 as a float in a global	verified	one	spell/layout#static-initializers	
+0x6ea730	5	SpellCInitProduct2Thunk		spell	orchestration	void __cdecl (void)	Jumps to 0x6ea740; a static initializer	verified	one	spell/layout#static-initializers	
+0x6ea740	19	SpellCInitProduct2		spell	primitive	void __cdecl (void)	Stores a global set just before times -255 as a float in a global	verified	one	spell/layout#static-initializers	
+0x6ea760	5	SpellCInitProduct3Thunk		spell	orchestration	void __cdecl (void)	Jumps to 0x6ea770; a static initializer	verified	one	spell/layout#static-initializers	
+0x6ea770	19	SpellCInitProduct3		spell	primitive	void __cdecl (void)	Stores 18 times 0.027777778 as a float in a global	verified	one	spell/layout#static-initializers	
+0x6ea790	5	SpellCInitProduct4Thunk		spell	orchestration	void __cdecl (void)	Jumps to 0x6ea7a0; a static initializer	verified	one	spell/layout#static-initializers	
+0x6ea7a0	19	SpellCInitProduct4		spell	primitive	void __cdecl (void)	Stores a global set just before times 256 as a float in a global	verified	one	spell/layout#static-initializers	
+0x6ea7c0	190	DeleteItemCooldownTable		spell	orchestration	void * __thiscall (void *table, uint32_t flags)	Destroys the item-cooldown table and frees it when flag bit 0 is set; vtable slot 2	verified	one	spell/cooldowns#item-cooldown-table	
+0x6ea880	5	SpellCInitQuotient2Thunk		spell	orchestration	void __cdecl (void)	Jumps to 0x6ea890; a static initializer	verified	one	spell/layout#static-initializers	
+0x6ea890	19	SpellCInitQuotient2		spell	primitive	void __cdecl (void)	Stores 1 divided by 4.1666665 as a float in a global	verified	one	spell/layout#static-initializers	
+0x6ea8b0	5	SpellCInitSquare1Thunk		spell	orchestration	void __cdecl (void)	Jumps to 0x6ea8c0; a static initializer	verified	one	spell/layout#static-initializers	
+0x6ea8c0	19	SpellCInitSquare1		spell	primitive	void __cdecl (void)	Stores 10 squared as a float in a global	verified	one	spell/layout#static-initializers	
+0x6ea8e0	5	SpellCInitQuotient3Thunk		spell	orchestration	void __cdecl (void)	Jumps to 0x6ea8f0; a static initializer	verified	one	spell/layout#static-initializers	
+0x6ea8f0	19	SpellCInitQuotient3		spell	primitive	void __cdecl (void)	Stores 0.5 divided by 10 as a float in a global	verified	one	spell/layout#static-initializers	
+0x6ea910	60	UnlinkSpellHistoryLink		spell	orchestration	void __thiscall (void *link)	Unlinks a spell-history link from its list and clears it	verified	one	spell/cooldowns#item-cooldown-table-internals	
+0x6ea950	41	NextSpellHistoryLink		spell	orchestration	void * __thiscall (void *link, int32_t linkOffset)	Returns the link after a spell-history link, deriving the link offset when it is negative	verified	one	spell/cooldowns#item-cooldown-table-internals	
+0x6ea980	136	DestroyItemCooldownSlotList		spell	orchestration	void __thiscall (void *list)	Unlinks every node of an item-cooldown slot list and then its end link	verified	one	spell/cooldowns#item-cooldown-table-internals	
+0x6eaa10	135	DestroyItemCooldownSlotArray		spell	orchestration	void __thiscall (void *array)	Empties every item-cooldown slot list of an array and frees the array data	verified	one	spell/cooldowns#item-cooldown-table-internals	
+0x6eaaa0	5	SpellCInitSquare2Thunk		spell	orchestration	void __cdecl (void)	Jumps to 0x6eaab0; a static initializer	verified	one	spell/layout#static-initializers	
+0x6eaab0	19	SpellCInitSquare2		spell	primitive	void __cdecl (void)	Stores 10 squared as a float in a global	verified	one	spell/layout#static-initializers	
+0x6eaad0	5	SpellCInitSquare3Thunk		spell	orchestration	void __cdecl (void)	Jumps to 0x6eaae0; a static initializer	verified	one	spell/layout#static-initializers	
+0x6eaae0	19	SpellCInitSquare3		spell	primitive	void __cdecl (void)	Stores 11.111111 squared as a float in a global	verified	one	spell/layout#static-initializers	
+0x6eab00	5	SpellCInitSquare4Thunk		spell	orchestration	void __cdecl (void)	Jumps to 0x6eab10; a static initializer	verified	one	spell/layout#static-initializers	
+0x6eab10	19	SpellCInitSquare4		spell	primitive	void __cdecl (void)	Stores 5.5555553 squared as a float in a global	verified	one	spell/layout#static-initializers	
+0x6eab30	5	SpellCInitSquare5Thunk		spell	orchestration	void __cdecl (void)	Jumps to 0x6eab40; a static initializer	verified	one	spell/layout#static-initializers	
+0x6eab40	19	SpellCInitSquare5		spell	primitive	void __cdecl (void)	Stores 10 squared as a float in a global	verified	one	spell/layout#static-initializers	
+0x6eab60	5	SpellCInitSquare6Thunk		spell	orchestration	void __cdecl (void)	Jumps to 0x6eab70; a static initializer	verified	one	spell/layout#static-initializers	
+0x6eab70	19	SpellCInitSquare6		spell	primitive	void __cdecl (void)	Stores 5 squared as a float in a global	verified	one	spell/layout#static-initializers	
+0x6eab90	5	SpellCInitSquare7Thunk		spell	orchestration	void __cdecl (void)	Jumps to 0x6eaba0; a static initializer	verified	one	spell/layout#static-initializers	
+0x6eaba0	19	SpellCInitSquare7		spell	primitive	void __cdecl (void)	Stores 10 squared as a float in a global	verified	one	spell/layout#static-initializers	
+0x6eabc0	5	SpellCInitSquare8Thunk		spell	orchestration	void __cdecl (void)	Jumps to 0x6eabd0; a static initializer	verified	one	spell/layout#static-initializers	
+0x6eabd0	19	SpellCInitSquare8		spell	primitive	void __cdecl (void)	Stores 30 squared as a float in a global	verified	one	spell/layout#static-initializers	
+0x6eabf0	5	SpellCInitSquare9Thunk		spell	orchestration	void __cdecl (void)	Jumps to 0x6eac00; a static initializer	verified	one	spell/layout#static-initializers	
+0x6eac00	19	SpellCInitSquare9		spell	primitive	void __cdecl (void)	Stores 120 squared as a float in a global	verified	one	spell/layout#static-initializers	
+0x6eac20	5	SpellCInitSquare10Thunk		spell	orchestration	void __cdecl (void)	Jumps to 0x6eac30; a static initializer	verified	one	spell/layout#static-initializers	
+0x6eac30	19	SpellCInitSquare10		spell	primitive	void __cdecl (void)	Stores 20 squared as a float in a global	verified	one	spell/layout#static-initializers	
+0x6eac50	5	SpellCInitSquare11Thunk		spell	orchestration	void __cdecl (void)	Jumps to 0x6eac60; a static initializer	verified	one	spell/layout#static-initializers	
+0x6eac60	19	SpellCInitSquare11		spell	primitive	void __cdecl (void)	Stores 10 squared as a float in a global	verified	one	spell/layout#static-initializers	
+0x6eac80	5	SpellCInitSquare12Thunk		spell	orchestration	void __cdecl (void)	Jumps to 0x6eac90; a static initializer	verified	one	spell/layout#static-initializers	
+0x6eac90	19	SpellCInitSquare12		spell	primitive	void __cdecl (void)	Stores 0.5 squared as a float in a global	verified	one	spell/layout#static-initializers	
+0x6eacb0	5	SpellCInitSquare13Thunk		spell	orchestration	void __cdecl (void)	Jumps to 0x6eacc0; a static initializer	verified	one	spell/layout#static-initializers	
+0x6eacc0	19	SpellCInitSquare13		spell	primitive	void __cdecl (void)	Stores 3 squared as a float in a global	verified	one	spell/layout#static-initializers	
+0x6eace0	5	SpellCInitSquare14Thunk		spell	orchestration	void __cdecl (void)	Jumps to 0x6eacf0; a static initializer	verified	one	spell/layout#static-initializers	
+0x6eacf0	19	SpellCInitSquare14		spell	primitive	void __cdecl (void)	Stores 100 squared as a float in a global	verified	one	spell/layout#static-initializers	
+0x6ead10	5	SpellCInitFive1Thunk		spell	orchestration	void __cdecl (void)	Jumps to 0x6ead20; a static initializer	verified	one	spell/layout#static-initializers	
+0x6ead20	11	SpellCInitFive1		spell	orchestration	void __cdecl (void)	Stores 5 as a float in a global	verified	one	spell/layout#static-initializers	
+0x6ead30	5	SpellCInitSquare15Thunk		spell	orchestration	void __cdecl (void)	Jumps to 0x6ead40; a static initializer	verified	one	spell/layout#static-initializers	
+0x6ead40	19	SpellCInitSquare15		spell	primitive	void __cdecl (void)	Stores 50 squared as a float in a global	verified	one	spell/layout#static-initializers	
+0x6ead60	5	SpellCInitSquare16Thunk		spell	orchestration	void __cdecl (void)	Jumps to 0x6ead70; a static initializer	verified	one	spell/layout#static-initializers	
+0x6ead70	19	SpellCInitSquare16		spell	primitive	void __cdecl (void)	Stores 100 squared as a float in a global	verified	one	spell/layout#static-initializers	
+0x6ead90	5	SpellCInitSquare17Thunk		spell	orchestration	void __cdecl (void)	Jumps to 0x6eada0; a static initializer	verified	one	spell/layout#static-initializers	
+0x6eada0	19	SpellCInitSquare17		spell	primitive	void __cdecl (void)	Stores 40 squared as a float in a global	verified	one	spell/layout#static-initializers	
+0x6eadc0	5	SpellCInitSquare18Thunk		spell	orchestration	void __cdecl (void)	Jumps to 0x6eadd0; a static initializer	verified	one	spell/layout#static-initializers	
+0x6eadd0	19	SpellCInitSquare18		spell	primitive	void __cdecl (void)	Stores 1.5 squared as a float in a global	verified	one	spell/layout#static-initializers	
+0x6eadf0	60	UnlinkItemCooldownLink		spell	orchestration	void __thiscall (void *link)	Unlinks an item-cooldown link from its list and clears it	verified	one	spell/cooldowns#item-cooldown-table-internals	
+0x6eae30	25	GetItemCooldownNodeLink		spell	orchestration	void * __thiscall (void *list, void *node)	Returns a node's link in a list, or the list's end link for a null node	verified	one	spell/cooldowns#item-cooldown-table-internals	
+0x6eae50	181	LinkItemCooldownNode		spell	orchestration	void __thiscall (void *list, void *node, uint32_t where, void *other)	Links an item-cooldown node after (1) or before (2) another, the end link for none	verified	one	spell/cooldowns#item-cooldown-table-internals	
+0x6eaf10	77	UnlinkAllItemCooldownNodes		spell	orchestration	void __thiscall (void *list)	Unlinks every node of an item-cooldown list	verified	one	spell/cooldowns#item-cooldown-table-internals	
+0x6eaf60	41	NextItemCooldownLink		spell	orchestration	void * __thiscall (void *link, int32_t linkOffset)	Returns the link after an item-cooldown link, deriving the link offset when it is negative	verified	one	spell/cooldowns#item-cooldown-table-internals	
+0x6eaf90	491	ResizeItemCooldownTable		spell	primitive	void __thiscall (void *table, uint32_t slots)	Rebuilds the item-cooldown table with a slot count, mask count - 1, relinking each node at its slot's tail	verified	one	spell/cooldowns#item-cooldown-table-internals	
+0x6eb180	33	InitItemCooldownSlotList		spell	orchestration	void __thiscall (void *list)	Makes an empty item-cooldown slot list with link offset 0xdddddddd	verified	one	spell/cooldowns#item-cooldown-table-internals	
+0x6eb1b0	176	DeleteItemCooldownSlotList		spell	orchestration	void * __thiscall (void *list, uint32_t flags)	Empties an item-cooldown slot list, unlinks its end link and frees it when flag bit 0 is set	verified	one	spell/cooldowns#item-cooldown-table-internals	
+0x6eb260	12	InitItemCooldownListEnd		spell	orchestration	void __thiscall (void *list)	Points an item-cooldown list's end link at itself, marked by bit 0	verified	one	spell/cooldowns#item-cooldown-table-internals	
+0x6eb270	316	SetItemCooldownSlotCount		spell	primitive	void __thiscall (void *array, uint32_t count)	Sets the slot array's count, growing its capacity to a quantum multiple and building or destroying lists	verified	one	spell/cooldowns#item-cooldown-table-internals	
+0x6eb3b0	10	SpellCInitCountUnit1Thunk		spell	orchestration	void __cdecl (void)	Calls 0x6eb3c0, then jumps to 0x6eb3e0; a static initializer	verified	one	spell/layout#static-initializers	
+0x6eb3c0	22	SpellCInitCountUnit1		spell	primitive	void __cdecl (void)	Counts one more unit in a shared global and calls 0x5b71c0 on the first	verified	one	spell/layout#static-initializers	
+0x6eb3e0	12	RegisterSpellCReleaseCountUnit1		spell	orchestration	void __cdecl (void)	Registers 0x6eb3f0 with _atexit	verified	one	spell/layout#static-initializers	
+0x6eb3f0	14	SpellCReleaseCountUnit1		spell	primitive	void __cdecl (void)	Counts one unit fewer in a shared global and tail-calls the empty 0x5b71d0 when it reaches zero	verified	one	spell/layout#static-initializers	
+0x6eb400	319	ReserveItemCooldownSlots		spell	primitive	void __thiscall (void *array, uint32_t extra, uint32_t round)	Grows the slot array's capacity to its count plus extra, rounded to a quantum when asked	verified	one	spell/cooldowns#item-cooldown-table-internals	
+0x6eb540	264	ReallocItemCooldownSlots		spell	orchestration	void __thiscall (void *array, uint32_t capacity)	Reallocates the slot array's data to a capacity, moving to a new block when it cannot grow in place	verified	one	spell/cooldowns#item-cooldown-table-internals	
+0x6eb650	5	SpellVisualsInitCopy1Thunk		spell	orchestration	void __cdecl (void)	Jumps to 0x6eb660; a static initializer	verified	one	spell/layout#static-initializers	
+0x6eb660	11	SpellVisualsInitCopy1		spell	orchestration	void __cdecl (void)	Copies the constant +inf into a global	verified	one	spell/layout#static-initializers	
+0x6eb670	5	SpellVisualsInitDouble1Thunk		spell	orchestration	void __cdecl (void)	Jumps to 0x6eb680; a static initializer	verified	one	spell/layout#static-initializers	
+0x6eb680	15	SpellVisualsInitDouble1		spell	primitive	void __cdecl (void)	Stores 3.1415927 + 3.1415927 as a float in a global	verified	one	spell/layout#static-initializers	
+0x6eb690	5	SpellVisualsInitQuotient1Thunk		spell	orchestration	void __cdecl (void)	Jumps to 0x6eb6a0; a static initializer	verified	one	spell/layout#static-initializers	
+0x6eb6a0	19	SpellVisualsInitQuotient1		spell	primitive	void __cdecl (void)	Stores 1 divided by a global set just before as a float in a global	verified	one	spell/layout#static-initializers	
+0x6eb6c0	10	InitBlizzardObjectListThunk		spell	orchestration	void __cdecl (void)	Calls 0x6eb6d0, then jumps to 0x6eb700; a static initializer	verified	one	spell/layout#static-initializers	
+0x6eb6d0	34	InitBlizzardObjectList		spell	orchestration	void __cdecl (void)	Makes the emitter list 0xcee96c empty: link offset 0, terminator pointing at itself and marked	verified	one	spell/visuals#static-lists-and-pools	
+0x6eb700	12	RegisterDestroyBlizzardObjectList		spell	orchestration	void __cdecl (void)	Registers 0x6eb710 with _atexit	verified	one	spell/layout#static-initializers	
+0x6eb710	145	DestroyBlizzardObjectList		spell	orchestration	void __cdecl (void)	Unlinks every node of the emitter list 0xcee96c, then its terminator; registered with _atexit	verified	one	spell/visuals#static-lists-and-pools	
+0x6eb7b0	10	InitBlizzardObjectPoolThunk		spell	orchestration	void __cdecl (void)	Calls 0x6eb7c0, then jumps to 0x6eb7e0; a static initializer	verified	one	spell/layout#static-initializers	
+0x6eb7c0	18	InitBlizzardObjectPool		spell	orchestration	void __cdecl (void)	Initializes the emitter pool 0xcee928 for 0x144-byte elements, 8 per block, through 0x760390	verified	one	spell/visuals#static-lists-and-pools	
+0x6eb7e0	12	RegisterDestroyBlizzardObjectPool		spell	orchestration	void __cdecl (void)	Registers 0x6eb7f0 with _atexit	verified	one	spell/layout#static-initializers	
+0x6eb7f0	10	DestroyBlizzardObjectPool		spell	orchestration	void __cdecl (void)	Jumps to 0x7603f0 on the emitter pool 0xcee928; registered with _atexit	verified	one	spell/visuals#static-lists-and-pools	
+0x6eb800	10	InitShardPoolThunk		spell	orchestration	void __cdecl (void)	Calls 0x6eb810, then jumps to 0x6eb820; a static initializer	verified	one	spell/layout#static-initializers	
+0x6eb810	15	InitShardPool		spell	orchestration	void __cdecl (void)	Initializes the shard pool 0xcee8f0 for 0x20-byte elements, 32 per block, through 0x760390	verified	one	spell/visuals#static-lists-and-pools	
+0x6eb820	12	RegisterDestroyShardPool		spell	orchestration	void __cdecl (void)	Registers 0x6eb830 with _atexit	verified	one	spell/layout#static-initializers	
+0x6eb830	10	DestroyShardPool		spell	orchestration	void __cdecl (void)	Jumps to 0x7603f0 on the shard pool 0xcee8f0; registered with _atexit	verified	one	spell/visuals#static-lists-and-pools	
+0x6eb840	13	BlizzardObject::DrawCallback		spell	orchestration	uint32_t __fastcall (BlizzardObject *object, uint32_t unused, uint32_t a, uint32_t b, uint32_t c)	Calls 0x6ebee0 on the emitter in ecx and returns 1; the world object callback 0x6eb930 installs	verified	one	spell/visuals#shard-model-start-and-end	
+0x6eb850	212	BlizzardObject::~BlizzardObject		spell	orchestration	void __thiscall (BlizzardObject *this)	Closes and frees every shard, releases the world object +0x10c, unlinks the shard list and the emitter	verified	one	spell/visuals#shard-model-start-and-end	
+0x6eb930	405	BlizzardObject::Initialize		spell	primitive	void __thiscall (BlizzardObject *this, const float *position, const char *path, float radius, float rate)	Stores position, radius, path and the spellEffectLevel-scaled rate and creates the world object with its box	verified	one	spell/visuals#emitter-initialization	
+0x6ebad0	822	BlizzardObject::Update		spell	primitive	uint32_t __thiscall (BlizzardObject *this)	Accumulates frame time times rate, spawns a shard per whole unit, returns 0 once the rate is 0.0 and no shard is left	verified	one	spell/visuals#shard-emission-rate	
+0x6ebe10	25	Shard::Shard		spell	orchestration	Shard * __thiscall (Shard *this)	Zeroes a shard's link, position and model and its started flag, leaving the start time	verified	one	spell/visuals#shard-model-start-and-end	
+0x6ebe30	49	ShardModelEventCallback		spell	primitive	void __stdcall (uint32_t tag, uint32_t a, uint32_t b, uint32_t c, uint32_t d, uint32_t e)	Counts each call in 0xcee944 and plays a sound through 0x458870 for $SND when the count is a multiple of 4	verified	one	spell/visuals#shard-model-start-and-end	
+0x6ebe70	103	ShardModelDoneCallback		spell	orchestration	void __stdcall (uint32_t a, uint32_t status, uint32_t c, Shard *shard, uint32_t shardHigh)	Closes the shard's model, unlinks it and returns it to the pool 0xcee8f0 when its second argument is 0	verified	one	spell/visuals#shard-model-start-and-end	
+0x6ebee0	267	BlizzardObject::DrawShards		spell	orchestration	void __thiscall (BlizzardObject *this)	Starts each due shard's animation once and sets its model's translation to the shard's position	verified	one	spell/visuals#shard-model-start-and-end	
+0x6ebff0	10	InitLightningObjectListThunk		spell	orchestration	void __cdecl (void)	Calls 0x6ec000, then jumps to 0x6ec030; a static initializer	verified	one	spell/layout#static-initializers	
+0x6ec000	34	InitLightningObjectList		spell	orchestration	void __cdecl (void)	Makes the chain list 0xcee94c empty: link offset 0, terminator pointing at itself and marked	verified	one	spell/visuals#static-lists-and-pools	
+0x6ec030	12	RegisterDestroyLightningObjectList		spell	orchestration	void __cdecl (void)	Registers 0x6ec040 with _atexit	verified	one	spell/layout#static-initializers	
+0x6ec040	145	DestroyLightningObjectList		spell	orchestration	void __cdecl (void)	Unlinks every node of the chain list 0xcee94c, then its terminator; registered with _atexit	verified	one	spell/visuals#static-lists-and-pools	
+0x6ec0e0	77	SpellVisualsInitialize		spell	orchestration	void __cdecl (void)	Creates the lightning renderer 0xcee948 and stores the spellEffectLevel CVar record in 0xcee9a8	verified	one	spell/visuals#startup-and-shutdown	
+0x6ec130	171	SpellVisualsShutdown		spell	orchestration	void __cdecl (void)	Destroys every chain, the renderer, every emitter and both pools, and resets 0x870e20 and 0xcee9a8	verified	one	spell/visuals#startup-and-shutdown	
+0x6ec1e0	60	GetSpellVisualRecord		spell	primitive	void * __fastcall (const void *spellRecord)	Returns the SpellVisual record of a spell, its second visual when violenceLevel is below 2 and that id is set	verified	one	spell/visuals#spell-visual-record-choice	
+0x6ec220	296	PlaySpellPrecastVisual		spell	primitive	void __fastcall (uint32_t spellId, const void *targets, void *unit)	Logs a unit's cast, records the spell on it through 0x60d020 and plays its visual's precast kit	verified	one	spell/visuals#precast-visual-at-cast-start	
+0x6ec350	130	EndSpellPrecastVisual		spell	unreached	void __fastcall (uint32_t spellId, void *unit, uint8_t a, uint8_t b)	Clears a unit's recorded spell through 0x60d040 and ends its precast kit; nothing reaches it	verified	one	spell/visuals#unreached-functions	
+0x6ec3e0	10	SpellVisualsInitZero1Thunk		spell	orchestration	void __cdecl (void)	Calls 0x6ec3f0, then jumps to 0x6ec400; a static initializer	verified	one	spell/layout#static-initializers	
+0x6ec3f0	11	SpellVisualsInitZero1		spell	orchestration	void __cdecl (void)	Stores 0 in a global	verified	one	spell/layout#static-initializers	
+0x6ec400	12	RegisterReturnVoidSpellVisualsA		spell	orchestration	void __cdecl (void)	Registers 0x6ec410 with _atexit	verified	one	spell/layout#static-initializers	
+0x6ec410	1	ReturnVoidSpellVisualsA		spell	orchestration	void __cdecl (void)	Returns; registered with _atexit by 0x6ec400	verified	one	spell/visuals#static-lists-and-pools	
+0x6ec420	10	SpellVisualsInitZero2Thunk		spell	orchestration	void __cdecl (void)	Calls 0x6ec430, then jumps to 0x6ec440; a static initializer	verified	one	spell/layout#static-initializers	
+0x6ec430	11	SpellVisualsInitZero2		spell	orchestration	void __cdecl (void)	Stores 0 in a global	verified	one	spell/layout#static-initializers	
+0x6ec440	12	RegisterReturnVoidSpellVisualsB		spell	orchestration	void __cdecl (void)	Registers 0x6ec450 with _atexit	verified	one	spell/layout#static-initializers	
+0x6ec450	1	ReturnVoidSpellVisualsB		spell	orchestration	void __cdecl (void)	Returns; registered with _atexit by 0x6ec440	verified	one	spell/visuals#static-lists-and-pools	
+0x6ec460	641	LightningObject::Update		spell	primitive	uint32_t __thiscall (LightningObject *this, uint32_t now)	Shows, hides, places and expires each hop's bolt; returns 0 when a non-persistent chain reaches its end	verified	one	spell/visuals#chain-update-per-frame	
+0x6ec6f0	138	GetLightningCasterPoint		spell	primitive	float * __fastcall (float *out, void *unit)	Writes a caster's beam end: its $CSL event, else its position raised by +0x90 times +0xbc times 0.75	verified	one	spell/visuals#chain-endpoints	
+0x6ec780	240	GetSpellImpactPoint		spell	primitive	float * __fastcall (float *out, void *unit, uint32_t spellId)	Writes the unit's attachment the spell visual names through 0x860a18, else 0x22 for an unknown spell, else its position	verified	one	spell/visuals#chain-endpoints	
+0x6ec870	155	UpdateSpellScreenTint		spell	primitive	void __thiscall (uint32_t *tint, uint32_t now)	Passes the tint colour and its fade-in, hold or fade-out level to 0x6d45c0, ending it at t3	verified	one	spell/visuals#screen-tint	
+0x6ec910	97	StartSpellScreenTint		spell	primitive	void __fastcall (const uint32_t *colour, uint32_t spellId, float fraction)	Starts the tint 0xcee8d4: fade in over fraction of the cast time, hold to the cast time, fade out over 100 ms	verified	one	spell/visuals#screen-tint	
+0x6ec980	158	LightningObject::InitBolts		spell	primitive	void __thiscall (LightningObject *this, void *caster, const uint64_t *targets, uint32_t count, const void *chainRecord)	Stores the targets' GUIDs reversed after the caster and gives hop i its endpoints and staggered start and end	verified	one	spell/visuals#chain-hop-table	
+0x6eca20	252	SpellVisualsUpdate		spell	primitive	void __cdecl (void)	Updates every chain, the renderer with the elapsed seconds, the tint and every emitter, removing the finished ones	verified	one	spell/visuals#frame-update	
+0x6ecb20	21	SpellVisualsRenderLightning		spell	orchestration	void __cdecl (void)	Renders the lightning renderer's bolts through 0x7b0a80 with the world camera's position	verified	one	spell/visuals#frame-update	
+0x6ecb40	67	PlaySpellEffectCameraShakes		spell	primitive	void __fastcall (int32_t groupId, const float *position)	Adds each nonzero shake of a SpellEffectCameraShakes record to the active camera at a position	verified	one	spell/visuals#camera-shake-groups	
+0x6ecb90	50	PlayChainEffect		spell	orchestration	void __fastcall (void *caster, uint32_t chain, uint32_t strands, uint32_t flag, uint32_t spell, uint64_t *targets, uint32_t n, void **slots, uint32_t cap)	Calls 0x6ecbd0 with its arguments reordered unless the caster or the target count is 0	verified	one	spell/visuals#chain-effect-creation	
+0x6ecbd0	548	CreateLightningObjects		spell	primitive	void __fastcall (void *caster, const uint64_t *targets, uint32_t n, uint32_t spell, int32_t chainId, uint32_t strands, uint8_t flag, void **slots, int32_t cap)	Creates up to three chains of a SpellChainEffects record over a caster and its targets	verified	one	spell/visuals#chain-effect-creation	
+0x6ece00	16	ClearLightningLink		spell	orchestration	uint32_t * __thiscall (uint32_t *link)	Zeroes a chain's two link dwords and returns the link	verified	one	spell/visuals#list-and-array-helpers	
+0x6ece10	23	LightningObject::Stop		spell	orchestration	void __thiscall (LightningObject *this)	Ends a chain now, clears its persistent flag and releases a reference	verified	one	spell/visuals#chain-lifetime	
+0x6ece30	233	CreateBlizzardObject		spell	primitive	BlizzardObject * __fastcall (const float *position, uint32_t unused, float radius, uint32_t modelIndex, float rate)	Takes an emitter from the pool, links it at the tail and initializes it with the shard model 0x870e24[index]	verified	one	spell/visuals#area-shard-emitter-creation	
+0x6ecf20	19	StopBlizzardObject		spell	orchestration	void __thiscall (BlizzardObject **handle)	Sets the held emitter's rate to 0.0 and clears the handle	verified	one	spell/visuals#area-shard-emitter-creation	
+0x6ecf40	213	LightningObject::~LightningObject		spell	orchestration	void __thiscall (LightningObject *this)	Destroys every bolt, frees both arrays, closes the texture and unlinks the chain	verified	one	spell/visuals#chain-lifetime	
+0x6ed020	4	LightningObject::AddRef		spell	primitive	void __thiscall (LightningObject *this)	Increments the reference count +0x4c	verified	one	spell/visuals#chain-lifetime	
+0x6ed030	30	LightningObject::Release		spell	primitive	void __thiscall (LightningObject *this)	Decrements the reference count and at zero destroys and frees the chain	verified	one	spell/visuals#chain-lifetime	
+0x6ed050	16	InitBoltArray		spell	orchestration	void __thiscall (uint32_t *array)	Zeroes a bolt array's capacity, count, data and quantum	verified	one	spell/visuals#list-and-array-helpers	
+0x6ed060	23	FreeBoltArray		spell	host	void __thiscall (uint32_t *array)	Frees a bolt array's data when present, tagged with the Bolt type name	verified	one	spell/visuals#chain-lifetime	
+0x6ed080	60	UnlinkShard		spell	orchestration	void __thiscall (uint32_t *link)	Unlinks a shard link from its list and zeroes it	verified	one	spell/visuals#list-and-array-helpers	
+0x6ed0c0	240	ReserveUint64Array		spell	primitive	void __thiscall (uint32_t *array, uint32_t extra, uint32_t rounded)	Grows a uint64 array to hold extra more, rounding to its quantum, by reallocation or copy	verified	one	spell/visuals#list-and-array-helpers	
+0x6ed1b0	240	ReserveBoltArray		spell	primitive	void __thiscall (uint32_t *array, uint32_t extra, uint32_t rounded)	Grows a bolt array to hold extra more, rounding to its quantum, by reallocation or copy	verified	one	spell/visuals#list-and-array-helpers	
+0x6ed2a0	41	GetNextShardLink		spell	orchestration	uint32_t * __thiscall (uint32_t *link, int32_t linkOffset)	Returns the link after a shard link, or the untagged terminator	verified	one	spell/visuals#list-and-array-helpers	
+0x6ed2d0	60	UnlinkShardLink		spell	orchestration	void __thiscall (uint32_t *link)	Unlinks a shard link from its list and zeroes it, as 0x6ed080 does	verified	one	spell/visuals#list-and-array-helpers	
+0x6ed310	41	GetNextBlizzardObjectLink		spell	orchestration	uint32_t * __thiscall (uint32_t *link, int32_t linkOffset)	Returns the link after an emitter link, or the untagged terminator	verified	one	spell/visuals#list-and-array-helpers	
+0x6ed340	17	GetShardNodeLink		spell	orchestration	uint32_t * __thiscall (uint32_t *list, Shard *node)	Returns a shard node as its link, or the list's terminator for null	verified	one	spell/visuals#list-and-array-helpers	
+0x6ed360	171	LinkLightningObject		spell	orchestration	void __thiscall (uint32_t *list, LightningObject *node, uint32_t where, LightningObject *relative)	Unlinks a chain and links it after a node for where 1, else before it; null means the terminator	verified	one	spell/visuals#list-and-array-helpers	
+0x6ed410	41	GetNextLightningObjectLink		spell	orchestration	uint32_t * __thiscall (uint32_t *link, int32_t linkOffset)	Returns the link after a chain link, or the untagged terminator	verified	one	spell/visuals#list-and-array-helpers	
+0x6ed440	5	SpellVisualsInitProduct1Thunk		spell	orchestration	void __cdecl (void)	Jumps to 0x6ed450; a static initializer	verified	one	spell/layout#static-initializers	
+0x6ed450	19	SpellVisualsInitProduct1		spell	primitive	void __cdecl (void)	Stores -21 times -0.027777778 as a float in a global	verified	one	spell/layout#static-initializers	
+0x6ed470	5	SpellVisualsInitProduct2Thunk		spell	orchestration	void __cdecl (void)	Jumps to 0x6ed480; a static initializer	verified	one	spell/layout#static-initializers	
+0x6ed480	19	SpellVisualsInitProduct2		spell	primitive	void __cdecl (void)	Stores a global set just before times -255 as a float in a global	verified	one	spell/layout#static-initializers	
+0x6ed4a0	5	SpellVisualsInitProduct3Thunk		spell	orchestration	void __cdecl (void)	Jumps to 0x6ed4b0; a static initializer	verified	one	spell/layout#static-initializers	
+0x6ed4b0	19	SpellVisualsInitProduct3		spell	primitive	void __cdecl (void)	Stores 18 times 0.027777778 as a float in a global	verified	one	spell/layout#static-initializers	
+0x6ed4d0	5	SpellVisualsInitProduct4Thunk		spell	orchestration	void __cdecl (void)	Jumps to 0x6ed4e0; a static initializer	verified	one	spell/layout#static-initializers	
+0x6ed4e0	19	SpellVisualsInitProduct4		spell	primitive	void __cdecl (void)	Stores a global set just before times 256 as a float in a global	verified	one	spell/layout#static-initializers	
+0x6ed500	5	SpellVisualsInitQuotient2Thunk		spell	orchestration	void __cdecl (void)	Jumps to 0x6ed510; a static initializer	verified	one	spell/layout#static-initializers	
+0x6ed510	19	SpellVisualsInitQuotient2		spell	primitive	void __cdecl (void)	Stores 1 divided by 4.1666665 as a float in a global	verified	one	spell/layout#static-initializers	
+0x6ed530	5	SpellVisualsInitSquare1Thunk		spell	orchestration	void __cdecl (void)	Jumps to 0x6ed540; a static initializer	verified	one	spell/layout#static-initializers	
+0x6ed540	19	SpellVisualsInitSquare1		spell	primitive	void __cdecl (void)	Stores 10 squared as a float in a global	verified	one	spell/layout#static-initializers	
+0x6ed560	5	SpellVisualsInitQuotient3Thunk		spell	orchestration	void __cdecl (void)	Jumps to 0x6ed570; a static initializer	verified	one	spell/layout#static-initializers	
+0x6ed570	19	SpellVisualsInitQuotient3		spell	primitive	void __cdecl (void)	Stores 0.5 divided by 10 as a float in a global	verified	one	spell/layout#static-initializers	
+0x6ed590	5	SpellVisualsInitSquare2Thunk		spell	orchestration	void __cdecl (void)	Jumps to 0x6ed5a0; a static initializer	verified	one	spell/layout#static-initializers	
+0x6ed5a0	19	SpellVisualsInitSquare2		spell	primitive	void __cdecl (void)	Stores 10 squared as a float in a global	verified	one	spell/layout#static-initializers	
+0x6ed5c0	5	SpellVisualsInitSquare3Thunk		spell	orchestration	void __cdecl (void)	Jumps to 0x6ed5d0; a static initializer	verified	one	spell/layout#static-initializers	
+0x6ed5d0	19	SpellVisualsInitSquare3		spell	primitive	void __cdecl (void)	Stores 11.111111 squared as a float in a global	verified	one	spell/layout#static-initializers	
+0x6ed5f0	5	SpellVisualsInitSquare4Thunk		spell	orchestration	void __cdecl (void)	Jumps to 0x6ed600; a static initializer	verified	one	spell/layout#static-initializers	
+0x6ed600	19	SpellVisualsInitSquare4		spell	primitive	void __cdecl (void)	Stores 5.5555553 squared as a float in a global	verified	one	spell/layout#static-initializers	
+0x6ed620	5	SpellVisualsInitSquare5Thunk		spell	orchestration	void __cdecl (void)	Jumps to 0x6ed630; a static initializer	verified	one	spell/layout#static-initializers	
+0x6ed630	19	SpellVisualsInitSquare5		spell	primitive	void __cdecl (void)	Stores 10 squared as a float in a global	verified	one	spell/layout#static-initializers	
+0x6ed650	5	SpellVisualsInitSquare6Thunk		spell	orchestration	void __cdecl (void)	Jumps to 0x6ed660; a static initializer	verified	one	spell/layout#static-initializers	
+0x6ed660	19	SpellVisualsInitSquare6		spell	primitive	void __cdecl (void)	Stores 5 squared as a float in a global	verified	one	spell/layout#static-initializers	
+0x6ed680	5	SpellVisualsInitSquare7Thunk		spell	orchestration	void __cdecl (void)	Jumps to 0x6ed690; a static initializer	verified	one	spell/layout#static-initializers	
+0x6ed690	19	SpellVisualsInitSquare7		spell	primitive	void __cdecl (void)	Stores 10 squared as a float in a global	verified	one	spell/layout#static-initializers	
+0x6ed6b0	5	SpellVisualsInitSquare8Thunk		spell	orchestration	void __cdecl (void)	Jumps to 0x6ed6c0; a static initializer	verified	one	spell/layout#static-initializers	
+0x6ed6c0	19	SpellVisualsInitSquare8		spell	primitive	void __cdecl (void)	Stores 30 squared as a float in a global	verified	one	spell/layout#static-initializers	
+0x6ed6e0	5	SpellVisualsInitSquare9Thunk		spell	orchestration	void __cdecl (void)	Jumps to 0x6ed6f0; a static initializer	verified	one	spell/layout#static-initializers	
+0x6ed6f0	19	SpellVisualsInitSquare9		spell	primitive	void __cdecl (void)	Stores 120 squared as a float in a global	verified	one	spell/layout#static-initializers	
+0x6ed710	5	SpellVisualsInitSquare10Thunk		spell	orchestration	void __cdecl (void)	Jumps to 0x6ed720; a static initializer	verified	one	spell/layout#static-initializers	
+0x6ed720	19	SpellVisualsInitSquare10		spell	primitive	void __cdecl (void)	Stores 20 squared as a float in a global	verified	one	spell/layout#static-initializers	
+0x6ed740	5	SpellVisualsInitSquare11Thunk		spell	orchestration	void __cdecl (void)	Jumps to 0x6ed750; a static initializer	verified	one	spell/layout#static-initializers	
+0x6ed750	19	SpellVisualsInitSquare11		spell	primitive	void __cdecl (void)	Stores 10 squared as a float in a global	verified	one	spell/layout#static-initializers	
+0x6ed770	5	SpellVisualsInitSquare12Thunk		spell	orchestration	void __cdecl (void)	Jumps to 0x6ed780; a static initializer	verified	one	spell/layout#static-initializers	
+0x6ed780	19	SpellVisualsInitSquare12		spell	primitive	void __cdecl (void)	Stores 0.5 squared as a float in a global	verified	one	spell/layout#static-initializers	
+0x6ed7a0	5	SpellVisualsInitSquare13Thunk		spell	orchestration	void __cdecl (void)	Jumps to 0x6ed7b0; a static initializer	verified	one	spell/layout#static-initializers	
+0x6ed7b0	19	SpellVisualsInitSquare13		spell	primitive	void __cdecl (void)	Stores 3 squared as a float in a global	verified	one	spell/layout#static-initializers	
+0x6ed7d0	5	SpellVisualsInitSquare14Thunk		spell	orchestration	void __cdecl (void)	Jumps to 0x6ed7e0; a static initializer	verified	one	spell/layout#static-initializers	
+0x6ed7e0	19	SpellVisualsInitSquare14		spell	primitive	void __cdecl (void)	Stores 100 squared as a float in a global	verified	one	spell/layout#static-initializers	
+0x6ed800	5	SpellVisualsInitFive1Thunk		spell	orchestration	void __cdecl (void)	Jumps to 0x6ed810; a static initializer	verified	one	spell/layout#static-initializers	
+0x6ed810	11	SpellVisualsInitFive1		spell	orchestration	void __cdecl (void)	Stores 5 as a float in a global	verified	one	spell/layout#static-initializers	
+0x6ed820	5	SpellVisualsInitSquare15Thunk		spell	orchestration	void __cdecl (void)	Jumps to 0x6ed830; a static initializer	verified	one	spell/layout#static-initializers	
+0x6ed830	19	SpellVisualsInitSquare15		spell	primitive	void __cdecl (void)	Stores 50 squared as a float in a global	verified	one	spell/layout#static-initializers	
+0x6ed850	5	SpellVisualsInitSquare16Thunk		spell	orchestration	void __cdecl (void)	Jumps to 0x6ed860; a static initializer	verified	one	spell/layout#static-initializers	
+0x6ed860	19	SpellVisualsInitSquare16		spell	primitive	void __cdecl (void)	Stores 100 squared as a float in a global	verified	one	spell/layout#static-initializers	
+0x6ed880	5	SpellVisualsInitSquare17Thunk		spell	orchestration	void __cdecl (void)	Jumps to 0x6ed890; a static initializer	verified	one	spell/layout#static-initializers	
+0x6ed890	19	SpellVisualsInitSquare17		spell	primitive	void __cdecl (void)	Stores 40 squared as a float in a global	verified	one	spell/layout#static-initializers	
+0x6ed8b0	5	SpellVisualsInitSquare18Thunk		spell	orchestration	void __cdecl (void)	Jumps to 0x6ed8c0; a static initializer	verified	one	spell/layout#static-initializers	
+0x6ed8c0	19	SpellVisualsInitSquare18		spell	primitive	void __cdecl (void)	Stores 1.5 squared as a float in a global	verified	one	spell/layout#static-initializers	
+0x6ed8e0	10	SpellVisualsInitCountUnit1Thunk		spell	orchestration	void __cdecl (void)	Calls 0x6ed8f0, then jumps to 0x6ed910; a static initializer	verified	one	spell/layout#static-initializers	
+0x6ed8f0	22	SpellVisualsInitCountUnit1		spell	primitive	void __cdecl (void)	Counts one more unit in a shared global and calls 0x5b71c0 on the first	verified	one	spell/layout#static-initializers	
+0x6ed910	12	RegisterSpellVisualsReleaseCountUnit1		spell	orchestration	void __cdecl (void)	Registers 0x6ed920 with _atexit	verified	one	spell/layout#static-initializers	
+0x6ed920	14	SpellVisualsReleaseCountUnit1		spell	primitive	void __cdecl (void)	Counts one unit fewer in a shared global and tail-calls the empty 0x5b71d0 when it reaches zero	verified	one	spell/layout#static-initializers	
+0x6f3510	24	lua_isstring	idb	lua			Returns whether a stack value is a string or a number	inferred	none	spell/targeting#lua-targeting-functions	
+0x6f37f0	23	lua_pushnil	idb	lua			Pushes nil	inferred	none	spell/targeting#lua-targeting-functions	
+0x6f3810	43	lua_pushnumber	idb	lua			Pushes a number	inferred	none	spell/targeting#lua-targeting-functions	
+0x6f4940	55	luaL_error	idb	lua			Raises a Lua error with a formatted message	inferred	none	spell/targeting#lua-targeting-functions	
 0x702840	19	ScriptDebugProfileStart		ui			Latches the time-stamp counter for 0x702860	verified	one	core/time#counter-rate	
 0x702860	153	ScriptDebugProfileStop		ui			Returns the time-stamp counter's advance divided by a thousandth of 0x42c020	verified	one	core/time#counter-rate	
+0x703bf0	245	FrameScript_GetText	idb	ui			Returns the string value of a script global, or an empty string	inferred	none	spell/failures#reason-text-and-pet-variant	
 0x703e50	246	FrameScript_SignalEvent	idb	ui			Signals a script event to the interface	inferred	none		
+0x703f50	257	FrameScript_SignalEvent2	idb	ui			Signals a script event with arguments in a printf-style format	inferred	none	spell/handlers#cast-delayed	
+0x704120	55			ui			Registers a Lua function by name	inferred	none	spell/cast#small-spell-helpers	
+0x704160	53	FrameScript_UnregisterFunction	idb	ui			Unregisters a Lua function by name	inferred	none	spell/cast#small-spell-helpers	
+0x707350	161	CreateModelFromPath		models			Creates a model from a file path	inferred	none	spell/visuals#shard-model-start-and-end	
+0x7103a0	34	HandleClose2	idb	models			Closes a model handle	inferred	none	spell/visuals#shard-model-start-and-end	
+0x710620	43	ModelSetWorldTransform		models			Sets a model's world transform from a matrix	inferred	none	spell/visuals#shard-model-start-and-end	
+0x710b90	90	ModelSetFlagB		models			Sets a model flag	inferred	none	spell/visuals#shard-model-start-and-end	
+0x710c50	36	ModelSetFlagA		models			Sets a model flag	inferred	none	spell/visuals#shard-model-start-and-end	
+0x711bb0	25	ModelSetDoneCallback		models			Stores a model's done callback and its 64-bit argument at +0x70 and +0x78	inferred	none	spell/visuals#shard-model-start-and-end	
+0x7121a0	1607	ModelPlayAnimation		models			Starts a model animation	inferred	none	spell/visuals#shard-model-start-and-end	
+0x712cb0	59	ModelHasAttachment		models			Returns whether a model has an attachment	inferred	none	spell/visuals#chain-endpoints	
+0x712d50	137	ModelGetAttachmentPosition		models			Writes the world position of a model attachment	inferred	none	spell/visuals#chain-endpoints	
+0x7130e0	79	ModelHasEvent		models			Returns whether a model has an event tag	inferred	none	spell/visuals#chain-endpoints	
+0x7131b0	163	ModelGetEventPosition		models			Writes the world position of a model event	inferred	none	spell/visuals#chain-endpoints	
+0x7133a0	34	ModelSetEventCallback		models			Stores a model's event callback and two arguments at +0x1f4	inferred	none	spell/visuals#shard-model-start-and-end	
 0x718910	77			models		void __thiscall (void *model, const float *matrix)	Takes a model's transport frame, or null; not read here	inferred	none	collision/mover#transport-change	
 0x73f285	49	_fclose	idb	crt			Closes a C runtime file	inferred	none	collision/kinematics#teardown	
 0x73f333	19	_fopen	idb	crt			Opens a C runtime file	inferred	none	collision/kinematics#unreached-functions	
@@ -2354,7 +3064,22 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x760080	7	CDataAllocator::ResetVtable		base			Stores the data allocator vtable	inferred	none		
 0x760090	104	CDataAllocator::Destroy		base			Frees a data allocator's blocks	inferred	none		
 0x760210	37	CDataAllocator::AllocLarge		base			Allocates a block with SMemAlloc and stores its size through a pointer	verified	one	core/events#deferred-messages	
+0x760390	51	InitBlockPool		base		void __thiscall (void *this, uint32_t size, uint32_t perBlock)	Sets a block pool's element size (at least 4) and elements per block (at least 1) and empties it	verified	one	spell/tables#ability-node-pool	
 0x7603f0	12	CDataAllocatorPool::Destroy		base			Destroys a pooled allocator	inferred	none		
+0x760400	75	FreeBlockPoolBlocks		base		void __thiscall (void *this, const char *tag, int32_t line, uint32_t unused)	Frees every block of a block pool and empties its free list and count	verified	one	spell/tables#ability-node-pool	
+0x760450	159	GetBlockPoolData		base		void * __thiscall (void *this, uint32_t zero, const char *tag, int32_t line)	Pops an element from a block pool's free list, adding a block when empty, zeroed on request	verified	one	spell/tables#ability-node-pool	
+0x7604f0	21	CDataAllocator::PutData	idb	base		void __thiscall (void *this, void *data, const char *tag, int32_t line)	Pushes an element back on a block pool's free list and decrements its count	verified	one	spell/tables#ability-node-pool	
+0x760be0	212	SoftFloatMul		cmath		float * __fastcall (float *out, const float *a, const float *b)	Multiplies two floats with integer instructions, truncating the significand	verified	one	spell/records#software-floats	
+0x760e20	279	SoftFloatAdd		cmath		float * __fastcall (float *out, const float *a, const float *b)	Adds two floats with integer instructions, aligning by arithmetic shifts and truncating	verified	one	spell/records#software-floats	
+0x760fb0	134	SoftFloatFloor		cmath		float * __fastcall (float *out, const float *x)	Rounds a float toward negative infinity with integer instructions	verified	one	spell/records#software-floats	
+0x761040	126	SoftFloatCeil		cmath		float * __fastcall (float *out, const float *x)	Rounds a float toward positive infinity with integer instructions; zero gives 1.0	verified	one	spell/records#software-floats	
+0x761160	36	SoftFloatRoundHalfUp		cmath		float * __fastcall (float *out, const float *x)	Returns the software floor of the software sum of a float and 0.5	verified	one	spell/records#software-floats	
+0x761260	112	SoftFloatFromInt		cmath		float * __fastcall (float *out, int32_t value)	Converts an integer to a float with integer instructions, dropping bits below the 24th	verified	one	spell/records#software-floats	
+0x762520	13	InitSoftFloatMinusOne		cmath		void __cdecl (void)	Stores the software float of -1 in its global; a static initializer	verified	one	spell/records#software-floats	
+0x7625e0	12	InitSoftFloatZero		cmath		void __cdecl (void)	Stores the software float of 0 in its global; a static initializer	verified	one	spell/records#software-floats	
+0x7626e0	11	InitSoftFloatHundredth		cmath		void __cdecl (void)	Stores 0x3c23d70a, 0.01, in its global; a static initializer	verified	one	spell/records#modifier-appliers	
+0x762be0	11	InitSoftFloatHalf		cmath		void __cdecl (void)	Stores 0x3f000000, 0.5, in its global; a static initializer	verified	one	spell/records#software-floats	
+0x762e20	15	InitSoftFloatOne		cmath		void __cdecl (void)	Stores the software float of 1 in its global; a static initializer	verified	one	spell/records#software-floats	
 0x765bf0	277	UiRegisterInputHandlers		ui			Registers the interface's input handlers, among them 0x7660d0 on category 0xc	inferred	none	core/loop#unreached-functions	
 0x765df0	140	UiInputHandlerA		ui			Handles an input event category for the interface, building an event object	inferred	none	core/loop#unreached-functions	
 0x765f10	178	UiInputHandlerB		ui			Handles an input event category for the interface, building an event object	inferred	none	core/loop#unreached-functions	
@@ -2448,6 +3173,14 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x7adfa0	11	InitCameraInfinity2		camera	orchestration	void __cdecl (void)	Copies +inf into 0xcf5748, which nothing reads	verified	one	camera#object-file-and-initializers	
 0x7adfb0	75	SetParticleDensity		camera	primitive	void __stdcall (float density)	Clamps to [0, 1] (NaN to 1) and stores in 0x87d5fc	verified	one	camera#particle-density	camera::camera_clamp01
 0x7ae000	7	GetParticleDensity		camera	orchestration	float __cdecl (void)	Returns 0x87d5fc	verified	one	camera#particle-density	
+0x7b0760	28	LightningRendererInit		gx			Zeroes a 32-byte lightning renderer and returns it	inferred	none	spell/visuals#startup-and-shutdown	
+0x7b0780	103	LightningRendererDestroy		gx			Destroys a lightning renderer's bolts and arrays	inferred	none	spell/visuals#startup-and-shutdown	
+0x7b07f0	340	LightningRendererCreateBolt		gx			Creates a lightning bolt between two points with a chain record's values and returns its handle	inferred	none	spell/visuals#chain-update-per-frame	
+0x7b0950	106	LightningRendererMoveBolt		gx			Moves a lightning bolt's two endpoints	inferred	none	spell/visuals#chain-update-per-frame	
+0x7b0a40	52	LightningRendererUpdate		gx			Advances every lightning bolt by a time step in seconds	inferred	none	spell/visuals#frame-update	
+0x7b0a80	53	LightningRendererRender		gx			Renders every lightning bolt from an eye position	inferred	none	spell/visuals#frame-update	
+0x7b0ac0	263	LightningRendererDestroyBolt		gx			Destroys a lightning bolt by handle	inferred	none	spell/visuals#chain-update-per-frame	
+0x7b0bd0	44	LightningRendererShowBolt		gx			Shows or hides a lightning bolt by handle	inferred	none	spell/visuals#chain-update-per-frame	
 0x7bca80	93	TransformPoint		cmath		float * __fastcall (float *out, const float *v, const float *m)	Writes v times the upper 3×3 of a row-major 4×4 matrix plus its fourth row to out	verified	one	collision/falling#frame-transform	
 0x7bcc60	109	TransformPointInPlace		cmath		float * __fastcall (float *out, float *v, const float *m)	Replaces v with v times the upper 3×3 of a 4×4 matrix plus its fourth row, and copies it to out	verified	one	collision/falling#frame-transform	
 0x7bd700	280	InvertRigidMatrix		cmath		void __thiscall (const float *m, float *out)	Writes the rigid inverse of a 4×4 matrix: its 3×3 transposed, then translated by −t times that	verified	one	collision/contact#facet-gather	
@@ -2620,5 +3353,8 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x7c78b0	19	InitSharedPoint05		collision	primitive	void __cdecl (void)	Stores 0.5/10 = 0.05 as a float	verified	one	collision/overview#shared-file-initializers	
 0x7c78d0	5	InitSharedInfinityThunk		collision	orchestration	void __cdecl (void)	Jumps to 0x7c78e0, a static initializer of the file	verified	one	collision/overview#shared-file-initializers	
 0x7c78e0	11	InitSharedInfinity		collision	orchestration	void __cdecl (void)	Copies +∞ (0x7f800000) from a constant into its global	verified	one	collision/overview#shared-file-initializers	
+0x7cba30	56			ui			Returns 0 while targeting a position with no unit bit, else defers to its base method	inferred	none	spell/targeting#flag-word-predicates	
+0x7e4e10	192			objectlayer			Writes a cast target block: a 16-bit mask, then the guids, positions and text the mask names	verified	one	spell/cast#cast-request-packets	
+0x7e4ed0	187	ReadSpellCastTargets		net	orchestration	void __fastcall (void *targets, void *msg)	Reads a spell target block: a mask, then guids, points and a string as its bits say	verified	one	spell/handlers#target-block	
 0x7fb310	317	math_random		lua			Returns a Lua random number drawn from rand	inferred	none	random#the-c-runtime-rand	
 0x7fb450	27	math_randomseed		lua	orchestration		Seeds rand from its first Lua argument, truncated	verified	one	random#the-c-runtime-rand	
