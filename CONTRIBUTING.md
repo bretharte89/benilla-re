@@ -28,9 +28,12 @@ no exe, no MPQ, no extracted file, no disassembly or decompiler dump (`dumps/` i
 
 4. Write the disassembly the findings cite. Findings give instruction addresses, and the
    addresses are those of one listing: GNU objdump, Intel syntax, `.text` only, written by
-   `tools/disasm.sh` to `dumps/disasm.txt`. The script refuses any other build of the exe, uses
-   the first GNU objdump with the PE target it finds, and prints the listing's SHA-256 so that
-   you can see it is the same listing.
+   `tools/disasm.sh` to `dumps/disasm.txt`. A plain sweep of `.text` reads the jump tables inside
+   code as instructions and can stay out of step after them, so the listing follows the real
+   instruction stream: the sweep restarts at every function row and every jump-table entry, and
+   leaves the tables' bytes out. The script refuses any other build of the exe, uses the first
+   GNU objdump with the PE target it finds, runs `cargo xtask listing` (Rust, as for the check
+   below), and prints the listing's SHA-256 so that you can see it is the same listing.
 
    ```
    tools/disasm.sh
@@ -54,7 +57,8 @@ it is ever committed.
 
 ### What the scripts need
 
-The scripts are bash. Ghidra 12.x needs a JDK 21 or later.
+The scripts are bash, and `tools/disasm.sh` also needs Rust (The check, below). Ghidra 12.x needs a
+JDK 21 or later.
 
 | | macOS (Homebrew) | Linux (Debian, Ubuntu) | Windows |
 |---|---|---|---|
@@ -73,10 +77,9 @@ The scripts are bash. Ghidra 12.x needs a JDK 21 or later.
   `i686-w64-mingw32-objdump`.
 - **Windows.** Use WSL with a Linux distribution and follow the Linux column there, with the
   client copied into `WoW/` inside the WSL file system. Natively, steps 1 and 2 work as written
-  (`certutil` for the hash), and the disassembly can be written by hand with GNU objdump from
-  MSYS2 (`pacman -S mingw-w64-x86_64-binutils`) as in step 3, redirected into `dumps\disasm.txt`;
-  the listing then matches the one `tools/disasm.sh` writes only when it is run with
-  `--section=.text --no-show-raw-insn` from inside `WoW\` on `WoW.exe`.
+  (`certutil` for the hash), and with GNU objdump from MSYS2
+  (`pacman -S mingw-w64-x86_64-binutils`) the disassembly is written by
+  `cargo xtask listing <path to objdump.exe> dumps\disasm.txt`, the step `tools/disasm.sh` runs.
 
 ### The check
 
@@ -101,8 +104,9 @@ cargo xtask check --exe
 ```
 
 It refuses any exe but 1.12.1.5875, at `WoW/WoW.exe` or at the path in `BENILLA_RE_WOW_EXE`.
-It writes `dumps/disasm.txt` with `tools/disasm.sh` when it is missing, and checks that every
-function row starts a function and has its body's size. It regenerates every table into a
+It writes `dumps/disasm.txt` with `tools/disasm.sh` when it is missing, or when a row starts where
+it has no instruction (a row newer than the listing), and checks that every function row starts
+a function and has its body's size. It regenerates every table into a
 scratch directory and requires each byte for byte. It runs `cargo test --workspace` with
 `BENILLA_RE_REQUIRE_EXE=1`, and requires every test that a row's `test` or an entry's `Test` line
 names to appear as passed. It needs what the scripts need, above, and Python 3.

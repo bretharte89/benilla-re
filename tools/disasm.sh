@@ -1,15 +1,19 @@
 #!/usr/bin/env bash
-# Writes the full disassembly of .text of WoW/WoW.exe (or $BENILLA_RE_WOW_EXE) to dumps/disasm.txt
+# Writes the disassembly of .text of WoW/WoW.exe (or $BENILLA_RE_WOW_EXE) to dumps/disasm.txt
 # (ignored by git).
 # Findings cite instruction addresses of this file: GNU objdump, Intel syntax, address and
-# instruction, no raw bytes. Usage: tools/disasm.sh   (OBJDUMP=<path> to choose the binary)
+# instruction, no raw bytes. It follows the real instruction stream: objdump's sweep restarts at
+# every function row of symbols/functions.tsv and at every jump-table entry, and the jump tables'
+# bytes are left out (`cargo xtask listing`, xtask/src/listing.rs).
+# Usage: tools/disasm.sh   (OBJDUMP=<path> to choose the binary)
 set -euo pipefail
 . "$(dirname "${BASH_SOURCE[0]}")/check-exe.sh"
 check_exe
 
-# The listing's expected SHA-256 under GNU binutils 2.46; another version may format a little
-# differently, which is reported, not fatal.
-DISASM_SHA256=c7467a57910ca096d509d5f731b1698deaa2147d525b46a19de7ba2f928da194
+# The listing's expected SHA-256 under GNU binutils 2.46 and the symbol table of this commit; another
+# version may format a little differently, which is reported, not fatal. A row at a start the
+# sweep stepped over changes the listing, and the commit that adds it updates this.
+DISASM_SHA256=68f0a49391284b16aff57acd7580dd9d60d41f299b64de7db56a0dde5a56a43c
 
 find_objdump() {
   local c
@@ -29,8 +33,8 @@ echo "using $("$OD" --version | head -1) at $OD"
 
 mkdir -p "$ROOT/dumps"
 OUT="$ROOT/dumps/disasm.txt"
-# Run beside the exe so the listing's header names WoW.exe, not a path on this machine.
-( cd "$(dirname "$EXE")" && "$OD" -d -M intel --no-show-raw-insn --section=.text "$(basename "$EXE")" ) > "$OUT.tmp"
+EXE_PATH="$(cd "$(dirname "$EXE")" && pwd)/$(basename "$EXE")"
+( cd "$ROOT" && BENILLA_RE_WOW_EXE="$EXE_PATH" cargo xtask listing "$OD" "$OUT.tmp" )
 mv "$OUT.tmp" "$OUT"
 
 sum=$(sha256_of "$OUT")

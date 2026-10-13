@@ -50,10 +50,10 @@ Columns, and what may be relied on:
                       cfg-truncated, indirect-branch and iteration-cap: an edge the walk could
                       not resolve, outside the soundness claim for that row's arity.
 
-The disassembly is the linear sweep of .text, which data between functions can knock out of step.
-A function entry or branch target that the sweep has inside one instruction is disassembled
-afresh from that address with objdump (lib.Disasm.lookup); without objdump the walk is truncated
-there and the row says `cfg-truncated`.
+The disassembly restarts at every function row and jump-table entry (tools/disasm.sh), but data
+no row or table accounts for can still knock it out of step. A branch target that it has inside
+one instruction is disassembled afresh from that address with objdump (lib.Disasm.lookup);
+without objdump the walk is truncated there and the row says `cfg-truncated`.
 """
 
 import re
@@ -215,7 +215,7 @@ _cache = {}
 
 
 def decode(va):
-    """The instruction at va in the linear sweep, or None if the sweep has none there."""
+    """The instruction at va in the listing, or None if the listing has none there."""
     if va in _cache:
         return _cache[va]
     r = None

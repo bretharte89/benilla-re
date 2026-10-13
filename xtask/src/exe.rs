@@ -121,35 +121,25 @@ pub fn run(root: &Path, checked: &Checked) -> io::Result<Outcome> {
     let mut problems = Vec::new();
     let mut summary = vec!["WoW.exe is 1.12.1.5875".to_string()];
 
-    // The disassembly the findings cite, written when missing.
+    // The disassembly the findings cite, written when missing. It restarts at every row, so a
+    // row it has no instruction at was added after it was written, and it is written again.
     let listing_path = root.join("dumps").join("disasm.txt");
+    let rows = functions(checked);
+    let mut written = false;
     if !listing_path.exists() {
-        let status = Command::new("bash")
-            .arg("tools/disasm.sh")
-            .current_dir(&root)
-            .env(EXE_VARIABLE, &exe)
-            .status()?;
-        if !status.success() {
-            problems.push(problem("tools/disasm.sh", format!("failed ({status})")));
-        }
+        problems.extend(write_listing(&root, &exe)?);
+        written = true;
     }
     if listing_path.exists() {
-        let listing = Listing::read(&listing_path)?;
+        let mut listing = Listing::read(&listing_path)?;
+        if !written && rows.iter().any(|row| !listing.contains(row.address)) {
+            problems.extend(write_listing(&root, &exe)?);
+            listing = Listing::read(&listing_path)?;
+            summary.push("dumps/disasm.txt rewritten for rows newer than it".to_string());
+        }
         let bytes = fs::read(&exe)?;
         let image = Image::new(&bytes)
             .ok_or_else(|| io::Error::other("WoW.exe has no readable section table"))?;
-        let rows: Vec<bodies::Function> = checked
-            .functions
-            .iter()
-            .filter_map(|row| {
-                Some(bodies::Function {
-                    place: row.place(),
-                    address: u32::from_str_radix(row.get("address").strip_prefix("0x")?, 16)
-                        .ok()?,
-                    size: row.get("size").parse().ok()?,
-                })
-            })
-            .collect();
         let found = bodies::check(&rows, &listing, &image);
         summary.push(format!(
             "{} bodies against {} instructions",
@@ -170,6 +160,31 @@ pub fn run(root: &Path, checked: &Checked) -> io::Result<Outcome> {
         problems,
         summary: summary.join("; "),
     })
+}
+
+/// The function rows, for the body check and the listing.
+pub fn functions(checked: &Checked) -> Vec<bodies::Function> {
+    checked
+        .functions
+        .iter()
+        .filter_map(|row| {
+            Some(bodies::Function {
+                place: row.place(),
+                address: u32::from_str_radix(row.get("address").strip_prefix("0x")?, 16).ok()?,
+                size: row.get("size").parse().ok()?,
+            })
+        })
+        .collect()
+}
+
+/// Writes `dumps/disasm.txt` with `tools/disasm.sh`; a problem if it fails.
+fn write_listing(root: &Path, exe: &Path) -> io::Result<Option<Problem>> {
+    let status = Command::new("bash")
+        .arg("tools/disasm.sh")
+        .current_dir(root)
+        .env(EXE_VARIABLE, exe)
+        .status()?;
+    Ok((!status.success()).then(|| problem("tools/disasm.sh", format!("failed ({status})"))))
 }
 
 /// Runs `cargo test --workspace` with skipping forbidden, and checks every named test passed.

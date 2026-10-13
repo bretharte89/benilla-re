@@ -4,6 +4,7 @@ mod bodies;
 mod check;
 mod cited;
 mod exe;
+mod listing;
 mod tables;
 mod tree;
 
@@ -13,6 +14,7 @@ use std::process::ExitCode;
 const USAGE: &str = "\
 usage: cargo xtask check [--exe]
        cargo xtask cited <benilla checkout>
+       cargo xtask listing <GNU objdump> <output>
 
 check         the symbol table and the system docs against their formats; runs anywhere
 check --exe   also identifies WoW/WoW.exe (or $BENILLA_RE_WOW_EXE), checks every function
@@ -20,6 +22,8 @@ check --exe   also identifies WoW/WoW.exe (or $BENILLA_RE_WOW_EXE), checks every
               tables, runs every test with BENILLA_RE_REQUIRE_EXE=1, and requires each test
               the table and the docs name to pass
 cited         lists the client addresses a benilla tree cites that no row or doc here backs
+listing       writes the disassembly of WoW/WoW.exe (or $BENILLA_RE_WOW_EXE) the findings
+              cite, as tools/disasm.sh does, with that objdump
 ";
 
 fn main() -> ExitCode {
@@ -30,6 +34,7 @@ fn main() -> ExitCode {
         ["check"] => check(&root, false),
         ["check", "--exe"] => check(&root, true),
         ["cited", benilla] => cited(&root, Path::new(benilla)),
+        ["listing", objdump, out] => listing(&root, Path::new(objdump), Path::new(out)),
         _ => {
             eprint!("{USAGE}");
             return ExitCode::from(2);
@@ -73,5 +78,20 @@ fn check(root: &Path, with_exe: bool) -> std::io::Result<bool> {
 fn cited(root: &Path, benilla: &Path) -> std::io::Result<bool> {
     let checked = check::run(&tree::Disk::new(root))?;
     cited::run(&checked, benilla)?;
+    Ok(true)
+}
+
+fn listing(root: &Path, objdump: &Path, out: &Path) -> std::io::Result<bool> {
+    let exe = exe::locate(root);
+    if exe::identify(&exe)? != exe::Identity::Reference {
+        eprintln!(
+            "xtask: {} is not WoW.exe 1.12.1.5875 (tools/exe.env)",
+            exe.display()
+        );
+        return Ok(false);
+    }
+    let checked = check::run(&tree::Disk::new(root))?;
+    let starts: Vec<u32> = exe::functions(&checked).iter().map(|f| f.address).collect();
+    println!("{}", listing::write(&starts, &exe, objdump, out)?);
     Ok(true)
 }

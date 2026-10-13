@@ -91,8 +91,12 @@ instruction reached from that entry by falling through (a `call` falls through),
 which the target of every tail call needs. Code reached only through a stored address, such as an
 exception filter or handler in a scope table, is not in the body. `size` runs from the entry to the
 end of the body's last instruction, and nothing in `[address, address + size)` is other than body,
-padding and the function's jump-table data. A body that does not form one such run has the size of
-its run from the entry, and its finding names each other run by its first and last instruction.
+padding, the function's jump-table data and its own exception code: code reached only through a
+stored address that points into that range (a filter, a handler, a catch funclet, or the
+continuation one returns, as in `mov eax,<continuation>; ret`), with the code it reaches. Exception
+code past the end of the body stays outside the size. Padding is `int3` and the no-op fillers
+compilers align with, where no branch lands: `nop` of any length, `xchg ax,ax`, `mov edi,edi`, and
+`lea` of a register to itself plus zero (`lea ecx,[ecx+0x0]`).
 `cargo xtask check --exe` recomputes every size from `dumps/disasm.txt`.
 
 Classes:

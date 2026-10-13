@@ -106,7 +106,8 @@ class Disasm:
     """The disassembly of .text: instructions in address order.
 
     `ins` holds (address, size, mnemonic, operands); a prefix (rep, lock) is dropped and the
-    mnemonic is the instruction proper. `at` maps an address to its index in `ins`.
+    mnemonic is the instruction proper. A size runs to the next instruction, so the one before a
+    jump table, which the listing leaves out, spans the table. `at` maps an address to its index in `ins`.
     """
 
     PREFIXES = ('rep', 'repz', 'repnz', 'repe', 'repne', 'lock', 'data16', 'addr16')
@@ -144,11 +145,12 @@ class Disasm:
     def lookup(self, va):
         """The instruction starting exactly at va as (address, size, mnemonic, operands).
 
-        The sweep is linear, so data between functions (a jump table, say) can swallow the first
-        bytes of the next function and leave its entry mid-instruction. When va is not an
-        instruction start, the bytes from va are disassembled afresh with objdump, if it is on
-        the path (the same tool that wrote the dump), and those instructions are kept apart from
-        the sweep. Without objdump, or without an exe path, the answer is None.
+        The listing restarts at every function row and jump-table entry, but data no row or table
+        accounts for can still swallow the first bytes of the code after it and leave an entry
+        mid-instruction. When va is not an instruction start, the bytes from va are disassembled
+        afresh with objdump, if it is on the path (the same tool that wrote the dump), and those
+        instructions are kept apart from the listing. Without objdump, or without an exe path, the
+        answer is None.
         """
         if va in self.extra:
             return self.extra[va]
