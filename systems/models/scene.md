@@ -119,30 +119,84 @@ the head, clears its `+0x44` and `+0x48`, and calls `0x7192b0`.
 
 ## Element collection
 
-Each instance on the draw queue that is ready contributes one 64-byte element per visible batch,
-ribbon and particle emitter, and one for its custom draw. A batch's alpha is the instance alpha
-times its colour's animated alpha and its transparency weight; a batch with alpha ≤ 0 is skipped, and one with a NaN alpha is kept.
-An element goes to list 0 when its blend mode is 0 or 1 and its alpha is at least 0.99999, else
-to list 1 when the instance lies above the lighting record's clip plane and to list 2 when below.
+Each ready instance on the draw queue gives one 64-byte element per visible batch and ribbon and one
+for its custom draw, each on the emitter queue one per particle emitter. A batch's alpha is the
+instance alpha, times its colour's animated alpha when its colour index is in range, times its
+transparency weight when it has textures; alpha ≤ 0 skips it, a NaN does not. A batch, ribbon or
+emitter of blend 0 or 1 and alpha at least 0.99999 goes to list 0, as does an opaque custom draw;
+otherwise a batch goes to list 1 above the clip plane, list 2 below, possibly both; the rest to list
+1 if above, else 2.
 
 | kind | element |
 |---|---|
 | 0 | a batch |
-| 1 | a batch with flag 4, when the scene has a special callback |
-| 2 | an opaque batch of a batchable instance, flag 0x10, cache bit 0x20, no lights |
-| 3 | a ribbon emitter |
-| 4 | a particle emitter |
-| 5 | the instance's custom draw |
+| 1 | a batch with flag 4, when the scene has a special callback; translucent, list 1, or list 2 under a plane |
+| 2 | an opaque batch of a batchable instance, flag 0x10, cache bit 0x20, no lights: the grouped list |
+| 3 | a ribbon emitter whose visible byte is set, alpha the instance's times its animated alpha |
+| 4 | a particle emitter that still draws, of an instance with alpha above 0 |
+| 5 | the instance's custom draw, alpha 1.0 |
 
-Addresses: `0x707680`, `0x710450`, `0x808120`, `0x70da00`, `0x707b48`, `0x707b5c`
+Addresses: `0x707680`, `0x710450`, `0x808120`, `0x70da00`, `0x707b48`, `0x707b5c`, `0x707af0`, `0x707b12`, `0x707b26`, `0x707e31`, `0x7080cf`, `0x7080e5`, `0x708516`, `0x708530`, `0x7084cf`
 Confidence: verified
 Proof: one
 Test: none
 
-The ready test is `0x710450(model, 0, 0)`. The opaque test compares the blend word of the batch's
-material with 1 and the alpha with the float at `0x808120`. Kind 3 walks the shared header's
-`+0x134` ribbons with state stride 0xd0, kind 4 its `+0x13c` emitters with stride 0x16c; kind 5
-needs a draw callback at instance `+0x1b8` and goes to list 0 when `+0x1c0` is set.
+The ready test is `0x710450(model, 0, 0)`. The colour alpha is the colour state's `+0x3c`
+(`0x707af0`); the weight, read when unit `+0xe` is nonzero (`0x707b12`), is transparency state
+`+0xc` at the header's transparency lookup `+0xa8` entry for unit `+0x14` (`0x707b26`). The opaque
+test compares the material's blend word with 1 and the alpha with the float at `0x808120`. A kind 1
+element reads the lighting record's plane flag `+0x19c` (`0x707e31`). Kind 3 walks the shared
+header's `+0x134` ribbons with state stride 0xd0, tests the state's byte `+0xbc` (`0x7080cf`), and
+multiplies by state `+0x3c` when the record's `+0x4c` count is nonzero, clamping a negative alpha to
+0 (`0x7080e5`); its material is the record's first entry of `+0x20`. Kind 4 walks the emitter
+queue's `+0x13c` emitters with stride 0x16c and needs the state's `+0x164` (`0x708516`) and an alpha
+above 0 (`0x708530`); its material is the record's blend `+0x28`. An emitter is above unless its
+centre lies more than `r` below the plane (`0x7084cf`), whatever the cache's bit 2. Kind 5 needs a
+draw callback at instance `+0x1b8` and goes to list 0 when `+0x1c0` is set.
+
+## Element depth keys
+
+Each element carries two depth keys for the transparent order, `+0x14` and `+0x18`. The instance key
+`+0x84` is the squared length of its world matrix's translation row, computed each frame, or for an
+instance attached to a parent created without flag 1 the parent's key. A translucent batch sets
+`+0x18` to the squared length of its submesh's centre `+0x14` taken through the bone matrix of its
+centre bone `+0x12`, an opaque one to the instance key; `+0x14` is the instance key when depth fill
+applies to the instance and the batch is not kind 1, else `+0x18`. Ribbon, emitter and custom
+elements carry the instance key in both.
+
+Addresses: `0x7143b8`, `0x7143e2`, `0x707d6a`, `0x707d80`, `0x707d9d`, `0x707da8`, `0x707dbf`, `0x707dca`, `0x708184`, `0x7085c9`, `0x70830b`
+Confidence: verified
+Proof: one
+Test: none
+
+`0x7143c0` loads instance `+0x12c` to `+0x134` (row 3 of `+0xfc`) and stores `(x·x + y·y) + z·z` at
+`0x7143e2`; `0x7143ac` tests the parent's `+0x4` with 1 and copies its `+0x84` when clear. The batch
+key transforms submesh `+0x14` by bone matrix `+0x94[+0x12]` with `TransformPoint` (`0x707d80`) and
+sums the squares in the same order (`0x707d9d`), each sum at 53 bits and the result stored as a
+float. `0x707db1` tests the instance's depth fill and the kind 1 flag before `0x707dbf` or
+`0x707dca`.
+
+## Depth fill copies
+
+When depth fill applies to an instance, every translucent batch other than kind 1 whose material
+lacks flag 0x10 gets a second element: its `+0x18` becomes the largest float, and a copy with `+0x8`
+= 1 goes to the same lists. Depth fill applies when the cache's feature bit 1 is granted, the
+instance was created without flag 1, and its `+0x1c4` is set, which the constructor sets and no live
+code clears. The copy draws with colour writes off and blending off, keeping the alpha test of blend
+1 (`render`, `Material state`), and the transparent order puts it before every element of equal
+`+0x14`.
+
+Addresses: `0x707a3c`, `0x707a4e`, `0x707f89`, `0x707f9a`, `0x707fa7`, `0x707fb3`, `0x707ff0`, `0x707ff7`, `0x710da0`
+Confidence: verified
+Proof: one
+Test: none
+
+`0x707a3c` tests the cache's `+0x4` with 1, the instance's `+0x4` with 1 and `+0x1c4` (`0x707a4e`)
+into `[ebp-0x8]`. After the batch's list append, `0x707f89` needs that flag, `0x707f8f` a clear kind
+1 flag, `0x707f9a` the translucent flag and `0x707fa7` material bit 0x10 clear. `0x707fb3` stores
+0x7f7fffff in the element's `+0x18` before `rep movs` copies it (`0x707ff0`), so both carry it;
+`0x707ff7` sets the copy's `+0x8`. Its only setter, `0x710da0`, has no caller (`overview`, Unreached
+code).
 
 ## Plane classification
 
@@ -226,13 +280,63 @@ digits 6 to 0. `0x70b040` returns the id unchanged unless `+0x148 & 0x18`, reads
 
 ## Ray hits
 
-`0x7089c0` finds the nearest triangle of the hit-test instances a segment crosses; segments
-shorter than 1e-5 clear the hit list. `0x7099e0` tests a segment against the same instances' bounds.
+`0x7089c0(p0, p1, &f, retry)` finds the nearest triangle of the hit-test instances on the segment
+within `f`, writes its fraction and returns the instance's user value, else 0; short
+input returns 0 as in `Segment collision`, and every call empties the hit list. Candidates are
+that entry's spheres placed by the world matrix, which an unanimated mode 3 instance without a
+parent rebuilds; other unanimated instances are skipped. Mode 3 tests the collision triangles.
+Modes 1 and 2 skin each visible submesh of view 0 on the CPU and test its triangles, skipping
+units with flag 8, alpha 0 and, for mode 2, blends other than 0. With nothing hit and
+`retry` set, a second pass covers the whole segment.
 
-Addresses: `0x7089c0`, `0x7099e0`, `0x70a060`, `0x7089b0`, `0x713cb0`
-Confidence: inferred
-Proof: none
+Addresses: `0x7089c0`, `0x708bd9`, `0x708c11`, `0x708ff2`, `0x70902f`, `0x70903b`, `0x70905d`, `0x7090c2`, `0x709229`, `0x70998d`, `0x7089b0`, `0x713cb0`
+Confidence: verified
+Proof: one
 Test: none
 
-`0x713cb0` links an instance into the hit list at scene `+0x130`; `0x7089b0` sets `+0x12c`.
-Candidates are 16-byte records sorted by `0x70a060`. The triangle test was not transcribed.
+`0x708bd9` compares instance `+0x40` with scene `+0x10`; `0x708c11` builds `+0xfc` from `+0xbc`
+and scene `+0x9c`. The candidate loop stops at the first near distance not below the best on the
+first pass only (`0x708fa3`). `0x70902f` tests unit flag 8, `0x70903b` mode 2's blend word,
+`0x70905d` the visibility words `+0x9c`, else `+0x98`; `0x7090c2` skips alpha 0. `0x709229` scales
+each bone weight byte by 1/255 for a weighted sum of bone matrices. `0x70998d` reruns with the
+full length when `retry` is set. The inline triangle test was not transcribed.
+
+## Segment collision
+
+`0x7099e0(p0, p1, &f)` finds the nearest collision triangle of the scene's hit-test instances on
+the segment within the fraction `f`, writes the hit's fraction to `f` and returns the instance's
+user value `+0x41c`, else 0. A segment or `f` under 1e-5 returns 0. Each listed, loaded instance is
+first a sphere: its current sequence's bounds, or the model's when that radius is 0, through the
+base matrix; the sphere must meet the line with its near point before the segment end and its far
+point not behind the start. Candidates sorted by near then far distance are tested while their
+near distance is under the best hit, and only mode 3 instances test triangles. Every call empties
+the hit list.
+
+Addresses: `0x7099e0`, `0x709a00`, `0x709bc4`, `0x709da8`, `0x709e64`, `0x709ec1`, `0x709fc5`, `0x70a060`, `0x7c29f0`, `0x7bcf90`, `0x7bd6c0`
+Confidence: verified
+Proof: one
+Test: none
+
+The sphere centre is half of box min plus max of sequence `+0x24` (index from bone state `+0xa4`),
+radius `+0x3c`, else header `+0xb4` and `+0xcc`; the radius scales by the length of base row 0.
+`0x709da8` misses when the squared distance from the line exceeds r². `0x70a060` breaks ties by
+index. `0x709ec1` skips modes other than 3; the segment goes into model space through the inverse
+base matrix and `0x7c29f0` tests the header's collision triangles (`+0xf0`, `+0xf8`) with
+tolerance 1e-6, keeping hits with t ≥ 0.
+
+## Ray triangle test
+
+The triangle test is two-sided Möller–Trumbore: with `e1 = v1 − v0`, `e2 = v2 − v0` and
+`p = d × e2`, it misses when `|e1·p| < 1e-6`; with `s = o − v0` and `q = s × e1`,
+`u = (s·p)/det` and `v = (d·q)/det` must each be at least `−ε`, and `u` and `u + v` at most
+`1 + ε`; `t = (e2·q)/det` and `(u, v)` are written when asked. It does not bound `t`.
+
+Addresses: `0x7c29f0`, `0x7c2adc`, `0x7c2b55`, `0x7c2bc8`, `0x81d9bc`, `0x80e2e4`
+Confidence: verified
+Proof: one
+Test: none
+
+`0x7c29f0(ray, vertices, indices, &t, &uv, ε)` reads the ray's origin at `+0x0` and direction at
+`+0xc`. `0x7c2adc` passes on `det ≤ −1e-6` or `det ≥ 1e-6` (`0x81d9bc`, `0x80e2e4`).
+`0x7c2b55` multiplies by `1/det` and compares with `−ε` and `1 + ε`. Map object leaves
+(`0x6b8acf`, `0x6bc764`) call it too.

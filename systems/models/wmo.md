@@ -30,7 +30,7 @@ file and carries its tag.
 | `MOPR` | 8 bytes | `MODD` | 40 bytes |
 | `MFOG` | 48 bytes | `MCVP` | 16 bytes |
 
-Addresses: `0x6c3a60`, `0x6c3a00`, `0x6c3a20`, `0x6c3990`
+Addresses: `0x6c3a60`, `0x6c3a00`, `0x6c3a20`, `0x6c3990`, `0x6c3b2d`, `0x6c39d0`, `0x6a3496`, `0x6c39e0`, `0x6a5650`
 Confidence: verified
 Proof: one
 Test: none
@@ -38,8 +38,13 @@ Test: none
 `0x6c3a60` starts at file `+0xc` (the data at map object `+0x1c0`) and calls `0x6c3a00` with each
 tag; `0x6c3a00` returns the cursor and adds 8, ignoring the tag, and the caller adds the chunk size.
 The counts are `size >> 6`, `size >> 5`, and multiplications by 0xaaaaaaab or 0xcccccccd followed by
-shifts, which divide by 12, 48, 20 and 40. `0x6c3a20` compares the cursor with `+0x1c0 +
-+0x1c4` and the tag with `MCVP`.
+shifts, which divide by 12, 48, 20 and 40. `0x6c3a20` compares the cursor with `+0x1c0 + +0x1c4` and
+the tag with `MCVP`. The `MOGI` count `size >> 5` goes to `+0x168` (`0x6c3b2d`); `0x6c3990` then
+stores it at `+0x1f0`, which the reset `0x6a3430` seeds to 384 (`0x6a3496`), and allocates a group
+object for each group into the pointers from `+0x1f4`, 384 of which end the 0x7f4 fixed bytes;
+`0x6a5650` allocates 0x7f4 plus the caller's extra bytes. The loop at `0x6c39e0` runs to the `MOGI`
+count with no cap at 384, so a file of more than 384 groups writes its pointers past the fixed part,
+into the extra bytes and beyond.
 
 ## Group file chunks
 
@@ -58,6 +63,48 @@ each count from `+0x124`: `size >> 1` twice, `size·0xaaaaaaab >> 35` twice (12 
 and `size·0xaaaaaaab >> 36` (24 bytes). It tests group `+0x10` with 0x48 and stores 32 or 36 times
 the vertex count at `+0xec`, then calls `0x6c4530`. The index byte count `+0xf0` is twice `+0x12c`
 when `+0xcc` and a global flag are set, else twice `+0x128`.
+
+## Group header
+
+A group file is the version chunk and one `MOGP` chunk whose data opens with a 0x44-byte header;
+the geometry chunks start right after it. The header fields land in the group:
+
+| header | group | holds |
+|---|---|---|
+| `+0x00` | `+0xc0` | name, an offset into the root's `MOGN` turned into a pointer |
+| `+0x08` | `+0x10` | flags |
+| `+0x0c` | `+0x14` | bounding box, six floats |
+| `+0x24`, `+0x26` | `+0x2c`, `+0x30` | first portal reference and count, 16-bit |
+| `+0x28` to `+0x2c` | `+0x3c` to `+0x40` | three batch counts, 16-bit |
+| `+0x30`, `+0x34`, `+0x38` | `+0x34`, `+0x38`, `+0x14c` | fog indices, liquid word, group id |
+
+After the chunks, every batch resolves the textures of its material, the batch's byte `+0x17`.
+
+Addresses: `0x6c3f80`, `0x6c3fa6`, `0x6c3ff5`, `0x6c4053`, `0x6c4080`, `0x6c3db0`
+Confidence: verified
+Proof: one
+Test: none
+
+`0x6c3f80` advances the file pointer `+0x150` by 0x14 (version chunk and the `MOGP` header), reads
+the fields above with `rep movs` for the box, then `add eax, 0x44` and calls `0x6c40c0`. It first
+unlinks the group's node and links it again into the root's group list (`+0x1e4`, which holds the
+node's offset in the group), and last sets `+0x164` to 1 and `+0xbc` to 0. The loop at `0x6c4080` steps the batches by 0x18.
+
+## Material textures
+
+A material record is the file's 64-byte `MOMT` record, used in place. Its first texture is the
+`MOTX` string at offset `+0xc`, or `createcrappygreentexture.blp` when that string is empty; its
+second, at `+0x18`, is loaded only when its string is not empty. The handles go to `+0x38` and
+`+0x3c`, once: a material whose first handle is set is skipped.
+
+Addresses: `0x6c3db0`, `0x6c3d70`, `0x6c4c20`, `0x86c3c0`
+Confidence: verified
+Proof: one
+Test: none
+
+`0x6c3db0(index)` takes record `+0x1d8 + 64·index`, returns at once when `+0x38` is non-zero, and
+calls `0x6c4c20` with `MOTX` (`+0x124`) plus the offset, or with the string at `0x86c3c0`; an empty
+second string stores 0 at `+0x3c`. `0x6c3d70` zeroes both handles of every material.
 
 ## Loading
 
@@ -86,8 +133,70 @@ Confidence: inferred
 Proof: none
 Test: none
 
-Each map object query guards on `+0x1d4` and each group through `0x6a4a00`. The BSP walks use
-±0.01 slabs; the liquid grid scales by 1/4.1666665. None of the arithmetic was transcribed.
+Each map object query guards on `+0x1d4` and each group through `0x6a4a00`. The segment walk is
+`BSP segment descent`; the box and volume walks, the leaf tests and the liquid grid, which scales
+by 1/4.1666665, were not transcribed.
+
+## BSP segment descent
+
+A group's BSP node is 16 bytes: a 16-bit flags word (0x4 leaf, low two bits the split axis), the
+negative and positive children (`+0x2`, `+0x4`, 0xffff for none), the face count `+0x6`, the first
+face reference `+0x8`, and the split distance `+0xc`. A segment descends with the node's box: it
+stops when both ends lie more than 0.01 beyond the box on the split axis; with `f0` and `f1` the
+ends' distances from the split, it visits both children whole when either is within 0.01, one
+child when both are beyond 0.01 on one side, and otherwise splits at `t = f0/(f0 − f1)`, the
+start's side first. A leaf tests its cached mesh, else each face.
+
+Addresses: `0x6bc370`, `0x6bc394`, `0x6bc3e9`, `0x6bc4c5`, `0x6bc4fc`, `0x6bc535`, `0x6bc56e`, `0x6b88e0`, `0x6bc700`, `0x810ccc`
+Confidence: verified
+Proof: one
+Test: none
+
+`0x6bc3e9` masks the axis with 3 and compares `p − box.min` with −0.01 (`0x810ccc`) and
+`box.max − p` with 0.01. The child boxes copy the parent's with `min[axis]` or `max[axis]` set to
+the split. `0x6bc56e` computes `f0/(f0 − f1)` with `fdivr` and the midpoint `p0 + (p1 − p0)·t`;
+`f0 > 0` takes the positive child first. A leaf calls `0x6b88e0`, and on 0 `0x6bc700` for each of
+its `+0x6` face indices.
+
+## Bounding spheres and volume
+
+A loaded map object's bounding sphere is centred at `(min + max)·0.5` of its box, the sum rounded
+to a float before the halving, with radius `|max − centre|`; a group's comes the same way from its
+group record's box. An unloaded map object gives a zero sphere. A point is inside the map object's
+convex volume when every plane gives `n·p + d ≤ 0`, a NaN counting as inside, and with no planes
+it is inside; an unloaded map object contains nothing.
+
+Addresses: `0x6a4310`, `0x6a44b0`, `0x6a4990`, `0x6a49d7`
+Confidence: verified
+Proof: one
+Test: none
+
+`0x6a4310` adds `+0x1ac` to `+0x1a0` and so on into a stored vector, multiplies by 0.5, and takes
+`sqrt` of the squared distance from the centre to `+0x1ac`. `0x6a44b0(out, index)` reads the
+32-byte record at `+0x130`, box at `+0x4` and `+0x10`. `0x6a4990` walks `+0x194` planes of 16
+bytes at `+0x15c` (the `MCVP` chunk), computes `((ny·py + nz·pz) + nx·px) + d` and returns 0 at the
+first plane where `test ah,0x41` finds neither C0 nor C3 (`0x6a49d7`).
+
+## Portal vertex fade
+
+When a group's `MOCV` colours are read, every vertex of a face whose `MOPY` flags lack bit 0 gets
+alpha 0xff, unless a global switch is set. On the group's first draw, each vertex up to the
+highest vertex of the batches its first batch count covers is faded toward the outside: `d` is its least distance to a portal
+of the group that leads to a group with flags 0x8 or 0x40. At `d = 0` the colour becomes
+0xffffffff; for `0 < d < 6.666667` with alpha 0, with `t = 1 − 0.15·d`, each of r, g, b becomes
+`c + (255 − c)·t` and alpha `255·t`, each byte taken as `(x + 512) >> 14`.
+
+Addresses: `0x6c41e0`, `0x6c4605`, `0x6c43d0`, `0x6c4340`, `0x6c4240`, `0x6c443e`, `0x6c4449`, `0x6c4468`, `0x6b3fb5`
+Confidence: verified
+Proof: one
+Test: none
+
+`0x6c4605` calls `0x6c41e0` unless the byte at `0xca8064` is set. `0x6b3fb5` calls `0x6c43d0` while
+group `+0xbc` is 0; it sets `+0xbc` and loops vertices 0 through batch `+0x14` of batch
+`+0x3c − 1`. `0x6c4340` walks the group's `+0x30` portal references from `+0x2c`, testing the other
+group's record flags with 0x48. `0x6c4240` returns 0 when the squared plane distance is under
+1/36 and the point lies in the portal polygon, else the least edge distance. The constants are
+6.666667, 0.15 and 255.0.
 
 ## Vertex buffer pools
 
