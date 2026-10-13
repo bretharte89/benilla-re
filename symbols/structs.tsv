@@ -5,8 +5,11 @@ CCamera	368	0x81d7c0	camera	Holds a camera: the property slots and update list, 
 CInputControl	28		input	Holds the world input state: held commands, travel sums, times and the armed click	verified	one	input#input-state
 CMovement	352		collision	Holds a unit's movement: the shared kinematics to +0xab, then collision size, relay timing, event queue and unit	verified	one	collision/mover#construction
 CPlayerMoveEvent	80		collision	Holds one queued movement event: list link, time, tag, pose, status snapshot, payload and flags	verified	one	collision/events#event-node
+CSimpleModelFFX	988	0x803960	glue	Holds a ModelFFX frame: a CSimpleModel whose show hook and layer-2 draw add the current full-screen effect	verified	one	glue/select#the-modelffx-frame
+CharacterSelectionDisplay	288		glue	Holds one character-list record: the session character record in its first 0x110 bytes, then the select screen state	verified	one	glue/flow#enter-world
 ClientConnection	6948	0x80a398	net	Holds the world session: a RealmConnection with the status the screens poll	verified	one	net/session#session-status
 ClientLink	548	0x80a7dc	net	Holds the logon link: its connection, state, receive buffer, SRP6 object and owner	verified	one	net/login#logon-commands
+DictionaryRecord	8		glue	Holds a name generator key of up to three bytes and the times it was seen	verified	one	glue/create#name-statistics
 EvtContext	532	0x801364	core	Holds a scheduled context: its run state, due time, flags, handler lists, messages, held input and timers	verified	one	core/loop#contexts
 EvtHandler	24		core	Holds a registered handler: its link, function, argument, priority and skip flag	verified	two	core/events#handler-records
 ITEMCOOLDOWNHASHNODE	36		spell	Holds one item-cooldown hash node: key, slot link, node-list link and payload	verified	one	spell/cooldowns#item-cooldown-table
@@ -16,6 +19,8 @@ MovementGlobals	312		collision	Holds the movement manager: log path and files, t
 NETEVENTQUEUENODE	24		net	Holds one queued network event: link, type, time, data copy and length	verified	one	net/dispatch#network-thread-handoff
 NTempest::CRndSeed	8		random	Holds a random state: an accumulator and four lane indices	verified	two	random#state-and-seeding
 RACECLASSINFO	32		spell	Holds a race-class index node: skill line, two links, and a run of SkillRaceClassInfo rows	verified	one	spell/tables#startup-build-of-the-indexes
+RealmCategory	28		glue	Holds a realm category: its Cfg_Categories id and row and the holder indices of its realms	verified	one	glue/realms#the-category-set
+RealmInfo	308		net	Holds one realm of the logon server's realm list: type, flags, name, address, population and counts	verified	one	glue/realms#the-realm-record
 SKILLCOSTSINFO	32		spell	Holds a skill-cost index node: cost-set id, two links, and a run of SkillCostsData rows	verified	one	spell/tables#startup-build-of-the-indexes
 SKILLLINEREC	28		spell	Holds an ability index node: spell, two links, race, class and a SkillLineAbility row	verified	one	spell/tables#spell-ability-index-by-race
 SPELLHISTORY	48		spell	Holds one spell-history record: link, spell, item, three timers and a held flag	verified	one	spell/cooldowns#history-record-layout

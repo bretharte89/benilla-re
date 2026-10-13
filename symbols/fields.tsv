@@ -113,10 +113,43 @@ CPlayerMoveEvent	0x0044	4	float	m_speedZ	collision	Holds the knockback vertical 
 CPlayerMoveEvent	0x0048	4	uint32_t	m_counter	collision	Holds the server change counter that the acknowledgement echoes	verified	one	collision/events#event-node
 CPlayerMoveEvent	0x004c	1	uint8_t	m_hasStatus	collision	Holds 1 when 0x617730 filled the snapshot fields, 0 from allocation	verified	one	collision/events#event-node
 CPlayerMoveEvent	0x004d	1	uint8_t	m_send	collision	Holds 1 when processing the event sends its opcode to the server	verified	one	collision/events#event-node
+CSimpleModelFFX	0x0000	4	void **	__vfptr	glue	Holds the vtable 0x803960	verified	one	glue/select#the-modelffx-frame
+CSimpleModelFFX	0x0024	4	void **	m_innerVfptr	glue	Holds the second vtable 0x803934	verified	one	glue/select#the-modelffx-frame
+CharacterSelectionDisplay	0x0000	8	uint64_t	m_guid	glue	Holds the character guid, which the world entry sends	verified	one	glue/flow#two-phase-world-entry
+CharacterSelectionDisplay	0x0008	48	char[48]	m_name	glue	Holds the character's name; the rename applier copies at most 48 bytes into it	verified	one	glue/select#the-roster
+CharacterSelectionDisplay	0x0038	4	uint32_t	m_mapId	glue	Holds the character map, passed to the loading screen and to ClientInitializeGame	verified	one	glue/flow#two-phase-world-entry
+CharacterSelectionDisplay	0x003c	4	int32_t	m_zoneId	glue	Holds the character's zone, an AreaTable id	verified	one	glue/select#the-roster
+CharacterSelectionDisplay	0x0040	4	uint32_t	m_guildId	glue	Holds the character's guild id, which the tabard emblem lookup uses	verified	one	glue/select#the-roster
+CharacterSelectionDisplay	0x0044	12	float[3]	m_position	glue	Holds the character position, passed to ClientInitializeGame	verified	one	glue/flow#two-phase-world-entry
+CharacterSelectionDisplay	0x0050	80	int32_t[20]	m_itemDisplayIds	glue	Holds an ItemDisplayInfo id per equipment slot 0 to 19, 0 for none	verified	one	glue/select#the-roster
+CharacterSelectionDisplay	0x00a0	80	uint32_t[20]	m_inventoryTypes	glue	Holds an inventory type per equipment slot; 14 marks a shield in slots 15 and 16	inferred	none	glue/select#the-roster
+CharacterSelectionDisplay	0x00f0	4	uint32_t	m_petDisplayId	glue	Holds the pet's CreatureDisplayInfo id, 0 for none	verified	one	glue/select#the-roster
+CharacterSelectionDisplay	0x00f4	4	int32_t	m_petLevel	glue	Holds the pet's level, which sets its scale through its CreatureFamily row	verified	one	glue/select#the-roster
+CharacterSelectionDisplay	0x00f8	4	int32_t	m_petFamily	glue	Holds the pet's CreatureFamily id	verified	one	glue/select#the-roster
+CharacterSelectionDisplay	0x00fc	4	uint32_t	m_flags	glue	Holds the character flags; bit 2 locked for transfer, bit 14 rename required	verified	one	glue/flow#enter-world
+CharacterSelectionDisplay	0x0100	1	uint8_t	m_race	glue	Holds the character race id, the key of the first-login camera lookup	verified	one	glue/flow#two-phase-world-entry
+CharacterSelectionDisplay	0x0101	1	uint8_t	m_class	glue	Holds the class, a ChrClasses id	verified	one	glue/select#the-roster
+CharacterSelectionDisplay	0x0102	1	uint8_t	m_sex	glue	Holds the sex	inferred	none	glue/select#the-roster
+CharacterSelectionDisplay	0x0103	1	uint8_t	m_skin	glue	Holds the skin colour	inferred	none	glue/select#the-roster
+CharacterSelectionDisplay	0x0104	1	uint8_t	m_face	glue	Holds the face	inferred	none	glue/select#the-roster
+CharacterSelectionDisplay	0x0105	1	uint8_t	m_hairStyle	glue	Holds the hair style	inferred	none	glue/select#the-roster
+CharacterSelectionDisplay	0x0106	1	uint8_t	m_hairColor	glue	Holds the hair colour	inferred	none	glue/select#the-roster
+CharacterSelectionDisplay	0x0107	1	uint8_t	m_facialHair	glue	Holds the facial hair	inferred	none	glue/select#the-roster
+CharacterSelectionDisplay	0x0108	1	uint8_t	m_level	glue	Holds the character's level	inferred	none	glue/select#the-roster
+CharacterSelectionDisplay	0x010a	1	uint8_t	m_newCharacter	glue	Holds 1 for a character whose byte +0x108 read 0 in the list parse; selects the first-login camera, skips the tip	verified	one	glue/flow#game-tip-choice
+CharacterSelectionDisplay	0x0110	4	void *	m_component	glue	Holds the built character component, null until the select build makes it; the record destructor zeroes it	verified	one	glue/select#the-roster
+CharacterSelectionDisplay	0x0114	4	void *	m_petModel	glue	Holds the pet's model, null until built; the destructor releases it without clearing	verified	one	glue/select#the-roster
+CharacterSelectionDisplay	0x0118	1	uint8_t	m_rebuildModel	glue	Holds 1 for a new or entered record; the select screen clears it when it builds the model	inferred	none	glue/flow#enter-world
+ClientConnection	0x1af4	4	uint32_t	m_billingTimeRemaining	net	Holds the billing time remaining, read from the auth response by 0x5b41b0	inferred	none	glue/script#billing
+ClientConnection	0x1af8	4	uint32_t	m_billingTimeRested	net	Holds the billing rested time, read from the auth response by 0x5b41b0	inferred	none	glue/script#billing
+ClientConnection	0x1afc	1	uint8_t	m_billingFlags	net	Holds the billing flags byte, read from the auth response by 0x5b41b0	inferred	none	glue/script#billing
+ClientConnection	0x1b00	4	uint32_t	m_connected	net	Holds 1 while the world socket is connected: set on connect by 0x5aaa90, cleared on a drop	inferred	none	glue/script#server-name-and-connection
 ClientConnection	0x1b08	4	uint32_t	m_statusDone	net	Holds 1 once the current operation's status is set	verified	one	net/session#session-status
 ClientConnection	0x1b0c	4	uint32_t	m_statusResult	net	Holds the status's result flag, 1 for success	verified	one	net/session#session-status
 ClientConnection	0x1b10	4	uint32_t	m_operation	net	Holds the operation the status belongs to	verified	one	net/session#session-status
 ClientConnection	0x1b14	4	uint32_t	m_statusCode	net	Holds the status code, an index into the 83 status names	verified	one	net/session#session-status
+DictionaryRecord	0x0000	4	char[4]	m_key	glue	Holds up to three bytes of a lower-cased name window and a terminator	verified	one	glue/create#name-statistics
+DictionaryRecord	0x0004	4	int32_t	m_count	glue	Holds how many times the key was seen, at least 1	verified	one	glue/create#name-statistics
 EvtContext	0x0000	4	void **	__vfptr	core	Holds the vtable 0x801364	verified	one	core/loop#start-and-stop
 EvtContext	0x0004	8	void *[2]	m_tableLink	core	Holds the context's link in its context table bucket	verified	one	core/loop#contexts
 EvtContext	0x000c	4	uint32_t	m_handle	core	Holds the context's handle, its key in the context table	verified	one	core/loop#contexts
@@ -185,6 +218,19 @@ RACECLASSINFO	0x000c	8	void *[2]	m_linkToFull	spell	Holds the link in the table'
 RACECLASSINFO	0x0014	1	uint8_t	m_key	spell	Holds an uninitialized stack byte the build copies; nothing reads it	verified	one	spell/tables#startup-build-of-the-indexes
 RACECLASSINFO	0x0018	4	void *	m_firstRow	spell	Holds the run's first SkillRaceClassInfo.dbc row	verified	one	spell/tables#startup-build-of-the-indexes
 RACECLASSINFO	0x001c	4	uint32_t	m_rowCount	spell	Holds the number of consecutive rows in the run	verified	one	spell/tables#startup-build-of-the-indexes
+RealmCategory	0x0000	4	uint32_t	m_id	glue	Holds the category id, Cfg_Categories column 0, matched against a realm's category byte	verified	one	glue/realms#the-category-set
+RealmCategory	0x0004	4	void *	m_row	glue	Points to the category's Cfg_Categories record, the source of its localized name	verified	one	glue/realms#the-category-set
+RealmCategory	0x0008	4	uint32_t	m_realmsCapacity	glue	Holds the realm index array's capacity, a shared dword array's first field	inferred	none	glue/realms#the-category-set
+RealmCategory	0x000c	4	uint32_t	m_realmsSize	glue	Holds the slots of the realm index array, grown by one when full and never shrunk	verified	one	glue/realms#the-list-rebuild
+RealmCategory	0x0010	4	uint32_t *	m_realms	glue	Points to the category's holder indices, sorted by the sort records	verified	one	glue/realms#the-list-rebuild
+RealmCategory	0x0014	4	uint32_t	m_realmsQuantum	glue	Holds the realm index array's growth quantum, a shared dword array's last field	inferred	none	glue/realms#the-category-set
+RealmCategory	0x0018	4	uint32_t	m_realmCount	glue	Counts the realms in the category since the last rebuild	verified	one	glue/realms#the-list-rebuild
+RealmInfo	0x0004	4	uint32_t	m_type	net	Holds the realm type, matched against Cfg_Configs column 1 for the PvP and RP flags	verified	one	glue/realms#the-realm-record
+RealmInfo	0x0008	1	uint8_t	m_flags	net	Holds the flags: 0x01 and 0x02 as GetRealmInfo reports them, 0x20, 0x40, 0x80 the population sentinels	verified	one	glue/realms#the-realm-record
+RealmInfo	0x0009	256	char[256]	m_name	net	Holds the realm name	verified	one	glue/realms#the-realm-record
+RealmInfo	0x012c	4	float	m_population	net	Holds the population, the sentinels 600, 200 and 400 replaced by 0, 0.001 and 8	verified	one	glue/realms#the-realm-record
+RealmInfo	0x0130	1	uint8_t	m_characters	net	Counts the account's characters on the realm	verified	one	glue/realms#the-realm-record
+RealmInfo	0x0131	1	uint8_t	m_category	net	Holds the realm's category id, 0 meaning the first category	verified	one	glue/realms#the-realm-record
 SKILLCOSTSINFO	0x0000	4	uint32_t	m_hashVal	spell	Holds the hash, the cost-set id of the run	verified	one	spell/tables#startup-build-of-the-indexes
 SKILLCOSTSINFO	0x0004	8	void *[2]	m_linkToSlot	spell	Holds the link in the node's slot list, offset 4	verified	one	spell/tables#hash-table-layout
 SKILLCOSTSINFO	0x000c	8	void *[2]	m_linkToFull	spell	Holds the link in the table's node list, offset 0x0c	verified	one	spell/tables#hash-table-layout
