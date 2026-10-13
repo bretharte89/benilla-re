@@ -14,7 +14,7 @@ address	type	name	name_from	system	meaning	confidence	proof	finding
 0x81d7f0	void *[3]	CBaseManaged::vftable		camera	Holds the base property vtable: 0x7acb50, 0x7acb30, 0x7acb40	verified	one	camera#property-updates
 0x81d7fc	void *[4]	s_anglePropertyVftable		camera	Holds the angle property vtable: delete, the scalar evaluate and verify, store	verified	one	camera#property-updates
 0x822c60	luaL_reg[25]	mathlib		lua	Pairs the Lua math library's names with its C functions, ending in a null pair	verified	one	random#the-c-runtime-rand
-0x827000	void (*[7180])(void)	__xc_a		crt	Lists the C++ static initializers __cinit runs in ascending order, up to __xc_z at 0x82e030	verified	one	random#static-initializers
+0x827000	void (*[7180])(void)	__xc_a		crt	Lists the C++ static initializers __cinit runs in ascending order, up to __xc_z	verified	one	random#static-initializers
 0x832a44	float	s_screenScaleX		screencoord	Holds K1 = a/sqrt(a² + 1) for the display aspect a; 0.8 in the file	verified	one	input#click-versus-drag
 0x832a48	float	s_screenScaleY		screencoord	Holds K2 = 1/sqrt(a² + 1) for the display aspect a; 0.6 in the file	verified	one	input#click-versus-drag
 0x8500b8	void *[52]	s_bindingCommands		input	Pairs the 26 movement and mouse binding commands' names with their handlers	verified	one	input#mouse-commands

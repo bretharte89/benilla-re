@@ -7,7 +7,7 @@ Standard library only. Every generator takes the same options:
                     generators that read instructions
     -o PATH         write the table there instead of standard output
 
-The exe must be build 5875: 4,775,986 bytes, the SHA-256 below. Another build is refused.
+The exe must be build 5875, by the size and SHA-256 in tools/exe.env. Another build is refused.
 """
 
 import argparse
@@ -17,8 +17,19 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent.parent
-EXE_SIZE = 4775986
-EXE_SHA256 = 'b4756d38ef207c02ed651f4952bd89a70b4857b73a33413339e1b285b28d2dc7'
+
+
+def _identity():
+    """EXE_SIZE and EXE_SHA256 from tools/exe.env, the one place every tool reads them."""
+    values = {}
+    for line in (ROOT / 'tools' / 'exe.env').read_text(encoding='utf-8').splitlines():
+        if line and not line.startswith('#'):
+            key, _, value = line.partition('=')
+            values[key] = value
+    return int(values['EXE_SIZE']), values['EXE_SHA256']
+
+
+EXE_SIZE, EXE_SHA256 = _identity()
 IMAGE_BASE = 0x400000
 
 

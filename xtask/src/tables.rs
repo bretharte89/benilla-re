@@ -1,0 +1,209 @@
+//! The tables under `tables/`: each one's header against the columns `tables/README.md` defines
+//! (without the exe), and each one byte for byte against what its generator writes from the exe
+//! (`--exe`).
+
+use crate::check::Problem;
+use crate::exe::EXE_VARIABLE;
+use crate::tree::Tree;
+use std::collections::{BTreeMap, BTreeSet};
+use std::fs;
+use std::io;
+use std::path::Path;
+use std::process::Command;
+
+const README: &str = "tables/README.md";
+
+fn problem(place: impl Into<String>, message: impl Into<String>) -> Problem {
+    Problem {
+        place: place.into(),
+        message: message.into(),
+    }
+}
+
+/// The names of the tables in a list of files: `tables/<name>.tsv`.
+fn tables(files: &[String]) -> BTreeSet<String> {
+    files
+        .iter()
+        .filter_map(|f| f.strip_prefix("tables/")?.strip_suffix(".tsv"))
+        .filter(|name| !name.contains('/'))
+        .map(str::to_string)
+        .collect()
+}
+
+/// A table section of the README: its line, and the columns its first table lists, or the
+/// table whose columns it reuses (`Columns as in `events.tsv`.`).
+struct Section {
+    line: usize,
+    columns: Vec<String>,
+    same_as: Option<String>,
+}
+
+fn sections(readme: &str) -> BTreeMap<String, Section> {
+    let mut found: BTreeMap<String, Section> = BTreeMap::new();
+    let mut current: Option<String> = None;
+    let mut in_columns = false;
+    for (index, line) in readme.split('\n').enumerate() {
+        if let Some(heading) = line.strip_prefix("## ") {
+            current = heading.strip_suffix(".tsv").map(str::to_string);
+            in_columns = false;
+            if let Some(name) = &current {
+                found.insert(
+                    name.clone(),
+                    Section {
+                        line: index + 1,
+                        columns: Vec::new(),
+                        same_as: None,
+                    },
+                );
+            }
+            continue;
+        }
+        let Some(section) = current.as_ref().and_then(|name| found.get_mut(name)) else {
+            continue;
+        };
+        let cells: Vec<&str> = line.split('|').map(str::trim).collect();
+        if section.columns.is_empty() && cells.len() > 2 && cells[1] == "column" {
+            in_columns = true;
+        } else if in_columns && line.starts_with('|') {
+            if cells[1].starts_with('-') {
+                continue;
+            }
+            for column in cells[1].split(',') {
+                section
+                    .columns
+                    .push(column.trim().trim_matches('`').to_string());
+            }
+        } else if in_columns {
+            current = None;
+        } else if let Some((_, rest)) = line.split_once("Columns as in `") {
+            section.same_as = rest.split_once(".tsv`").map(|(name, _)| name.to_string());
+        }
+    }
+    found
+}
+
+/// Each `tables/<name>.tsv` has the header its section of `tables/README.md` defines, and each
+/// section's table exists.
+pub fn check_headers(tree: &dyn Tree, files: &[String]) -> io::Result<Vec<Problem>> {
+    let names = tables(files);
+    let mut problems = Vec::new();
+    let readme = match tree.read(README)? {
+        Some(text) => text,
+        None if names.is_empty() => return Ok(problems),
+        None => return Ok(vec![problem(format!("{README}:1"), "missing")]),
+    };
+    let sections = sections(&readme);
+    for (name, section) in &sections {
+        if !names.contains(name) {
+            problems.push(problem(
+                format!("{README}:{}", section.line),
+                format!("{name}.tsv is defined here but missing"),
+            ));
+        }
+    }
+    for name in &names {
+        let place = format!("tables/{name}.tsv:1");
+        let defined = sections.get(name).map(|s| match &s.same_as {
+            Some(other) => sections.get(other).map_or(&[][..], |o| &o.columns[..]),
+            None => &s.columns[..],
+        });
+        let Some(columns) = defined.filter(|c| !c.is_empty()) else {
+            problems.push(problem(
+                place,
+                format!("{README} defines no columns for it"),
+            ));
+            continue;
+        };
+        let text = tree
+            .read(&format!("tables/{name}.tsv"))?
+            .unwrap_or_default();
+        let header = text.split('\n').next().unwrap_or_default();
+        if !header.split('\t').eq(columns.iter().map(String::as_str)) {
+            problems.push(problem(
+                place,
+                format!(
+                    "header is not {}, as {README} defines it",
+                    columns.join(" ")
+                ),
+            ));
+        }
+    }
+    Ok(problems)
+}
+
+/// Reruns `tools/tables/regen.sh` into `target/xtask/tables` and requires every table to come
+/// out byte for byte as committed.
+pub fn regenerate(root: &Path, exe: &Path) -> io::Result<(Vec<Problem>, usize)> {
+    let out = root.join("target").join("xtask").join("tables");
+    if out.exists() {
+        fs::remove_dir_all(&out)?;
+    }
+    fs::create_dir_all(&out)?;
+    let status = Command::new("sh")
+        .arg("tools/tables/regen.sh")
+        .arg(&out)
+        .current_dir(root)
+        .env(EXE_VARIABLE, exe)
+        .status()?;
+    if !status.success() {
+        return Ok((
+            vec![problem(
+                "tools/tables/regen.sh",
+                format!("failed ({status})"),
+            )],
+            0,
+        ));
+    }
+    let committed = tsv_names(&root.join("tables"))?;
+    let written = tsv_names(&out)?;
+    let mut problems = Vec::new();
+    for name in committed.union(&written) {
+        let place = format!("tables/{name}.tsv");
+        let (Ok(old), Ok(new)) = (
+            fs::read(root.join(&place)),
+            fs::read(out.join(format!("{name}.tsv"))),
+        ) else {
+            let message = if committed.contains(name) {
+                "no generator writes it"
+            } else {
+                "missing; tools/tables/regen.sh writes it"
+            };
+            problems.push(problem(format!("{place}:1"), message));
+            continue;
+        };
+        if old != new {
+            problems.push(problem(
+                format!("{place}:{}", first_difference(&old, &new)),
+                "differs from what its generator writes from the exe",
+            ));
+        }
+    }
+    Ok((problems, written.len()))
+}
+
+/// The tables in a directory, by name.
+fn tsv_names(dir: &Path) -> io::Result<BTreeSet<String>> {
+    let mut names = BTreeSet::new();
+    if dir.is_dir() {
+        for entry in fs::read_dir(dir)? {
+            let name = entry?.file_name();
+            if let Some(name) = name.to_str().and_then(|n| n.strip_suffix(".tsv")) {
+                names.insert(name.to_string());
+            }
+        }
+    }
+    Ok(names)
+}
+
+/// The first line on which two texts differ.
+fn first_difference(a: &[u8], b: &[u8]) -> usize {
+    let (mut a, mut b) = (a.split(|&c| c == b'\n'), b.split(|&c| c == b'\n'));
+    let mut line = 1;
+    while let (Some(x), Some(y)) = (a.next(), b.next()) {
+        if x != y {
+            break;
+        }
+        line += 1;
+    }
+    line
+}

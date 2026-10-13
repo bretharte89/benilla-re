@@ -1,0 +1,4 @@
+address	type	name	name_from	system	meaning	confidence	proof	finding
+0x500000	void *[2]	CDemo::vftable		demo	Holds the vtable of CDemo: the advance, then the constructor	verified	one	demo#state-advance
+0x500014	uint32_t[4]	s_table		demo	Holds the four dwords the advance reads	verified	one	demo#state-advance
+0x500030	float	s_step		demo	Holds 8.0, the step	inferred	none	

@@ -1,0 +1,3 @@
+[alias]
+# `cargo xtask check [--exe]` and `cargo xtask cited <benilla>`: the repo's own tooling.
+xtask = "run --quiet --package xtask --"

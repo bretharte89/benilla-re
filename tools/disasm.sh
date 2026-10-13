@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
-# Writes the full disassembly of .text of WoW/WoW.exe to dumps/disasm.txt (ignored by git).
+# Writes the full disassembly of .text of WoW/WoW.exe (or $BENILLA_RE_WOW_EXE) to dumps/disasm.txt
+# (ignored by git).
 # Findings cite instruction addresses of this file: GNU objdump, Intel syntax, address and
 # instruction, no raw bytes. Usage: tools/disasm.sh   (OBJDUMP=<path> to choose the binary)
 set -euo pipefail
@@ -29,7 +30,7 @@ echo "using $("$OD" --version | head -1) at $OD"
 mkdir -p "$ROOT/dumps"
 OUT="$ROOT/dumps/disasm.txt"
 # Run beside the exe so the listing's header names WoW.exe, not a path on this machine.
-( cd "$ROOT/WoW" && "$OD" -d -M intel --no-show-raw-insn --section=.text WoW.exe ) > "$OUT.tmp"
+( cd "$(dirname "$EXE")" && "$OD" -d -M intel --no-show-raw-insn --section=.text "$(basename "$EXE")" ) > "$OUT.tmp"
 mv "$OUT.tmp" "$OUT"
 
 sum=$(sha256_of "$OUT")

@@ -92,7 +92,7 @@ exception filter or handler in a scope table, is not in the body. `size` runs fr
 end of the body's last instruction, and nothing in `[address, address + size)` is other than body,
 padding and the function's jump-table data. A body that does not form one such run has the size of
 its run from the entry, and its finding names each other run by its first and last instruction.
-`../tools/bodies.py` recomputes every size from `dumps/disasm.txt`.
+`cargo xtask check --exe` recomputes every size from `dumps/disasm.txt`.
 
 Classes:
 
@@ -151,7 +151,7 @@ does not name is written as its named base followed by its own fields.
 
 ## Rules the check enforces
 
-`../tools/validate.py` enforces these now; the full check replaces it later.
+`cargo xtask check` enforces these, and `cargo xtask check --exe` the body of every function row.
 
 | rule | value | why |
 |---|---|---|
@@ -162,8 +162,11 @@ does not name is written as its named base followed by its own fields.
 | `signature` | 160 characters | one prototype, no commentary |
 | banned in `meaning` | `?`, `TODO`, `probably`, `maybe`, `seems`, `likely` | a guess is `inferred`, said in the confidence column |
 | `verified` | needs `one`, `two` or `test`, and a `finding` | provenance is the point of the label |
+| proof `test` | needs a `test` | the test is the proof |
 | `inferred` | needs `none`; a `finding` is allowed | a finding can name what it did not settle |
 | `finding` | resolves to an entry that mentions the row's address | the row and its derivation stay linked |
 | `class` | set on every row of a system with a doc | a written system's closure is classified |
 | `unreached` | `test` empty | nothing runs the code |
 | addresses | unique across functions and globals | one row per address |
+| addresses in `meaning` | each resolves to a row | a citation without a row cannot be looked up |
+| bodies | every function row starts a function and has its body's size (`--exe`) | a cited address belongs to the row whose extent holds it |

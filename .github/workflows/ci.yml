@@ -1,0 +1,30 @@
+name: CI
+
+# The exe-free half of the check, on every pull request and every push to main. The exe half
+# (`cargo xtask check --exe`) needs a reader's own WoW.exe and runs where one is.
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Toolchain
+        run: rustup toolchain install stable --profile minimal --component clippy,rustfmt
+      - name: Format
+        run: cargo fmt --all -- --check
+      - name: Lint
+        run: cargo clippy --workspace --all-targets -- -D warnings
+      - name: The check's own tests
+        run: cargo test --package xtask
+      - name: The check
+        run: cargo xtask check

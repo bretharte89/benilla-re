@@ -180,6 +180,10 @@ assumes this control word unless it says otherwise.
   deterministic probe, not only fuzz.
 - A test runs the whole function where it can. A test of a slice says which instructions it
   covers.
-- A test that cannot run reports itself skipped, and a skip is never a pass.
+- A test that cannot run reports itself skipped, and a skip is never a pass. A test finds the exe
+  at `BENILLA_RE_WOW_EXE`, else at `WoW/WoW.exe`. With `BENILLA_RE_REQUIRE_EXE` set (to `1`), a
+  test that needs the exe and cannot find it panics instead of skipping. `cargo xtask check --exe`
+  sets it and requires every test the table and the docs name to appear as passed, so a test
+  that skipped, was ignored or did not run fails the check.
 - A tool that shells out checks its exit code and carries a control on every run, so a broken
   invocation fails loudly instead of returning an empty answer.

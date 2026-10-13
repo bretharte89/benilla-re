@@ -80,15 +80,15 @@ A correction rewrites the entry; the wrong version stays only in git.
 ## Addresses in prose
 
 An address is written `0x` and six lowercase hex digits, in backticks: `` `0x514ae0` ``. Struct
-fields are written `+0x14` with the struct named nearby. Every address in a doc resolves to a row
-of the table. A pooled constant is cited by value (`2π as f32, 0x40c90fdb`) unless its address
+fields are written `+0x14` with the struct named nearby. Every address in a system doc resolves
+to a row of the table. A pooled constant is cited by value (`2π as f32, 0x40c90fdb`) unless its address
 matters. A constant that would read as an address, six hex digits after `0x`, is written in
 decimal or without backticks. A range is written by its first and last function, never by an end
 address that belongs to no row.
 
 ## Rules the check enforces
 
-`../tools/validate.py` enforces these now; the full check replaces it later. They apply to every
+`cargo xtask check` enforces these. They apply to every
 doc under `systems/` except this one.
 
 | rule | value | why |
@@ -105,4 +105,6 @@ doc under `systems/` except this one.
 | history | `previously`, `used to`, `no longer`, `originally`, `corrected`, `was wrong` | the doc states the current fact; git holds the past |
 | first person | `we`, `our`, `I` | the claim is about the client, not the reader |
 | entry shape | the four lines `Addresses`, `Confidence`, `Proof`, `Test` with valid values | the table and the docs share one vocabulary |
-| addresses | every address in a doc, `METHOD.md` included, resolves to a row | a citation without a row cannot be looked up |
+| addresses | every address in a system doc resolves to a row; one in a spec doc (`METHOD.md`, `CONTRIBUTING.md`, the READMEs) lies inside the image | a citation without a row cannot be looked up; a spec doc's addresses are examples and pointers |
+| `Proof: test` | needs a `Test` line other than `none` | the test is the proof |
+| anchors | no two headings in one doc share an anchor | a link must reach one entry |

@@ -78,10 +78,37 @@ The scripts are bash. Ghidra 12.x needs a JDK 21 or later.
   the listing then matches the one `tools/disasm.sh` writes only when it is run with
   `--section=.text --no-show-raw-insn` from inside `WoW\` on `WoW.exe`.
 
-A single check will verify the table, the docs and the tests together, refusing any other build
-of the exe. It does not exist yet. Until it does, `tools/validate.py` checks the table and the
-docs against their formats, `tools/bodies.py` checks each function row's start and size against
-`dumps/disasm.txt`, and review does the rest by hand.
+### The check
+
+One command checks what the repo claims. It is Rust: install a toolchain with rustup, and
+`rust-toolchain.toml` picks the stable one. Without the exe it runs anywhere, and CI runs it on
+every pull request:
+
+```
+cargo xtask check
+```
+
+It checks the symbol table and every Markdown file against the formats in `symbols/README.md`
+and `systems/README.md` (columns, sorting, names, classes, confidence and proof, the text limits,
+every `finding` resolving to an entry that mentions its row's address, every cited address
+having a row) and each table's header against `tables/README.md`. It prints one line per
+problem, with its file and line, then a summary, and fails on any problem.
+
+With your exe, it checks the rest:
+
+```
+cargo xtask check --exe
+```
+
+It refuses any exe but 1.12.1.5875, at `WoW/WoW.exe` or at the path in `BENILLA_RE_WOW_EXE`.
+It writes `dumps/disasm.txt` with `tools/disasm.sh` when it is missing, and checks that every
+function row starts a function and has its body's size. It regenerates every table into a
+scratch directory and requires each byte for byte. It runs `cargo test --workspace` with
+`BENILLA_RE_REQUIRE_EXE=1`, and requires every test that a row's `test` or an entry's `Test` line
+names to appear as passed. It needs what the scripts need, above, and Python 3.
+
+`cargo xtask cited <path to a benilla checkout>` lists every client address the benilla tree
+cites that has neither a row nor a mention in a doc here: a report, not a check.
 
 ## Adding a name
 
@@ -119,7 +146,10 @@ Rust reimplementation, comparing the results bit for bit.
 - Cover every regime the code distinguishes, with a deterministic probe at each threshold.
 - When the test passes against the exe, set the row's `test` to `crate::test_fn` and its `proof`
   to `test`.
-- A test that cannot find the exe reports itself skipped. A skip is not a pass.
+- A test finds the exe at `BENILLA_RE_WOW_EXE`, else at `WoW/WoW.exe`, and refuses any other
+  build. One that cannot find it prints that it skipped and returns, unless
+  `BENILLA_RE_REQUIRE_EXE` is set (to `1`): then it panics. `cargo xtask check --exe` sets it, so
+  a skip there fails the check and is never a pass.
 
 The emulator is `unicorn-engine` (GPL-2.0), used as a test dependency only; nothing that ships
 links it.
@@ -128,9 +158,12 @@ links it.
 
 Every change lands by pull request, and a reviewer checks:
 
-- that `tools/validate.py` passes: every cited address resolves to a row, every row's `finding`
-  resolves to an entry that mentions its address, and the text limits hold;
-- that `tools/bodies.py` passes: every function row starts a function and has its body's size;
+- that `cargo xtask check` passes, as CI runs it: the formats and the text limits hold, every
+  row's `finding` resolves to an entry that mentions its address, and every cited address
+  resolves to a row;
+- that `cargo xtask check --exe` passes on the reviewer's own exe: every function row starts a
+  function and has its body's size, the tables regenerate byte for byte, and every named test
+  passes;
 - each new or changed claim against the bytes, by reading the cited instructions;
 - that `verified` rows have a derivation, `inferred` rows say `none` for proof, and `two` is
   claimed only with a second reader who worked cold;

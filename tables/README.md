@@ -5,7 +5,7 @@ header row, UTF-8, one row per fact, and a generator in `../tools/tables/` that 
 your own copy of the exe. Nothing here is edited by hand: a wrong row is a wrong generator.
 
 ```
-tools/tables/regen.sh        # rebuilds every table
+tools/tables/regen.sh [DIR]  # rebuilds every table, into tables/ or DIR
 python3 tools/tables/<name>.py -o tables/<name>.tsv
 ```
 
@@ -13,6 +13,10 @@ The generators are Python 3 with the standard library only. They read `WoW/WoW.e
 any other build, by size and SHA-256) and, for the ones that read instructions, `dumps/disasm.txt`,
 which `regen.sh` writes with `../tools/disasm.sh` when it is missing. Each run twice gives
 byte-identical output. Options on every generator: `--exe PATH`, `--disasm PATH`, `-o PATH`.
+
+`cargo xtask check` checks each table's header against the columns this file gives it, and
+`cargo xtask check --exe` regenerates every table into a scratch directory and fails on any byte
+that differs from the committed one.
 
 ## Conventions
 

@@ -14,7 +14,7 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x41af10	20	CreateHandle		core			Returns a handle for an object, or 0 with error 0x57 for a null object	inferred	none	camera#lifetime	
 0x425810	119	PostMouseDelta		event	orchestration	uint32_t __fastcall (const void *raw, void *target)	Posts a mouse delta message with x and y scaled by 0x41ad80	verified	one	input#click-versus-drag	
 0x42b8b0	178	SetClockCounter		os	primitive	void __thiscall (void *clock, uint32_t mode)	Switches the clock counter and rescales it to 1000 over the counter frequency, keeping time continuous	verified	one	input#click-versus-drag	
-0x42c010	5	OsGetAsyncTimeMs	idb	os	orchestration	uint32_t __cdecl (void)	Returns the client clock in milliseconds; jumps to 0x42b790	verified	one	input#click-versus-drag	
+0x42c010	5	OsGetAsyncTimeMs	idb	os	orchestration	uint32_t __cdecl (void)	Returns the client clock in milliseconds by a tail jump	verified	one	input#click-versus-drag	
 0x42d780	113	EnqueueInputEvent		os			Queues an input event stamped with the client clock	inferred	none	input#click-versus-drag	
 0x442a70	3	ReturnZero		core	orchestration	uint32_t __cdecl (void)	Returns 0; a shared vtable slot	verified	one	camera#lifetime	
 0x44ea80	85	NTempest::CRndSeed::SetSeed	idb	random	primitive	void __thiscall (NTempest::CRndSeed *this, uint32_t seed)	Seeds a state: accumulator = seed, lane k = 4·(seed mod 61, 59, 53, 47) from byte 0 up	verified	two	random#state-and-seeding	random::srand_seed_state_init
@@ -113,7 +113,7 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x58b0b0	13	GetDeviceView		gx	host	void __fastcall (float *out)	Copies the top of the device matrix stack at +0x1ac8	verified	one	camera#unprojection	
 0x592120	7	ReadDevice1fc		gx	host	uint32_t __thiscall (void *device)	Returns the dword at +0x1fc of the device	verified	one	camera#orthographic-setup	
 0x5995c0	335	CreateD3dDevice		gx			Creates the Direct3D 9 device with behaviour flags 0x22 or 0x52, both with FPU_PRESERVE	verified	one	METHOD#the-harness	
-0x5ab5a0	20	ForwardPin		net	orchestration	void __fastcall (uint32_t count, const uint8_t *digits)	Calls 0x5b3120 with the PIN digits on the object at 0xc28120, when that object exists	verified	one	random#the-c-runtime-rand	
+0x5ab5a0	20	ForwardPin		net	orchestration	void __fastcall (uint32_t count, const uint8_t *digits)	Calls 0x5b3120 with the PIN digits on a global object, when it exists	verified	one	random#the-c-runtime-rand	
 0x5b3120	183	EncodePin		net			Turns PIN digits into text and combines them in its object with a random pool seeded from the clock	inferred	none	random#the-c-runtime-rand	
 0x5b7ff0	5	InitGlobalRandomPoolThunk		net	orchestration	void __cdecl (void)	Jumps to 0x5b8000; a static initializer	verified	one	random#the-c-runtime-rand	
 0x5b8000	17	InitGlobalRandomPool		net	orchestration	void __cdecl (void)	Builds the global random pool with the client clock as its seed	verified	one	random#the-c-runtime-rand	

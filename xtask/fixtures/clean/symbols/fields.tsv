@@ -1,0 +1,5 @@
+struct	offset	size	type	name	system	meaning	confidence	proof	finding
+CDemo	0x0000	4	void **	__vfptr	demo	Holds the vtable	verified	one	demo#state-advance
+CDemo	0x0004	4	uint32_t	m_counter	demo	Holds the counter	verified	one	demo#state-advance
+luaL_reg	0x0000	4	const char *	name	lua	Holds the function's name	inferred	none	
+luaL_reg	0x0004	4	void *	func	lua	Holds the C function	inferred	none	
