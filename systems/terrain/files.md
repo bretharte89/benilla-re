@@ -6,7 +6,7 @@ texture names and the doodad and object placements. The client reads every file 
 and offsets and never checks a record's tag; the record names used here are the files' own.
 
 The map load is `CMap::Load` (`0x6941f0`) in the map loading object file, `0x694070` through
-`0x697a90`, with the WDT and WDL readers and the placement builders; the tile's file is read by
+`0x697ac0`, with the WDT and WDL readers and the placement builders; the tile's file is read by
 the area object file, `0x6c1ba0` through `0x6c2720`. A tile is held by an area object of 1,704
 bytes from the `WAREA` pool, keyed by its index row·64 + column; the class has no name in the
 image. Coordinates follow the client: a tile's row gives world x and its column world y, both

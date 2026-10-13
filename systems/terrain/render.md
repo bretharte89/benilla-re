@@ -5,7 +5,7 @@ blended by its alpha texture and then the shadow; on the shader path, one pass w
 shader is chosen by the layer count and reads the combined texture.
 
 The code is the chunk draw object file, `0x6be960` through `0x6c07d0`, and the map render file,
-`0x6b34e0` through `0x6b7070`, which also draws the map objects' groups. The layer textures
+`0x6b34c0` through `0x6b7070`, which also draws the map objects' groups. The layer textures
 repeat once per cell: the texture matrix scales chunk-relative positions by 1/sy, sy being the
 chunk's column step, the y of vertex 1 (+0x84c).
 

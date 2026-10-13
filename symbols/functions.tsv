@@ -10202,7 +10202,6 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x6c37f0	19	InitTerrainSquare522		terrain	primitive	void __cdecl (void)	Stores 10 squared as a float in a global	verified	one	terrain/statics#static-initializers	
 0x6c3810	5	InitTerrainQuotient59Thunk		terrain	orchestration	void __cdecl (void)	Jumps to 0x6c3820; a static initializer	verified	one	terrain/statics#static-initializers	
 0x6c3820	19	InitTerrainQuotient59		terrain	primitive	void __cdecl (void)	Stores 0.5 divided by 10 as a float in a global	verified	one	terrain/statics#static-initializers	
-0x6c3840	42	OnMapObjFileRead		terrain	host	void __thiscall (void *this)	Closes a map object's file once read and goes on to build the object	inferred	none		
 0x6c4c20	122	LoadMapTexture		models		void * __fastcall (const char *name)	Creates a texture for a map file name	inferred	none		
 0x6c4ca0	5	InitTerrainInfinity30Thunk		terrain	orchestration	void __cdecl (void)	Jumps to 0x6c4cb0; a static initializer	verified	one	terrain/statics#static-initializers	
 0x6c4cb0	11	InitTerrainInfinity30		terrain	orchestration	void __cdecl (void)	Copies the constant +inf into a global	verified	one	terrain/statics#static-initializers	
