@@ -24,13 +24,14 @@ accumulator to the seed and each lane to four times the seed modulo a prime: byt
 Addresses: `0x44ea80`
 Confidence: verified
 Proof: two
-Test: none
+Test: `random::srand_seed_state_init`
 
-Four unsigned `div` by `0x2f`, `0x35`, `0x3b`, `0x3d` (`0x44ea92` to `0x44eac1`); the remainders
-are packed high byte first, the whole dword shifted left by 2 (`0x44eac8`) and stored at `+4`
+Four unsigned `div` by `0x2f`, `0x35`, `0x3b`, `0x3d` (`0x44ea92` to `0x44eac1`); the remainders are
+packed high byte first, the whole dword shifted left by 2 (`0x44eac8`) and stored at `+4`
 (`0x44eacb`); the seed is stored at `+0` (`0x44ea9b`). `ret 4`: `this` in `ecx`, the seed on the
 stack. No lane can exceed `0xf0`, so the shift loses nothing. The state's class name,
-`NTempest::CRndSeed`, is the community database's name for `0x44ea80`.
+`NTempest::CRndSeed`, is the community database's name for `0x44ea80`. The test runs `0x44ea80`
+whole.
 
 ## State advance
 
@@ -51,7 +52,7 @@ accumulator. With `T(n)` the dword at byte offset `n` of `0x802700`:
 Addresses: `0x4531e0`, `0x802700`
 Confidence: verified
 Proof: two
-Test: none
+Test: `random::crandom_uint32_advance`
 
 The steps are `sub` then a signed `test`/`jge` that skips the `add` of the modulus (`0x453215`,
 `0x453225`, `0x45323a`, `0x453259`): the modulus is added only when the subtraction goes negative,
@@ -63,11 +64,11 @@ From a seeded state every lane is a multiple of 4, so each is a counter over dwo
 6 and 7 modulo the primes 47, 53, 59 and 61. The lanes repeat together every
 47·53·59·61 = 8,965,109 advances.
 
-`0x4531e0` has 83 call sites outside the library. A further 23 copies are inlined in other
-systems: a scan for the immediate `0x802700` outside the library finds 92 operands in groups
-of four, each group with the lane moduli and the byte-indexed form `[reg+0x802700]`.
-The control is the library itself, where the same scan finds the advance and the hashes. The
-hashes' `[4*reg+0x802700]` form occurs nowhere outside it.
+`0x4531e0` has 83 call sites outside the library. A further 23 copies are inlined in other systems:
+a scan for the immediate `0x802700` outside the library finds 92 operands in groups of four, each
+group with the lane moduli and the byte-indexed form `[reg+0x802700]`. The control is the library
+itself, where the same scan finds the advance and the hashes. The hashes' `[4*reg+0x802700]` form
+occurs nowhere outside it. The test runs `0x4531e0` whole.
 
 ## Unit vectors
 
@@ -81,7 +82,7 @@ the output pointer in `ecx` and the state in `edx`.
 Addresses: `0x44fd00`, `0x44fe20`
 Confidence: verified
 Proof: one
-Test: none
+Test: `random::rand_44fd00_gradient`, `random::rand_unit_vector_3d_diff`
 
 Each inlines the advance of `0x4531e0` (same steps, moduli and rotates), stores the state back,
 and calls nothing. The angle: mantissa `and 0x7fffff`, `or 0x3f800000`, `fsub` 1.0, `fmul` 2π
@@ -89,7 +90,8 @@ and calls nothing. The angle: mantissa `and 0x7fffff`, `or 0x3f800000`, `fsub` 1
 (`0x44fe01` to `0x44fe14`). In `0x44fe20`, `z` comes from the sign test at `0x44fef6` and the
 radius from `fld z; fmul z; fsubr 1.0; fsqrt` (`0x450002` to `0x450010`). `z` is never 0 and
 can be −1 or 1. `rand_44fd00_gradient` runs only `0x44fdc8` to `0x44fe17`, so `0x44fd00`'s
-inlined advance has no test of its own. Each function has one caller outside the library.
+inlined advance has no test of its own; `rand_unit_vector_3d_diff` runs `0x44fe20` whole. Each
+function has one caller outside the library.
 
 ## Static initializers
 
@@ -121,12 +123,12 @@ sites; one is Lua's `math.random` (`0x7fb310`).
 Addresses: `0x7400e5`, `0x7400d8`, `0x40acbb`, `0x7fb310`, `0x7fb450`, `0x822d10`, `0x5d1c70`, `0x5b8000`, `0x5b3120`, `0x5ab5a0`, `0x46b0c0`, `0x46d1c0`
 Confidence: verified
 Proof: one
-Test: none
+Test: `random::msvc_rand_lcg_difftest`
 
 Both find the per-thread data through `__getptd` (`0x40acbb`) and use its `+0x14`; `imul`
 214013, `add` 2531011 (`0x7400ed`, `0x7400f3`). The Lua math library's table `mathlib`
 (`0x822c60`) pairs `random` with `0x7fb310` and `randomseed` with `0x7fb450` (`0x822d10`,
-`0x822d18`); `0x7fb310` calls `rand` at `0x7fb319`.
+`0x822d18`); `0x7fb310` calls `rand` at `0x7fb319`. The test runs `0x7400ed` to `0x740106`.
 
 `srand` has two call sites: `0x7fb460`, in `0x7fb450`, which converts its first argument with
 `__ftol`; and `0x5d1c8b`, in `0x5d1c70`. `0x5d1c70` has two callers. One is `0x5b800b`, in the
