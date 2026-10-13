@@ -6,7 +6,7 @@ counts as evidence here. The formats are in `symbols/README.md` and `systems/REA
 ## Setup
 
 Bring your own client. Nothing from the game is in this repo, and nothing from it may be added:
-no exe, no MPQ, no extracted file, no disassembly or decompiler dump.
+no exe, no MPQ, no extracted file, no disassembly or decompiler dump (`dumps/` is ignored).
 
 1. Copy your `WoW.exe` from a 1.12.1 (build 5875) install to `WoW/WoW.exe` at the repo root,
    and its `Data` folder to `WoW/Data`. `WoW/` is ignored by git.
@@ -26,11 +26,61 @@ no exe, no MPQ, no extracted file, no disassembly or decompiler dump.
    objdump -d -M intel --start-address=0x514ae0 --stop-address=0x514b35 WoW/WoW.exe
    ```
 
-A setup script will import the exe into Ghidra with recorded options, create the functions its
-analysis misses, apply the symbol table, and write the full disassembly to the ignored `dumps/`.
+4. Write the disassembly the findings cite. Findings give instruction addresses, and the
+   addresses are those of one listing: GNU objdump, Intel syntax, `.text` only, written by
+   `tools/disasm.sh` to `dumps/disasm.txt`. The script refuses any other build of the exe, uses
+   the first GNU objdump with the PE target it finds, and prints the listing's SHA-256 so that
+   you can see it is the same listing.
+
+   ```
+   tools/disasm.sh
+   ```
+
+5. Build the Ghidra project: the exe imported with the analysis options recorded in
+   `tools/ghidra/SetOptions.java`, the functions analysis misses created from
+   `symbols/functions.tsv`, and the symbol table applied (names, signatures, structs, labels and
+   a plate comment per row). It takes about a minute.
+
+   ```
+   tools/ghidra/setup.sh
+   ```
+
+   The project is `dumps/ghidra/benilla-re`; open it in Ghidra 12.1 or later, or rerun
+   `tools/ghidra/setup.sh --apply` after the table changes to apply it again to the project
+   already built. The log, with every row it could not apply, is `dumps/ghidra/setup.log`.
+
+`dumps/` is ignored by git and holds only what the scripts regenerate from your exe. Nothing in
+it is ever committed.
+
+### What the scripts need
+
+The scripts are bash. Ghidra 12.x needs a JDK 21 or later.
+
+| | macOS (Homebrew) | Linux (Debian, Ubuntu) | Windows |
+|---|---|---|---|
+| objdump | `brew install mingw-w64` | `sudo apt install binutils` | in WSL, as Linux |
+| Ghidra | `brew install ghidra` | release zip, below | in WSL, as Linux |
+| JDK | `brew install openjdk@21` | `sudo apt install openjdk-21-jdk` | in WSL, as Linux |
+
+- **macOS.** `/usr/bin/objdump` is LLVM's and is not used. `brew install mingw-w64` provides
+  `i686-w64-mingw32-objdump`, which the script finds on the `PATH`. `brew install ghidra`
+  is found by the script without further setup.
+- **Linux.** Download the Ghidra release zip from
+  `https://github.com/NationalSecurityAgency/ghidra/releases`, unzip it, and run
+  `export GHIDRA_INSTALL_DIR=/path/to/ghidra_12.1_PUBLIC` (the folder that holds `support/`).
+  The script needs a GNU objdump with the PE target: check `objdump -i | grep pei-i386`, and if
+  it prints nothing, `sudo apt install binutils-mingw-w64-i686` and the script uses
+  `i686-w64-mingw32-objdump`.
+- **Windows.** Use WSL with a Linux distribution and follow the Linux column there, with the
+  client copied into `WoW/` inside the WSL file system. Natively, steps 1 and 2 work as written
+  (`certutil` for the hash), and the disassembly can be written by hand with GNU objdump from
+  MSYS2 (`pacman -S mingw-w64-x86_64-binutils`) as in step 3, redirected into `dumps\disasm.txt`;
+  the listing then matches the one `tools/disasm.sh` writes only when it is run with
+  `--section=.text --no-show-raw-insn` from inside `WoW\` on `WoW.exe`.
+
 A single check will verify the table, the docs and the tests together, refusing any other build
-of the exe. Neither exists yet. Until they do, `tools/validate.py` checks the table and the docs
-against their formats, and review does the rest by hand.
+of the exe. It does not exist yet. Until it does, `tools/validate.py` checks the table and the
+docs against their formats, and review does the rest by hand.
 
 ## Adding a name
 
