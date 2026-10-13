@@ -1,4 +1,41 @@
 address	type	name	name_from	system	meaning	confidence	proof	finding
+0x423b10	void *[15]	s_windowRecordCases		core	Holds the case addresses of the window record switch 0x4239a0 for kinds 0 to 14	verified	one	core/input#kinds-to-categories
+0x424770	void *[4]	s_syncStateCases		core	Holds the four case addresses of the held-state update 0x424710	verified	one	core/events#held-keys-and-repeats
+0x424780	uint8_t[13]	s_syncStateCaseIndex		core	Holds the case index of 0x424710 for categories 2 to 0xe	verified	one	core/events#held-keys-and-repeats
+0x42d5c0	void *[8]	s_windowProcCasesLow		core	Holds the window procedure's case addresses for messages 5 to 0xa3	verified	one	core/input#window-messages
+0x42d5e0	uint8_t[159]	s_windowProcIndexLow		core	Holds the window procedure's case index for messages 5 to 0xa3	verified	one	core/input#window-messages
+0x42d680	void *[7]	s_windowProcKeyCases		core	Holds the window procedure's case addresses for messages 0x100 to 0x112	verified	one	core/input#window-messages
+0x42d69c	uint8_t[19]	s_windowProcKeyIndex		core	Holds the window procedure's case index for messages 0x100 to 0x112	verified	one	core/input#window-messages
+0x42d6b0	void *[9]	s_windowProcMouseCases		core	Holds the window procedure's case addresses for messages 0x201 to 0x285	verified	one	core/input#window-messages
+0x42d6d4	uint8_t[133]	s_windowProcMouseIndex		core	Holds the window procedure's case index for messages 0x201 to 0x285	verified	one	core/input#window-messages
+0x42da60	void *[39]	s_virtualKeyCases		core	Holds the case addresses of the virtual key translation's fixed table	verified	one	core/input#key-codes
+0x42dafc	uint8_t[138]	s_virtualKeyIndex		core	Holds the case index of the virtual key translation for keys 8 to 0x91	verified	one	core/input#key-codes
+0x42dce0	void *[4]	s_mouseButtonCases		core	Holds the case addresses of the mouse button mapping 0x42dc00 for messages 0x204 to 0x20c	verified	one	core/input#buttons-and-capture
+0x42dcf0	uint8_t[9]	s_mouseButtonIndex		core	Holds the case index of 0x42dc00 for messages 0x204 to 0x20c: right 4, middle 2, X 8 or 0x10	verified	one	core/input#buttons-and-capture
+0x801354	float	s_defaultHandlerPriority		core	Holds 0.0, the priority 0x41fc90 registers with	verified	one	core/events#registration-calls
+0x801360	float	s_millisecondsToSeconds		core	Holds 0.001f (0x3a83126f), the frame time and timer factor	verified	one	core/loop#frame-time
+0x801364	void *[1]	EvtContext::vftable		core	Holds the context vtable: the deleting destructor 0x423240	verified	one	core/loop#start-and-stop
+0x801368	void *[1]	s_heapNodeVtable		core	Holds the heap node vtable: the comparator 0x422970	verified	one	core/loop#scheduler-heap
+0x8013b0	void *[7]	s_inputObserverVtable		core	Holds the input observer vtable, which only the unreached 0x425430 stores	verified	one	core/events#observer-classes
+0x8013cc	void *[2]	s_inputEventVtableA		core	Holds an interface input event vtable the interface code stores	inferred	none	core/events#observer-classes
+0x8013f4	void *[2]	s_inputEventVtableF		core	Holds an interface input event vtable the interface code stores	inferred	none	core/events#observer-classes
+0x801404	void *[7]	s_observerVtable		core	Holds the observer vtable, which only 0x426450 stores	verified	one	core/events#observer-classes
+0x801420	void *[2]	s_eventRegPoolVtable		core	Holds the registration pool vtable, which only 0x4265b0 stores	verified	one	core/events#observer-classes
+0x801430	void *[4]	s_eventRegVtable		core	Holds the registration vtable, stored by 0x4265b0, 0x427990 and 0x428470	verified	one	core/events#observer-classes
+0x8015b8	double	s_oneDouble		core	Holds 1.0 as a double, a pooled constant many systems read	verified	one	core/time#counter-switch
+0x8015c0	double	s_calibrationLimitA		core	Holds 0.016, a mode-1 calibration threshold	verified	one	core/time#calibration-thread
+0x8015c8	double	s_calibrationLimitB		core	Holds 0.06, a mode-1 calibration threshold	verified	one	core/time#calibration-thread
+0x8015d0	double	s_calibrationLimitC		core	Holds 0.001666, the 20-to-120-sample agreement threshold	verified	one	core/time#calibration-thread
+0x8015d8	double	s_calibrationLimitD		core	Holds 0.008, the 4-to-20-sample agreement threshold	verified	one	core/time#calibration-thread
+0x8015e0	double	s_calibrationLimitE		core	Holds 0.03, the 1-to-4-sample agreement threshold	verified	one	core/time#calibration-thread
+0x8015e8	double	s_calibrationLimitF		core	Holds 0.04, the 1-sample tolerance	verified	one	core/time#calibration-thread
+0x8015f0	double	s_calibrationLimitG		core	Holds 0.01, the 4-sample tolerance	verified	one	core/time#calibration-thread
+0x8015f8	double	s_calibrationLimitH		core	Holds 0.002, the 20-sample tolerance	verified	one	core/time#calibration-thread
+0x801600	double	s_calibrationLimitI		core	Holds 0.000333, the 120-sample tolerance	verified	one	core/time#calibration-thread
+0x801608	double	s_thousandthDouble		core	Holds 0.001 as a double, a pooled constant many systems read	verified	one	core/time#unreached-functions
+0x801620	float	s_mouseSpeedMin		core	Holds 0.1, the lowest mouse speed setting and the factor 0x42cd60 returns it with	verified	one	core/input#mouse-speed-and-num-lock
+0x801624	float	s_mouseSpeedScale		core	Holds 10.0, the mouse speed setting's factor to the Windows speed	verified	one	core/input#mouse-speed-and-num-lock
+0x801628	float	s_mouseSpeedMax		core	Holds 2.0, the highest mouse speed setting	verified	one	core/input#mouse-speed-and-num-lock
 0x802700	uint32_t[64]	NTempest::gnoise32_	idb	random	Holds the 64 dwords the state advance and the hashes read	verified	two	random#state-advance
 0x802800	float[16]	s_noiseGradients		random	Holds -1 + 2k/15 for k = 0 to 15, the gradient components of the noise	inferred	none	random#unreached-functions
 0x8038dc	float	s_perspectiveDepthFactor		gxumath	Holds -2.0, the factor of near·far in the perspective depth term	verified	one	camera#unprojection
@@ -17,12 +54,71 @@ address	type	name	name_from	system	meaning	confidence	proof	finding
 0x827000	void (*[7180])(void)	__xc_a		crt	Lists the C++ static initializers __cinit runs in ascending order, up to __xc_z	verified	one	random#static-initializers
 0x832a44	float	s_screenScaleX		screencoord	Holds K1 = a/sqrt(a² + 1) for the display aspect a; 0.8 in the file	verified	one	input#click-versus-drag
 0x832a48	float	s_screenScaleY		screencoord	Holds K2 = 1/sqrt(a² + 1) for the display aspect a; 0.6 in the file	verified	one	input#click-versus-drag
+0x832dac	char[17]	s_evtKeyDownTag		core	Holds the EvtKeyDown type tag, the allocation tag of held-key records	verified	one	core/events#held-keys-and-repeats
+0x832de4	char[17]	s_evtHandlerTag		core	Holds the EvtHandler type tag, the allocation tag of handler records	verified	one	core/events#handler-records
+0x832e00	char[3]	s_uint32ArrayTag		core	Holds .I, the allocation tag of the shared dword arrays	verified	one	core/events#shared-arrays
+0x832f2c	char[51]	s_evtTimerSourcePath		core	Holds the source path of EvtTimer.cpp, the timer allocation tag	verified	one	core/events#timers
+0x8332c0	uint64_t	s_cpuTicksPerSecond		core	Holds the counter rate; 10^9 by default, then the calibrated rate	verified	one	core/time#the-millisecond-clock
+0x8332c8	double	s_clockScale		core	Holds the clock's milliseconds per counter tick; 1.0 at startup	verified	one	core/time#the-millisecond-clock
+0x8333b0	uint32_t	s_windowActive		core	Holds whether the window is active, set by WM_ACTIVATE	verified	one	core/input#the-pump
+0x8333b8	uint32_t[32]	s_cp1252Chars		core	Holds the characters for code page 1252 bytes 0x80 to 0x9f	verified	one	core/input#character-codes
+0x833438	uint32_t[256]	s_cp1250Chars		core	Holds the characters for code page 1250 bytes, indexed by the byte	verified	one	core/input#character-codes
+0x833838	uint32_t[256]	s_cp1251Chars		core	Holds the characters for code page 1251 bytes, indexed by the byte	verified	one	core/input#character-codes
+0x833c38	uint32_t[256]	s_cp1254Chars		core	Holds the characters for code page 1254 bytes, indexed by the byte	verified	one	core/input#character-codes
+0x834038	uint32_t[256]	s_cp874Chars		core	Holds the characters for code page 874 bytes, indexed by the byte	verified	one	core/input#character-codes
 0x8500b8	void *[52]	s_bindingCommands		input	Pairs the 26 movement and mouse binding commands' names with their handlers	verified	one	input#mouse-commands
 0x850340	char[53]	s_inputControlSourcePath		input	Holds the source path the object file asserts with, ending InputControl.cpp	verified	one	input#input-state
 0x850378	char[51]	s_inputControlTag		input	Holds the path ending InputControl.h, the allocation tag of CInputControl	verified	one	input#input-state
 0x87d5d8	char[8]	s_cameraTag		camera	Holds "HCAMERA", the tag of camera allocations and handles	verified	one	camera#lifetime
 0x87d5e8	char[19]	s_propertySlotsTag		camera	Holds ".PAVCBaseManaged@@", the tag of slot array allocations	verified	one	camera#property-updates
 0x87d5fc	float	s_particleDensity		camera	Holds the particle density in [0, 1]; 1.0 in the file	verified	one	camera#particle-density
+0x883ec0	int32_t	s_engineThreadPriority		core	Holds the thread priority saved at scheduler start, restored each loop iteration	verified	one	core/loop#the-loop
+0x883ec4	void *	s_startEvent		core	Holds the start gate event the loop waits on before running	verified	one	core/loop#the-loop
+0x883ecc	uint32_t[4]	s_schedulerThreads		core	Holds the array of extra loop threads: capacity, count, storage, quantum	inferred	none	core/loop#static-initializers
+0x883ee8	void *[2]	s_slotListEnd		core	Holds the slot list's end link	verified	one	core/loop#static-initializers
+0x883ef0	uint32_t	s_interactiveContexts		core	Holds the count of live interactive contexts	verified	one	core/loop#contexts
+0x883ef4	uint8_t[24]	s_slotLock		core	Holds the critical section guarding the slots	verified	one	core/loop#shutdown-event
+0x883f0c	uint32_t	s_schedulerPolling		core	Holds the polling flag; 0 in this build	verified	one	core/loop#startup-and-shutdown
+0x883f10	uint32_t	s_slotCount		core	Holds the number of scheduler slots, a power of two	verified	one	core/loop#startup-and-shutdown
+0x883f18	void **	s_slots		core	Holds the slot record pointer of each slot	verified	one	core/loop#shutdown-event
+0x883f20	uint32_t	s_mainSlot		core	Holds the slot the main thread's loop serves	verified	one	core/loop#startup-and-shutdown
+0x883f24	void *	s_shutdownEvent		core	Holds the shutdown event; the loop leaves when it is set	verified	one	core/loop#the-loop
+0x883f30	uint32_t	s_mouseMode		core	Holds the mouse mode: 0 absolute, 1 relative	verified	one	core/input#buttons-and-capture
+0x883f34	uint32_t	s_modifierKeys		core	Holds bits 1 << key for the held keys 0 to 2: Shift, Control, Alt	verified	one	core/input#kinds-to-categories
+0x883f40	uint32_t	s_heldButtons		core	Holds the held mouse buttons as the window records report them	verified	one	core/input#kinds-to-categories
+0x883f44	uint32_t	s_mouseModeButtons		core	Holds the button set the mouse mode was set for	verified	one	core/input#buttons-and-capture
+0x883f48	float[4]	s_cursorRect		core	Holds the cursor confinement rectangle; zero in this build	verified	one	core/input#cursor-coordinates
+0x883f5c	void *	s_confirmCloseCallback		core	Holds the confirm-close callback, or null	verified	one	core/input#close-and-quit
+0x883f60	void *	s_confirmCloseArgument		core	Holds the confirm-close callback's argument	verified	one	core/input#close-and-quit
+0x883f64	uint8_t[24]	s_messagePool		core	Holds the message pool object	inferred	none	core/events#deferred-messages
+0x883f7c	uint32_t	s_messagePoolLimit		core	Holds 0 in the file and 0x100 from 0x42449e: the largest message with its header the pool serves	verified	one	core/events#deferred-messages
+0x883f94	void *	s_inputObserver		core	Holds the input observer, null in this build	verified	one	core/events#static-initializers
+0x883fa0	uint8_t[20]	s_dispatchRegPool		core	Holds the pool of dispatch registrations	inferred	none	core/events#static-initializers
+0x883fd0	uint8_t[20]	s_eventRegPool		core	Holds the pool of event registrations	inferred	none	core/events#static-initializers
+0x883ffc	uint8_t[20]	s_callbackRegPool		core	Holds the pool of callback registrations	inferred	none	core/events#static-initializers
+0x884048	uint64_t	s_cachedUnixTime		core	Holds the GetTickCount and time(NULL) pair 0x429580 caches	verified	one	core/time#calendar-time
+0x884060	uint64_t	s_maxCpuTicksPerSecond		core	Holds the largest counter rate the calibration has stored	verified	one	core/time#processor-frequency
+0x884c70	uint64_t	s_cpuMaxHz		core	Holds the processor's maximum frequency in hertz from CallNtPowerInformation	verified	one	core/time#processor-frequency
+0x884c78	void *	s_timeManager		core	Holds the time manager while it lives	verified	one	core/time#time-manager-lifetime
+0x884c80	uint32_t	s_clockMode		core	Holds the clock counter: 0 GetTickCount, 1 the time-stamp counter	verified	one	core/time#the-millisecond-clock
+0x884c88	double	s_clockOffset		core	Holds the clock's offset in milliseconds; 0 at startup	verified	one	core/time#the-millisecond-clock
+0x884cb0	uint32_t	s_savedMouseSpeed		core	Holds the Windows mouse speed saved at startup	verified	one	core/input#mouse-speed-and-num-lock
+0x884cb4	uint32_t	s_mouseSpeed		core	Holds the Windows mouse speed applied while the window is active	verified	one	core/input#mouse-speed-and-num-lock
+0x884cc0	uint32_t[80]	s_inputRing		core	Holds the 16 input records of five dwords: kind, three values, time	verified	one	core/input#the-ring
+0x884e08	uint16_t	s_savedNumLock		core	Holds GetAsyncKeyState(VK_NUMLOCK) at startup	verified	one	core/input#mouse-speed-and-num-lock
+0x884e1c	uint32_t	s_capturedButtons		core	Holds the buttons held while the window captures the mouse	verified	one	core/input#buttons-and-capture
+0x884e20	int32_t[4]	s_clientRect		core	Holds the cached client rectangle: left, top, right, bottom	verified	one	core/input#cursor-coordinates
+0x884e30	uint32_t	s_releasingCapture		core	Holds 1 while the client releases capture itself	verified	one	core/input#buttons-and-capture
+0x884e34	uint32_t	s_inputRingRead		core	Holds the ring's read index	verified	one	core/input#the-ring
+0x884e38	int32_t	s_mouseCenterX		core	Holds the x the cursor is held at in relative mode	verified	one	core/input#mouse-modes
+0x884e3c	int32_t	s_mouseCenterY		core	Holds the y the cursor is held at in relative mode	verified	one	core/input#mouse-modes
+0x884e40	uint32_t	s_pendingSizeCheck		core	Holds the size message's lParam until the pump checks the client size	verified	one	core/input#the-pump
+0x884e44	int32_t[2]	s_lastCursorPoint		core	Holds the cursor's last client position	verified	one	core/input#mouse-modes
+0x884e50	uint32_t	s_inputRingWrite		core	Holds the ring's write index	verified	one	core/input#the-ring
+0x884e5c	uint32_t	s_relativeMouse		core	Holds 1 in relative mouse mode	verified	one	core/input#mouse-modes
+0x884e60	uint32_t	s_dragHitTest		core	Holds the hit test of the frame drag in progress	inferred	none	core/input#window-frame
+0x884e64	uint32_t	s_dragging		core	Holds 1 while the frame is dragged	inferred	none	core/input#window-frame
+0x884e6c	void *	s_windowMessageHook		core	Holds the hook the window procedure passes other messages to	verified	one	core/input#window-messages
 0xb05d68	float	s_randomInfinity		random	Holds +inf, set at startup; nothing reads it	verified	one	random#static-initializers
 0xb05d6c	float	s_randomInvTwoPi		random	Holds 1/2π, set at startup; read only by unreached noise	verified	one	random#static-initializers
 0xb05d70	float	s_randomTwoPi		random	Holds 2π, set at startup; read only by unreached noise	verified	one	random#static-initializers
@@ -36,3 +132,6 @@ address	type	name	name_from	system	meaning	confidence	proof	finding
 0xcf5740	float	s_cameraInvTwoPi2		camera	Holds 1/2π, set at startup; nothing reads it	verified	one	camera#object-file-and-initializers
 0xcf5744	float	s_cameraTwoPi2		camera	Holds 2π, set at startup; read only by 0x7adf50	verified	one	camera#object-file-and-initializers
 0xcf5748	float	s_cameraInfinity2		camera	Holds +inf, set at startup; nothing reads it	verified	one	camera#object-file-and-initializers
+0xcf76cc	uint32_t	s_contextTableGuard		core	Holds the guard bit of the context table's one-time setup	verified	one	core/loop#static-initializers
+0xcf76f8	uint32_t	s_nextContextHandle		core	Holds the last context handle given out	verified	one	core/loop#contexts
+0xcf7700	uint8_t[96]	s_contextTableLocks		core	Holds the read-write locks of the context table's eight buckets	verified	one	core/loop#contexts

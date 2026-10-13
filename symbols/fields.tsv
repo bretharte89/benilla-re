@@ -45,5 +45,31 @@ CInputControl	0x000c	4	float	m_travelY	input	Holds the sum of scaled |dy| since 
 CInputControl	0x0010	4	uint32_t	m_motionStamp	input	Holds a graphics device counter read at the last mouse motion while a command was held	inferred	none	input#click-versus-drag
 CInputControl	0x0014	4	uint32_t	m_pressTime	input	Holds the clock time of the first primary press	verified	two	input#click-versus-drag
 CInputControl	0x0018	4	uint32_t	m_clickMode	input	Holds the armed click action, 1 or 2, set to 0 when a release is a drag	verified	one	input#click-versus-drag
+EvtContext	0x0000	4	void **	__vfptr	core	Holds the vtable 0x801364	verified	one	core/loop#start-and-stop
+EvtContext	0x0004	8	void *[2]	m_tableLink	core	Holds the context's link in its context table bucket	verified	one	core/loop#contexts
+EvtContext	0x000c	4	uint32_t	m_handle	core	Holds the context's handle, its key in the context table	verified	one	core/loop#contexts
+EvtContext	0x0010	24	uint8_t[24]	m_lock	core	Holds the critical section guarding the run state, messages and timers	verified	one	core/loop#one-tick
+EvtContext	0x002c	4	uint32_t	m_runState	core	Holds 0 running, 1 closing, 2 torn down	verified	two	core/loop#start-and-stop
+EvtContext	0x0030	12	void *[3]	m_heapNode	core	Holds the heap node: vtable 0x801368, owning heap and index	verified	one	core/loop#scheduler-heap
+EvtContext	0x003c	4	uint32_t	m_dueTime	core	Holds the clock time the context is next due, the heap key	verified	two	core/loop#next-due-time
+EvtContext	0x0040	4	uint32_t	m_lastFrameTime	core	Holds the clock time of the last frame time or start dispatch	verified	two	core/loop#frame-time
+EvtContext	0x0044	4	uint32_t	m_flags	core	Holds 1 started, 2 interactive, 4 after-frame pending	verified	two	core/loop#start-and-stop
+EvtContext	0x0048	4	uint32_t	m_idleTime	core	Holds the idle time in milliseconds, at least 1	verified	two	core/loop#next-due-time
+EvtContext	0x004c	4	uint32_t	m_idleTimeInitial	core	Holds the idle time as constructed; a difference from +0x48 overrides the timer wait	verified	two	core/loop#next-due-time
+EvtContext	0x0050	4	uint32_t	m_cost	core	Holds the load the context adds to its slot: 1000 interactive, 1 otherwise	verified	two	core/loop#contexts
+EvtContext	0x0054	4	uint32_t	m_costTarget	core	Holds the cost passed to the reschedule	verified	two	core/loop#contexts
+EvtContext	0x0058	4	uint32_t	m_costChanged	core	Holds 1 when the cost moved by more than an eighth	verified	one	core/loop#next-due-time
+EvtContext	0x005c	348	uint32_t[87]	m_handlerLists	core	Holds the 29 handler list heads of 12 bytes, one per category	verified	two	core/events#handler-records
+EvtContext	0x01b8	12	uint32_t[3]	m_messages	core	Holds the deferred message list head	verified	one	core/events#deferred-messages
+EvtContext	0x01c4	4	uint32_t	m_heldButtons	core	Holds the held-button mask the dispatch keeps	verified	two	core/events#held-buttons
+EvtContext	0x01c8	12	uint32_t[3]	m_heldKeys	core	Holds the held-key list head	verified	two	core/events#held-keys-and-repeats
+EvtContext	0x01d4	16	uint32_t[4]	m_timerTable	core	Holds the array of timer records by id	verified	one	core/events#timers
+EvtContext	0x01e4	16	uint32_t[4]	m_freeTimerIds	core	Holds the array of timer ids free for reuse	verified	one	core/events#timers
+EvtContext	0x01f4	20	uint32_t[5]	m_timerHeap	core	Holds the heap of timers ordered by due time	verified	one	core/events#timers
+EvtHandler	0x0000	8	void *[2]	m_link	core	Holds the record's link in its category list	verified	two	core/events#handler-records
+EvtHandler	0x0008	4	void *	m_handler	core	Holds the function, called as fastcall(payload, argument)	verified	two	core/events#handler-records
+EvtHandler	0x000c	4	void *	m_argument	core	Holds the argument passed in edx	verified	two	core/events#handler-records
+EvtHandler	0x0010	4	float	m_priority	core	Holds the priority; higher runs first	verified	two	core/events#handler-order
+EvtHandler	0x0014	4	uint32_t	m_skip	core	Holds nonzero for a record the dispatch and registration pass over	verified	two	core/events#handler-order
 NTempest::CRndSeed	0x0000	4	uint32_t	m_accumulator	random	Holds the sum the advance returns; the seed after seeding	verified	two	random#state-and-seeding
 NTempest::CRndSeed	0x0004	4	uint32_t	m_lanes	random	Holds four lane indices, byte k a byte offset into the table	verified	two	random#state-and-seeding

@@ -64,7 +64,7 @@ returns 1 if `t ≥ 200` and 0 if not; otherwise 0. So a release within 200 ms a
 one within 800 ms clicks while both sums stay under 8.0. The sums are raw mouse motion scaled by
 the screen aspect: 8.0 is 10 raw units of x or 13.33 of y at 4:3, and 9.18 or 16.32 at 16:9.
 
-Addresses: `0x514ae0`, `0x514b70`, `0x514840`, `0x514400`, `0x808b5c`, `0x41ad10`, `0x41ad80`, `0x425810`
+Addresses: `0x514ae0`, `0x514b70`, `0x514840`, `0x514400`, `0x808b5c`, `0x41ad10`, `0x41ad80`, `0x766f70`
 Confidence: verified
 Proof: two
 Test: none
@@ -77,7 +77,7 @@ Test: none
 
 The press time is latched at `0x514919` when the first primary goes down, which also zeroes both
 sums (`0x514910`). `0x514400` adds each mouse message's absolute x and y motion to the sums while
-any command is held: the raw deltas times `K1` and `K2` (`0x41ad80`, called at `0x425866`).
+any command is held: the raw deltas times `K1` and `K2` (`0x41ad80`, called at `0x766fb1` in `0x766f70`).
 `0x41ad10` sets them, at `0x832a44` and `0x832a48`, from an aspect `a`: `K2 = 1/√(a² + 1)`,
 `K1 = a·K2`. `0x46ab40` gives `a` as `gxResolution`'s width over height while the `widescreen`
 option (default `1`) is on, and 4/3 when it is off.
