@@ -188,7 +188,8 @@ Test: `camera::camera_ortho`
 `(1, 1, −1)` (`0x7ad8fe` to `0x7ad913`). The shift subtracts `0.5·(r[3] − r[1])/(s[3] − s[1])`
 from the matrix's x translation and adds `0.5·(r[2] − r[0])/(s[2] − s[0])` to its y
 (`0x7ad946` to `0x7ad976`), `s` being the four floats `0x58a250` writes. Both rectangle readers,
-this and `0x7ac640`, take x from `r[1]` and `r[3]`. It has four call sites.
+this and `0x7ac640`, take x from `r[1]` and `r[3]`. It has four call sites. `0x589ca0` returns
+the device's dword at `+0x1fc` through a tail call to `0x592120`.
 
 ## Particle density
 

@@ -2,7 +2,7 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x404100	33	_WinMain@16	idb	client		int __stdcall (void *instance, void *previous, char *command_line, int show)	Sets the x87 control word to 0x027F through 0x409bf2 and 0x409c06, then runs the client	verified	one	METHOD#the-harness	
 0x4044b0	49	__ehvec_dtor		crt	boundary		Calls a destructor on each element of an array, last first	inferred	none	camera#unprojection	
 0x4078e0	22	SplatVector3		cmath	orchestration	float * __thiscall (float *this, float v)	Stores one float in all three components	verified	one	camera#unprojection	
-0x4098c0	264	_WinMainCRTStartup	idb	crt	boundary		Starts the process: runs __cinit at 0x409965, then calls WinMain at 0x40999b	verified	one	random#the-c-runtime-rand	
+0x4098c0	253	_WinMainCRTStartup	idb	crt	boundary		Starts the process: runs __cinit at 0x409965, then calls WinMain at 0x40999b	verified	one	random#the-c-runtime-rand	
 0x409bf2	20	__clearfp	idb	crt	boundary	unsigned int __cdecl (void)	Clears the x87 exception flags and returns the old status word in abstract form	verified	one	METHOD#the-harness	
 0x409c06	53	__control87	idb	crt	boundary	unsigned int __cdecl (unsigned int value, unsigned int mask)	Sets the x87 control word: the bits in mask from value, the rest kept; returns the new word in abstract form	verified	one	METHOD#the-harness	
 0x40a2b0	39	__ftol	idb	crt	boundary		Converts st0 to a 64-bit integer by truncation and returns its low dword	verified	one	camera#angle-properties	
@@ -87,7 +87,8 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x455c70	7	MulHigh32		cmath	primitive	uint32_t __fastcall (uint32_t a, uint32_t b)	Returns the high dword of the 64-bit product a·b	inferred	none		
 0x4621a0	1	DestroyVector3		cmath	orchestration	void __thiscall (float *this)	Returns; the element destructor of vector arrays	verified	one	camera#unprojection	
 0x46ab40	98	GetScreenAspect		screencoord	primitive	float __cdecl (void)	Returns gxResolution's width over height while widescreen is on, else 4/3	verified	one	input#click-versus-drag	
-0x46b0e0	5	CallHashClockRandomPoolThunk		net			Jumps to 0x5ab5a0; no call, jump or stored address reaches it	verified	one	random#the-c-runtime-rand	
+0x46b0c0	37	SubmitPin		glue	orchestration	void __fastcall (uint32_t count, const uint8_t *digits)	Signals script event 3 with CANCEL, then tail-jumps to 0x5ab5a0 with the PIN digits	verified	one	random#the-c-runtime-rand	
+0x46d1c0	169	Script::PINEntered	idb	glue	orchestration		Reads 4 to 10 numbers as PIN digits and passes them to 0x46b0c0; a Lua error otherwise	verified	one	random#the-c-runtime-rand	
 0x481f00	87	PickObjectUnderCursor		worldframe			Picks the world object under the cursor for the armed click	inferred	none	input#mouse-commands	
 0x481f60	301	DispatchWorldClick		worldframe			Runs world click action 1 or 4 on the object picked at the press	inferred	none	input#click-versus-drag	
 0x4841f0	36	SubtractVector3		cmath	primitive	float * __fastcall (float *out, const float *a, const float *b)	Writes a - b	verified	one	camera#unprojection	
@@ -104,15 +105,16 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x514b40	44	CInputControl::IsDragging		input	orchestration	uint32_t __thiscall (CInputControl *this)	Returns 1 when 0x514ae0 says drag at the current clock and the motion stamp is recent	verified	one	input#click-versus-drag	
 0x514b70	559	CInputControl::ReleaseCommands		input	orchestration	uint32_t __thiscall (CInputControl *this, uint32_t commands, uint32_t time, uint32_t extra)	Releases command bits; on the last primary, dispatches the armed click unless 0x514ae0 says drag	verified	one	input#click-versus-drag	
 0x515090	284	CInputControl::SetCommands		input	orchestration	uint32_t __thiscall (CInputControl *this, uint32_t commands, uint32_t press, uint32_t time, uint32_t extra)	Sends commands to 0x514840 when press is nonzero, else to 0x514b70	verified	one	input#mouse-commands	
-0x589ca0	11	QueryDevice		gx	host		Returns a device query result; tail-calls into the device	inferred	none	camera#orthographic-setup	
+0x589ca0	11	QueryDevice		gx	host	uint32_t __cdecl (void)	Returns the graphics device's dword at +0x1fc through a tail call to 0x592120	verified	one	camera#orthographic-setup	
 0x58a250	15	GxCapsScreenSize	idb	gx	host		Writes the screen rectangle as four floats	inferred	none	camera#orthographic-setup	
 0x58b040	15	SetDeviceProjection		gx	host	void __fastcall (const float *matrix)	Passes a matrix to device vtable slot +0x70	verified	one	camera#view-and-projection	
 0x58b050	15	SetDeviceView		gx	host	void __fastcall (const float *matrix)	Passes a matrix to device vtable slot +0x74	verified	one	camera#view-and-projection	
 0x58b090	13	GetDeviceProjection		gx	host	void __fastcall (float *out)	Copies the device matrix at +0xf50	verified	one	camera#unprojection	
 0x58b0b0	13	GetDeviceView		gx	host	void __fastcall (float *out)	Copies the top of the device matrix stack at +0x1ac8	verified	one	camera#unprojection	
+0x592120	7	ReadDevice1fc		gx	host	uint32_t __thiscall (void *device)	Returns the dword at +0x1fc of the device	verified	one	camera#orthographic-setup	
 0x5995c0	335	CreateD3dDevice		gx			Creates the Direct3D 9 device with behaviour flags 0x22 or 0x52, both with FPU_PRESERVE	verified	one	METHOD#the-harness	
-0x5ab5a0	20	CallHashClockRandomPool		net			Calls 0x5b3120 when a global object exists; reached only through 0x46b0e0	verified	one	random#the-c-runtime-rand	
-0x5b3120	183	HashClockRandomPool		net			Builds a random pool seeded from the clock and hashes it into its object	inferred	none	random#the-c-runtime-rand	
+0x5ab5a0	20	ForwardPin		net	orchestration	void __fastcall (uint32_t count, const uint8_t *digits)	Calls 0x5b3120 with the PIN digits on the object at 0xc28120, when that object exists	verified	one	random#the-c-runtime-rand	
+0x5b3120	183	EncodePin		net			Turns PIN digits into text and combines them in its object with a random pool seeded from the clock	inferred	none	random#the-c-runtime-rand	
 0x5b7ff0	5	InitGlobalRandomPoolThunk		net	orchestration	void __cdecl (void)	Jumps to 0x5b8000; a static initializer	verified	one	random#the-c-runtime-rand	
 0x5b8000	17	InitGlobalRandomPool		net	orchestration	void __cdecl (void)	Builds the global random pool with the client clock as its seed	verified	one	random#the-c-runtime-rand	
 0x5c3cc0	207	BuildPerspectiveMatrix		gxumath	primitive	void __thiscall (float *matrix, float fov, float aspect, float near, float far)	Builds a perspective matrix; the half-angle is fov / (2·sqrt(aspect² + 1)); error 0x57 on bad input	verified	one	camera#view-and-projection	

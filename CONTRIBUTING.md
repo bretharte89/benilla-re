@@ -38,8 +38,8 @@ no exe, no MPQ, no extracted file, no disassembly or decompiler dump (`dumps/` i
 
 5. Build the Ghidra project: the exe imported with the analysis options recorded in
    `tools/ghidra/SetOptions.java`, the functions analysis misses created from
-   `symbols/functions.tsv`, and the symbol table applied (names, signatures, structs, labels and
-   a plate comment per row). It takes about a minute.
+   `symbols/functions.tsv` and every row's body made its size, and the symbol table applied
+   (names, signatures, structs, labels and a plate comment per row). It takes about a minute.
 
    ```
    tools/ghidra/setup.sh
@@ -80,11 +80,13 @@ The scripts are bash. Ghidra 12.x needs a JDK 21 or later.
 
 A single check will verify the table, the docs and the tests together, refusing any other build
 of the exe. It does not exist yet. Until it does, `tools/validate.py` checks the table and the
-docs against their formats, and review does the rest by hand.
+docs against their formats, `tools/bodies.py` checks each function row's start and size against
+`dumps/disasm.txt`, and review does the rest by hand.
 
 ## Adding a name
 
-1. Find the function's row in `symbols/functions.tsv`, or add one in address order.
+1. Find the function's row in `symbols/functions.tsv`, or add one in address order. Check that
+   the address starts a function and measure its size by the rules in `symbols/README.md`.
 2. Read the function at the bytes, enough to state its meaning in one line, and record the
    derivation in its system's doc: a new entry, or a line in the entry that covers the mechanism.
 3. Fill `name`, `meaning`, `confidence`, `proof` and `finding`. A name you give follows the
@@ -128,6 +130,7 @@ Every change lands by pull request, and a reviewer checks:
 
 - that `tools/validate.py` passes: every cited address resolves to a row, every row's `finding`
   resolves to an entry that mentions its address, and the text limits hold;
+- that `tools/bodies.py` passes: every function row starts a function and has its body's size;
 - each new or changed claim against the bytes, by reading the cited instructions;
 - that `verified` rows have a derivation, `inferred` rows say `none` for proof, and `two` is
   claimed only with a second reader who worked cold;

@@ -113,11 +113,12 @@ the image, all inside the library.
 
 `rand` (`0x7400e5`) updates a per-thread dword as `s = s·214013 + 2531011` and returns
 `(s >> 16) & 0x7fff`. `srand` (`0x7400d8`) stores its argument there. The main thread's state is
-seeded once at startup, before `WinMain`, with the client clock `0x42c010`, and again whenever
-Lua code calls `math.randomseed`. So the sequence differs on every run. `rand` has 15 call
+seeded at startup, before `WinMain`, with the client clock `0x42c010`; again with the clock
+whenever the player enters a PIN at login; and whenever Lua code calls `math.randomseed`. So the
+sequence differs on every run. `rand` has 15 call
 sites; one is Lua's `math.random` (`0x7fb310`).
 
-Addresses: `0x7400e5`, `0x7400d8`, `0x40acbb`, `0x7fb310`, `0x7fb450`, `0x822d10`, `0x5d1c70`, `0x5b8000`, `0x5b3120`
+Addresses: `0x7400e5`, `0x7400d8`, `0x40acbb`, `0x7fb310`, `0x7fb450`, `0x822d10`, `0x5d1c70`, `0x5b8000`, `0x5b3120`, `0x5ab5a0`, `0x46b0c0`, `0x46d1c0`
 Confidence: verified
 Proof: one
 Test: `random::msvc_rand_lcg_difftest`
@@ -132,9 +133,10 @@ Both find the per-thread data through `__getptd` (`0x40acbb`) and use its `+0x14
 static initializer `0x5b8000` (table slot `0x82a9ac`, through the thunk `0x5b7ff0`), which passes
 `0x42c010()` as the seed. Static initializers run before `WinMain`: in `_WinMainCRTStartup`
 (`0x4098c0`), `__cinit` runs at `0x409965` and `WinMain` is called at `0x40999b`. The other is
-`0x5b3163`, in `0x5b3120`, which nothing live reaches: its only caller, `0x5ab5a0`, is reached
-only by the thunk `0x46b0e0`, which nothing calls or stores. The test runs only `0x7400ed` to
-`0x740106`.
+`0x5b3163`, in `0x5b3120`, which also passes `0x42c010()`. The glue script function
+`PINEntered` (`0x46d1c0`) passes the digits to `0x46b0c0`, whose last instruction, at
+`0x46b0e0`, jumps to `0x5ab5a0`; that calls `0x5b3120` when its global object pointer is set.
+The test runs only `0x7400ed` to `0x740106`.
 
 ## Unreached functions
 

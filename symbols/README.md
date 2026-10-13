@@ -78,10 +78,21 @@ doc yet whose meaning a finding elsewhere derives.
 
 | column | values |
 |---|---|
-| `size` | Decimal bytes from the entry to the end of the last instruction, padding excluded. A cited instruction address belongs to the function whose `[address, address + size)` holds it. |
+| `size` | Decimal bytes from the entry to the end of the body's last instruction, by the rule below. A cited instruction address belongs to the function whose `[address, address + size)` holds it. |
 | `class` | `primitive`, `orchestration`, `host`, `boundary` or `unreached`. Required on every row of a system that has a doc; empty only for a row owned by a system not yet written. |
 | `signature` | The C prototype without the name: return type, calling convention, parameters. `uint32_t __fastcall (uint32_t x)`. `__thiscall` puts `this` first; `__fastcall` passes its first two parameters in `ecx` and `edx`. Empty when not derived. |
 | `test` | The bit-exact test that runs this function against the exe: `crate::test_fn`, the function name of a test under `crates/<crate>/tests/`. Empty when there is none. |
+
+A function row's address is a function start (`../METHOD.md`, Completeness). Its body is every
+instruction reached from that entry by falling through (a `call` falls through), by the targets of
+`jcc` and `jmp`, and by the entries of a jump table it indexes. A path ends at `ret`, at an indirect
+`jmp` that is not a table jump, and at a tail call: a `jmp` to an address with a row of its own,
+which the target of every tail call needs. Code reached only through a stored address, such as an
+exception filter or handler in a scope table, is not in the body. `size` runs from the entry to the
+end of the body's last instruction, and nothing in `[address, address + size)` is other than body,
+padding and the function's jump-table data. A body that does not form one such run has the size of
+its run from the entry, and its finding names each other run by its first and last instruction.
+`../tools/bodies.py` recomputes every size from `dumps/disasm.txt`.
 
 Classes:
 
@@ -97,8 +108,9 @@ Classes:
 - `boundary`: library code whose documented behaviour is enough (`strlen`, `malloc`, `__ftol`).
   Closures stop at it. Library code whose exact output matters, like `rand`, is `primitive`.
 - `unreached`: nothing live reaches it. No `call` or `jmp` in the image targets it and no section
-  stores its address, except other unreached code. The row keeps its one-line meaning; it owes
-  no test and its `test` is empty, and a port drops its transcription.
+  stores its address, except other unreached code, and no live code falls through into it. The
+  row keeps its one-line meaning; it owes no test and its `test` is empty, and a port drops its
+  transcription.
 
 ## globals.tsv
 

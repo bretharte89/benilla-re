@@ -69,9 +69,19 @@ The closure is only as good as its roots, and a walk of direct calls misses code
 - registered handlers: any code address pushed or stored as an immediate, or held in a table;
 - static initializers, which only the C runtime's initializer table reaches.
 
+A census starts from true function starts. A function starts at a `call` target, a stored
+address, or the first instruction after padding, unless the code above reaches it another way:
+an address that the instruction before it falls through to, or that a conditional jump or a
+jump-table entry of the function above lands on, is that function's code and never a start.
+Executed `nop`s fall through, a case label is a stored address, and an exit block can sit after
+`ret` and padding. An unconditional `jmp` to the first instruction after padding is a tail call to
+a new function, as in the static-initializer thunks. Read the function above before deciding where
+the next one starts.
+
 The reliable census for a function is two scans with a control: every `e8`/`e9` whose target is
 the function, and every little-endian occurrence of its address anywhere in the image. A function
-with neither is unreached; say so in the doc rather than leaving it to look owned.
+with neither is unreached; say so in the doc rather than leaving it to look owned. Code that is
+part of the function above is reached whenever that function is.
 
 ## Checklist: reading the bytes
 
@@ -107,6 +117,9 @@ A claim that something never happens is a census, and a census earns its zero.
   `rep movs`, `fst` and `fstp`, and a pointer computed into a register and stored through.
   A disassembler's spacing and sign conventions differ; write patterns that tolerate both.
 - Count callers through both `call` and `jmp`, and through stored addresses.
+- Count them only for a true start (Completeness). An address reached by fall-through from the
+  instruction before it is the function above's code, with that function's callers; a census
+  that treats it as a function with no callers declares live code unreached.
 - Resolve every indirect call on the path (`call [reg+disp]`, `call [mem]`) to its table and the
   code that fills it before claiming it cannot reach something.
 - A pointer through a writable slot is not resolved by its file value: find every writer.

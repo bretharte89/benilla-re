@@ -2,7 +2,8 @@
 # Builds the Ghidra project of WoW.exe into dumps/ghidra/ (ignored by git):
 #   1. imports WoW/WoW.exe (x86:LE:32:default, windows) and runs auto-analysis with the options
 #      recorded in SetOptions.java,
-#   2. creates the functions of symbols/functions.tsv that analysis missed (CreateFunctions.java),
+#   2. creates the functions of symbols/functions.tsv that analysis missed and gives each row's
+#      function the row's body (CreateFunctions.java),
 #   3. applies the symbol table: names, signatures, structs, labels, comments (ApplySymbols.java).
 #
 # Usage: tools/ghidra/setup.sh            full build, replaces any earlier project
