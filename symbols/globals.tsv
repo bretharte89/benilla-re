@@ -26,6 +26,15 @@ address	type	name	name_from	system	meaning	confidence	proof	finding
 0x5b2ea4	uint8_t[253]	s_logonResultIndexTable		net	Maps a logon server result less 3 to its case in the eleven-entry switch	verified	one	net/login#logon-results
 0x5b3fd0	void *[6]	s_realmMessageJumpTable		net	Holds the realm connection handler's cases for opcodes 0x3a to 0x4c	verified	one	net/dispatch#realm-connection-messages
 0x5b3fe8	uint8_t[19]	s_realmMessageIndexTable		net	Maps opcodes 0x3a to 0x4c to their case in the realm connection handler	verified	one	net/dispatch#realm-connection-messages
+0x616580	void *[39]	s_replayCases		collision	Holds the 39 case addresses of the event replay 0x615c30, for event types 0 to 38	verified	one	collision/replay#replay-cases-0-to-19
+0x61804c	void *[2]	s_rootFilterCases		collision	Holds the two cases of 0x618030: 0x618043, which returns 0, and 0x618046, which returns 1	verified	one	collision/events#root-filter
+0x618054	uint8_t[29]	s_rootFilterIndex		collision	Holds the case index of 0x618030 for tags 0 to 28: 0 for 0 to 7, 18, 19 and 28, else 1	verified	one	collision/events#root-filter
+0x618528	void *[19]	s_flushDispatchCases		collision	Holds the 19 case addresses of the switch in 0x618080, the last one the no-action exit 0x61851e	verified	one	collision/eventapply#flush-dispatcher
+0x618574	uint8_t[33]	s_flushDispatchIndex		collision	Holds the case index of 0x618080 for tags 6 to 38; 18 selects no action	verified	one	collision/eventapply#flush-dispatcher
+0x63679c	void *[4]	s_bevelCountCases		collision	Holds the case addresses of 0x636610 for one to four planes	verified	one	collision/walking#bevel-contact-direction
+0x7c5468	void *[5]	s_displacementCases		collision	Holds the five case labels of the displacement dispatcher 0x7c5360	verified	one	collision/kinematics#displacement-dispatcher
+0x7c547c	uint8_t[15]	s_displacementCaseIndex		collision	Holds the case index for modes 1 to 15 of the displacement dispatcher	verified	one	collision/kinematics#displacement-dispatcher
+0x7ffd84	void *	s_splineCurveVtable		cmath	Holds the vtable stored at +0x2c of the movement spline object; its first slot reads a count minus 3	inferred	none	collision/world#spline-object
 0x801354	float	s_defaultHandlerPriority		core	Holds 0.0, the priority 0x41fc90 registers with	verified	one	core/events#registration-calls
 0x801360	float	s_millisecondsToSeconds		core	Holds 0.001f (0x3a83126f), the frame time and timer factor	verified	one	core/loop#frame-time
 0x801364	void *[1]	EvtContext::vftable		core	Holds the context vtable: the deleting destructor 0x423240	verified	one	core/loop#start-and-stop
@@ -64,6 +73,25 @@ address	type	name	name_from	system	meaning	confidence	proof	finding
 0x80a77c	void *[1]	s_serverLinkPendingVftable		net	Holds the vtable of ServerLink's pending requests, stored only by the unreached ServerLink code	verified	one	net/layout#unreached-functions
 0x80a780	void *[10]	s_serverLinkVftable		net	Holds ServerLink's vtable, stored only by its unreached constructor and destructor	verified	one	net/layout#unreached-functions
 0x80a7dc	void *[9]	ClientLink::vftable		net	Holds ClientLink's vtable: the connection callbacks, slot 7 the raw data hook	verified	one	net/login#logon-commands
+0x80c5c4	float	s_facetFacingBound		collision	Holds -1e-5 (0xb727c5ac), the n·dir at or below which a facet faces against the motion	verified	one	collision/contact#nearest-facet-per-face
+0x80c734	float	s_splineWarpSpeedSquared		collision	Holds 3600.0 (0x45610000), the squared horizontal speed in yd/s above which a spline step skips collision	verified	one	collision/mover#spline-warp-gate
+0x80c738	float	s_mapCoordinateSpan		collision	Holds 34131.332 (0x47055355), the bound on 17066.666 minus a coordinate	verified	one	collision/mover#position-validity
+0x80c73c	float	s_collisionRadiusCap		collision	Holds 0.54071623 (0x3f0a6c61), the cap on half width over scale in 0x617460	verified	one	collision/mover#collision-size
+0x80c740	float	s_collisionRadiusCapInverse		collision	Holds 1.8493990 (0x3fecb91b), the reciprocal of 0x80c73c	verified	one	collision/mover#collision-size
+0x80dfe0	float	s_volumeBevelNormalZ		collision	Holds 0.4756366 (0x3ef386a4), cos 61.6°, the vertical part of the volume bevel normals	verified	one	collision/contact#volume-planes
+0x80dfe4	float	s_volumeBevelNormalXY		collision	Holds 0.8796419 (0x3f613036), sin 61.6°, the horizontal part of the volume bevel normals	verified	one	collision/contact#volume-planes
+0x80dfe8	float	s_waterWalkSinkPitch		collision	Holds -0.6457718 (0xbf25514d, -37°), the pitch at or below which water walking stops holding the body	verified	one	collision/commands#facing-and-pitch-setters
+0x80dfec	float	s_oneOver720		collision	Holds 1/720, 0.0013889 (0x3ab60b61), added to the radius for the step probe reach	verified	one	collision/walking#slope-thresholds
+0x80dff0	float	s_clipKeepBand		collision	Holds -1/720 (0xbab60b61); a polygon with no vertex at or below it is kept whole by the clip	verified	one	collision/contact#polygon-clip
+0x80dff4	float	s_behindFaceBound		collision	Holds -2^-20 (0xb5800000); a polygon with no vertex ahead of it gets the 1/36 behind test	verified	one	collision/contact#contact-distance
+0x80dffc	float	s_cos50		collision	Holds cos 50°, 0.6427876 (0x3f248dbb): a floor at or below it is steep	verified	one	collision/walking#slope-thresholds
+0x80e000	float	s_cos80		collision	Holds cos 80°, 0.1736482 (0x3e31d0d4), the slope limit when 0x5fa550 returns 0	verified	one	collision/walking#slope-thresholds
+0x80e008	float	s_tan50		collision	Holds tan 50°, 1.1917536 (0x3f988b62); the step probe reaches H times it	verified	one	collision/walking#slope-thresholds
+0x80e014	float	s_bevelNormalZ		collision	Holds -0.4756366 (0xbef386a4), the normal z of a bevel contact plane	verified	one	collision/walking#slope-thresholds
+0x80e01c	float	s_cos10		collision	Holds cos 10°, 0.9848077 (0x3f7c1c5c), the direction limit of the fall-away lookahead	verified	one	collision/walking#slope-thresholds
+0x80e020	float	s_invGravity		collision	Holds 1/g, 0.051837362 (0x3d54536a)	verified	one	collision/falling#arc-fields-and-constants
+0x80e024	float	s_bevelPairScale		collision	Holds 0.6385560 (0x3f237868), one over the length of two perpendicular bevel normals summed	verified	one	collision/walking#slope-thresholds
+0x80e028	float	s_cos89		collision	Holds cos 89°, 0.0174524 (0x3c8ef859), the normal z the ground normal must exceed	verified	one	collision/walking#slope-thresholds
 0x81d7b0	float	s_defaultDistance		camera	Holds 100.0, the default distance and eye x	verified	one	camera#properties
 0x81d7b4	float	s_defaultFarClip		camera	Holds 5000.0, the default far clip	verified	one	camera#properties
 0x81d7b8	float	s_defaultNearClip		camera	Holds 8.0, the default near clip	verified	one	camera#properties
@@ -74,6 +102,14 @@ address	type	name	name_from	system	meaning	confidence	proof	finding
 0x81d7e8	void *[2]	s_propertySetVftable		camera	Holds the camera base's vtable: 0x7acd10, then 0x442a70	verified	one	camera#lifetime
 0x81d7f0	void *[3]	CBaseManaged::vftable		camera	Holds the base property vtable: 0x7acb50, 0x7acb30, 0x7acb40	verified	one	camera#property-updates
 0x81d7fc	void *[4]	s_anglePropertyVftable		camera	Holds the angle property vtable: delete, the scalar evaluate and verify, store	verified	one	camera#property-updates
+0x81da58	float	s_gravity		collision	Holds g, 19.291105 (0x419a542f) yards per second squared, down-positive	verified	one	collision/falling#arc-fields-and-constants
+0x81da5c	float	s_negInvGravity		collision	Holds -1/g, -0.051837362 (0xbd54536a)	verified	one	collision/falling#arc-fields-and-constants
+0x81da60	float	s_halfGravity		collision	Holds g/2, 9.6455526 (0x411a542f)	verified	one	collision/falling#arc-fields-and-constants
+0x81da64	float	s_twiceGravity		collision	Holds 2g, 38.582211 (0x421a542f)	verified	one	collision/falling#arc-fields-and-constants
+0x81da68	float	s_twoOverGravity		collision	Holds 2/g, 0.10367472 (0x3dd4536a)	verified	one	collision/falling#arc-fields-and-constants
+0x81da6c	float	s_halfInvGravity		collision	Holds 1/(2g), 0.025918681 (0x3cd4536a)	verified	one	collision/falling#arc-fields-and-constants
+0x81da70	float	s_risingSpeedLimit		collision	Holds -2^-22 (0xb4800000), below which 0x7c60c0 counts a launch as rising	verified	one	collision/falling#fall-height-from-the-apex
+0x81da74	float	s_yardsPerMeter		collision	Holds 1.0936 (0x3f8bfb16), the factor the terminal velocity setters apply	verified	one	collision/falling#unreached-functions
 0x822c60	luaL_reg[25]	mathlib		lua	Pairs the Lua math library's names with its C functions, ending in a null pair	verified	one	random#the-c-runtime-rand
 0x827000	void (*[7180])(void)	__xc_a		crt	Lists the C++ static initializers __cinit runs in ascending order, up to __xc_z	verified	one	random#static-initializers
 0x832a44	float	s_screenScaleX		screencoord	Holds K1 = a/sqrt(a² + 1) for the display aspect a; 0.8 in the file	verified	one	input#click-versus-drag
@@ -96,9 +132,15 @@ address	type	name	name_from	system	meaning	confidence	proof	finding
 0x85cae8	char *[83]	s_errorCodeTokens	idb	net	Holds the 83 status code names, RESPONSE_SUCCESS to CHAR_NAME_SUCCESS, the localization keys	verified	one	net/session#session-status
 0x85e278	uint32_t[28]	s_clientLinkCommands		net	Holds ClientLink's seven commands: byte, name, handler and this offset each	verified	one	net/login#logon-commands
 0x85e9e4	uint32_t	s_netWakeSocket		net	Holds the write end of the network thread's wake socket pair	verified	one	net/wire#sending
+0x8613e4	char[23]	s_playerMoveEventTag		collision	Holds the type name of CPlayerMoveEvent, the allocation tag of its nodes	verified	one	collision/events#event-node
+0x8613fc	char[26]	s_invalidMoverText		collision	Holds "Mover at invalid position", the console line a NaN position prints	verified	one	collision/mover#local-player-step
+0x861418	char[62]	s_movementSourcePath		collision	Holds the source path of Movement.cpp, passed with a line number to the allocator	verified	one	collision/overview#object-files
+0x8642e8	char[64]	s_movementCSourcePath		collision	Holds the source path of Movement_C.cpp, passed with a line number to the allocator	verified	one	collision/overview#object-files
 0x87d5d8	char[8]	s_cameraTag		camera	Holds "HCAMERA", the tag of camera allocations and handles	verified	one	camera#lifetime
 0x87d5e8	char[19]	s_propertySlotsTag		camera	Holds ".PAVCBaseManaged@@", the tag of slot array allocations	verified	one	camera#property-updates
 0x87d5fc	float	s_particleDensity		camera	Holds the particle density in [0, 1]; 1.0 in the file	verified	one	camera#particle-density
+0x87d894	float	s_terminalVelocity		collision	Holds the fall speed cap, 60.148003 (0x4270978e); its one writer 0x7c6160 is unreached	verified	one	collision/falling#arc-fields-and-constants
+0x87d898	float	s_featherFallTerminalVelocity		collision	Holds the cap under flag 0x20000000, 7.0 (0x40e00000); its one writer 0x7c6180 is unreached	verified	one	collision/falling#arc-fields-and-constants
 0x883ec0	int32_t	s_engineThreadPriority		core	Holds the thread priority saved at scheduler start, restored each loop iteration	verified	one	core/loop#the-loop
 0x883ec4	void *	s_startEvent		core	Holds the start gate event the loop waits on before running	verified	one	core/loop#the-loop
 0x883ecc	uint32_t[4]	s_schedulerThreads		core	Holds the array of extra loop threads: capacity, count, storage, quantum	inferred	none	core/loop#static-initializers
@@ -151,6 +193,7 @@ address	type	name	name_from	system	meaning	confidence	proof	finding
 0xb05d70	float	s_randomTwoPi		random	Holds 2π, set at startup; read only by unreached noise	verified	one	random#static-initializers
 0xb05d74	float	s_gaussianSpareFloat		random	Holds the spare deviate of 0x44f9b0, 0 when empty; one for every state	inferred	none	random#unreached-functions
 0xb05d78	double	s_gaussianSpareDouble		random	Holds the spare deviate of 0x44fa70, 0 when empty; one for every state	inferred	none	random#unreached-functions
+0xb41414	void *	s_objectManager		objectmgr	Holds the client object manager; its +0xd4 holds the movement manager	inferred	none	collision/mover#movement-manager
 0xbe1148	CInputControl *	s_inputControl		input	Holds the CInputControl singleton	verified	one	input#input-state
 0xc0d45c	uint32_t	s_netBytesSent		net	Counts the opcode and body bytes NetClient::Send has sent, over all connections	verified	one	net/wire#sending
 0xc0d468	uint32_t	s_netBytesReceived		net	Counts the bytes dispatched on the main thread, two more per packet than its opcode and body	verified	one	net/dispatch#main-thread-drain
@@ -164,6 +207,12 @@ address	type	name	name_from	system	meaning	confidence	proof	finding
 0xc2a3bc	uint32_t	s_latencyMax		net	Holds the greatest simulated delay in milliseconds; zero-filled and never written	verified	one	net/wire#simulated-latency
 0xc2a3c4	uint32_t	s_initUnitCount		net	Counts the object files whose static initializers ran the shared unit count	inferred	none	net/layout#shared-helpers
 0xc2a428	uint8_t[64]	s_randomPool		net	Holds the SHA-1 random pool SRP6 draws from, seeded at startup with the client clock	verified	one	net/login#random-pool
+0xc4da98	uint64_t	s_activeMoverGuid		objectlayer	Holds the GUID of the unit this client moves	inferred	none	collision/events#mode-toggle-tags
+0xc4db88	uint32_t[3]	s_movementStaticList		collision	Holds the free list of move-event nodes, an intrusive list with link offset 0	verified	one	collision/overview#movementcpp-initializers
+0xc4e4b4	uint32_t[3]	s_movementCStaticList		collision	Holds an intrusive list head with link offset 0x208, empty at start-up	verified	one	collision/overview#movement_ccpp-initializers
+0xc4e52c	uint32_t[8]	s_facetList		collision	Holds the solid facet list: count +0x04, 52-byte facets at +0x08, their 64-bit ids at +0x18	verified	one	collision/overview#resolution-file-initializers
+0xc4e564	uint32_t[8]	s_liquidList		collision	Holds the liquid facet list, laid out as 0xc4e52c	verified	one	collision/overview#resolution-file-initializers
+0xc4e5a0	float[6]	s_queryBox		collision	Holds six floats zeroed at start-up	verified	one	collision/overview#resolution-file-initializers
 0xcf5730	float	s_cameraInvTwoPi		camera	Holds 1/2π (0x3e22f983), set at startup, read by 0x7abbe0	verified	two	camera#angle-properties
 0xcf5734	float	s_cameraTwoPi		camera	Holds 2π (0x40c90fdb), set at startup, read by 0x7abbe0	verified	two	camera#angle-properties
 0xcf5738	float	s_defaultFov		camera	Holds π/2, set at startup, the default field of view	verified	one	camera#properties
@@ -171,6 +220,12 @@ address	type	name	name_from	system	meaning	confidence	proof	finding
 0xcf5740	float	s_cameraInvTwoPi2		camera	Holds 1/2π, set at startup; nothing reads it	verified	one	camera#object-file-and-initializers
 0xcf5744	float	s_cameraTwoPi2		camera	Holds 2π, set at startup; read only by 0x7adf50	verified	one	camera#object-file-and-initializers
 0xcf5748	float	s_cameraInfinity2		camera	Holds +inf, set at startup; nothing reads it	verified	one	camera#object-file-and-initializers
+0xcf5ca4	float	s_sharedInvTwoPiA		collision	Holds 1/2π, 0.15915494, from start-up	verified	one	collision/overview#shared-file-initializers
+0xcf5ca8	float	s_sharedTwoPiA		collision	Holds 2π, 6.2831855, from start-up	verified	one	collision/overview#shared-file-initializers
+0xcf5cc0	float	s_sharedInfinityA		collision	Holds +∞ from start-up	verified	one	collision/overview#shared-file-initializers
+0xcf5cd0	float	s_sharedInvTwoPi		collision	Holds 1/2π, 0.15915494, from start-up	verified	one	collision/overview#shared-file-initializers
+0xcf5d00	float	s_movementTwoPi		collision	Holds 2π, written only by the static initializer 0x7c5dd0	verified	one	collision/kinematics#transport-space-transforms
+0xcf5d30	float	s_sharedInfinity		collision	Holds +∞ from start-up	verified	one	collision/overview#shared-file-initializers
 0xcf76cc	uint32_t	s_contextTableGuard		core	Holds the guard bit of the context table's one-time setup	verified	one	core/loop#static-initializers
 0xcf76f8	uint32_t	s_nextContextHandle		core	Holds the last context handle given out	verified	one	core/loop#contexts
 0xcf7700	uint8_t[96]	s_contextTableLocks		core	Holds the read-write locks of the context table's eight buckets	verified	one	core/loop#contexts

@@ -45,6 +45,64 @@ CInputControl	0x000c	4	float	m_travelY	input	Holds the sum of scaled |dy| since 
 CInputControl	0x0010	4	uint32_t	m_motionStamp	input	Holds a graphics device counter read at the last mouse motion while a command was held	inferred	none	input#click-versus-drag
 CInputControl	0x0014	4	uint32_t	m_pressTime	input	Holds the clock time of the first primary press	verified	two	input#click-versus-drag
 CInputControl	0x0018	4	uint32_t	m_clickMode	input	Holds the armed click action, 1 or 2, set to 0 when a release is a drag	verified	one	input#click-versus-drag
+CMovement	0x0000	8	void *[2]	m_link	collision	Holds a list link, zeroed by the constructor and unlinked by 0x7c5950	verified	one	collision/kinematics#teardown
+CMovement	0x0008	8	void *[2]	m_transportLink	collision	Holds the transport passenger link; linked when its second dword is not 0	inferred	none	collision/kinematics#teardown
+CMovement	0x0010	12	float[3]	m_position	collision	Holds the live position, in transport space while a transport GUID is set	verified	one	collision/kinematics#anchors-and-elapsed-time
+CMovement	0x001c	4	float	m_facing	collision	Holds the live facing, recomputed from the anchor facing each substep	verified	one	collision/kinematics#facing-and-pitch-integration
+CMovement	0x0020	4	float	m_pitch	collision	Holds the live pitch, recomputed from the anchor pitch and clamped to ±π/2	verified	one	collision/kinematics#facing-and-pitch-integration
+CMovement	0x0024	12	float[3]	m_upVector	collision	Holds the up vector: (0, 0, 1) at construction, the averaged contact normal after a resolve, rolled by a bank	verified	one	collision/resolve#ground-normal-refresh
+CMovement	0x0030	4	const uint64_t *	m_owner	collision	Holds a pointer to the owner's GUID, passed to the movement notifications	verified	one	collision/kinematics#shared-constructor
+CMovement	0x0038	8	uint64_t	m_transportGuid	collision	Holds the transport GUID; 0 makes the transport transforms the identity	verified	one	collision/kinematics#transport-space-transforms
+CMovement	0x0040	4	uint32_t	m_moveFlags	collision	Holds the movement flags: direction 0xf, turn 0x30, pitch 0xc0, walk 0x100, falling 0x2000, swim 0x00200000	verified	one	collision/kinematics#displacement-dispatcher
+CMovement	0x0044	12	float[3]	m_anchorPosition	collision	Holds the position the displacement is measured from, copied from +0x10 by 0x7c5cd0	verified	one	collision/kinematics#anchors-and-elapsed-time
+CMovement	0x0050	4	float	m_anchorFacing	collision	Holds the facing the turn integrates from, copied from +0x1c by 0x7c5cd0	verified	one	collision/kinematics#anchors-and-elapsed-time
+CMovement	0x0054	4	float	m_anchorPitch	collision	Holds the pitch the pitch integrates from, copied from +0x20 by 0x7c5cd0	verified	one	collision/kinematics#anchors-and-elapsed-time
+CMovement	0x0058	4	uint32_t	m_anchorElapsed	collision	Holds the milliseconds since the anchors, zeroed by 0x7c5cd0 and added to before each dispatch	verified	one	collision/kinematics#anchors-and-elapsed-time
+CMovement	0x005c	12	float[3]	m_direction	collision	Holds the unit travel direction the straight displacement uses	verified	one	collision/kinematics#direction-and-heading-basis
+CMovement	0x0068	8	float[2]	m_headingBasis	collision	Holds the horizontal travel axis: cos and sin of the anchor facing, turned for strafe	verified	one	collision/kinematics#direction-and-heading-basis
+CMovement	0x0070	8	float[2]	m_pitchBasis	collision	Holds cos and sin of the anchor pitch while swimming, else 1 and 0	verified	one	collision/kinematics#direction-and-heading-basis
+CMovement	0x0078	4	uint32_t	m_fallTime	collision	Holds the milliseconds elapsed on the fall arc, zeroed when an arc starts	verified	one	collision/falling#arc-fields-and-constants
+CMovement	0x007c	4	float	m_fallStartZ	collision	Holds the arc start height; the body is D(t) below it	verified	one	collision/falling#arc-fields-and-constants
+CMovement	0x0080	4	float	m_stepBaseZ	collision	Holds the z a step-up probe started from, the base of the climb limit	inferred	none	collision/walking#step-up-probe
+CMovement	0x0084	4	float	m_currentSpeed	collision	Holds the current speed, stored by 0x7c5c20	verified	one	collision/kinematics#current-speed-selector
+CMovement	0x0088	4	float	m_walkSpeed	collision	Holds the walk speed	inferred	none	collision/kinematics#current-speed-selector
+CMovement	0x008c	4	float	m_runSpeed	collision	Holds the run speed	inferred	none	collision/kinematics#current-speed-selector
+CMovement	0x0090	4	float	m_runBackSpeed	collision	Holds the backward run speed	inferred	none	collision/kinematics#current-speed-selector
+CMovement	0x0094	4	float	m_swimSpeed	collision	Holds the swim speed	inferred	none	collision/kinematics#current-speed-selector
+CMovement	0x0098	4	float	m_swimBackSpeed	collision	Holds the backward swim speed	inferred	none	collision/kinematics#current-speed-selector
+CMovement	0x009c	4	float	m_turnRate	collision	Holds the turn rate in radians per second, also the pitch rate	verified	one	collision/kinematics#turn-and-pitch-rates
+CMovement	0x00a0	4	float	m_fallStartSpeed	collision	Holds the arc launch speed, down-positive: a jump stores -7.955547	verified	one	collision/falling#arc-fields-and-constants
+CMovement	0x00a4	4	void *	m_spline	collision	Holds the 0x70-byte spline record 0x630c40 allocates, or null	verified	one	collision/commands#spline-commands
+CMovement	0x00a8	4	uint32_t	m_lastFireTime	collision	Holds the fire time of the last status, seeded with the event time of the first	verified	one	collision/status#status-fire-time
+CMovement	0x00ac	4	uint32_t	m_lastSenderStamp	collision	Holds the last sender time stamp, kept only on a forward step and advanced by a skip	verified	one	collision/status#status-fire-time
+CMovement	0x00b0	4	float	m_collisionRadius	collision	Holds half the model width times the scale (0x6174b0); 1/3 at construction	verified	one	collision/mover#collision-size
+CMovement	0x00b4	4	float	m_collisionHeight	collision	Holds the model height times the scale (0x6174b0); 2.0277777 at construction	verified	one	collision/mover#collision-size
+CMovement	0x00b8	4	float	m_scaleRatio	collision	Holds the scale over the display scale, or 1.0 when that is below 2^-22; 1.0 at construction	verified	one	collision/mover#collision-size
+CMovement	0x00bc	128	int32_t[32]	m_latenessRing	collision	Holds the last 32 lateness samples 0x618b50 stores, in ms; sixteen -50 then sixteen 50 at construction	verified	one	collision/eventapply#lateness-ring
+CMovement	0x013c	4	uint32_t	m_latenessCursor	collision	Holds the ring slot 0x618b50 writes next, advanced modulo 32	verified	one	collision/eventapply#lateness-ring
+CMovement	0x0140	4	int32_t	m_latenessBase	collision	Holds the ring maximum 0x618c30 stores at each re-base, added to each new sample; 50 at construction	inferred	none	collision/eventapply#lateness-ring
+CMovement	0x0144	4	float	m_facingRate	collision	Holds the facing rate in radians per second toward the queue head, from 0x618f80	verified	one	collision/status#facing-rate-toward-the-head
+CMovement	0x0148	4	float	m_facingRateTime	collision	Holds the seconds to the queue head over which +0x144 applies; 0 turns the rate off	verified	one	collision/status#facing-rate-toward-the-head
+CMovement	0x014c	4	int32_t	m_correctionTime	collision	Holds the ms to the queue head at arming, read as int32, the divisor of the position blend; 0 when off	verified	one	collision/status#position-blend-arming
+CMovement	0x0150	12	void *[3]	m_events	collision	Holds the event queue header: link offset, last link, then the first CPlayerMoveEvent	verified	one	collision/events#insertion-in-time-order
+CMovement	0x015c	4	void *	m_unit	collision	Holds the unit that owns the mover, the constructor's fourth argument	verified	one	collision/mover#construction
+CPlayerMoveEvent	0x0000	4	void *	m_linkPrev	collision	Holds the link to the previous node of the list the event is in	verified	one	collision/events#event-node
+CPlayerMoveEvent	0x0004	4	void *	m_linkNext	collision	Holds the next node, or the list's own link with bit 0 set at the end	verified	one	collision/events#event-node
+CPlayerMoveEvent	0x0008	4	uint32_t	m_time	collision	Holds the time the event takes effect, the queue's sort key, compared as a signed difference	verified	one	collision/events#event-node
+CPlayerMoveEvent	0x000c	4	uint32_t	m_tag	collision	Holds the internal tag, 0 to 38, that the two consumer switches map to an action and opcode	verified	one	collision/events#event-node
+CPlayerMoveEvent	0x0010	12	float[3]	m_position	collision	Holds the event position, transport-local when the snapshot has a transport	verified	one	collision/events#event-node
+CPlayerMoveEvent	0x001c	4	float	m_facing	collision	Holds the event facing, transport-local when the snapshot has a transport	verified	one	collision/events#event-node
+CPlayerMoveEvent	0x0020	4	float	m_pitch	collision	Holds the event pitch	verified	one	collision/events#event-node
+CPlayerMoveEvent	0x0028	8	uint64_t	m_transportGuid	collision	Holds the snapshot's transport GUID, 0 off a transport	verified	one	collision/events#event-node
+CPlayerMoveEvent	0x0030	4	uint32_t	m_moveFlags	collision	Holds the snapshot's movement flags masked with 0x75a07dff	verified	one	collision/events#event-node
+CPlayerMoveEvent	0x0034	4	uint32_t	m_fallTime	collision	Holds the snapshot's fall time, the status field 0x7c6340 copies from CMovement+0x78	verified	one	collision/events#event-node
+CPlayerMoveEvent	0x0038	4	float	m_value	collision	Holds the new speed for tags 20 to 25, or the first knockback direction component	verified	one	collision/events#event-node
+CPlayerMoveEvent	0x003c	4	float	m_directionY	collision	Holds the second knockback direction component	verified	one	collision/events#event-node
+CPlayerMoveEvent	0x0040	4	float	m_speedXY	collision	Holds the knockback horizontal speed	verified	one	collision/events#event-node
+CPlayerMoveEvent	0x0044	4	float	m_speedZ	collision	Holds the knockback vertical speed, stored into CMovement+0xa0 by 0x7c61f0	verified	one	collision/events#event-node
+CPlayerMoveEvent	0x0048	4	uint32_t	m_counter	collision	Holds the server change counter that the acknowledgement echoes	verified	one	collision/events#event-node
+CPlayerMoveEvent	0x004c	1	uint8_t	m_hasStatus	collision	Holds 1 when 0x617730 filled the snapshot fields, 0 from allocation	verified	one	collision/events#event-node
+CPlayerMoveEvent	0x004d	1	uint8_t	m_send	collision	Holds 1 when processing the event sends its opcode to the server	verified	one	collision/events#event-node
 ClientConnection	0x1b08	4	uint32_t	m_statusDone	net	Holds 1 once the current operation's status is set	verified	one	net/session#session-status
 ClientConnection	0x1b0c	4	uint32_t	m_statusResult	net	Holds the status's result flag, 1 for success	verified	one	net/session#session-status
 ClientConnection	0x1b10	4	uint32_t	m_operation	net	Holds the operation the status belongs to	verified	one	net/session#session-status
@@ -75,6 +133,14 @@ EvtHandler	0x0008	4	void *	m_handler	core	Holds the function, called as fastcall
 EvtHandler	0x000c	4	void *	m_argument	core	Holds the argument passed in edx	verified	two	core/events#handler-records
 EvtHandler	0x0010	4	float	m_priority	core	Holds the priority; higher runs first	verified	two	core/events#handler-order
 EvtHandler	0x0014	4	uint32_t	m_skip	core	Holds nonzero for a record the dispatch and registration pass over	verified	two	core/events#handler-order
+MovementGlobals	0x0000	260	char[260]	m_logPath	collision	Holds the movement log path copied by 0x616860	verified	one	collision/mover#initialisation-and-teardown
+MovementGlobals	0x0104	4	void *	m_logFile	collision	Holds a log file handle, closed by 0x7c4e90 and 0x616910	inferred	none	collision/mover#initialisation-and-teardown
+MovementGlobals	0x0108	4	void *	m_fallLogFile	collision	Holds a second log file handle, closed by 0x616910	inferred	none	collision/mover#initialisation-and-teardown
+MovementGlobals	0x0118	12	void *[3]	m_movers	collision	Holds the list of movers with work pending: link offset 0, then the terminator link	verified	one	collision/mover#per-frame-tick
+MovementGlobals	0x0124	4	uint32_t	m_flags	collision	Holds bit 0 once 0x616860 has initialised the manager	verified	one	collision/mover#movement-manager
+MovementGlobals	0x0128	4	uint32_t	m_lastTickTime	collision	Holds the clock at the last tick, written by 0x616860 and 0x616800	verified	one	collision/mover#per-frame-tick
+MovementGlobals	0x012c	4	uint32_t	m_stepTime	collision	Holds the end of the step being simulated, written per step by 0x616620	verified	one	collision/mover#local-player-step
+MovementGlobals	0x0130	4	uint32_t	m_heartbeatDeadline	collision	Holds the time of the active mover's next heartbeat, set by 0x615b80 and moved by 0x615ae0	verified	one	collision/mover#heartbeat-and-skipped-time
 NETEVENTQUEUENODE	0x0008	4	uint32_t	m_type	net	Holds the event type, 0x12 to 0x16	verified	one	net/dispatch#network-thread-handoff
 NETEVENTQUEUENODE	0x000c	4	uint32_t	m_time	net	Holds the client clock when the node was queued	verified	one	net/dispatch#network-thread-handoff
 NETEVENTQUEUENODE	0x0010	4	void *	m_data	net	Holds the node's own copy of the packet bytes	verified	one	net/dispatch#network-thread-handoff
