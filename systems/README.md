@@ -25,6 +25,19 @@ structs and globals it owns, and which of its functions the rest of the client a
 A system owns the functions of its object files (`../symbols/README.md`). At most 200 words, no
 addresses beyond what a reader needs to find the code.
 
+### Object files
+
+Most object files include a shared maths header whose static initializers store +∞, 2π, 1/2π and
+a block of constants. The C runtime's initializer table, `0x827000`, lists each file's initializers
+as one contiguous run in link order, and a file that includes the header opens its run with its +∞
+copy: the table's first slot, `0x827004`, is one, and its last three, from `0x82e024`, are +∞, 2π
+and 1/2π. A run gives the file's initializers, not its extent. The file's code can start before
+its +∞ thunk, at a lower initializer of the same run or at a function with no initializer, and
+code past its last initializer can belong to a file with no run. A file without the header or
+without initializers has no run: it is bounded by the source paths its code passes and by its
+callers. One stretch of code between two runs can hold several files, as WardenClient.cpp
+(0x6c9f8e) and FFXEffects.cpp (0x6cbed2) share the stretch after slot `0x82cd78`.
+
 ### Roots
 
 The functions through which anything outside the system enters it:
@@ -37,7 +50,9 @@ The functions through which anything outside the system enters it:
 The closure of a system is every function reachable from its roots by calls, tail jumps, vtable
 slots and stored addresses, stopping at functions another system owns. Every function in the
 closure has a row with a `class` (`../symbols/README.md`), and every `primitive` in it has a
-bit-exact test. A function the system owns that nothing live reaches is of class `unreached`:
+bit-exact test. That is the definition of a complete system, and no system meets it yet: the tests
+come with the reference crates ([#4](https://github.com/samwhosung/benilla-re/issues/4)). A
+function the system owns that nothing live reaches is of class `unreached`:
 it keeps a row with its one-line meaning and owes no test. The doc gives the unreached functions
 one short entry that lists their addresses and the census that shows nothing reaches them.
 
@@ -54,7 +69,7 @@ anchor rows link to), then this shape:
 Addresses: `0x4531e0`, `0x802700`
 Confidence: verified
 Proof: two
-Test: `random::crandom_uint32_advance`
+Test: none
 
 <Derivation: the path from the bytes to the claim, in a few lines.>
 ```

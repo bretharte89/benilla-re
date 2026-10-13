@@ -29,7 +29,7 @@ address	type	name	name_from	system	meaning	confidence	proof	finding
 0x46e998	void *[4]	s_realmCompareJumpTable		glue	Holds the realm comparator's case addresses for sort keys 0 to 3	verified	one	glue/realms#the-realm-comparator
 0x47106c	void *[5]	s_cycleCustomizationCases		glue	Holds the five case addresses of the customization cycle 0x470f80, skin to facial hair	verified	one	glue/create#cycling-a-customization
 0x4712e0	void *[5]	s_countCustomizationCases		glue	Holds the five case addresses of the customization count 0x471270, skin to facial hair	verified	one	glue/create#randomizing-and-counts
-0x480850	uint8_t[121]	s_worldPickTypeCaseTable		worldframe	Maps an object type mask less 9 to the four cases of 0x480780: unit, player, game object, corpse, else 4	verified	one	spell/targeting#object-pick-filters
+0x480850	uint8_t[121]	s_worldPickTypeCaseTable		ui	Maps an object type mask less 9 to the four cases of 0x480780: unit, player, game object, corpse, else 4	verified	one	spell/targeting#object-pick-filters
 0x538610	void *[5]	s_netEventJumpTable		net	Holds the five case addresses the event drain jumps to for node types 0x12 to 0x16	verified	one	net/dispatch#main-thread-drain
 0x5aa854	void *[11]	s_statusEventJumpTable		net	Holds the case addresses of the status reporter's first switch	inferred	none	net/layout#starts-the-listing-hides
 0x5aa880	void *[39]	s_statusEventJumpTable2		net	Holds the case addresses of the status reporter's second switch	inferred	none	net/layout#starts-the-listing-hides
@@ -345,13 +345,13 @@ address	type	name	name_from	system	meaning	confidence	proof	finding
 0x81c554	void *[8]	s_titleRegionVtable		ui	Holds the vtable of a title region	verified	one	ui/frames#vtables-and-the-two-parts
 0x81c580	void *[8]	CScriptRegion::vftable		ui	Holds the vtable of CScriptRegion	verified	one	ui/frames#vtables-and-the-two-parts
 0x81c5a0	void *[11]	s_scriptRegionLayoutVtable		ui	Holds the vtable of a CScriptRegion's layout part	verified	one	ui/frames#vtables-and-the-two-parts
-0x81d560	const float	s_regionMethodsInfinityConst		ui	Holds +inf, the region methods' copy of the shared header's constant	verified	one	ui/README#this-rounds-object-files
-0x81d564	const float	s_regionMethodsPiConst		ui	Holds pi, the region methods' copy of the shared header's constant	verified	one	ui/README#this-rounds-object-files
-0x81d568	const float	s_regionMethodsTenConst		ui	Holds 10.0, the region methods' copy of the shared header's constant	verified	one	ui/README#this-rounds-object-files
-0x81d56c	const float	s_framePointInfinityConst		ui	Holds +inf, the point getters' copy of the shared header's constant	verified	one	ui/README#this-rounds-object-files
-0x81d570	const float	s_framePointPiConst		ui	Holds pi, the point getters' copy of the shared header's constant	verified	one	ui/README#this-rounds-object-files
-0x81d574	const float	s_framePointTenConst		ui	Holds 10.0, the point getters' copy of the shared header's constant	verified	one	ui/README#this-rounds-object-files
-0x81d578	const float	s_hyperlinkedFrameInfinityConst		ui	Holds +inf, CSimpleHyperlinkedFrame.cpp's copy of the shared header's constant	verified	one	ui/README#this-rounds-object-files
+0x81d560	const float	s_regionMethodsInfinityConst		ui	Holds +inf, the region methods' copy of the shared header's constant	verified	one	ui/README#frame-core-object-files
+0x81d564	const float	s_regionMethodsPiConst		ui	Holds pi, the region methods' copy of the shared header's constant	verified	one	ui/README#frame-core-object-files
+0x81d568	const float	s_regionMethodsTenConst		ui	Holds 10.0, the region methods' copy of the shared header's constant	verified	one	ui/README#frame-core-object-files
+0x81d56c	const float	s_framePointInfinityConst		ui	Holds +inf, the point getters' copy of the shared header's constant	verified	one	ui/README#frame-core-object-files
+0x81d570	const float	s_framePointPiConst		ui	Holds pi, the point getters' copy of the shared header's constant	verified	one	ui/README#frame-core-object-files
+0x81d574	const float	s_framePointTenConst		ui	Holds 10.0, the point getters' copy of the shared header's constant	verified	one	ui/README#frame-core-object-files
+0x81d578	const float	s_hyperlinkedFrameInfinityConst		ui	Holds +inf, CSimpleHyperlinkedFrame.cpp's copy of the shared header's constant	verified	one	ui/README#frame-core-object-files
 0x81d7b0	float	s_defaultDistance		camera	Holds 100.0, the default distance and eye x	verified	one	camera#properties
 0x81d7b4	float	s_defaultFarClip		camera	Holds 5000.0, the default far clip	verified	one	camera#properties
 0x81d7b8	float	s_defaultNearClip		camera	Holds 8.0, the default near clip	verified	one	camera#properties
@@ -547,7 +547,7 @@ address	type	name	name_from	system	meaning	confidence	proof	finding
 0x8722d4	int32_t	s_scriptReference3		ui	Holds a registry reference the state's opening takes	inferred	none	ui/script#the-lua-state
 0x8722dc	char[8]	s_argName		ui	Holds arg and the digits of the argument global being set	verified	one	ui/script#running-a-handler
 0x872990	char[30]	s_eventObjectTag		ui	Holds the allocation tag of the event array, the type name of FrameScript_EventObject	verified	one	ui/script#the-event-table
-0x8729b0	char[60]	s_frameScriptPath		ui	Holds the source path of FrameScript.cpp	verified	one	ui/README#this-rounds-object-files
+0x8729b0	char[60]	s_frameScriptPath		ui	Holds the source path of FrameScript.cpp	verified	one	ui/README#frame-core-object-files
 0x8729ec	char[19]	s_frameScriptMetaName		ui	Holds __framescript_meta, the global holding the object metatable	verified	one	ui/script#the-script-object
 0x872a08	char[24]	s_listenerNodeTag		ui	Holds the allocation tag of a listener node, the type name of EVENTLISTENERNODE	verified	one	ui/script#registering-for-an-event
 0x872a28	char[6]	s_handlerNameFormat		ui	Holds %s:%s, the format of a compiled handler's name	verified	one	ui/script#compiling-a-script-element
@@ -556,25 +556,25 @@ address	type	name	name_from	system	meaning	confidence	proof	finding
 0x873070	char[32]	s_m2DestroyNeverCalled		models	Holds the message logged when the model cache dies initialized	verified	one	models/cache#cache-object
 0x873184	uint32_t[6]	s_m2KindPriority		models	Holds the transparent sort priority of each element kind	verified	one	models/scene#batch-grouping
 0x8732ac	char[34]	s_m2StallFormat		models	Holds the message logged when an instance waits for its file	verified	one	models/model#load-state
-0x8764f8	void *[74]	s_mathRoutineSlots		cmath	Holds the math routine slots the dispatch thunks jump through	verified	one	models/animation#dispatched-matrix-math
-0x876620	void *[74]	s_mathRoutineDefaults		cmath	Holds the default math routines copied into the slots	verified	one	models/animation#dispatched-matrix-math
-0x87674c	uint32_t	s_mathRoutineSet		cmath	Holds which routine set was chosen, 0xffff before the first call	verified	one	models/animation#dispatched-matrix-math
+0x8764f8	void *[74]	s_mathRoutineSlots		d3dx	Holds the math routine slots the dispatch thunks jump through	verified	one	models/animation#dispatched-matrix-math
+0x876620	void *[74]	s_mathRoutineDefaults		d3dx	Holds the default math routines copied into the slots	verified	one	models/animation#dispatched-matrix-math
+0x87674c	uint32_t	s_mathRoutineSet		d3dx	Holds which routine set was chosen, 0xffff before the first call	verified	one	models/animation#dispatched-matrix-math
 0x8783a4	char[53]	s_simpleTopPath		ui	Holds the source path of CSimpleTop.cpp	verified	one	ui/input#input-lists
 0x8783e4	char[23]	s_strataNodeTag		ui	Holds .PAVCFrameStrataNode@@, the allocation tag of the level node arrays	verified	one	ui/strata#strata-records-and-level-nodes
 0x878440	char[33]	s_relativeFrameMissing		ui	Holds the error the XML anchors report for a relativeTo name that finds no frame	verified	one	ui/anchors#construction-and-the-xml-anchors
-0x878500	char[55]	s_layoutFramePath		ui	Holds the source path of CLayoutFrame.cpp	verified	one	ui/README#this-rounds-object-files
+0x878500	char[55]	s_layoutFramePath		ui	Holds the source path of CLayoutFrame.cpp	verified	one	ui/README#frame-core-object-files
 0x878540	char[29]	s_frameNodeTag		ui	Holds the allocation tag of a dependent node, the type name of CLayoutFrame's FRAMENODE	verified	one	ui/anchors#dependents
-0x8785b8	char[55]	s_simpleFramePath		ui	Holds the source path of CSimpleFrame.cpp	verified	one	ui/README#this-rounds-object-files
+0x8785b8	char[55]	s_simpleFramePath		ui	Holds the source path of CSimpleFrame.cpp	verified	one	ui/README#frame-core-object-files
 0x878870	char *	s_regionTypeName		ui	Points to Region, the type name of CScriptRegion	verified	one	ui/frames#vtables-and-the-two-parts
-0x878874	char[56]	s_scriptRegionPath		ui	Holds the source path of CScriptRegion.cpp	verified	one	ui/README#this-rounds-object-files
+0x878874	char[56]	s_scriptRegionPath		ui	Holds the source path of CScriptRegion.cpp	verified	one	ui/README#frame-core-object-files
 0x8788ac	char[4]	s_topName		ui	Holds Top, what $parent becomes when no ancestor is named	verified	one	ui/frames#names-and-lookup-by-name
 0x8788b0	char[8]	s_parentPrefix		ui	Holds $parent, the name prefix replaced by an ancestor's name	verified	one	ui/frames#names-and-lookup-by-name
 0x878ec0	uint32_t[136]	s_frameMethods		ui	Holds the 68 pairs of a name and a function of the Frame methods	verified	one	ui/methods#method-tables-and-lookup
-0x879504	char[61]	s_simpleFrameScriptPath		ui	Holds the source path of CSimpleFrameScript.cpp	verified	one	ui/README#this-rounds-object-files
+0x879504	char[61]	s_simpleFrameScriptPath		ui	Holds the source path of CSimpleFrameScript.cpp	verified	one	ui/README#frame-core-object-files
 0x87c9b8	uint32_t[38]	s_regionMethods		ui	Holds the 19 pairs of a name and a function of the Region methods	verified	one	ui/methods#method-tables-and-lookup
 0x87d5d8	char[8]	s_cameraTag		camera	Holds "HCAMERA", the tag of camera allocations and handles	verified	one	camera#lifetime
 0x87d5e8	char[19]	s_propertySlotsTag		camera	Holds ".PAVCBaseManaged@@", the tag of slot array allocations	verified	one	camera#property-updates
-0x87d5fc	float	s_particleDensity		camera	Holds the particle density in [0, 1]; 1.0 in the file	verified	one	camera#particle-density
+0x87d5fc	float	s_particleDensity		models	Holds the particle density in [0, 1]; 1.0 in the file	verified	one	camera#particle-density
 0x87d894	float	s_terminalVelocity		collision	Holds the fall speed cap, 60.148003 (0x4270978e); its one writer 0x7c6160 is unreached	verified	one	collision/falling#arc-fields-and-constants
 0x87d898	float	s_featherFallTerminalVelocity		collision	Holds the cap under flag 0x20000000, 7.0 (0x40e00000); its one writer 0x7c6180 is unreached	verified	one	collision/falling#arc-fields-and-constants
 0x882504	uint32_t	s_startupStringsIndex		client	Points at Startup_Strings.dbc's records indexed by id	inferred	none	
@@ -731,7 +731,7 @@ address	type	name	name_from	system	meaning	confidence	proof	finding
 0xb4da40	char[2048]	s_lastDisplayedMessage		ui	Holds the text DisplayError last formatted; empty at load	inferred	none	spell/failures#display-log-and-events
 0xb4e2d8	uint64_t	s_targetGuid		ui	Holds the selected target's GUID, which the checks read when given none	inferred	none	spell/checks#usability-predicate
 0xb714a0	uint64_t	s_petBarGuid		ui	Holds the guid of the pet whose spells the pet bar holds	inferred	none	spell/cooldowns#spell-cooldown-packet
-0xb7150c	uint32_t	s_tradeWindowState		gameui	Holds a trade window state that the trade-slot bind requires nonzero	inferred	none	spell/targeting#binding-the-trade-slot
+0xb7150c	uint32_t	s_tradeWindowState		ui	Holds a trade window state that the trade-slot bind requires nonzero	inferred	none	spell/targeting#binding-the-trade-slot
 0xbdcfb8	uint32_t	s_currentCraftProfession		ui	Holds the profession the craft window shows; 0x4f6000 sets or clears it	verified	one	spell/cast#cast-attempt-refusals
 0xbde040	uint32_t	s_currentTradeSkillLine		ui	Holds the skill line the trade-skill window shows; 0x4fc910 sets or clears it	verified	one	spell/cast#cast-attempt-refusals
 0xbe1148	CInputControl *	s_inputControl		input	Holds the CInputControl singleton	verified	one	input#input-state
@@ -962,23 +962,24 @@ address	type	name	name_from	system	meaning	confidence	proof	finding
 0xcf4d38	uint32_t[10]	s_frameMethodHash		ui	Holds the hash table of the Frame methods	verified	one	ui/methods#method-tables-and-lookup
 0xcf54b4	uint32_t[10]	s_regionMethodHash		ui	Holds the hash table of the Region methods	verified	one	ui/methods#method-tables-and-lookup
 0xcf550c	float	s_layoutUndefined		ui	Holds +inf, the value of an edge or point the layout cannot resolve	verified	one	ui/anchors#relative-point-coordinates
+0xcf572c	float	s_cameraPropertyInfinity		camera	Holds +inf, set at startup; nothing reads it	verified	one	camera#object-files-and-initializers
 0xcf5730	float	s_cameraInvTwoPi		camera	Holds 1/2π (0x3e22f983), set at startup, read by 0x7abbe0	verified	two	camera#angle-properties
 0xcf5734	float	s_cameraTwoPi		camera	Holds 2π (0x40c90fdb), set at startup, read by 0x7abbe0	verified	two	camera#angle-properties
 0xcf5738	float	s_defaultFov		camera	Holds π/2, set at startup, the default field of view	verified	one	camera#properties
-0xcf573c	float	s_cameraInfinity		camera	Holds +inf, set at startup; nothing reads it	verified	one	camera#object-file-and-initializers
-0xcf5740	float	s_cameraInvTwoPi2		camera	Holds 1/2π, set at startup; nothing reads it	verified	one	camera#object-file-and-initializers
-0xcf5744	float	s_cameraTwoPi2		camera	Holds 2π, set at startup; read only by 0x7adf50	verified	one	camera#object-file-and-initializers
-0xcf5748	float	s_cameraInfinity2		camera	Holds +inf, set at startup; nothing reads it	verified	one	camera#object-file-and-initializers
+0xcf573c	float	s_cameraInfinity		camera	Holds +inf, set at startup; nothing reads it	verified	one	camera#object-files-and-initializers
+0xcf5740	float	s_cameraInvTwoPi2		camera	Holds 1/2π, set at startup; nothing reads it	verified	one	camera#object-files-and-initializers
+0xcf5744	float	s_cameraTwoPi2		camera	Holds 2π, set at startup; read only by 0x7adf50	verified	one	camera#object-files-and-initializers
+0xcf5748	float	s_particleRegistryInfinity		models	Holds +inf, set at startup; nothing reads it	verified	one	camera#object-files-and-initializers
 0xcf575c	void *	s_particleRegistry		models	Holds the particle emitter registry, created on first use	verified	one	models/particles#registries
 0xcf5760	void *	s_ribbonRegistry		models	Holds the ribbon emitter registry, created on first use	verified	one	models/particles#registries
 0xcf58e8	float	s_particleCameraDistance		models	Holds the distance from the last updated emitter to the camera	verified	one	models/particles#update
 0xcf58f0	float[128]	s_particleNoise		models	Holds 128 uniform values in [0, 1) the particle code draws from	verified	one	models/cache#noise-table
-0xcf5ca4	float	s_sharedInvTwoPiA		collision	Holds 1/2π, 0.15915494, from start-up	verified	one	collision/overview#shared-file-initializers
-0xcf5ca8	float	s_sharedTwoPiA		collision	Holds 2π, 6.2831855, from start-up	verified	one	collision/overview#shared-file-initializers
-0xcf5cc0	float	s_sharedInfinityA		collision	Holds +∞ from start-up	verified	one	collision/overview#shared-file-initializers
+0xcf5ca4	float	s_geometryInvTwoPi		unassigned	Holds 1/2π, 0.15915494, from start-up	verified	one	collision/overview#object-files
+0xcf5ca8	float	s_geometryTwoPi		unassigned	Holds 2π, 6.2831855, from start-up	verified	one	collision/overview#object-files
+0xcf5cc0	float	s_sharedInfinity		collision	Holds +∞ from start-up	verified	one	collision/overview#shared-file-initializers
 0xcf5cd0	float	s_sharedInvTwoPi		collision	Holds 1/2π, 0.15915494, from start-up	verified	one	collision/overview#shared-file-initializers
 0xcf5d00	float	s_movementTwoPi		collision	Holds 2π, written only by the static initializer 0x7c5dd0	verified	one	collision/kinematics#transport-space-transforms
-0xcf5d30	float	s_sharedInfinity		collision	Holds +∞ from start-up	verified	one	collision/overview#shared-file-initializers
+0xcf5d30	float	s_recordInfinity		unassigned	Holds +∞ from start-up	verified	one	collision/overview#object-files
 0xcf76cc	uint32_t	s_contextTableGuard		core	Holds the guard bit of the context table's one-time setup	verified	one	core/loop#static-initializers
 0xcf76f8	uint32_t	s_nextContextHandle		core	Holds the last context handle given out	verified	one	core/loop#contexts
 0xcf7700	uint8_t[96]	s_contextTableLocks		core	Holds the read-write locks of the context table's eight buckets	verified	one	core/loop#contexts

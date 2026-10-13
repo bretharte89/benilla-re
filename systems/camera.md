@@ -8,13 +8,14 @@ eye, target, distance, far and near clip, field of view, roll, pitch and yaw. Ea
 perspective projection and a view for the device, and code outside reads and writes its
 properties by id through four accessors.
 
-The object file runs from `0x7abbe0` through `0x7ae000`: the property machinery, the class, and
-two free transforms the interface uses, an orthographic setup for a rectangle and a
-screen-to-world unprojection. It also holds the particle density setting.
+The code is two object files from `0x7abbc0` through `0x7adf70`: the property machinery, then the
+class with two free transforms the interface uses, an orthographic setup for a rectangle and a
+screen-to-world unprojection. The particle density setting beside them is in the next file,
+`models`' particle registry; its entry is in this doc.
 
 Roots: `0x7ac930`, `0x7acf10`, `0x7ada40`, `0x7ad2c0`, `0x7ad7f0`, `0x7abf80`, `0x7ac0b0`,
-`0x7ac250`, `0x7ac3a0`, `0x7adfb0`, `0x7ae000`, and the static initializers `0x7ac5a0`,
-`0x7ac5c0`, `0x7ac5f0`, `0x7ac610`, `0x7adf20`, `0x7adf40`, `0x7adf90`.
+`0x7ac250`, `0x7ac3a0`, and the static initializers `0x7abbc0`, `0x7ac5a0`, `0x7ac5c0`, `0x7ac5f0`,
+`0x7ac610`, `0x7adf20`, `0x7adf40`.
 
 ## Properties
 
@@ -58,7 +59,7 @@ old value or is NaN.
 Addresses: `0x7abbe0`, `0x7acbc0`, `0x7acc40`, `0xcf5730`, `0xcf5734`
 Confidence: verified
 Proof: two
-Test: `camera::camera_normalize_2pi`, `camera::camera_angle_cossin`
+Test: none
 
 `0x7abbe0`: `fld [0xcf5730]; fmul x`, `__ftol` (`0x40a2b0`, truncation), `fild;
 fmul [0xcf5734]`; the sign test is `fcomp 0.0; test ah,5; jp 0x7abc14`, which falls through only
@@ -138,7 +139,7 @@ of view, the aspect `(r[3] − r[1]) / (r[2] − r[0])`, near and far; it scales
 Addresses: `0x7ada40`, `0x7ac640`, `0x5c3cc0`, `0x5c3e70`, `0x58b040`, `0x58b050`
 Confidence: verified
 Proof: one
-Test: `camera::camera_view_lookat`
+Test: none
 
 The aspect is `fdivp st(1),st` (`de f9`, `0x7ac679`), `st(1)/st(0)`. In `0x5c3cc0`, `0x5c3d43`
 divides the angle by `√(aspect² + 1)` before `fmul 0.5` and `fptan`, and `0x5c3d5b`/`0x5c3d62`
@@ -146,7 +147,7 @@ store the two scales. It refuses a field of view outside `(0, π)`, a non-positi
 `near ≥ far` with error 0x57 and leaves the matrix alone. With the default π/2 at an aspect of
 4/3, `θ` is 27°, a vertical field of 54°. Up reads `+0x16c·+0x144`, `−(+0x168·+0x144)` and
 `+0x140` (`0x7ac778` to `0x7ac7dc`). `0x58b040` and `0x58b050` pass the matrix to the device's
-vtable slots `+0x70` and `+0x74`. The test runs part of `0x7ac640`.
+vtable slots `+0x70` and `+0x74`.
 
 ## Unprojection
 
@@ -159,7 +160,7 @@ not read a camera.
 Addresses: `0x7ad2c0`, `0x58b090`, `0x58b0b0`, `0x5c43b0`
 Confidence: verified
 Proof: one
-Test: `camera::camera_frustum_split`
+Test: none
 
 The range test accepts 1.0: for `a = 1`, `fcomp` sets only C3, `test ah,0x41` leaves one bit, and
 `jp 0x7ad317` falls through (`0x7ad2f5`); a value above 1 or NaN gives error 0x57. `0x58b0b0`
@@ -182,7 +183,7 @@ from `0x58a250`. Its stack argument is unused.
 Addresses: `0x7ad7f0`, `0x5c3d90`, `0x7bdca0`, `0x7bdc40`, `0x589ca0`, `0x58a250`
 Confidence: verified
 Proof: one
-Test: `camera::camera_ortho`
+Test: none
 
 `0x81d7bc` is 500.0, negated for the near side (`0x7ad8dd`). The Z flip is `0x7bdca0` with
 `(1, 1, −1)` (`0x7ad8fe` to `0x7ad913`). The shift subtracts `0.5·(r[3] − r[1])/(s[3] − s[1])`
@@ -200,32 +201,39 @@ and `spellEffectLevel` options write it.
 Addresses: `0x7adfb0`, `0x7ae000`, `0x87d5fc`, `0x688fb0`, `0x689510`
 Confidence: verified
 Proof: one
-Test: `camera::camera_clamp01`
+Test: none
 
 Two `fcomp`, each `test ah,5; jp`: the first falls through to the 0 store only for `x < 0`, the
 second to the `x` store only for `x < 1`. The option handlers `0x688fb0` and `0x689510` are
 registered with the names `particleDensity` (default `1.0`) and `spellEffectLevel` (default `2`),
 and are the only callers of `0x7adfb0` (three call sites). `0x7ae000` has two call sites.
 
-## Object file and initializers
+## Object files and initializers
 
-The object file's code runs from `0x7abbe0` through `0x7ae000`. Seven static initializers run from consecutive slots `0x82d97c` to
-`0x82d994` of the C runtime's initializer table, in this order: `0x7ac5a0` (2π into `0xcf5734`),
-`0x7ac5c0` (1/2π into `0xcf5730`), `0x7ac5f0` (+∞ into `0xcf573c`), `0x7adf20` (2π into
-`0xcf5744`), `0x7adf40` (1/2π into `0xcf5740`), `0x7ac610` (π/2 into `0xcf5738`) and `0x7adf90`
-(+∞ into `0xcf5748`). Each is a `jmp` thunk to its body 16 bytes on.
+The code is two object files, each opening its run of static initializers in the C runtime's table
+with +∞: the property machinery from `0x7abbc0` through `0x7ac5d0`, and the class from `0x7ac5f0`
+through `0x7adf70`. Seven run from consecutive slots `0x82d978` to `0x82d990`: the first file's
+`0x7abbc0` (+∞ into `0xcf572c`), `0x7ac5a0` (2π into `0xcf5734`) and `0x7ac5c0` (1/2π into
+`0xcf5730`); then the second file's `0x7ac5f0` (+∞ into `0xcf573c`), `0x7adf20` (2π into
+`0xcf5744`), `0x7adf40` (1/2π into `0xcf5740`) and `0x7ac610` (π/2 into `0xcf5738`). Each is a
+`jmp` thunk to its body 16 bytes on. The next slot holds `0x7adf90` (+∞ into `0xcf5748`), which
+opens the particle registry's file.
 
-Addresses: `0x7abbe0`, `0x7ae000`, `0x7ac5a0`, `0x7ac5b0`, `0x7ac5c0`, `0x7ac5d0`, `0x7ac5f0`, `0x7ac600`, `0x7ac610`, `0x7ac620`, `0x7adf20`, `0x7adf30`, `0x7adf40`, `0x7adf50`, `0x7adf90`, `0x7adfa0`, `0x827000`
+Addresses: `0x7abbc0`, `0x7abbd0`, `0xcf572c`, `0x7abbe0`, `0x7ac5d0`, `0x7ac5f0`, `0x7adf70`, `0x7ac5a0`, `0x7ac5b0`, `0x7ac5c0`, `0x7ac5d0`, `0x7ac5f0`, `0x7ac600`, `0x7ac610`, `0x7ac620`, `0x7adf20`, `0x7adf30`, `0x7adf40`, `0x7adf50`, `0x7adf90`, `0x7adfa0`, `0xcf5748`, `0x7adfb0`, `0x7ae000`, `0x7af1b0`, `0x827000`
 Confidence: verified
 Proof: one
 Test: none
 
-The slots interleave initializers from both ends of the code; the linker keeps each object
-file's initializers together. `0x7abbe0` reads `0xcf5730` and `0xcf5734`, which only these
-initializers write, so it belongs to the same object file. The code below it allocates with the
-sound-file cache's tags, and the code after `0x7ae000` cites the source path
-`GfxSingletonManager.cpp`. Only `0xcf5730`, `0xcf5734` and `0xcf5738` (read by `0x7ac930` and
-`0x7acf10`) are read; the other four are written and never read.
+Each file includes the shared header, so its run opens with its +∞ (`systems/README`, Object
+files). Slot `0x82d978` holds `0x7abbc0`, which copies the +∞ at 0x81d7a0; `0x7ac5a0` doubles the π
+4 bytes on. `0x7ac5f0` copies the +∞ at 0x81d7a8, and `0x7adf20` and `0x7ac610` read the π at
+0x81d7ac. `0x7abbe0` reads `0xcf5730` and `0xcf5734`, which only the first file's initializers
+write. `0x7adf90` copies the +∞ at 0x81d80c, and the registry's 2π `0x7af1b0`, at slot `0x82d998`,
+doubles the π at 0x81d810, so the code between, `0x7adfb0` and `0x7ae000`, is the registry's. The
+class's file ends past its last initializer with `0x7adf70`, whose one caller is the class's
+`0x7acd2e`. The code below `0x7abbc0` allocates with the sound-file cache's tags. Only `0xcf5730`,
+`0xcf5734` and `0xcf5738` (read by `0x7ac930` and `0x7acf10`) are read; the other four are written
+and never read.
 
 ## Unreached functions
 

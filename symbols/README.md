@@ -19,9 +19,43 @@ is numeric order. Two people adding rows in different places then merge without 
 An address has exactly one row, owned by one system. A function belongs to the system whose
 object file holds it; other systems reach it through their closures (`../systems/README.md`).
 Library code the client links is owned by its library: `crt` (the MSVC C runtime), `storm`
-(Blizzard's Storm library), `lua` (Lua 5.0). A correction edits the row in place. A row is never
+(Blizzard's Storm library), `lua` (Lua 5.0), `zlib` (zlib 1.2.2) and `d3dx` (Direct3D 9's D3DX
+math routines and their dispatch). A correction edits the row in place. A row is never
 duplicated to record a second opinion: a disagreement is settled at the bytes first
 (`../METHOD.md`).
+
+## Systems without a doc
+
+These systems own rows but have no doc under `../systems/` yet. A row's `system` is one of
+these, a system with a doc, a library, or `unassigned`; the check holds the table to this list.
+
+- `base`: Blizzard's base library files: `CDataStore` (packet buffers), handles, thread properties
+  (`Prop.cpp`), `RCString.cpp`, `CDataRecycler.cpp` and `CDataAllocator.cpp`
+- `charactermodel`: `CharacterComponent.cpp`, a character's skin, hair, face and equipment
+- `client`: `Client.cpp`, the game's start-up and shutdown, and small client files: `Status.cpp`,
+  async loads, the violence level, the guild emblem, HTTP fetches
+- `cmath`: the Tempest math library (vectors, matrices, intersections), the software floats and
+  the math helpers no other file holds
+- `console`: `ConsoleClient.cpp`, the console screen and its output
+- `cvar`: `ConsoleVar.cpp`, the CVar registry and the config file, and the world's options file
+- `dbc`: the DBC stores: the `WowClientDB` loaders, the per-table stores and their record layouts
+- `dbcache`: `DBCache.cpp`, the WDB caches of creature, item, name and quest records
+- `fastmath`: the fast logarithm after the spline file
+- `ffxeffects`: `FFXEffects.cpp`, the full-screen glow and death effects
+- `gx`: the graphics layer: `Texture.cpp`, the `CGxDevice` files, `IGxuFontGlyph.cpp` and
+  `Lightning.cpp`
+- `gxumath`: the Gxu matrix builders: perspective, orthographic, look-at and frustum corners
+- `lighting`: `MapWeather.cpp` and the day-night sky and light files, with the screen tint
+- `loadingscreen`: `LoadingScreen.cpp`
+- `objectalloc`: `ObjectAlloc.cpp`, the object heaps
+- `os`: the engine's Windows layer outside `core`'s time and window files: CPU and system queries,
+  file calls, `OsIME.cpp` and the IME initializer file after it, `OsGui.cpp`, `OsCall.cpp` (engine
+  threads) and `OsTcp.cpp`
+- `screencoord`: the screen aspect and scale helpers
+- `sound`: `SoundInterface.cpp` and the glue music
+- `spline`: the movement spline file
+- `sysmsg`: `SysMessage.cpp`, the system message printers
+- `uicamera`: `UIUtil\Camera.cpp`, the player's world camera
 
 ## Names
 
@@ -47,7 +81,9 @@ One convention, the client's own C++ style:
   bytes contradict is not used.
 
 A name is unique among functions and globals, and a field's name is unique within its struct.
-Exports use `FUN_00514ae0` for a function with no name.
+The one export is the Ghidra apply (`../tools/ghidra/setup.sh`), which leaves a function with no
+name at Ghidra's own `FUN_00514ae0`; imports for IDA and Binary Ninja are
+[#7](https://github.com/samwhosung/benilla-re/issues/7).
 
 ## Common columns
 
@@ -56,7 +92,7 @@ Exports use `FUN_00514ae0` for a function with no name.
 | `address` | `0x` and exactly six lowercase hex digits: `0x514ae0`. The virtual address in the exe, never a file offset or an RVA. |
 | `name` | As above. Empty only when the meaning is unknown. |
 | `name_from` | `idb` for a community name; empty for a name given here. |
-| `system` | The owning system, a lowercase word naming a doc under `../systems/`, or a library. `unassigned` when the row's object file is not yet identified; ownership is never guessed. |
+| `system` | The owning system: a lowercase word naming a doc under `../systems/`, a library, or a system without a doc (above). `unassigned` when the row's object file is not yet identified, or its owner is not; ownership is never guessed. |
 | `meaning` | One line starting with a verb: what the thing does or holds. |
 | `confidence` | `verified`: read at the bytes, the derivation recorded in `finding`. `inferred`: a lead, not settled. |
 | `proof` | For `verified`: `one` (one reading), `two` (two independent readings reconciled) or `test` (a bit-exact test against the exe passes). For `inferred`: `none`. |
@@ -82,7 +118,7 @@ doc yet whose meaning a finding elsewhere derives.
 | `size` | Decimal bytes from the entry to the end of the body's last instruction, by the rule below. A cited instruction address belongs to the function whose `[address, address + size)` holds it. |
 | `class` | `primitive`, `orchestration`, `host`, `boundary` or `unreached`. Required on every row of a system that has a doc; empty only for a row owned by a system not yet written. |
 | `signature` | The C prototype without the name: return type, calling convention, parameters. `uint32_t __fastcall (uint32_t x)`. `__thiscall` puts `this` first; `__fastcall` passes its first two parameters in `ecx` and `edx`. Empty when not derived. |
-| `test` | The bit-exact test that runs this function against the exe: `crate::test_fn`, the function name of a test under `crates/<crate>/tests/`. Empty when there is none. |
+| `test` | The bit-exact test that runs this function against the exe: `crate::test_fn`, the function name of a test under `crates/<crate>/tests/`. Empty when there is none, as on every row: no crate exists until [#4](https://github.com/samwhosung/benilla-re/issues/4). |
 
 A function row's address is a function start (`../METHOD.md`, Completeness). Its body is every
 instruction reached from that entry by falling through (a `call` falls through), by the targets of
@@ -104,7 +140,8 @@ Classes:
 - `primitive`: computes a value or state a reimplementation must reproduce bit for bit. Any
   arithmetic, bit manipulation or table lookup on values, beyond loading, storing, comparing and
   computing addresses, makes a function primitive, however thin. Every primitive in a closure
-  needs a bit-exact `test`.
+  needs a bit-exact `test` before its system is complete; no primitive has one yet
+  ([#4](https://github.com/samwhosung/benilla-re/issues/4)).
 - `orchestration`: calls other functions and moves values (loads, stores, compares, branches) and
   computes nothing of its own. Its contract is its call order and arguments, which its finding
   states.
@@ -163,7 +200,7 @@ does not name is written as its named base followed by its own fields.
 | columns | the headers above, in order, every row complete | parallel edits must merge |
 | sorting | byte order of the keys above | parallel edits must merge |
 | `meaning` | 120 characters, one line, verb first, no final period | a cell is a gloss; the finding holds the detail |
-| `name` | 48 characters, the naming rule | exported to Ghidra, IDA and Binary Ninja as an identifier |
+| `name` | 48 characters, the naming rule | applied to Ghidra as an identifier, and to the exports of [#7](https://github.com/samwhosung/benilla-re/issues/7) |
 | `signature` | 160 characters | one prototype, no commentary |
 | banned in `meaning` | `?`, `TODO`, `probably`, `maybe`, `seems`, `likely` | a guess is `inferred`, said in the confidence column |
 | `verified` | needs `one`, `two` or `test`, and a `finding` | provenance is the point of the label |
@@ -171,6 +208,7 @@ does not name is written as its named base followed by its own fields.
 | `inferred` | needs `none`; a `finding` is allowed | a finding can name what it did not settle |
 | `finding` | resolves to an entry that mentions the row's address | the row and its derivation stay linked |
 | `class` | set on every row of a system with a doc | a written system's closure is classified |
+| `system` | a system with a doc, a library, `unassigned`, or one of Systems without a doc, which lists no system that has a doc | every row has a known owner |
 | `unreached` | `test` empty | nothing runs the code |
 | addresses | unique across functions and globals | one row per address |
 | addresses in `meaning` | each resolves to a row | a citation without a row cannot be looked up |
