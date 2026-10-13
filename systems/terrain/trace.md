@@ -7,7 +7,7 @@ triangles, after the map objects have had their turn.
 The code is the map trace object file, `0x69c0d0` through `0x69d450`, the dispatcher
 `0x69bff0` in the query file, and the terrain-only first-hit trace in the collision gather file.
 The cell list the walk fills is the pointer `0xc962c8` with the count `0xc89f40`, pairs of
-(row, column) cells. The world's entry is `TraceWorldSegment` (`0x672170`).
+(column, row) cells, the column from y first. The world's entry is `TraceWorldSegment` (`0x672170`).
 
 Roots: none.
 
@@ -22,13 +22,15 @@ one rounding of the whole; z rounds end.z − start.z first.
 Addresses: `0x69bff0`, `0x69c0f0`, `0x69c320`, `0xc89f20`, `0x69c00b`, `0x69c03e`, `0x69c06c`, `0x69c08c`, `0x69c0a5`
 Confidence: verified
 Proof: one
-Test: none
+Test: `terrain::segment_lerp_difftest`
 
 `ret 0xc`, start in ecx, end in edx, then the hit pointer, the fraction pointer and the mask.
 The query counter `0xc89f20` advances. `0x69c00b` and `0x69c03e` test the masks. From
 `0x69c06c` the three differences are taken, z stored; `0x69c08c` stores dx·t, and the sums with
 the start are stored at `0x69c09d`, `0x69c0a8` (`0x69c0a5` adds start.y to dy·t) and `0x69c0b6`.
 The fraction is read once, after both traces.
+
+`terrain::segment_lerp_difftest` runs `0x69c06c` to `0x69c0bf`.
 
 ## Terrain walk
 
@@ -41,7 +43,7 @@ likewise for x, and otherwise a line walk along the larger extent. It then tests
 Addresses: `0x69c320`, `0x69c4e0`, `0x69c570`, `0x69c600`, `0x69c780`, `0x69c920`, `0x8107a4`, `0x86a758`, `0x8029d4`, `0xc962c8`, `0xc89f40`, `0x69c3e3`, `0x69c43c`, `0x69c4c8`
 Confidence: verified
 Proof: one
-Test: none
+Test: `terrain::ray_dda_map_driver`, `terrain::raycast_e2e_map_driver`
 
 `ret 0xc`. The four distances from 17066.666 are stored, the two extents (end − start) stored,
 and each cell is the product by 0.24 (`0x8107a4`) stored, less 0.5 (`0x86a758`), `fistp`.
@@ -60,12 +62,15 @@ cell's four triangles, keeping the nearest fraction.
 Addresses: `0x69c4e0`, `0x69c570`, `0x69c600`, `0x69c780`, `0x69c920`, `0x810678`, `0x81049c`, `0x7c2c40`
 Confidence: inferred
 Proof: none
-Test: none
+Test: `terrain::dda_axis_run_a`, `terrain::dda_axis_run_b`, `terrain::dda_step_ymajor`, `terrain::dda_step_xmajor`, `terrain::dda_cell_intersect_difftest`, `terrain::raycast_e2e_map_driver`
 
 `0x69c600` and `0x69c780` multiply by 4.1666665 (`0x810678`) and 0.24 and convert with
 `fistp`; the runs `0x69c4e0` and `0x69c570` step ±1. `0x69c920` reads the hole word and the
 triangle tables and calls the ray-triangle test `0x7c2c40`. The steppers' exact minor-cell
 formula and the order of the corner cells are not derived here.
+Each pair is the y cell, then the x cell: in `0x69c4e0` the store at `0x69c505` writes the y cell
+before `0x69c51f` writes the x cell from `[ecx]`, and `0x69c570` does the same at `0x69c598` and
+`0x69c5b0`; `0x69c3f2` to `0x69c3fa` lay the ends out as x cell, y cell.
 
 ## Terrain first hit
 
@@ -77,7 +82,7 @@ fraction by t.
 Addresses: `0x6aa3e0`, `0x6aa600`, `0x637480`, `0x810ae4`
 Confidence: inferred
 Proof: none
-Test: none
+Test: `terrain::ray_dda_chunk_driver`, `terrain::raycast_e2e_chunk_driver`, `terrain::dda_cell_intersect_first_difftest`
 
 `0x6aa3e0` calls the four walks of `0x69c320` and then `0x6aa600`; the latter calls `0x637480`
 with the three vertices. That `0x6aa160` reaches it is read from its calls; the arithmetic is not
