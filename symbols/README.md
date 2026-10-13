@@ -29,8 +29,9 @@ duplicated to record a second opinion: a disagreement is settled at the bytes fi
 These systems own rows but have no doc under `../systems/` yet. A row's `system` is one of
 these, a system with a doc, a library, or `unassigned`; the check holds the table to this list.
 
-- `base`: Blizzard's base library files: `CDataStore` (packet buffers), handles, thread properties
-  (`Prop.cpp`), `RCString.cpp`, `CDataRecycler.cpp` and `CDataAllocator.cpp`
+- `base`: Blizzard's base library files, `engine\Source\Base`: `CDataStore` (packet buffers),
+  handles, `FileCache.cpp`, thread properties (`Prop.cpp`), `RCString.cpp`, `CDataRecycler.cpp`,
+  `CDataAllocator.cpp` and `MsgBuffer.cpp`
 - `charactermodel`: `CharacterComponent.cpp`, a character's skin, hair, face and equipment
 - `client`: `Client.cpp`, the game's start-up and shutdown, and small client files: `Status.cpp`,
   async loads, the violence level, the guild emblem, HTTP fetches
@@ -39,23 +40,34 @@ these, a system with a doc, a library, or `unassigned`; the check holds the tabl
 - `console`: `ConsoleClient.cpp`, the console screen and its output
 - `cvar`: `ConsoleVar.cpp`, the CVar registry and the config file, and the world's options file
 - `dbc`: the DBC stores: the `WowClientDB` loaders, the per-table stores and their record layouts
-- `dbcache`: `DBCache.cpp`, the WDB caches of creature, item, name and quest records
+- `dbcache`: `DBCache.cpp`, the WDB caches of creature, item, name and quest records, and the
+  record files `CreatureStats.cpp`, `GameObjectStats.cpp`, `ItemName.cpp`, `ItemStats.cpp` and
+  `NPCText.cpp`
 - `fastmath`: the fast logarithm after the spline file
 - `ffxeffects`: `FFXEffects.cpp`, the full-screen glow and death effects
-- `gx`: the graphics layer: `Texture.cpp`, the `CGxDevice` files, `IGxuFontGlyph.cpp` and
-  `Lightning.cpp`
+- `font`: `GxuFontUtil.cpp`, `GxuFontMiscClasses.cpp` and `GxuFontString.cpp`, the fonts and text
+  strings the interface draws
+- `gx`: the graphics layer: `Texture.cpp`, `TextureCache.cpp`, the `CGxDevice` files,
+  `IGxuFontGlyph.cpp` and `Lightning.cpp`
 - `gxumath`: the Gxu matrix builders: perspective, orthographic, look-at and frustum corners
+- `image`: `tga.cpp` and `blp.cpp`, the TGA and BLP image readers
 - `lighting`: `MapWeather.cpp` and the day-night sky and light files, with the screen tint
 - `loadingscreen`: `LoadingScreen.cpp`
+- `minigame`: `Minigame_C.cpp`, the minigame object, and the board file linked after it (0x728b10
+  to 0x728ef3): its +∞ initializer `0x728b10`, the shared header's constants and the board check
+  `0x728b80`, which only `Minigame_C.cpp`'s `0x728740` calls
+- `minimap`: `Minimap.cpp` in `Game\GameClient`
 - `objectalloc`: `ObjectAlloc.cpp`, the object heaps
 - `os`: the engine's Windows layer outside `core`'s time and window files: CPU and system queries,
   file calls, `OsIME.cpp` and the IME initializer file after it, `OsGui.cpp`, `OsCall.cpp` (engine
-  threads) and `OsTcp.cpp`
+  threads), `OsTcp.cpp`, `OsURLDownload.cpp`, `OsClipboard.cpp` and `OsISoundCache.cpp`
+- `playername`: `PlayerName.cpp`, the unit names drawn in the world (`UnitNamePlayer` and the like)
 - `screencoord`: the screen aspect and scale helpers
-- `sound`: `SoundInterface.cpp` and the glue music
+- `sound`: the `SoundInterface` files and the glue music
 - `spline`: the movement spline file
 - `sysmsg`: `SysMessage.cpp`, the system message printers
 - `uicamera`: `UIUtil\Camera.cpp`, the player's world camera
+- `warden`: `WardenClient.cpp`, the client of the server's Warden modules
 
 ## Names
 
@@ -122,18 +134,38 @@ doc yet whose meaning a finding elsewhere derives.
 
 A function row's address is a function start (`../METHOD.md`, Completeness). Its body is every
 instruction reached from that entry by falling through (a `call` falls through), by the targets of
-`jcc` and `jmp`, and by the entries of a jump table it indexes. A path ends at `ret`, at an indirect
-`jmp` that is not a table jump, and at a tail call: a `jmp` to an address with a row of its own,
-which the target of every tail call needs. Code reached only through a stored address, such as an
-exception filter or handler in a scope table, is not in the body. `size` runs from the entry to the
-end of the body's last instruction, and nothing in `[address, address + size)` is other than body,
-padding, the function's jump-table data and its own exception code: code reached only through a
-stored address that points into that range (a filter, a handler, a catch funclet, or the
-continuation one returns, as in `mov eax,<continuation>; ret`), with the code it reaches. Exception
-code past the end of the body stays outside the size. Padding is `int3` and the no-op fillers
-compilers align with, where no branch lands: `nop` of any length, `xchg ax,ax`, `mov edi,edi`, and
-`lea` of a register to itself plus zero (`lea ecx,[ecx+0x0]`).
-`cargo xtask check --exe` recomputes every size from `dumps/disasm.txt`.
+`jcc` and `jmp`, and by the entries of a jump table it indexes. A path ends at `ret`, at an
+indirect `jmp` that is not a table jump, at a tail call: a `jmp` to an address with a row of its
+own, which the target of every tail call needs, and at a `call` to a function that never returns
+(`_exit`, `__exit`, `__amsg_exit`, `longjmp`, `ExitProcess`, or one whose body reaches no return)
+where padding or another function follows the call. A `call` to the next instruction pushes its own
+address and enters nothing. A jump table's entries run from the address its `jmp` names; where
+hand-written code biases its index, from the first dword after it that is an entry, and where it
+negates its index (`neg ecx; jmp [ecx*4+base]`), down from that address; its cases may follow it.
+Code reached only through a stored address, such as an exception filter or handler in a scope
+table, is not in the body. `size` runs from the entry to the end of the body's last instruction,
+and nothing in `[address, address + size)` is other than body, padding, the function's jump-table
+data and its own exception code: code reached only through a stored address that points into that
+range (a filter, a handler, a catch funclet, or the continuation one returns, as in
+`mov eax,<continuation>; ret`), with the code it reaches. Exception code past the end of the body
+stays outside the size. Padding is `int3` and the no-op fillers compilers align with, where no
+branch lands: `nop` of any length, `xchg ax,ax`, `mov edi,edi`, and `lea` of a register to itself
+plus zero (`lea ecx,[ecx+0x0]`).
+`cargo xtask check --exe` recomputes every size from `dumps/disasm.txt`, which restarts the decode
+at every row, every `call` target and every table's end.
+
+Thirty-three starts, all the C runtime's, can hold no row, since no size satisfies this rule
+(`cargo xtask census` lists them, and its test holds the list):
+
+- Another entry lies inside the extent, because hand-written routines share tails and branches:
+  `0x40b115`, `0x40bccf`, `0x40beee`, `0x40d510`, `0x73f959`, `0x7405b4`, `0x741774`, `0x741834`,
+  `0x744890`, `0x744944`, `0x744949`, `0x744aa0`, `0x744bd5`, and the entries the run-time
+  library's packed records store, `0x746a60`, `0x746a79` (`cosh`) and `0x746ab2` (`tanh`).
+- Code above falls through into the entry: the `__finally` blocks a function both calls and enters
+  from its unwind code (`0x40b9ff`, `0x40bb4d`, `0x40bc0d`, `0x40bc88`, `0x40bd95`, `0x40da4e`,
+  `0x40dad7`, `0x7470ad`), and the x87 routines' second entries (`0x73f962`, `0x7405bd`,
+  `0x74177d`, `0x74183d`, `0x74378a`, `0x743a3d`, `0x743ae9`, `0x7449d1`).
+- An instruction no path reaches lies inside the extent: `0x741b02`.
 
 Classes:
 
@@ -153,6 +185,9 @@ Classes:
   stores its address, except other unreached code, and no live code falls through into it. The
   row keeps its one-line meaning; it owes no test and its `test` is empty, and a port drops its
   transcription.
+
+A class on a row with no `finding` is the classifier's, from `cargo xtask census`; a reading
+replaces it.
 
 ## globals.tsv
 
