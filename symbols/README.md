@@ -36,17 +36,9 @@ these, a system with a doc, a library, or `unassigned`; the check holds the tabl
   async loads, the violence level, the guild emblem, HTTP fetches
 - `console`: `ConsoleClient.cpp`, the console screen and its output
 - `cvar`: `ConsoleVar.cpp`, the CVar registry and the config file, and the world's options file
-- `dbc`: the DBC stores: the `WowClientDB` loaders, the per-table stores and their record layouts
-- `dbcache`: `DBCache.cpp`, the WDB caches of creature, item, name and quest records, and the
-  record files `CreatureStats.cpp`, `GameObjectStats.cpp`, `ItemName.cpp`, `ItemStats.cpp` and
-  `NPCText.cpp`
-- `fastmath`: the fast logarithm after the spline file
 - `ffxeffects`: `FFXEffects.cpp`, the full-screen glow and death effects
 - `gxumath`: the Gxu matrix builders: perspective, orthographic, look-at and frustum corners
 - `loadingscreen`: `LoadingScreen.cpp`
-- `minigame`: `Minigame_C.cpp`, the minigame object, and the board file linked after it (0x728b10
-  to 0x728ef3): its +∞ initializer `0x728b10`, the shared header's constants and the board check
-  `0x728b80`, which only `Minigame_C.cpp`'s `0x728740` calls
 - `minimap`: `Minimap.cpp` in `Game\GameClient`
 - `objectalloc`: `ObjectAlloc.cpp`, the object heaps
 - `os`: the engine's Windows layer outside `core`'s time and window files: CPU and system queries,
@@ -54,7 +46,6 @@ these, a system with a doc, a library, or `unassigned`; the check holds the tabl
   threads), `OsTcp.cpp`, `OsURLDownload.cpp`, `OsClipboard.cpp` and `OsISoundCache.cpp`
 - `screencoord`: the screen aspect and scale helpers
 - `spline`: the movement spline file
-- `sysmsg`: `SysMessage.cpp`, the system message printers
 - `warden`: `WardenClient.cpp`, the client of the server's Warden modules
 
 ## Names

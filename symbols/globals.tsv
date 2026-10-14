@@ -269,6 +269,7 @@ address	type	name	name_from	system	meaning	confidence	proof	finding
 0x62c318	void *[2]	s_switch62c318		objectlayer	Holds the 2 case addresses of the switch in 0x62c2d0	verified	one	objectlayer/overview#indexed-switch-tables
 0x62c320	uint8_t[58]	s_switchIndex62c320		objectlayer	Maps the switch value of 0x62c2d0 to its case in 0x62c318	verified	one	objectlayer/overview#indexed-switch-tables
 0x63679c	void *[4]	s_bevelCountCases		collision	Holds the case addresses of 0x636610 for one to four planes	verified	one	collision/walking#bevel-contact-direction
+0x6485d8	uint32_t[5]	s_fileReadKinds		storm	Holds the five cases of SFile::Read by file kind: 0x6484c0, 0x6484fb, 0x64851c twice, 0x648568	verified	one	dbc#record-reads
 0x67b8e8	void *[4]	s_cases67b870		lighting	Holds the 4 case addresses of the switch in 0x67b870	inferred	none	
 0x680ba4	uint32_t[4]	s_cameraLiquidCases		terrain	Holds the case addresses of the liquid type switch, indexed by the type's low two bits	verified	one	terrain/camstate#camera-environment
 0x68a738	uint8_t[15]	s_liquidMeshCases		terrain	Holds the case a template of n picks, indexed by n minus 1: 0 for n = 1, 1 for 3, 7 and 15, else 2	verified	one	terrain/liquid#liquid-mesh-templates
@@ -403,10 +404,20 @@ address	type	name	name_from	system	meaning	confidence	proof	finding
 0x8029cc	const float	s_bytePackBias		unassigned	Holds 512.0, the bias that leaves a byte in a float's low mantissa bits	verified	one	lighting/daynight#colour-band-value
 0x8029d0	float	s_pointZeroOne		terrain	Holds 0.01, a shared constant; the liquid queries use it as their depth margin	verified	one	terrain/queries#liquid-status
 0x8029d4	const float	s_layoutEpsilon		ui	Holds 2^-22, the change below which a point, scale or alpha setter does nothing	verified	one	ui/anchors#absolute-and-relative-points
+0x8029d8	float	s_floatInfinity		fastmath	Holds +inf as a float, read only by the initializer 0x454aa0	verified	one	fastmath#static-initializers
+0x8029dc	float	s_floatPi		fastmath	Holds pi as a float, read only by the initializer 0x455b70	verified	one	fastmath#static-initializers
+0x8029e0	double[64]	s_exp2Table		fastmath	Holds 2 to the i/64 for i from 0 to 63, indexed by the top six mantissa bits	verified	one	fastmath#software-exp2
+0x802be0	double[64]	s_log2Reciprocals		fastmath	Holds 64/(64+i) for i from 0 to 63, the multiplier of the mantissa	verified	one	fastmath#software-log2
+0x802de0	double[64]	s_log2Corrections		fastmath	Holds log2((64+i)/64) for i from 0 to 63, added to the exponent	verified	one	fastmath#software-log2
+0x802ff0	double	s_log2Floor		fastmath	Holds 1e-307, the value at or below which log2 returns -inf	verified	one	fastmath#software-log2
+0x802ff8	double[6]	s_log2Coefficients		fastmath	Holds 1/ln 2 divided by 1 to 6, the coefficients c1 to c6 of the log2 polynomial	verified	one	fastmath#software-log2
+0x803028	double[6]	s_exp2Coefficients		fastmath	Holds the six coefficients, c0 to c5, of the polynomial for 2 to the r	verified	one	fastmath#software-exp2
+0x803058	double	s_exp2Bias		fastmath	Holds 1023.0, added to the exponent before the integer split	verified	one	fastmath#software-exp2
 0x803068	const float	s_minusHalf		unassigned	Holds −0.5	inferred	none	lighting/shadows#projected-decals
 0x80306c	float	s_four		objectlayer	Holds 4.0, the multiple of the melee reach an attack start allows	verified	one	objectlayer/playercombat#the-melee-attack
 0x803088	const float	s_twoPointFive		unassigned	Holds 2.5	verified	one	lighting/celestial#disc-draw
 0x80308c	float	s_onePointFive		objectlayer	Holds 1.5, the bind point radius factor	verified	one	objectlayer/interaction#the-bind-point
+0x803090	double	s_twoPiFloatAsDouble		unassigned	Holds the float 2 pi widened to a double, the modulus of the angle wrap	verified	one	fastmath#angle-wrap
 0x8030a0	const float	s_minusOne		unassigned	Holds −1.0	verified	one	lighting/sky#sky-colours
 0x8030bc	const float	s_sndIfInfinitySource		sound	Holds +inf, the value the interface file's infinity initializer copies	verified	one	sound/overview#shared-header-constants
 0x803140	const float	s_footstepNearRadius		sound	Holds 20.0, the footstep radius	verified	one	sound/objects#footstep-sounds
@@ -437,6 +448,7 @@ address	type	name	name_from	system	meaning	confidence	proof	finding
 0x8043e8	void *[36]	CGWorldFrame::vftable		ui	Holds the 36 virtual function slots of CGWorldFrame, which its constructor stores	inferred	none	
 0x804478	const float	s_float41a00000		unassigned	Holds the float 20 (0x41a00000)	inferred	none	
 0x80447c	const float	s_float42da67ae		unassigned	Holds the float 109.2025 (0x42da67ae)	inferred	none	
+0x804480	float	s_oneOver1440		unassigned	Holds 1/1440, the factor from game minutes to a fraction of a day	verified	one	gametime#day-phase
 0x80448c	const float	s_float41200000		ui	Holds the float 10 (0x41200000)	inferred	none	
 0x804490	const float	s_float4131c71c		ui	Holds the float 11.111111 (0x4131c71c)	inferred	none	
 0x804498	const float	s_float41200000At804498		ui	Holds the float 10 (0x41200000)	inferred	none	
@@ -553,6 +565,7 @@ address	type	name	name_from	system	meaning	confidence	proof	finding
 0x809070	void *[17]	NetClient::vftable		net	Holds NetClient's vtable: 17 slots, data hook at 1, queued events at 12 to 15	verified	one	net/dispatch#dispatch
 0x8090d8	float	s_placementScaleUnit		terrain	Holds 1/1024 (0x3a800000), the unit of an MDDF scale	verified	one	terrain/files#doodad-placements
 0x80912c	const char[4]	s_textAU		unassigned	Holds the string "@aU"	inferred	none	
+0x80917c	void *[4]	s_nameCacheVtable		dbcache	Holds the vtable of the names cache object; slot 0 frees a node	inferred	none	
 0x809200	uint32_t[29]	s_inventoryTypeSlotMasks		unassigned	Holds the equipment slot mask of each inventory type, read by 0x5da1d0	verified	one	objectlayer/items#equipment-slots
 0x809274	uint32_t[6]	s_environmentalDamageSchools		objectlayer	Maps an environmental damage type to its school	verified	one	objectlayer/unitcombat#environmental-damage-and-death
 0x80928c	int32_t[9]	s_reputationRankMinimums		objectlayer	Holds the minimum standing of each reputation rank, -42000 to 21000 and 42000, then the bound 43000	verified	one	objectlayer/playercombat#using-an-item
@@ -710,9 +723,14 @@ address	type	name	name_from	system	meaning	confidence	proof	finding
 0x80e024	float	s_bevelPairScale		collision	Holds 0.6385560 (0x3f237868), one over the length of two perpendicular bevel normals summed	verified	one	collision/walking#slope-thresholds
 0x80e028	float	s_cos89		collision	Holds cos 89°, 0.0174524 (0x3c8ef859), the normal z the ground normal must exceed	verified	one	collision/walking#slope-thresholds
 0x80e2e4	const float	s_epsilon1e6		unassigned	Holds 1e-6, a pooled tolerance; the ray triangle test bounds its determinant with it	verified	one	models/scene#ray-triangle-test
+0x80e448	float	s_timeScaleMax		gametime	Holds 60.0, the clock's highest time scale	verified	one	gametime#time-scale
+0x80e44c	void *[4]	s_gameTimeTableVtable		gametime	Holds the vtable of the clock's callback table: entry free at 0x643bb0, then three more slots	verified	one	gametime#clock-state
+0x80e45c	float	s_timeScaleMin		gametime	Holds 1/60, the clock's default and lowest time scale	verified	one	gametime#time-scale
+0x80e460	float	s_minutesPerDay		unassigned	Holds 1440.0, the game minutes in a day	verified	one	gametime#day-phase
 0x80e4b0	uint32_t[3]	s_auctionDurations		ui	Holds 120, 480 and 1440, the run times the deposit accepts	verified	one	ui/auctionlists#deposit
 0x80e4e0	const uint32_t			storm	Holds a dword that SStrHash reads; not read here	inferred	none	
 0x80e5a0	const double	s_double4024000000000000		unassigned	Holds the double 10 (0x4024000000000000)	inferred	none	
+0x80fa1c	uint32_t[12]	s_codecTable		storm	Holds six mask and function pairs of the codecs: 0x40, 0x80, 0x20, 0x01, 0x02, 0x10	verified	one	storm/format#codecs
 0x80fe28	const float	s_infinity1		terrain	Holds +inf, 0x7f800000, the literal one terrain file copies at start-up	verified	one	terrain/statics#static-initializers
 0x80febc	float	s_farBandStart		terrain	Holds 0.96, the depth range start of the far-band pass	inferred	none	
 0x80fec0	const float	s_skyDepthFar		unassigned	Holds 0.98, the far end of the sky's depth slice	verified	one	lighting/sky#sky-pass
@@ -963,6 +981,7 @@ address	type	name	name_from	system	meaning	confidence	proof	finding
 0x81209c	const float[3]	s_luminanceWeights		models	Holds 0.072169, 0.212671 and 0.71516, the blue, red and green luminance weights	verified	one	models/lights#spherical-harmonic-terms
 0x8120a8	const float[8]	s_shPackWeights		models	Holds the irradiance weights that pack the harmonic terms into seven constant vectors	verified	one	models/lights#harmonic-constants
 0x812330	const uint16_t			unassigned	Holds a word its object file's code reads; not read here	inferred	none	
+0x8126b4	void *[3]	s_minigameVtable		minigame	Holds the object's vtable: state read 0x728700, move check 0x728740, board push 0x728770	verified	one	minigame#the-object
 0x81c378	const float	s_inputPriority		ui	Holds 1.0, the priority of the top's input handlers	verified	one	ui/input#the-handlers
 0x81c380	void *[11]	CSimpleTop::vftable		ui	Holds the vtable of CSimpleTop	verified	one	ui/strata#construction-and-teardown
 0x81c3b8	uint32_t[3]	s_centerXPoints		ui	Holds the anchor points 1, 4, 7 that fix a horizontal centre	verified	one	ui/anchors#edge-resolution-from-points
@@ -1046,12 +1065,16 @@ address	type	name	name_from	system	meaning	confidence	proof	finding
 0x822d40	luaL_reg[9]	tab_funcs		lua	Pairs the table library names concat to remove with their functions, ending in a null pair	verified	one	ui/luastate#the-library-scripts-see
 0x822d88	luaL_reg[13]	strlib		lua	Pairs the string library names len to gsub with their functions, ending in a null pair	verified	one	ui/luastate#the-library-scripts-see
 0x827000	void (*[7180])(void)	__xc_a		crt	Lists the C++ static initializers __cinit runs in ascending order, up to __xc_z	verified	one	random#static-initializers
+0x82e124	char *[2]	s_archiveRoots		storm	Holds the two search roots of archives: Data\ and ..\Data\	verified	one	storm/mount#base-and-speech-archives
 0x82e12c	uint32_t			client	Holds a dword its object file's code reads; not read here	inferred	none	
 0x82e280	char[3]	s_textS		unassigned	Holds the string "%s"	inferred	none	
 0x82e3e0	char[6]	s_textLogin		unassigned	Holds the string "login"	inferred	none	
 0x82e3e8	char[11]	s_textCharselect		unassigned	Holds the string "charselect"	inferred	none	
 0x82e424	const char[5]	s_textPercentSPercentS		charactermodel	Holds the string "%s%s"	verified	one	charactermodel/equipment#item-models
 0x82e42c	char[18]	s_windowTitle		gx	Holds the window title "World of Warcraft"	verified	one	gx/device#opengl-window-and-pixel-formats
+0x82e440	char[28]	s_textCannotReadStringTable		dbc	Holds the fatal message of a table whose string block cannot be read	verified	one	dbc#the-loader
+0x82e460	char[46]	s_textWrongRowSize		dbc	Holds the fatal message of a table whose record size is not the type's	verified	one	dbc#the-loader
+0x82e490	char[55]	s_textWrongColumnCount		dbc	Holds the fatal message of a table whose field count is not the type's	verified	one	dbc#the-loader
 0x82e570	char[2]	s_text0		unassigned	Holds the string "0"	inferred	none	
 0x82e644	char[18]	s_textM2UsePixelShaders		client	Holds the string "M2UsePixelShaders"	inferred	none	
 0x82e67c	char[13]	s_textM2UseShaders		client	Holds the string "M2UseShaders"	inferred	none	
@@ -1111,6 +1134,11 @@ address	type	name	name_from	system	meaning	confidence	proof	finding
 0x835624	char[15]	s_textUniqueTexture		gx	Holds the string "Unique Texture"	verified	one	gx/textures#texture-creation-variants
 0x835634	char[23]	s_textUniqueTextureNoName		gx	Holds the string "Unique Texture No Name"	verified	one	gx/textures#texture-creation-variants
 0x835708	char[14]	s_textSolidTexture		gx	Holds the string "Solid Texture"	inferred	none	
+0x835908	uint8_t[32]	s_sysMsgColors		sysmsg	Holds four 8-byte records: R, G, B, a pad byte and a float duration, for message levels 0 to 3	verified	one	sysmsg#colour-table
+0x835928	int32_t	s_sysMsgEnabled		sysmsg	Holds the display switch, 1 at start-up; nothing reads it but the unreached getter	verified	one	sysmsg#display-switch-and-window
+0x83592c	int32_t	s_sysMsgMaxLevel		sysmsg	Holds the window's high level, 3 at start-up	verified	one	sysmsg#display-switch-and-window
+0x835930	int32_t	s_sysMsgSelected		sysmsg	Holds the selector, -1 at start-up	verified	one	sysmsg#display-switch-and-window
+0x835934	char[56]	s_pathSysMessage		sysmsg	Holds the source path of SysMessage.cpp, the tag of the free at 0x44cb7d	verified	one	sysmsg#status-object-check
 0x835a40	uint32_t			unassigned	Holds a dword that SndInterfacePlayVocalUISound reads and writes; not read here	inferred	none	
 0x835a44	int32_t	s_soundSubmerged		sound	Holds 1 while the camera is submerged, 0 otherwise, -1 at start and exit	verified	one	sound/ambience#zone-ambience-choice
 0x835a48	int32_t	s_soundGhost		sound	Holds 1 while the player is a ghost, 0 otherwise, -1 at start and exit	verified	one	sound/ambience#zone-ambience-choice
@@ -1378,6 +1406,7 @@ address	type	name	name_from	system	meaning	confidence	proof	finding
 0x847fe4	char[22]	s_textINVMiscQuestionMark		unassigned	Holds the string "INV_Misc_QuestionMark"	inferred	none	
 0x848140	char[32]	s_textUsageRollOnLootIdRollType		ui	Holds the string "Usage: RollOnLoot(id, rollType)"	inferred	none	
 0x848160	char[37]	s_textUsageConfirmLootRollIdRollType		ui	Holds the string "Usage: ConfirmLootRoll(id, rollType)"	inferred	none	
+0x848384	char *[2]	s_minigameTypeNames		ui	Holds the minigame type name table: TicTacToe in slot 0 and null in slot 1	verified	one	minigame#lua-queries
 0x8484d0	uint32_t			ui	Holds a dword its object file's code reads; not read here	inferred	none	
 0x848894	char[47]	s_textInvalidInventorySlotInGetInventorySlotInfo		ui	Holds the string "Invalid inventory slot in GetInventorySlotInfo"	inferred	none	
 0x848984	char[48]	s_textInvalidInventorySlotIn		ui	Holds the string "Invalid inventory slot in GetInventoryItemCount"	inferred	none	
@@ -1578,10 +1607,13 @@ address	type	name	name_from	system	meaning	confidence	proof	finding
 0x8553a4	const char[52]	s_errTrainerService		ui	Holds the error text Invalid trainer service in SetTrainerService(index) of SetTrainerService	verified	one	ui/tooltipbuff#trainer-services
 0x85544c	const char[38]	s_errCraftSpell		ui	Holds the error text Invalid craft in SetCraftSpell(index) of SetCraftSpell	verified	one	ui/tooltipbuff#craft-spells
 0x855808	int32_t	s_physicalResistIndex		ui	Holds the index of the damage class row marked physical, −1 until the table is checked	verified	one	ui/tooltipunitstatus#the-studied-creature-lines
+0x85580c	char[23]	s_pathWowClientDbH		dbc	Holds ..\..\DB/WowClientDB.h, the tag of the allocations in the table loaders	verified	one	dbc#the-loader
 0x8558a4	uint32_t			unassigned	Holds a dword that InitializeGlobal, Script::GetLocale read; not read here	inferred	none	
+0x855ec8	const char[58]	s_nameCacheHashTypeName		dbcache	Holds the type name of the name cache node, the tag of its allocations	verified	one	dbcache#name-cache-node
 0x856450	uint32_t			unassigned	Holds a dword that SendBugReport reads; not read here	inferred	none	
 0x85645c	uint32_t			unassigned	Holds a dword its object file's code reads; not read here	inferred	none	
 0x858348	char[32]	s_textDBFilesClientChatProfanityDbc		dbc	Holds the string "DBFilesClient\ChatProfanity.dbc"	inferred	none	
+0x858b00	char[41]	s_pathGameObjectDisplayInfoDbc		dbc	Holds DBFilesClient\GameObjectDisplayInfo.dbc	verified	one	dbc#record-files
 0x859410	char[33]	s_textDBFilesClientNamesProfanityDbc		dbc	Holds the string "DBFilesClient\NamesProfanity.dbc"	inferred	none	
 0x859458	char[32]	s_textDBFilesClientNamesReservedDbc		dbc	Holds the string "DBFilesClient\NamesReserved.dbc"	inferred	none	
 0x859a84	char[31]	s_textDBFilesClientSpamMessagesDbc		dbc	Holds the string "DBFilesClient\SpamMessages.dbc"	inferred	none	
@@ -1696,6 +1728,11 @@ address	type	name	name_from	system	meaning	confidence	proof	finding
 0x864fa8	char[10]	s_textGxRefresh		console	Holds the string "gxRefresh"	inferred	none	
 0x8650b8	char[28]	s_textTripleBufferMustBe0Or1		console	Holds the string "TripleBuffer must be 0 or 1"	inferred	none	
 0x86582c	const char *[12]	s_missWordKeys		objectlayer	Holds the script text keys of miss outcomes 0 to 11, NONE to REFLECT	verified	one	objectlayer/unitnames#damage-and-miss-numbers
+0x865b44	uint8_t	s_keepLooseFlags		storm	Holds a byte that start-up clears so the open calls drop the loose-file flag bits	verified	one	storm/mount#loose-files
+0x866520	uint16_t	s_lookupLocale		storm	Holds the locale a name lookup asks for, 0; only unreached code writes it	verified	one	storm/format#hash-lookup
+0x866522	uint8_t	s_lookupPlatform		storm	Holds the platform a name lookup asks for, 0; only unreached code writes it	verified	one	storm/format#hash-lookup
+0x866834	char[14]	s_textBlockTable		storm	Holds the string (block table), whose type 3 hash decrypts the block table	verified	one	storm/format#hash-and-block-tables
+0x866844	char[13]	s_textHashTable		storm	Holds the string (hash table), whose type 3 hash decrypts the hash table	verified	one	storm/format#hash-and-block-tables
 0x866aa0	char[28]	s_textUU02u02u02u03u		storm	Holds the string "%u/%u %02u:%02u:%02u.%03u  "	inferred	none	
 0x866bd8	const uint32_t[256]	s_crc32Table		storm	Holds the CRC-32 table of the reflected polynomial 0xedb88320, 0x77073096 at index 1	verified	one	ui/addons#the-auth-packets-add-on-block
 0x867918	float[16]	s_liquidScrollDirections		terrain	Holds the eight (x, y) steps the liquid texture offsets add each frame, the compass directions	verified	one	terrain/world#world-frame
@@ -1878,6 +1915,8 @@ address	type	name	name_from	system	meaning	confidence	proof	finding
 0x873184	uint32_t[6]	s_m2KindPriority		models	Holds the transparent sort priority of each element kind	verified	one	models/scene#batch-grouping
 0x8732ac	char[34]	s_m2StallFormat		models	Holds the message logged when an instance waits for its file	verified	one	models/model#load-state
 0x873c40	uint32_t			unassigned	Holds a dword no instruction names directly; not read here	inferred	none	
+0x874020	char[53]	s_pathMinigameC		minigame	Holds the source path of Minigame_C.cpp, the tag of the object's allocation	verified	one	minigame#the-object
+0x875e90	double	s_doubleInfinity		unassigned	Holds +inf as a double, the result log2 and exp2 return at their limits	verified	one	fastmath#software-exp2
 0x8764f8	void *[74]	s_mathRoutineSlots		d3dx	Holds the math routine slots the dispatch thunks jump through	verified	one	models/animation#dispatched-matrix-math
 0x876620	void *[74]	s_mathRoutineDefaults		d3dx	Holds the default math routines copied into the slots	verified	one	models/animation#dispatched-matrix-math
 0x87674c	uint32_t	s_mathRoutineSet		d3dx	Holds which routine set was chosen, 0xffff before the first call	verified	one	models/animation#dispatched-matrix-math
@@ -2002,8 +2041,11 @@ address	type	name	name_from	system	meaning	confidence	proof	finding
 0x881c70	const char[29]	s_starModelPath		lighting	Holds the path of the star model	verified	one	lighting/celestial#body-objects
 0x881fec	char[28]	s_textJunkAfterDocumentElement		unassigned	Holds the string "junk after document element"	inferred	none	
 0x882094	char[13]	s_textExpat1955		unassigned	Holds the string "expat_1.95.5"	inferred	none	
+0x8824fc	uint32_t *	s_startupStringsRecords		dbc	Points at the Startup_Strings records, 0x2c bytes each	verified	one	dbc#startup-strings
+0x882500	uint32_t	s_startupStringsCount		dbc	Holds the Startup_Strings record count	verified	one	dbc#startup-strings
 0x882504	uint32_t	s_startupStringsIndex		client	Points at Startup_Strings.dbc's records indexed by id	inferred	none	
 0x882508	uint32_t	s_startupStringsMaxId		client	Holds Startup_Strings.dbc's largest id	inferred	none	
+0x88250c	uint32_t	s_startupStringsLoaded		dbc	Holds 1 once Startup_Strings is loaded	verified	one	dbc#startup-strings
 0x882630	uint32_t			unassigned	Holds a dword that ClientRegisterConsoleCommands reads and writes; not read here	inferred	none	
 0x882640	uint32_t			unassigned	Holds a dword that ClientRegisterConsoleCommands, Script::SetMovieSubtitles read and write; not read here	inferred	none	
 0x882654	uint32_t			unassigned	Holds a dword that ClientRegisterConsoleCommands, Script::GetScriptMemory read and write; not read here	inferred	none	
@@ -2025,6 +2067,8 @@ address	type	name	name_from	system	meaning	confidence	proof	finding
 0x882be0	uint32_t	s_loadingScreen		loadingscreen	Holds the loading screen object, or null	inferred	none	
 0x882e04	uint32_t			loadingscreen	Holds a dword that EndLoadingScreen reads and writes; not read here	inferred	none	
 0x882e10	uint32_t			loadingscreen	Holds a dword that SetLoadingScreenTip, BeginLoadingScreen, EndLoadingScreen read and write; not read here	inferred	none	
+0x882e28	uint8_t[2680]	s_displayMessages		unassigned	Holds ten 268-byte display records: time, text, colour; written only by 0x409200	verified	one	sysmsg#colour-table
+0x883b08	int32_t	s_localeHandle		crt	Holds the locale handle the C runtime's character functions test, 0 for the C locale; nothing writes it	verified	one	storm/format#name-hash
 0x883e68	uint32_t	s_threadPropSlot		base	Holds the TLS slot of the thread property arrays	verified	one	core/threads#thread-properties
 0x883ec0	int32_t	s_engineThreadPriority		core	Holds the thread priority saved at scheduler start, restored each loop iteration	verified	one	core/loop#the-loop
 0x883ec4	void *	s_startEvent		core	Holds the start gate event the loop waits on before running	verified	one	core/loop#the-loop
@@ -2096,12 +2140,16 @@ address	type	name	name_from	system	meaning	confidence	proof	finding
 0xb05d18	uint32_t	s_textureFileBytesUsed		gx	Holds the bytes of the static file area already given to async texture records	verified	one	gx/textures#texture-file-creation
 0xb05d1c	uint32_t	s_bufferedTextureRecords		gx	Counts the async texture records holding a slice of the static file area	verified	one	gx/textures#texture-objects
 0xb05d20	uint32_t	s_pinnedTextureRecords		gx	Counts the async texture records pinned by a wait	verified	one	gx/textures#texture-objects
+0xb05d30	int32_t	s_sysMsgMinLevel		sysmsg	Holds the window's low level, 0 at start-up	verified	one	sysmsg#display-switch-and-window
 0xb05d68	float	s_randomInfinity		random	Holds +inf, set at startup; nothing reads it	verified	one	random#static-initializers
 0xb05d6c	float	s_randomInvTwoPi		random	Holds 1/2π, set at startup; read only by unreached noise	verified	one	random#static-initializers
 0xb05d70	float	s_randomTwoPi		random	Holds 2π, set at startup; read only by unreached noise	verified	one	random#static-initializers
 0xb05d74	float	s_gaussianSpareFloat		random	Holds the spare deviate of 0x44f9b0, 0 when empty; one for every state	inferred	none	random#unreached-functions
 0xb05d78	double	s_gaussianSpareDouble		random	Holds the spare deviate of 0x44fa70, 0 when empty; one for every state	inferred	none	random#unreached-functions
 0xb05e10	float[16]	s_catmullRomBasis		spline	Holds the four basis polynomials of the cubic curve, four coefficients each	verified	one	ui/taxiroute#flight-curve
+0xb05e98	float	s_fastmathInfinity		fastmath	Holds +inf, set at startup; nothing reads it	verified	one	fastmath#static-initializers
+0xb05e9c	float	s_fastmathInvTwoPi		fastmath	Holds 1/(2π), set at startup; nothing reads it	verified	one	fastmath#static-initializers
+0xb05ea0	float	s_fastmathTwoPi		fastmath	Holds 2 pi, set at startup; read only by the 1/(2π) initializer	verified	one	fastmath#static-initializers
 0xb05ebc	uint32_t[4]	s_emoteSoundPointers		sound	Holds the emote sound pointer array: capacity, count, buffer and granularity	verified	one	sound/interface#emote-sounds
 0xb05ee0	float	s_sndIfInfinity		sound	Holds +inf, the interface file's infinity	verified	one	sound/overview#shared-header-constants
 0xb05ee4	uint32_t			sound	Holds a dword that SndInterfacePlayVocalUISound reads and writes; not read here	inferred	none	
@@ -2505,6 +2553,7 @@ address	type	name	name_from	system	meaning	confidence	proof	finding
 0xb71ba0	int32_t	s_lootMoney		ui	Holds the loot window's money in copper, 0 for none and -1 once the coin row is taken	verified	one	ui/loot#loot-state
 0xb71bbc	uint32_t	s_lootType		ui	Holds the loot type of the open window, 3 for fishing loot	verified	one	ui/loot#loot-state
 0xb71bc4	uint32_t	s_lootCoinShown		ui	Holds 1 once the auto-loot sweep has handled the coin row of this source	verified	one	ui/loot#auto-loot
+0xb71e5c	void *	s_minigame		minigame	Holds the current minigame object, null before a setup packet	verified	one	minigame#the-object
 0xb71e74	uint32_t[4]	s_worldStateUiList		ui	Holds the always-visible world state row ids: capacity, count, data and chunk size	verified	one	ui/worldstate#the-list-builder
 0xb71e84	uint32_t			ui	Holds a signed value the defence channel refresh tests before it updates the world states; not read here	inferred	none	ui/chatchannels#defence-channel-state
 0xb71ea8	uint32_t			ui	Holds a dword its object file's code reads and writes; not read here	inferred	none	
@@ -2834,20 +2883,34 @@ address	type	name	name_from	system	meaning	confidence	proof	finding
 0xc0d45c	uint32_t	s_netBytesSent		net	Counts the opcode and body bytes NetClient::Send has sent, over all connections	verified	one	net/wire#sending
 0xc0d468	uint32_t	s_netBytesReceived		net	Counts the bytes dispatched on the main thread, two more per packet than its opcode and body	verified	one	net/dispatch#main-thread-drain
 0xc0d46c	uint32_t	s_netMessagesDispatched		net	Counts the packets the dispatcher has handled	verified	one	net/dispatch#dispatch
+0xc0d53c	uint32_t[5]	s_zoneMusicStore		dbc	Holds the ZoneMusic table store: records, count, id map, largest id, loaded flag	inferred	none	
+0xc0d550	uint32_t[5]	s_zoneIntroMusicTableStore		dbc	Holds the ZoneIntroMusicTable table store: records, count, id map, largest id, loaded flag	inferred	none	
 0xc0d564	uint32_t[5]	s_worldStateUiStore		dbc	Holds the WorldStateUI.dbc store: records, count, id map, max id and loaded flag	verified	one	ui/battlefield#the-status-message
+0xc0d578	uint32_t[5]	s_worldSafeLocsStore		dbc	Holds the WorldSafeLocs table store: records, count, id map, largest id, loaded flag	inferred	none	
 0xc0d58c	uint32_t[5]	s_worldMapOverlayStore		dbc	Holds the WorldMapOverlay.dbc store: records, count, id map, max id and loaded flag	verified	one	ui/worldmap#the-overlays
 0xc0d5a0	uint32_t[5]	s_worldMapContinentStore		dbc	Holds the WorldMapContinent.dbc store: records of 0x34 bytes, count, id map, max id and loaded flag	verified	one	ui/worldmap#unit-and-corpse-positions
 0xc0d5b4	uint32_t[5]	s_worldMapAreaStore		dbc	Holds the WorldMapArea.dbc store: records of 32 bytes, count, id map, max id and loaded flag	verified	one	ui/worldmap#the-lists
+0xc0d5c8	uint32_t[5]	s_weaponSwingSounds2Store		dbc	Holds the WeaponSwingSounds2 table store: records, count, id map, largest id, loaded flag	inferred	none	
+0xc0d5dc	uint32_t[5]	s_weaponImpactSoundsStore		dbc	Holds the WeaponImpactSounds table store: records, count, id map, largest id, loaded flag	inferred	none	
+0xc0d5f0	uint32_t[5]	s_wMOAreaTableStore		dbc	Holds the WMOAreaTable table store: records, count, id map, largest id, loaded flag	inferred	none	
+0xc0d604	uint32_t[5]	s_vocalUISoundsStore		dbc	Holds the VocalUISounds table store: records, count, id map, largest id, loaded flag	inferred	none	
+0xc0d618	uint32_t[5]	s_unitBloodStore		dbc	Holds the UnitBlood table store: records, count, id map, largest id, loaded flag	inferred	none	
+0xc0d62c	uint32_t[5]	s_unitBloodLevelsStore		dbc	Holds the UnitBloodLevels table store: records, count, id map, largest id, loaded flag	inferred	none	
+0xc0d640	uint32_t[5]	s_uISoundLookupsStore		dbc	Holds the UISoundLookups table store: records, count, id map, largest id, loaded flag	inferred	none	
 0xc0d654	uint32_t[5]	s_transportAnimationStore		dbc	Holds the TransportAnimation.dbc store: records and count	verified	one	objectlayer/transports#the-transports-path
+0xc0d668	uint32_t[5]	s_terrainTypeSoundsStore		dbc	Holds the TerrainTypeSounds table store: records, count, id map, largest id, loaded flag	inferred	none	
 0xc0d67c	uint32_t[5]	s_terrainTypeStore		terrain	Holds the TerrainType.dbc store: rows, count, the table by id at +0x8 and the id bound at +0xc	verified	one	terrain/footprints#footprint-spawn
-0xc0d690	uint32_t[5]	s_taxiPathStore		dbc	Holds the TaxiPath.dbc store: records at +0 and count at +4	verified	one	ui/taxiroute#path-tables
+0xc0d690	uint32_t[5]	s_taxiPathStore		dbc	Holds the TaxiPath table store: records, count, id map, largest id, loaded flag	inferred	none	
 0xc0d6a4	uint32_t[5]	s_taxiPathNodeStore		dbc	Holds the TaxiPathNode.dbc store: records and count	verified	one	objectlayer/transports#the-ship-path
 0xc0d6b8	uint32_t[5]	s_taxiNodesStore		dbc	Holds the TaxiNodes.dbc store: its record table by id at +0x08 and the id bound at +0x0c	verified	one	objectlayer/interaction#taxis
 0xc0d6d4	uint32_t	s_talentTabIdMap		dbc	Holds the TalentTab.dbc rows by id	verified	one	ui/tooltipspell#the-talent-lines
 0xc0d6d8	uint32_t	s_talentTabMaxId		dbc	Holds the highest TalentTab.dbc id	verified	one	ui/tooltipspell#the-talent-lines
 0xc0d6e8	uint32_t	s_talentIdMap		dbc	Holds the Talent.dbc rows by id	verified	one	ui/tooltipspell#the-talent-lines
 0xc0d6ec	uint32_t	s_talentMaxId		dbc	Holds the highest Talent.dbc id	verified	one	ui/tooltipspell#the-talent-lines
+0xc0d6f4	uint32_t[5]	s_stringLookupsStore		dbc	Holds the StringLookups table store: records, count, id map, largest id, loaded flag	inferred	none	
 0xc0d708	uint32_t[5]	s_stationeryStore		ui	Holds the Stationery.dbc store: records of 16 bytes, count, id map, id bound and loaded flag	verified	one	ui/mailsend#the-stationery-list
+0xc0d71c	uint32_t[5]	s_stableSlotPricesStore		dbc	Holds the StableSlotPrices table store: records, count, id map, largest id, loaded flag	inferred	none	
+0xc0d730	uint32_t[5]	s_spellVisualStore		dbc	Holds the SpellVisual table store: records, count, id map, largest id, loaded flag	inferred	none	
 0xc0d744	uint32_t[5]	s_spellVisualKitDb		dbc	Holds the SpellVisualKit.dbc store: records, count, id map, max row, loaded flag	verified	one	spell/handlers#small-spell-handlers
 0xc0d758	uint32_t[5]	s_spellVisualEffectNameDb		dbc	Holds the SpellVisualEffectName.dbc store: records, count, id map, max row, loaded flag	verified	one	spell/go#cast-visual-and-dest-effect
 0xc0d76c	uint32_t[5]	s_spellShapeshiftFormStore		dbc	Holds the SpellShapeshiftForm.dbc store: its record table by id at +0x08 and the id bound at +0x0c	verified	one	objectlayer/playerfields#combo-points-form-and-far-sight
@@ -2863,13 +2926,22 @@ address	type	name	name_from	system	meaning	confidence	proof	finding
 0xc0d820	uint32_t[5]	s_spellDurationStore		dbc	Holds the SpellDuration.dbc store	verified	one	spell/records#record-lookups
 0xc0d83c	uint32_t	s_spellDispelTypeIdMap		dbc	Holds the SpellDispelType.dbc rows by id	verified	one	ui/tooltipbuff#the-aura-tooltip
 0xc0d840	uint32_t	s_spellDispelTypeMaxId		dbc	Holds the highest SpellDispelType.dbc id	verified	one	ui/tooltipbuff#the-aura-tooltip
+0xc0d848	uint32_t[5]	s_spellChainEffectsStore		dbc	Holds the SpellChainEffects table store: records, count, id map, largest id, loaded flag	inferred	none	
+0xc0d85c	uint32_t[5]	s_spellCategoryStore		dbc	Holds the SpellCategory table store: records, count, id map, largest id, loaded flag	inferred	none	
 0xc0d870	uint32_t[5]	s_spellCastTimesStore		dbc	Holds the SpellCastTimes.dbc store	verified	one	spell/records#record-lookups
+0xc0d884	uint32_t[5]	s_spamMessagesStore		dbc	Holds the SpamMessages table store: records, count, id map, largest id, loaded flag	inferred	none	
 0xc0d898	uint32_t			unassigned	Holds a dword that InitializeWaterAmbiences, StaticDBLoadAll read and write; not read here	inferred	none	
+0xc0d8ac	uint32_t[5]	s_soundSamplePreferencesStore		dbc	Holds the SoundSamplePreferences table store: records, count, id map, largest id, loaded flag	inferred	none	
+0xc0d8c0	uint32_t[5]	s_soundProviderPreferencesStore		dbc	Holds the SoundProviderPreferences table store: records, count, id map, largest id, loaded flag	inferred	none	
+0xc0d8d4	uint32_t[5]	s_soundEntriesStore		dbc	Holds the SoundEntries table store: records, count, id map, largest id, loaded flag	inferred	none	
+0xc0d8e8	uint32_t[5]	s_soundAmbienceStore		dbc	Holds the SoundAmbience table store: records, count, id map, largest id, loaded flag	inferred	none	
 0xc0d8fc	uint32_t[5]	s_skillTiersStore		dbc	Holds the SkillTiers.dbc store: records, count, id map, max id and loaded flag	verified	one	spell/tables#skill-costs-and-tiers
 0xc0d910	uint32_t[5]	s_skillRaceClassInfoStore		dbc	Holds the SkillRaceClassInfo.dbc store: records, count, id map, max id and loaded flag	verified	one	spell/tables#startup-build-of-the-indexes
 0xc0d924	uint32_t[5]	s_skillLineStore		dbc	Holds the SkillLine.dbc store: records, count, id map, max id and loaded flag	verified	one	spell/tables#skill-costs-and-tiers
+0xc0d938	uint32_t[5]	s_skillLineCategoryStore		dbc	Holds the SkillLineCategory table store: records, count, id map, largest id, loaded flag	inferred	none	
 0xc0d94c	uint32_t[5]	s_skillLineAbilityStore		dbc	Holds the SkillLineAbility.dbc store: records, count, id map, max id and loaded flag	verified	one	spell/tables#startup-build-of-the-indexes
 0xc0d960	uint32_t[5]	s_skillCostsDataStore		dbc	Holds the SkillCostsData.dbc store: records, count, id map, max id and loaded flag	verified	one	spell/tables#startup-build-of-the-indexes
+0xc0d974	uint32_t[5]	s_sheatheSoundLookupsStore		dbc	Holds the SheatheSoundLookups table store: records, count, id map, largest id, loaded flag	inferred	none	
 0xc0d988	uint32_t[5]	s_serverMessagesStore		dbc	Holds the ServerMessages.dbc store: records, count, id map, max id and loaded flag	verified	one	ui/chatserver#server-message
 0xc0d9a4	uint32_t			unassigned	Holds a dword that PlaySpellSchoolSound reads and writes; not read here	inferred	none	
 0xc0d9b0	uint32_t[5]	s_questSortStore		dbc	Holds the QuestSort.dbc store: records, count, id map, max id and loaded flag	verified	one	ui/questlog#the-order-of-the-rows
@@ -2883,12 +2955,19 @@ address	type	name	name_from	system	meaning	confidence	proof	finding
 0xc0da1c	uint32_t	s_pageTextMaterialById		dbc	Holds the PageTextMaterial.dbc rows by id	verified	one	ui/questmaterial#page-material-table
 0xc0da20	int32_t	s_pageTextMaterialMaxId		dbc	Holds the highest PageTextMaterial.dbc id, -1 before loading	verified	one	ui/questmaterial#page-material-table
 0xc0da28	uint32_t[5]	s_packageStore		ui	Holds the Package.dbc store: records of 48 bytes, count, id map, id bound and loaded flag	verified	one	ui/mailsend#packages
+0xc0da3c	uint32_t[5]	s_namesReservedStore		dbc	Holds the NamesReserved table store: records, count, id map, largest id, loaded flag	inferred	none	
+0xc0da50	uint32_t[5]	s_namesProfanityStore		dbc	Holds the NamesProfanity table store: records, count, id map, largest id, loaded flag	inferred	none	
+0xc0da64	uint32_t[5]	s_nPCSoundsStore		dbc	Holds the NPCSounds table store: records, count, id map, largest id, loaded flag	inferred	none	
 0xc0da78	uint8_t[20]	s_nameGenStore		dbc	Holds the NameGen.dbc store: records, count, id index and maximum id	inferred	none	
+0xc0da8c	uint32_t[5]	s_materialStore		dbc	Holds the Material table store: records, count, id map, largest id, loaded flag	inferred	none	
 0xc0daa8	uint32_t	s_mapIdMap		unassigned	Holds the Map.dbc rows by id, read by the tooltip's map line	verified	one	ui/tooltipitemhead#area-map-and-conjured-lines
 0xc0daac	uint32_t	s_mapMaxId		dbc	Holds the highest Map.dbc id	verified	one	ui/tooltipitemhead#area-map-and-conjured-lines
 0xc0dab4	uint32_t[5]	s_mailTemplateStore		ui	Holds the MailTemplate.dbc store: records of 40 bytes, count, id map, id bound and loaded flag	verified	one	ui/mail#reading-a-mails-text
 0xc0dac8	uint32_t[5]	s_lockTypeStore		dbc	Holds the LockType.dbc store	verified	one	objectlayer/gameobjects#cursor
 0xc0dadc	uint32_t[5]	s_lockStore		dbc	Holds the Lock.dbc store	verified	one	objectlayer/gameobjects#locks
+0xc0daf0	uint32_t[5]	s_loadingScreenTaxiSplinesStore		dbc	Holds the LoadingScreenTaxiSplines table store: records, count, id map, largest id, loaded flag	inferred	none	
+0xc0db04	uint32_t[5]	s_loadingScreensStore		dbc	Holds the LoadingScreens table store: records, count, id map, largest id, loaded flag	inferred	none	
+0xc0db18	uint32_t[5]	s_liquidTypeStore		dbc	Holds the LiquidType table store: records, count, id map, largest id, loaded flag	inferred	none	
 0xc0db2c	uint32_t[5]	s_lfgDungeonsStore		dbc	Holds the LfgDungeons.dbc store: records, count, id map, max id and loaded flag	verified	one	ui/lfg#the-type-lists
 0xc0db40	uint32_t[5]	s_languagesStore		dbc	Holds the Languages.dbc store: records, count, id map, max id and loaded flag	verified	one	ui/chatlanguage#languagewords-and-languages
 0xc0db54	uint32_t[5]	s_languageWordsStore		dbc	Holds the LanguageWords.dbc store: records, count, id map, max id and loaded flag	verified	one	ui/chatlanguage#languagewords-and-languages
@@ -2909,9 +2988,17 @@ address	type	name	name_from	system	meaning	confidence	proof	finding
 0xc0dc24	uint32_t	s_itemClassIdMap		unassigned	Holds the ItemClass.dbc rows by row index	verified	one	ui/tooltipitemhead#the-slot-and-type-line
 0xc0dc28	uint32_t	s_itemClassMaxId		unassigned	Holds the last ItemClass.dbc row index, −1 before the table loads	verified	one	ui/tooltipitemhead#the-slot-and-type-line
 0xc0dc30	uint32_t[5]	s_itemBagFamilyStore		dbc	Holds the ItemBagFamily.dbc store: its record table by id at +0x08 and the id bound at +0x0c	verified	one	objectlayer/inventory#opening-and-wrapping-items
+0xc0dc44	uint32_t[5]	s_helmetGeosetVisDataStore		dbc	Holds the HelmetGeosetVisData table store: records, count, id map, largest id, loaded flag	inferred	none	
+0xc0dc58	uint32_t[5]	s_groundEffectTextureStore		dbc	Holds the GroundEffectTexture table store: records, count, id map, largest id, loaded flag	inferred	none	
+0xc0dc6c	uint32_t[5]	s_groundEffectDoodadStore		dbc	Holds the GroundEffectDoodad table store: records, count, id map, largest id, loaded flag	inferred	none	
+0xc0dc80	uint32_t[5]	s_gMTicketCategoryStore		dbc	Holds the GMTicketCategory table store: records, count, id map, largest id, loaded flag	inferred	none	
+0xc0dc94	uint32_t[5]	s_gMSurveySurveysStore		dbc	Holds the GMSurveySurveys table store: records, count, id map, largest id, loaded flag	inferred	none	
+0xc0dca8	uint32_t[5]	s_gMSurveyQuestionsStore		dbc	Holds the GMSurveyQuestions table store: records, count, id map, largest id, loaded flag	inferred	none	
+0xc0dcbc	uint32_t[5]	s_gMSurveyCurrentSurveyStore		dbc	Holds the GMSurveyCurrentSurvey table store: records, count, id map, largest id, loaded flag	inferred	none	
 0xc0dcd0	uint8_t[20]	s_gameTipsStore		dbc	Holds the GameTips.dbc store: records, count, id map, maximum id, loaded flag	inferred	none	
 0xc0dce4	uint32_t[5]	s_gameObjectDisplayInfoStore		dbc	Holds the GameObjectDisplayInfo.dbc store	verified	one	objectlayer/gameobjecttypes#display-sounds-and-shakes
 0xc0dcf8	uint32_t[5]	s_gameObjectArtKitStore		dbc	Holds the GameObjectArtKit.dbc store	verified	one	objectlayer/gameobjecttypes#art-kits
+0xc0dd0c	uint32_t[5]	s_footstepTerrainLookupStore		dbc	Holds the FootstepTerrainLookup table store: records, count, id map, largest id, loaded flag	inferred	none	
 0xc0dd20	uint32_t[5]	s_footprintTexturesStore		terrain	Holds the FootprintTextures.dbc store: rows of id and name, their count and the id bound	verified	one	terrain/footprints#texture-table
 0xc0dd34	uint8_t[20]	s_factionTemplateStore		dbc	Holds the FactionTemplate.dbc store: records, count, id index and maximum id	inferred	none	
 0xc0dd48	uint32_t[2]	s_factionRecords		ui	Holds the Faction.dbc records and their count	verified	one	ui/reputation#faction-rows
@@ -2921,24 +3008,33 @@ address	type	name	name_from	system	meaning	confidence	proof	finding
 0xc0dd70	uint32_t[2]	s_exhaustionRecords		dbc	Holds the Exhaustion.dbc records and their count	verified	one	ui/rested#exhaustion-table
 0xc0dd78	uint32_t	s_exhaustionById		dbc	Holds the Exhaustion.dbc rows by id	verified	one	ui/rested#exhaustion-table
 0xc0dd7c	int32_t	s_exhaustionMaxId		dbc	Holds the highest Exhaustion.dbc id, -1 before loading	verified	one	ui/rested#exhaustion-table
+0xc0dd84	uint32_t[5]	s_environmentalDamageStore		dbc	Holds the EnvironmentalDamage table store: records, count, id map, largest id, loaded flag	inferred	none	
 0xc0dd98	uint32_t[5]	s_emotesTextStore		dbc	Holds the EmotesText.dbc store: records, count, id map, maximum id and loaded flag	verified	one	ui/chatemote#the-sentence-column
+0xc0ddac	uint32_t[5]	s_emotesTextSoundStore		dbc	Holds the EmotesTextSound table store: records, count, id map, largest id, loaded flag	inferred	none	
 0xc0ddc0	uint32_t[5]	s_emotesTextDataStore		dbc	Holds the EmotesTextData.dbc store: records, count, id map, maximum id and loaded flag	verified	one	ui/chatemote#the-template-fallback
 0xc0ddd4	uint32_t[5]	s_emotesStore		dbc	Holds the Emotes.dbc store: its record table by id at +0x08 and the id bound at +0x0c	verified	one	objectlayer/interaction#text-emotes
 0xc0dde8	uint32_t[5]	s_durabilityQualityStore		dbc	Holds the DurabilityQuality.dbc store	verified	one	objectlayer/items#repair-cost
 0xc0ddfc	uint32_t[5]	s_durabilityCostsStore		dbc	Holds the DurabilityCosts.dbc store	verified	one	objectlayer/items#repair-cost
+0xc0de10	uint32_t[5]	s_deathThudLookupsStore		dbc	Holds the DeathThudLookups table store: records, count, id map, largest id, loaded flag	inferred	none	
 0xc0de2c	uint32_t	s_creatureTypeIdMap		unassigned	Holds the CreatureType.dbc rows by id	verified	one	ui/tooltipunit#the-class-text
 0xc0de30	uint32_t	s_creatureTypeMaxId		dbc	Holds the highest CreatureType.dbc id	verified	one	ui/tooltipunit#the-class-text
 0xc0de40	uint32_t	s_creatureSpellDataIdMap		dbc	Holds the CreatureSpellData.dbc rows by id	verified	one	ui/tooltipunitstatus#the-studied-creature-diet-and-abilities
 0xc0de44	uint32_t	s_creatureSpellDataMaxId		dbc	Holds the highest CreatureSpellData.dbc id	verified	one	ui/tooltipunitstatus#the-studied-creature-diet-and-abilities
+0xc0de4c	uint32_t[5]	s_creatureSoundDataStore		dbc	Holds the CreatureSoundData table store: records, count, id map, largest id, loaded flag	inferred	none	
+0xc0de60	uint32_t[5]	s_creatureModelDataStore		dbc	Holds the CreatureModelData table store: records, count, id map, largest id, loaded flag	inferred	none	
 0xc0de7c	uint32_t	s_creatureFamilyIdMap		dbc	Holds the CreatureFamily.dbc rows by id	verified	one	ui/tooltipunitstatus#the-studied-creature-diet-and-abilities
 0xc0de80	uint32_t	s_creatureFamilyMaxId		dbc	Holds the highest CreatureFamily.dbc id	verified	one	ui/tooltipunitstatus#the-studied-creature-diet-and-abilities
+0xc0de88	uint32_t[5]	s_creatureDisplayInfoStore		dbc	Holds the CreatureDisplayInfo table store: records, count, id map, largest id, loaded flag	inferred	none	
+0xc0de9c	uint32_t[5]	s_creatureDisplayInfoExtraStore		dbc	Holds the CreatureDisplayInfoExtra table store: records, count, id map, largest id, loaded flag	inferred	none	
 0xc0deb0	uint8_t[20]	s_cinematicSequencesStore		dbc	Holds the CinematicSequences.dbc store	inferred	none	
 0xc0dec4	uint8_t[20]	s_cinematicCameraStore		dbc	Holds the CinematicCamera.dbc store	inferred	none	
 0xc0ded8	uint32_t[5]	s_chrRacesStore		dbc	Holds the ChrRaces.dbc store: records, count, id map by record +0x00, max id and loaded flag	verified	one	spell/tables#startup-build-of-the-indexes
 0xc0deec	uint32_t[5]	s_chrClassesStore		dbc	Holds the ChrClasses.dbc store, loaded by 0x542360	verified	one	spell/records#record-lookups
+0xc0df00	uint32_t[5]	s_chatProfanityStore		dbc	Holds the ChatProfanity table store: records, count, id map, largest id, loaded flag	inferred	none	
 0xc0df14	uint32_t[5]	s_chatChannelsStore		dbc	Holds the ChatChannels.dbc store: records, count, id map, max id and loaded flag	verified	one	ui/chatchannels#chatchannels-rows
 0xc0df28	uint32_t	s_charFacialHairRows		dbc	Holds the CharacterFacialHairStyles.dbc rows, 0x28 bytes each	verified	one	charactermodel/customization#facial-hair
 0xc0df2c	uint32_t	s_charFacialHairCount		dbc	Holds the number of CharacterFacialHairStyles.dbc rows	verified	one	charactermodel/customization#facial-hair
+0xc0df3c	uint32_t[5]	s_charVariationsStore		dbc	Holds the CharVariations table store: records, count, id map, largest id, loaded flag	inferred	none	
 0xc0df50	uint8_t[20]	s_charStartOutfitStore		dbc	Holds the CharStartOutfit.dbc store: records, count, id index and maximum id	inferred	none	
 0xc0df64	uint32_t	s_charSectionsRows		dbc	Holds the CharSections.dbc rows, 0x28 bytes each	verified	one	charactermodel/customization#grid-build
 0xc0df68	uint32_t	s_charSectionsCount		dbc	Holds the number of CharSections.dbc rows	verified	one	charactermodel/customization#grid-build
@@ -2950,7 +3046,10 @@ address	type	name	name_from	system	meaning	confidence	proof	finding
 0xc0dfa0	uint8_t[20]	s_cfgConfigsStore		dbc	Holds the Cfg_Configs.dbc store: records, count, id map, max row and loaded flag	inferred	none	
 0xc0dfb4	uint8_t[20]	s_cfgCategoriesStore		dbc	Holds the Cfg_Categories.dbc store: records, count, index table, highest ordinal and loaded flag	inferred	none	
 0xc0dfc8	uint8_t[20]	s_cameraShakesStore		dbc	Holds the CameraShakes.dbc store: rows, count, id index, highest id and loaded flag	verified	one	uicamera/effects#spawning-a-shake
+0xc0dfdc	uint32_t[5]	s_bankBagSlotPricesStore		dbc	Holds the BankBagSlotPrices table store: records, count, id map, largest id, loaded flag	inferred	none	
 0xc0dff0	uint32_t[5]	s_auctionHouseStore		ui	Holds the AuctionHouse.dbc store: records, count, id table, id bound and loaded flag	verified	one	ui/auctionlists#deposit
+0xc0e004	uint32_t[5]	s_attackAnimTypesStore		dbc	Holds the AttackAnimTypes table store: records, count, id map, largest id, loaded flag	inferred	none	
+0xc0e018	uint32_t[5]	s_attackAnimKitsStore		dbc	Holds the AttackAnimKits table store: records, count, id map, largest id, loaded flag	inferred	none	
 0xc0e02c	uint32_t[2]	s_areaTriggerRows		dbc	Holds the AreaTrigger rows, 0x28 bytes each sorted by map, and their count	inferred	none	objectlayer/players#area-triggers
 0xc0e048	uint32_t	s_areaIdMap		unassigned	Holds the AreaTable.dbc rows by id	verified	one	ui/spelltokens#tokens-that-compute-a-value
 0xc0e04c	uint32_t	s_areaMaxId		dbc	Holds the highest AreaTable.dbc id	verified	one	ui/spelltokens#tokens-that-compute-a-value
@@ -2958,17 +3057,22 @@ address	type	name	name_from	system	meaning	confidence	proof	finding
 0xc0e070	void *	s_animationDataRows		dbc	Holds the animation table's rows indexed by id	verified	one	models/animation#animation-id-resolution
 0xc0e074	uint32_t	s_animationDataMaxId		dbc	Holds the highest id of the animation table	verified	one	models/animation#animation-id-resolution
 0xc0e080	uint32_t	s_localeIndex		client	Holds the locale index that picks a localized string column	inferred	none	spell/handlers#channel-start-and-update
+0xc0e084	uint8_t[60]	s_wowCache		dbcache	Holds the wow cache object: nodes, hash buckets, file tag and name, opcode and flags	verified	one	dbcache#caches-that-are-saved
 0xc0e0c0	uint32_t	s_itemTextCache		ui	Holds the item text record cache	verified	one	ui/mail#reading-a-mails-text
-0xc0e0fc	uint32_t	s_petitionCache		dbcache	Holds the petition record cache charters look up	inferred	none	objectlayer/party#petitions
-0xc0e174	uint32_t			unassigned	Holds data whose address ReceivePageText takes; not read here	inferred	none	
-0xc0e1b0	uint32_t	s_questCache		dbcache	Holds the quest record cache	inferred	none	objectlayer/quests#quest-completion
-0xc0e1ec	uint32_t	s_guildCache		dbcache	Holds the guild record cache	inferred	none	objectlayer/party#guild-tabards
-0xc0e228	uint32_t	s_nameCache		dbcache	Holds the player name cache	inferred	none	objectlayer/playermessages#resurrection-and-summoning
+0xc0e0fc	uint8_t[60]	s_petitionCache		dbcache	Holds the petition cache object: nodes, hash buckets, file tag and name, opcode and flags	verified	one	dbcache#caches-that-are-not-saved
+0xc0e138	uint8_t[60]	s_petNameCache		dbcache	Holds the pet name cache object: nodes, hash buckets, file tag and name, opcode and flags	verified	one	dbcache#caches-that-are-not-saved
+0xc0e174	uint8_t[60]	s_pageTextCache		dbcache	Holds the page text cache object: nodes, hash buckets, file tag and name, opcode and flags	verified	one	dbcache#caches-that-are-saved
+0xc0e1b0	uint8_t[60]	s_questCache		dbcache	Holds the quest cache object: nodes, hash buckets, file tag and name, opcode and flags	verified	one	dbcache#caches-that-are-saved
+0xc0e1ec	uint8_t[60]	s_guildCache		dbcache	Holds the guild cache object: nodes, hash buckets, file tag and name, opcode and flags	verified	one	dbcache#caches-that-are-not-saved
+0xc0e228	uint8_t[60]	s_nameCache		dbcache	Holds the names cache object: nodes, hash buckets, file tag and name, opcode and flags	verified	one	dbcache#caches-that-are-not-saved
 0xc0e264	void *	s_npcTextCache		dbcache	Holds the NPC text cache store, npccache.wdb	verified	one	ui/gossip#the-greeting
-0xc0e2a0	void *	s_itemStatsCache		dbcache	Holds the item record cache the loot roll code asks	verified	one	objectlayer/lootroll#starting-a-roll
+0xc0e2a0	uint8_t[60]	s_itemCache		dbcache	Holds the item cache object: nodes, hash buckets, file tag and name, opcode and flags	verified	one	dbcache#caches-that-are-saved
 0xc0e2dc	uint32_t	s_itemNameCache		ui	Holds the item name cache that item set member names are asked of	verified	one	ui/tooltipitemreq#item-set-lines
-0xc0e318	uint32_t	s_gameObjectCache		dbcache	Holds the game object record cache	inferred	none	objectlayer/quests#quest-updates
-0xc0e354	uint32_t	s_creatureCache		dbcache	Holds the creature record cache	inferred	none	objectlayer/quests#quest-updates
+0xc0e318	uint8_t[60]	s_gameObjectCache		dbcache	Holds the game object cache object: nodes, hash buckets, file tag and name, opcode and flags	verified	one	dbcache#caches-that-are-saved
+0xc0e354	uint8_t[60]	s_creatureCache		dbcache	Holds the creature cache object: nodes, hash buckets, file tag and name, opcode and flags	verified	one	dbcache#caches-that-are-saved
+0xc0e5b0	float	s_gameObjectDisplayInfoInvTwoPi		dbc	Holds 1/(2π), set at startup by the record file; nothing reads it	verified	one	dbc#record-files
+0xc0e5b4	float	s_gameObjectDisplayInfoTwoPi		dbc	Holds 2 pi, set at startup by the record file; nothing reads it	verified	one	dbc#record-files
+0xc0e5b8	float	s_gameObjectDisplayInfoInfinity		dbc	Holds +inf, set at startup by the record file; nothing reads it	verified	one	dbc#record-files
 0xc0ed2c	uint32_t	s_gxVertexCount		gx	Holds the vertex count GxBuildVerticesCounted stores for the draw that follows	inferred	none	gx/draw#interleaving-helper
 0xc0ed38	void *	s_gxDevice		gx	Holds the global graphics device the facade calls	verified	one	gx/device#backend-selection-and-creation
 0xc0ef70	float[3]	s_defaultPointAttenuation		gx	Holds the default point attenuation (1, 0, 0), set by an initializer and used as id 66's default	verified	one	gx/renderstate#point-state
@@ -3021,6 +3125,7 @@ address	type	name	name_from	system	meaning	confidence	proof	finding
 0xc2a124	uint32_t	s_whoResultTotal		net	Holds the server total of the last who reply	verified	one	net/friends#who-list-reply
 0xc2a128	void *	s_whoThresholdSource		net	Holds a pointer nothing writes; when set, its +0x28 dword replaces the threshold of 3	verified	one	net/friends#who-list-reply
 0xc2a12c	uint32_t	s_whoToUI		net	Holds the SetWhoToUI flag that sends who replies to the frame	verified	one	net/friends#who-list-reply
+0xc2a2a4	uint32_t	s_localeTag		dbc	Holds the four bytes of the configured country and language packed into a dword	verified	one	dbc#localized-strings
 0xc2a2d0	uint32_t[3]	s_netClientList		net	Holds the list of NetClients the poll walks; its head word is at +8	verified	one	net/dispatch#main-thread-drain
 0xc2a314	uint8_t[24]	s_netClientListLock		net	Holds the critical section around the NetClient list	inferred	none	net/dispatch#main-thread-drain
 0xc2a3b8	uint32_t	s_latencyMin		net	Holds the least simulated delay in milliseconds; zero-filled and never written	verified	one	net/wire#simulated-latency
@@ -3209,10 +3314,14 @@ address	type	name	name_from	system	meaning	confidence	proof	finding
 0xc4eb9d	uint8_t			console	Holds a byte its object file's code reads and writes; not read here	inferred	none	
 0xc4eb9e	uint8_t			console	Holds a byte its object file's code reads and writes; not read here	inferred	none	
 0xc4eba1	uint8_t			console	Holds a byte its object file's code reads and writes; not read here	inferred	none	
+0xc521e8	void *	s_pathAliasTable		storm	Holds the hash table of path aliases a name is checked against when the open flags ask for it	inferred	none	storm/mount#loose-files
 0xc52418	uint8_t			storm	Holds a byte that SFile::GetBasePath reads; not read here	inferred	none	
+0xc5251d	uint8_t	s_diskPathMode		storm	Holds 0; its only writer is unreached, and a set value would send every name to the disk-path builder	verified	one	storm/mount#loose-files
 0xc52560	double[200]	s_pow10Table		storm	Holds k times 10 to the power -(r+1) at row r, column k, for the string-to-double conversion	verified	one	core/threads#string-conversion-table
 0xc52ba0	uint32_t	s_pow10TableBuilt		storm	Holds 1 once the power table is built	verified	one	core/threads#string-conversion-table
 0xc53f10	uint32_t	s_formatterMode		unassigned	Holds 1 when the client's own formatter runs, set by the start-up option 10	verified	one	ui/tooltipcontent#localized-lines
+0xc53fbc	uint32_t *	s_cryptTable		storm	Holds the crypt table, 0x500 dwords built at first use	verified	one	storm/format#name-hash
+0xc53fe0	void *	s_archiveList		storm	Holds the head of the open archive list, in descending priority	verified	one	storm/mount#archive-list
 0xc5a470	uint32_t	s_worldMode		terrain	Holds the world mode read from an option object at start-up	inferred	none	
 0xc5a474	uint32_t	s_batchCount		terrain	Holds the count of batch headers in use	verified	one	terrain/collide#triangle-batches
 0xc5a480	float[32]	s_layerScrollOffsets		terrain	Holds eight 16-byte records of two scroll offsets, a zero and a pad, for animated chunk layers	verified	one	terrain/world#world-frame
@@ -3471,8 +3580,9 @@ address	type	name	name_from	system	meaning	confidence	proof	finding
 0xce8128	float[16]	s_layerChannelSelectors		terrain	Holds the four layer constants: zero, then one in the red, green and blue channel	verified	one	terrain/render#chunk-layer-states
 0xce8270	uint8_t[24]	s_areaReadLock		terrain	Holds the critical section around ADT reads and parses	inferred	none	terrain/files#tile-file-read
 0xce8534	int32_t	s_violenceLevel		client	Holds the violenceLevel CVar value; written by 0x6c5af0	inferred	none	spell/visuals#spell-visual-record-choice
-0xce8538	int32_t			unassigned	Holds an int32_t that SndInterfaceWorldInitialize, Script::GetGameTime, IsDaytime read; not read here	inferred	none	
-0xce853c	int32_t			unassigned	Holds an int32_t that Script::GetGameTime reads; not read here	inferred	none	
+0xce8538	int32_t	s_gameClockMinute		gametime	Holds the clock's minute, the first word of the 0x70-byte game clock object	verified	one	gametime#clock-state
+0xce853c	int32_t	s_gameClockHour		gametime	Holds the clock's hour, the second word of its time	verified	one	gametime#clock-state
+0xce85a8	void *[4]	s_gameTimeCallbacks		unassigned	Holds four time-changed callbacks, 0 when unset, called by the bridge with the hour and minute	verified	one	gametime#server-messages
 0xce86d4	uint32_t	s_trailObjectCount		playername	Counts the live trail objects	verified	one	playername/swing#trail-objects
 0xce86d8	uint8_t[20]	s_trailObjectPool		playername	Holds the block pool of trail objects	verified	one	playername/overview#block-pools
 0xce86ec	uint8_t[20]	s_swingPool		playername	Holds the block pool of swing records	verified	one	playername/overview#block-pools
@@ -3632,6 +3742,48 @@ address	type	name	name_from	system	meaning	confidence	proof	finding
 0xcf04c4	uint8_t	s_m2TextureCenterGuard		models	Holds bit 1 once the texture transform centre is built	verified	one	models/animation#texture-transforms
 0xcf04c8	void *	s_m2SkinVertices		models	Holds the vertex skinning routine the CPU features select	verified	one	models/render#software-skinning
 0xcf04d0	float	s_m2LightLinkGridScale		models	Holds the scale from world units to a light grid cell when a light links into the grid	verified	one	models/lights#scene-light-grid
+0xcf050c	float	s_minigameSquareCf050c		minigame	Holds the square of 10, set at startup; nothing reads it	verified	one	minigame#constants-nothing-reads
+0xcf0510	float	s_minigameSquareCf0510		minigame	Holds the square of 1.5, set at startup; nothing reads it	verified	one	minigame#constants-nothing-reads
+0xcf0514	float	s_minigameInfinity		minigame	Holds +inf, set at startup; nothing reads it	verified	one	minigame#constants-nothing-reads
+0xcf0518	float	s_minigameSquareCf0518		minigame	Holds the square of 120, set at startup; nothing reads it	verified	one	minigame#constants-nothing-reads
+0xcf0520	float	s_minigameSquareCf0520		minigame	Holds the square of 10, set at startup; nothing reads it	verified	one	minigame#constants-nothing-reads
+0xcf0524	float	s_minigameInvTwoPi		minigame	Holds 1/(2π), set at startup; nothing reads it	verified	one	minigame#constants-nothing-reads
+0xcf0528	float	s_minigameSquareCf0528		minigame	Holds the square of 5.55556, set at startup; nothing reads it	verified	one	minigame#constants-nothing-reads
+0xcf052c	float	s_minigameFiveCf052c		minigame	Holds 5.0, set at startup; nothing reads it	verified	one	minigame#constants-nothing-reads
+0xcf0530	float	s_minigameSquareCf0530		minigame	Holds the square of 20, set at startup; nothing reads it	verified	one	minigame#constants-nothing-reads
+0xcf0534	float	s_minigameSquareCf0534		minigame	Holds the square of 50, set at startup; nothing reads it	verified	one	minigame#constants-nothing-reads
+0xcf0538	float	s_minigameSquareCf0538		minigame	Holds the square of 3, set at startup; nothing reads it	verified	one	minigame#constants-nothing-reads
+0xcf053c	float	s_minigameSquareCf053c		minigame	Holds the square of 10, set at startup; nothing reads it	verified	one	minigame#constants-nothing-reads
+0xcf0540	float	s_minigameSquareCf0540		minigame	Holds the square of 0.5, set at startup; nothing reads it	verified	one	minigame#constants-nothing-reads
+0xcf0544	float	s_minigameSquareCf0544		minigame	Holds the square of 10, set at startup; nothing reads it	verified	one	minigame#constants-nothing-reads
+0xcf0548	float	s_minigameSquareCf0548		minigame	Holds the square of 100, set at startup; nothing reads it	verified	one	minigame#constants-nothing-reads
+0xcf054c	float	s_minigameTwoPi		minigame	Holds 2 pi, set at startup; read only by the 1/(2π) initializer	verified	one	minigame#constants-nothing-reads
+0xcf0550	float	s_minigameSquareCf0550		minigame	Holds the square of 100, set at startup; nothing reads it	verified	one	minigame#constants-nothing-reads
+0xcf0554	float	s_minigameSquareCf0554		minigame	Holds the square of 5, set at startup; nothing reads it	verified	one	minigame#constants-nothing-reads
+0xcf0558	float	s_minigameSquareCf0558		minigame	Holds the square of 11.1111, set at startup; nothing reads it	verified	one	minigame#constants-nothing-reads
+0xcf055c	float	s_minigameSquareCf055c		minigame	Holds the square of 30, set at startup; nothing reads it	verified	one	minigame#constants-nothing-reads
+0xcf0560	float	s_minigameSquareCf0560		minigame	Holds the square of 40, set at startup; nothing reads it	verified	one	minigame#constants-nothing-reads
+0xcf0564	float	s_minigameSquareCf0564		minigame	Holds the square of 10, set at startup; nothing reads it	verified	one	minigame#constants-nothing-reads
+0xcf0568	float	s_minigameSquareCf0568		minigame	Holds the square of 1.5, set at startup; nothing reads it	verified	one	minigame#constants-nothing-reads
+0xcf056c	float	s_minigameInfinityB		minigame	Holds +inf, set at startup; nothing reads it	verified	one	minigame#constants-nothing-reads
+0xcf0570	float	s_minigameSquareCf0570		minigame	Holds the square of 120, set at startup; nothing reads it	verified	one	minigame#constants-nothing-reads
+0xcf0574	float	s_minigameSquareCf0574		minigame	Holds the square of 10, set at startup; nothing reads it	verified	one	minigame#constants-nothing-reads
+0xcf0578	float	s_minigameInvTwoPiB		minigame	Holds 1/(2π), set at startup; nothing reads it	verified	one	minigame#constants-nothing-reads
+0xcf057c	float	s_minigameSquareCf057c		minigame	Holds the square of 5.55556, set at startup; nothing reads it	verified	one	minigame#constants-nothing-reads
+0xcf0580	float	s_minigameFiveCf0580		minigame	Holds 5.0, set at startup; nothing reads it	verified	one	minigame#constants-nothing-reads
+0xcf0584	float	s_minigameSquareCf0584		minigame	Holds the square of 20, set at startup; nothing reads it	verified	one	minigame#constants-nothing-reads
+0xcf0588	float	s_minigameSquareCf0588		minigame	Holds the square of 50, set at startup; nothing reads it	verified	one	minigame#constants-nothing-reads
+0xcf058c	float	s_minigameSquareCf058c		minigame	Holds the square of 3, set at startup; nothing reads it	verified	one	minigame#constants-nothing-reads
+0xcf0590	float	s_minigameSquareCf0590		minigame	Holds the square of 10, set at startup; nothing reads it	verified	one	minigame#constants-nothing-reads
+0xcf0594	float	s_minigameSquareCf0594		minigame	Holds the square of 0.5, set at startup; nothing reads it	verified	one	minigame#constants-nothing-reads
+0xcf0598	float	s_minigameSquareCf0598		minigame	Holds the square of 10, set at startup; nothing reads it	verified	one	minigame#constants-nothing-reads
+0xcf059c	float	s_minigameSquareCf059c		minigame	Holds the square of 100, set at startup; nothing reads it	verified	one	minigame#constants-nothing-reads
+0xcf05a0	float	s_minigameTwoPiB		minigame	Holds 2 pi, set at startup; read only by the 1/(2π) initializer	verified	one	minigame#constants-nothing-reads
+0xcf05a4	float	s_minigameSquareCf05a4		minigame	Holds the square of 100, set at startup; nothing reads it	verified	one	minigame#constants-nothing-reads
+0xcf05a8	float	s_minigameSquareCf05a8		minigame	Holds the square of 5, set at startup; nothing reads it	verified	one	minigame#constants-nothing-reads
+0xcf05ac	float	s_minigameSquareCf05ac		minigame	Holds the square of 11.1111, set at startup; nothing reads it	verified	one	minigame#constants-nothing-reads
+0xcf05b0	float	s_minigameSquareCf05b0		minigame	Holds the square of 30, set at startup; nothing reads it	verified	one	minigame#constants-nothing-reads
+0xcf05b4	float	s_minigameSquareCf05b4		minigame	Holds the square of 40, set at startup; nothing reads it	verified	one	minigame#constants-nothing-reads
 0xcf06e4	uint32_t			ui	Holds a dword that LcdInitialize, LcdShutdown, UpdateKeyboardLcd read and write; not read here	inferred	none	
 0xcf0a3c	float	s_softFloatZero		cmath	Holds 0.0, set by 0x7625e0; the floor and ceil read it	verified	one	spell/records#software-floats
 0xcf0a40	float	s_softFloatOne		cmath	Holds 1.0, set by 0x762e20; the ceil reads it	verified	one	spell/records#software-floats
