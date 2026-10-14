@@ -417,6 +417,7 @@ address	type	name	name_from	system	meaning	confidence	proof	finding
 0x807a48	const float	s_dotSize		ui	Holds 0.00625, the object dot size in layout units	verified	one	ui/minimapblips#blip-sizes
 0x807a4c	const float	s_float3c4ccccd		unassigned	Holds the float 0.0125 (0x3c4ccccd)	inferred	none	
 0x807a80	void *[36]	CGMinimapFrame::vftable		ui	Holds the 36 virtual function slots of CGMinimapFrame, which its constructor stores	verified	one	ui/hover#the-notifies-by-class
+0x807b8c	uint32_t[2]	s_macroIdBases		ui	Holds the first-id base of each scope, 0 and 0x1000000	verified	one	ui/macros#macro-records
 0x807e00	const char[5]	s_textNone		ui	Holds the string "none"	inferred	none	
 0x808120	float	s_m2OpaqueAlpha		models	Holds 0.99999, the alpha at or above which a batch draws as opaque	verified	one	models/scene#element-collection
 0x808220	const uint32_t			ui	Holds a dword its object file's code reads and writes; not read here	inferred	none	
@@ -1051,7 +1052,7 @@ address	type	name	name_from	system	meaning	confidence	proof	finding
 0x839430	uint32_t[643]	s_activePlayerWatchedFields		objectlayer	Holds the 643 further player field indices only the active player watches	verified	one	objectlayer/fields#watched-fields
 0x83a3c8	uint32_t			unassigned	Holds a dword no instruction names directly; not read here	inferred	none	
 0x83b880	uint8_t[320]	s_gameObjectFieldInfo		unassigned	Holds the 16 game object field descriptors of 20 bytes: name, index, count, type, flags	verified	one	objectlayer/gameobjects#the-game-object
-0x83dc2c	uint32_t	s_worldPickState		ui	Holds a state word the world frame's leave sets to 3; other code sets 0 and 1	inferred	none	ui/hover#world-hover-and-its-tooltip
+0x83dc2c	uint32_t	s_reticleState		ui	Holds which ground target decal is drawn, 0 acceptable, 1 unacceptable, 3 none	verified	one	ui/mouse#enter-and-leave
 0x83ddb0	const char *[29]	s_invTypeKeys		ui	Holds the global string key of each inventory type, empty for type 0	verified	one	ui/tooltipitemhead#the-slot-and-type-line
 0x83de24	const char *	s_runScriptContext		ui	Points to the empty string, the context word RunScript runs under	verified	one	ui/luastate#the-context-word
 0x83de28	uint32_t			ui	Holds a dword its object file's code reads; not read here	inferred	none	
@@ -1185,6 +1186,7 @@ address	type	name	name_from	system	meaning	confidence	proof	finding
 0x84b8f8	char[9]	s_textPetition		ui	Holds the string "petition"	inferred	none	
 0x84bc3c	char[3]			ui	Holds the string " |"	inferred	none	
 0x84bcc0	char[40]	s_textUsageGetPlayerBuffTimeLeftBuffIndex		ui	Holds the string "Usage: GetPlayerBuffTimeLeft(buffIndex)"	inferred	none	
+0x84bd10	luaL_reg[21]	s_actionFunctions		unassigned	Pairs the 21 action bar Lua names with their functions	verified	one	ui/actionbar#action-slots
 0x84bf58	char[30]	s_textInterfaceButtonsSpellReset		ui	Holds the string "Interface\Buttons\Spell-Reset"	inferred	none	
 0x84bff4	char[27]	s_textUsageGetActionTextSlot		ui	Holds the string "Usage: GetActionText(slot)"	inferred	none	
 0x84c36c	char[28]	s_textDebugOnlyLockNoticeS		ui	Holds the string "(Debug-Only Lock Notice) %s"	inferred	none	
@@ -1196,7 +1198,7 @@ address	type	name	name_from	system	meaning	confidence	proof	finding
 0x84c6e4	char[20]	s_textTexturesMinimapMask		ui	Holds the string Textures\MinimapMask	verified	one	ui/minimap#minimap-textures
 0x84c768	char[44]	s_textInterfaceMinimapRotatingMinimapArrowMdx		ui	Holds the string "Interface\Minimap\Rotating-MinimapArrow.mdx"	inferred	none	
 0x84c7f0	char[10]	s_textUnnamed		ui	Holds the string "<unnamed>"	inferred	none	
-0x84c988	uint32_t			ui	Holds a dword that Script::GetMacroInfo, Script::GetMacroIconInfo read; not read here	inferred	none	
+0x84c988	const char *	s_macroIconDirectory		ui	Holds the pointer to the icon directory string macros prefix to a basename	verified	one	ui/macros#macro-order
 0x84ca64	char[17]	s_textInterfaceIcons		unassigned	Holds the string "Interface\Icons\"	inferred	none	
 0x84cab0	char[17]	s_textCastSpellByName		ui	Holds the string "CastSpellByName("	inferred	none	
 0x84cb60	uint32_t			ui	Holds data whose address its object file's code takes; not read here	inferred	none	
@@ -1238,6 +1240,7 @@ address	type	name	name_from	system	meaning	confidence	proof	finding
 0x84f4f4	uint32_t			uicamera	Holds a dword its object file's code reads; not read here	inferred	none	
 0x84f5e8	uint32_t			uicamera	Holds data whose address its object file's code takes; not read here	inferred	none	
 0x84f620	uint32_t			uicamera	Holds a dword its object file's code reads; not read here	inferred	none	
+0x84f788	const char *	s_cameraSettingsFileName		uicamera	Holds the pointer to the camera settings file name	verified	one	uicamera/view#the-settings-file
 0x84f7a0	uint32_t			uicamera	Holds a dword its object file's code reads; not read here	inferred	none	
 0x84f848	uint32_t			uicamera	Holds a dword its object file's code reads; not read here	inferred	none	
 0x84fad4	char[4]	s_text00		unassigned	Holds the string "0.0"	inferred	none	
@@ -1933,58 +1936,66 @@ address	type	name	name_from	system	meaning	confidence	proof	finding
 0xb42264	uint8_t	s_deletePatchAfterList		glue	Holds 1 when prepatch.lst asked to delete wow-patch.mpq; cleared by 0x4749f0, set by 0x474830	verified	one	glue/downloads#applying-the-patch
 0xb42424	uint32_t			charactermodel	Holds a dword that UnequipCharacterSlot reads and writes; not read here	inferred	none	
 0xb42450	uint32_t			unassigned	Holds a dword its object file's code reads and writes; not read here	inferred	none	
-0xb4b2bc	void *	s_worldFrame		ui	Points to the world frame	verified	one	ui/hover#freelook-and-the-removal
-0xb4b32c	float			ui	Holds a float its object file's code reads and writes; not read here	inferred	none	
+0xb4b2bc	void *	s_worldFrame		ui	Holds the world frame, stored by its constructor	verified	one	ui/mouseover#the-world-input-hook
+0xb4b32c	float	s_unitInteractRangeSq		ui	Holds the squared distance past which a unit's cursor is the unable form	verified	one	ui/worldcursor#units-charm-and-interaction
+0xb4b344	void *[2]	s_reticleTextures		ui	Holds the acceptable and unacceptable ground reticle texture handles	verified	one	ui/groundreticle#the-decal-passes
 0xb4b350	void *	s_normalFfx		ui	Holds the fog effect restored when the ghost state clears	inferred	none	objectlayer/playerfields#ghost-state
 0xb4b39c	void *	s_ghostFfx		ui	Holds the fog effect the ghost state switches to	inferred	none	objectlayer/playerfields#ghost-state
-0xb4b3b0	float			ui	Holds a float its object file's code reads and writes; not read here	inferred	none	
+0xb4b3a0	float[3]	s_reticlePosition		ui	Holds the picked ground position the reticle is drawn at	verified	one	ui/groundreticle#the-reticle-state
+0xb4b3b0	float	s_reticleRadius		ui	Holds the half-extent of the area decal, 0 when out of range	verified	one	ui/groundreticle#the-reticle-state
 0xb4b3c4	void *	s_gameTooltipFrame		ui	Points to the GameTooltip frame the engine fills	verified	one	ui/minimapblips#dots-cadence-and-tooltip
+0xb4b3c8	uint64_t	s_cursorItemContainerGuid		ui	Holds the GUID of the container the item payload came from	verified	one	ui/cursor#payload-kinds
 0xb4b3e4	uint32_t	s_playerHasControl		ui	Holds 1 while the player controls the character; 0 at load, written by 0x4958e0 and two stores of 1	verified	one	spell/checks#lost-control-exemption
 0xb4b3f4	uint8_t			ui	Holds a byte that CGGameUI::Initialize, CGGameUI::Reload read and write; not read here	inferred	none	
+0xb4b400	uint32_t	s_cursorItemSourceSlot		ui	Holds the slot the item payload came from	verified	one	ui/cursor#payload-kinds
 0xb4b404	uint32_t			ui	Holds a dword that Script::GetRealZoneText, CGGameUI::ShutdownGame read and write; not read here	inferred	none	
-0xb4b40c	uint32_t			ui	Holds a dword that Script::DeleteCursorItem, CGGameUI::SetCursorItem read and write; not read here	inferred	none	
+0xb4b40c	uint32_t	s_cursorItemSplitCount		ui	Holds the split count of the item payload, 0 for a whole stack	verified	one	ui/cursor#payload-kinds
 0xb4b410	uint32_t			unassigned	Holds a dword that CGGameUI::Initialize reads and writes; not read here	inferred	none	
-0xb4b41c	uint32_t			ui	Holds a dword that CGGameUI::SetCursorVirtualItem, GetCursorAmmo read and write; not read here	inferred	none	
-0xb4b420	uint32_t			ui	Holds a dword that CGGameUI::SetCursorVirtualItem, CGGameUI::GetCursorVirtualItem read and write; not read here	inferred	none	
+0xb4b41c	uint32_t	s_cursorPreviewEntry		ui	Holds the entry of the preview payload, nonzero for kinds 5, 7 and 9	verified	one	ui/cursor#payload-kinds
+0xb4b420	uint32_t	s_cursorPreviewIndex		ui	Holds the index of the preview payload, the vendor row for kind 5	verified	one	ui/cursor#payload-kinds
 0xb4b440	uint32_t			ui	Holds a dword that Script::GetMultisampleFormats, Script::GetCurrentMultisampleFormat read and write; not read here	inferred	none	
 0xb4b444	uint32_t			ui	Holds a dword that Script::GetMultisampleFormats, Script::GetCurrentMultisampleFormat read and write; not read here	inferred	none	
 0xb4b44c	void *	s_uiParent		ui	Points to the frame named UIParent, which the interface scale is set on	verified	one	ui/uiscale#applying-a-scale
 0xb4b498	uint32_t			ui	Holds a dword that CGGameUI::DisplayError reads and writes; not read here	inferred	none	
 0xb4be70	uint32_t			ui	Holds a dword its object file's code reads and writes; not read here	inferred	none	
 0xb4c0f0	uint32_t			ui	Holds a dword its object file's code reads and writes; not read here	inferred	none	
-0xb4d8ec	uint32_t			ui	Holds a dword that CGGameUI::SetCursorVirtualItem reads and writes; not read here	inferred	none	
+0xb4d8ec	uint32_t	s_cursorPreviewDisplayId		ui	Holds the display id of the preview payload	verified	one	ui/cursor#payload-kinds
 0xb4d8f8	uint32_t			ui	Holds a dword that Script::AssistUnit, Script::AssistByName, CGGameUI::Initialize read and write; not read here	inferred	none	
-0xb4d900	uint32_t	s_cursorType		ui	Holds what the cursor holds, 9 for ammo	inferred	none	objectlayer/inventory#moving-items
+0xb4d900	uint32_t	s_cursorType		ui	Holds the kind of payload the cursor holds, 0 for none	verified	one	ui/cursor#payload-kinds
 0xb4d904	uint32_t			ui	Holds a dword that CGGameUI::Initialize reads and writes; not read here	inferred	none	
 0xb4d90c	uint32_t			unassigned	Holds a dword that CGGameUI::Initialize reads and writes; not read here	inferred	none	
 0xb4d918	float			ui	Holds a float that Script::CanInspect, Script::CheckInteractDistance read and write; not read here	inferred	none	
-0xb4da24	uint32_t			ui	Holds a dword that CGGameUI::SetCursorItem, CGGameUI::SetCursorVirtualItem read and write; not read here	inferred	none	
+0xb4d920	char[260]	s_coinIconPath		ui	Holds the coin icon path GetCoinIcon returns	verified	one	ui/cursormoney#coin-icons
+0xb4da24	uint32_t	s_cursorGridShown		ui	Holds 1 when a pick-up showed the action or pet bar grid	verified	one	ui/cursor#payload-kinds
 0xb4da28	uint32_t			ui	Holds a dword that Script::GetMinimapZoneText, CGGameUI::ShutdownGame read and write; not read here	inferred	none	
 0xb4da40	char[2048]	s_lastDisplayedMessage		ui	Holds the text DisplayError last formatted; empty at load	inferred	none	spell/failures#display-log-and-events
-0xb4e248	uint32_t			ui	Holds a dword that CGGameUI::SetCursorItem reads and writes; not read here	inferred	none	
+0xb4e248	uint64_t	s_cursorItemGuid		ui	Holds the GUID of the item payload	verified	one	ui/cursor#payload-kinds
 0xb4e260	uint8_t			ui	Holds a byte that CGGameUI::Initialize reads and writes; not read here	inferred	none	
-0xb4e274	uint32_t			ui	Holds a dword its object file's code reads and writes; not read here	inferred	none	
-0xb4e278	uint32_t			ui	Holds a dword its object file's code reads and writes; not read here	inferred	none	
+0xb4e264	void *	s_cinematicSequenceRow		ui	Holds the CinematicSequences row being played	verified	one	uicamera/cinematic#starting-a-sequence
+0xb4e268	uint32_t	s_cinematicSequenceSound		ui	Holds the handle of the sequence's own sound	verified	one	uicamera/cinematic#starting-a-sequence
+0xb4e26c	uint32_t	s_cinematicShotIndex		ui	Holds the index of the playing shot in the sequence row	verified	one	uicamera/cinematic#stepping-and-ending
+0xb4e270	void *	s_cinematicShotRow		ui	Holds the CinematicCamera row of the playing shot	verified	one	uicamera/cinematic#playing-a-shot
+0xb4e274	uint32_t	s_cinematicNarration		ui	Holds the handle of the shot's own sound	verified	one	uicamera/cinematic#playing-a-shot
+0xb4e278	uint32_t	s_cinematicMusicPaused		ui	Holds 1 when the cinematic paused the music and must restore it	verified	one	uicamera/cinematic#starting-a-sequence
 0xb4e2ac	float			ui	Holds a float its object file's code reads and writes; not read here	inferred	none	
 0xb4e2b0	void *	s_uiScaleOption		ui	Points to the uiScale option's record	verified	one	ui/uiscale#the-two-options
 0xb4e2b4	void *	s_useUiScaleOption		ui	Points to the useUiScale option's record	verified	one	ui/uiscale#the-two-options
-0xb4e2b8	void *	s_shownTarget		ui	Holds a target record whose +0x28 a world click tests before clearing the target	inferred	none	objectlayer/interaction#world-clicks
+0xb4e2b8	void *	s_cvarDeselectOnClick		ui	Holds the CVar record of deselectOnClick, default 1	verified	one	ui/mouseover#the-nothing-leg
 0xb4e2bc	void *	s_showLootSpamVar		ui	Holds the showLootSpam variable, whose value gates the roll lines and picks the winner line	verified	one	objectlayer/lootroll#the-roll-announcement
-0xb4e2c8	uint32_t			unassigned	Holds a dword that Script::GetGUIDFromName reads and writes; not read here	inferred	none	
-0xb4e2cc	uint32_t			unassigned	Holds a dword that Script::GetGUIDFromName reads and writes; not read here	inferred	none	
+0xb4e2c8	uint64_t	s_mouseoverGuid		ui	Holds the GUID of the published mouseover object, 0 for none	verified	one	ui/mouseover#publishing-the-mouseover
 0xb4e2d0	uint64_t	s_interactionTargetGuid		ui	Holds the GUID of the unit the interaction windows belong to	inferred	none	objectlayer/interaction#talking-to-an-npc
 0xb4e2d8	uint64_t	s_targetGuid		ui	Holds the selected target's GUID, which the checks read when given none	inferred	none	spell/checks#usability-predicate
 0xb4e2e0	uint32_t			ui	Holds a dword that Script::TargetLastTarget reads and writes; not read here	inferred	none	
 0xb4e2e8	uint32_t			unassigned	Holds a dword that Script::TargetLastEnemy reads and writes; not read here	inferred	none	
-0xb4e2f0	uint32_t			ui	Holds a dword that Script::GetCursorMoney, Script::DropCursorMoney read and write; not read here	inferred	none	
-0xb4e2f4	uint32_t			ui	Holds a dword that GetCursorSpell reads and writes; not read here	inferred	none	
-0xb4e2f8	uint32_t			ui	Holds a dword that Script::PickupPetAction, Script::TogglePetAutocast read and write; not read here	inferred	none	
-0xb4e2fc	uint32_t			ui	Holds a dword its object file's code reads and writes; not read here	inferred	none	
-0xb4e300	uint32_t			ui	Holds a dword that Script::ClickStablePet reads and writes; not read here	inferred	none	
+0xb4e2f0	uint32_t	s_cursorMoney		ui	Holds the copper amount of the money payload	verified	one	ui/cursormoney#the-money-payload
+0xb4e2f4	uint32_t	s_cursorSpell		ui	Holds the spell id of the spell payload	verified	one	ui/cursor#payload-kinds
+0xb4e2f8	uint32_t	s_cursorPetAction		ui	Holds the action word of the pet action payload	verified	one	ui/cursor#payload-kinds
+0xb4e2fc	uint32_t	s_cursorMacro		ui	Holds the macro id of the macro payload	verified	one	ui/cursor#payload-kinds
+0xb4e300	uint32_t	s_cursorStablePet		ui	Holds the stable index of the stabled pet payload	verified	one	ui/cursor#payload-kinds
 0xb4e304	uint32_t	s_autoScaleWidth		ui	Holds the window width the automatic scale was last computed for	verified	one	ui/uiscale#the-automatic-scale
 0xb4e308	uint32_t	s_autoScaleHeight		ui	Holds the window height the automatic scale was last computed for	verified	one	ui/uiscale#the-automatic-scale
 0xb4e30c	float	s_configuredAspect		ui	Holds the aspect the interface last applied, 4/3 until set	verified	one	ui/uiscale#applying-a-scale
-0xb4e310	uint32_t			unassigned	Holds a dword that Script::InCinematic, CGGameUI::InitializeGame read and write; not read here	inferred	none	
+0xb4e310	uint32_t	s_inCinematic		ui	Holds 1 from the start of a cinematic to its end	verified	one	uicamera/cinematic#what-else-reads-the-cinematic-word
 0xb4e314	uint32_t	s_zoneId		ui	Holds the player's zone, read into party records and the binder dialog	inferred	none	objectlayer/party#the-party-member-record
 0xb4e318	uint32_t	s_subZoneId		ui	Holds the player's area, which the binder dialog prefers	inferred	none	objectlayer/interaction#confirmation-dialogs
 0xb4e328	uint32_t			ui	Holds a dword that Script::RetrieveCorpse reads and writes; not read here	inferred	none	
@@ -2046,16 +2057,22 @@ address	type	name	name_from	system	meaning	confidence	proof	finding
 0xb6effc	uint8_t			ui	Holds a byte its object file's code reads and writes; not read here	inferred	none	
 0xb6f038	uint32_t			ui	Holds a dword its object file's code reads and writes; not read here	inferred	none	
 0xb6f064	uint32_t			ui	Holds a dword its object file's code reads and writes; not read here	inferred	none	
-0xb6f098	uint32_t[1024]	s_petSpellBook		ui	Holds the spell id of each pet spellbook entry	verified	one	ui/tooltipspell#who-passes-what
+0xb6f098	uint32_t[1024]	s_petBookSpells		unassigned	Holds the pet's spell book, a spell id per slot	verified	one	ui/spellbook#spell-book-lists
 0xb700ac	uint32_t *	s_indexedSpells		ui	Points at the spells 0x5ec720 looks up by index	inferred	none	objectlayer/playercombat#skills
 0xb700b0	uint32_t	s_openLockSpellCapacity		ui	Holds the capacity of the array of learned spell ids whose first effect opens a lock	verified	one	objectlayer/playercombat#the-opener-list
 0xb700b4	uint32_t	s_openLockSpellCount		ui	Holds the count of learned opener spell ids	verified	one	objectlayer/playercombat#the-opener-list
 0xb700b8	uint32_t *	s_openLockSpells		ui	Points to the array of learned opener spell ids in the order the server taught them	verified	one	objectlayer/playercombat#the-opener-list
 0xb700e4	uint32_t[2]	s_interactSpells		ui	Holds the spells for interacting with other objects and with corpses and players	inferred	none	objectlayer/interaction#interacting-through-a-spell
 0xb700f0	uint32_t[1024]	s_spellBook		ui	Holds the spell id of each player spellbook entry	verified	one	ui/tooltipspell#who-passes-what
+0xb710fc	uint32_t *	s_knownSpellBits		unassigned	Points at the bitset of every known spell id	verified	one	ui/spellbook#spell-book-lists
 0xb71100	uint32_t			ui	Holds a dword its object file's code reads and writes; not read here	inferred	none	
+0xb71104	uint32_t	s_formSpellCount		unassigned	Holds the number of spells on the form bar	verified	one	ui/petbar#form-list
+0xb71108	uint32_t *	s_formSpells		unassigned	Points at the form bar's sorted spell ids	verified	one	ui/petbar#form-list
 0xb71130	uint32_t			ui	Holds a dword its object file's code reads and writes; not read here	inferred	none	
-0xb71174	uint32_t			ui	Holds a dword that Script::HasPetSpells reads and writes; not read here	inferred	none	
+0xb71160	void **	s_bookTabs		unassigned	Points at the tab nodes of the book, each a skill line key and a spell count	verified	one	ui/spellbook#spell-book-lists
+0xb7116c	uint32_t	s_bookSpellCount		unassigned	Holds the number of spells in the player's book	verified	one	ui/spellbook#spell-book-lists
+0xb71170	uint32_t	s_bookTabCount		unassigned	Holds the number of tabs in the book	verified	one	ui/spellbook#spell-book-lists
+0xb71174	uint32_t	s_petBookSpellCount		ui	Holds the number of spells in the pet's book	verified	one	ui/spellbook#spell-book-lists
 0xb711b8	uint32_t			ui	Holds a dword that CGTutorial::InitializeGame, CGTutorial::OnTutorialFlags read and write; not read here	inferred	none	
 0xb711e4	uint32_t			ui	Holds a dword that CGTutorial::InitializeGame, CGTutorial::OnTutorialFlags read and write; not read here	inferred	none	
 0xb711ec	uint32_t			ui	Holds a dword that CGTutorial::InitializeGame, CGTutorial::OnTutorialFlags read and write; not read here	inferred	none	
@@ -2064,11 +2081,11 @@ address	type	name	name_from	system	meaning	confidence	proof	finding
 0xb713e0	uint32_t	s_raidMemberCount		ui	Holds the number of raid members, 0 outside a raid	verified	one	ui/minimap#a-click-on-the-map
 0xb713f0	uint32_t			ui	Holds a dword that CGRaidInfo::InitializeGame reads and writes; not read here	inferred	none	
 0xb713f4	uint32_t			ui	Holds a dword that CGRaidInfo::InitializeGame, HandleRaidReadyCheckPacket read and write; not read here	inferred	none	
-0xb71438	uint32_t			ui	Holds a dword that Script::GetPetActionInfo, Script::GetPetActionCooldown read and write; not read here	inferred	none	
-0xb71468	uint32_t			ui	Holds a dword that Script::GetPetActionInfo reads and writes; not read here	inferred	none	
+0xb71438	uint32_t[10]	s_petBar		ui	Holds the ten pet bar slot words	verified	one	ui/petbar#pet-state
+0xb71468	uint32_t	s_petModeState		ui	Holds the pet mode word: reaction byte, command byte and server bit 27	verified	one	ui/petbar#pet-state
 0xb714a0	uint64_t	s_petBarGuid		ui	Holds the guid of the pet whose spells the pet bar holds	inferred	none	spell/cooldowns#spell-cooldown-packet
-0xb714a8	uint32_t			ui	Holds a dword that CGPetInfo::InitializeGame, Script::GetPetTimeRemaining read and write; not read here	inferred	none	
-0xb714b0	uint32_t			ui	Holds a dword that Script::GetPetActionInfo, Script::IsPetAttackActive read and write; not read here	inferred	none	
+0xb714a8	uint32_t	s_petExpiryTick		ui	Holds the tick when the pet's possession ends, 0 for none	verified	one	ui/petbar#pet-state
+0xb714b0	uint32_t	s_petAttackLatch		ui	Holds 1 while the pet attack command is active, 0 at load	verified	one	ui/petbar#pet-state
 0xb7150c	uint32_t	s_tradeWindowState		ui	Holds a trade window state that the trade-slot bind requires nonzero	inferred	none	spell/targeting#binding-the-trade-slot
 0xb715a0	uint32_t			ui	Holds a dword that TradeInfoSetTargetItems, Script::GetTradeTargetItemLink read and write; not read here	inferred	none	
 0xb716d0	uint32_t			ui	Holds a dword that CGTradeInfo::SetTradePartner, TradeInfoClearPlayerItem read and write; not read here	inferred	none	
@@ -2103,7 +2120,7 @@ address	type	name	name_from	system	meaning	confidence	proof	finding
 0xb73240	uint32_t			ui	Holds a dword that CGDuelInfo::OnDuelRequested, CGDuelInfo::OnDuelComplete read and write; not read here	inferred	none	
 0xb73294	uint8_t			ui	Holds a byte that HandleSetFactionAtWarPacket, HandleSetFactionVisiblePacket read and write; not read here	inferred	none	
 0xb73764	uint32_t			ui	Holds a dword that Script::GetNumFactions, Script::GetSelectedFaction read and write; not read here	inferred	none	
-0xb73a08	uint32_t			ui	Holds a dword that Script::IsTradeskillTrainer, Script::IsTalentTrainer read and write; not read here	inferred	none	
+0xb73a08	uint32_t	s_trainerType		ui	Holds the trainer type dword of the open trainer list; 2 marks a profession trainer	verified	one	ui/spellbook#trainer-icons
 0xb73a0c	uint32_t			ui	Holds a dword its object file's code reads and writes; not read here	inferred	none	
 0xb73a10	uint32_t			ui	Holds a dword its object file's code reads and writes; not read here	inferred	none	
 0xb73a18	uint32_t			ui	Holds a dword that Script::GetNumTrainerServices reads and writes; not read here	inferred	none	
@@ -2124,8 +2141,16 @@ address	type	name	name_from	system	meaning	confidence	proof	finding
 0xbc5f68	uint32_t			ui	Holds a dword that SetAuraDuration reads and writes; not read here	inferred	none	
 0xbc6040	uint32_t			ui	Holds data whose address its object file's code takes; not read here	inferred	none	
 0xbc6378	uint32_t			ui	Holds a dword that Script::GetTrackingTexture, Script::CancelTrackingBuff read and write; not read here	inferred	none	
-0xbc6390	uint32_t			ui	Holds a dword that GetActionSlotUsable reads and writes; not read here	inferred	none	
-0xbc6980	uint32_t			ui	Holds a dword that GetActionSlotUsable, Script::GetActionText, GameTooltip::SetAction read and write; not read here	inferred	none	
+0xbc6390	uint32_t[120]	s_actionItemCounts		ui	Holds each item slot's cached stack count or charges	verified	one	ui/actionbar#item-slot-counts
+0xbc6578	char[260]	s_rangedIconPath		unassigned	Holds the ranged weapon icon path of the ranged helper	verified	one	ui/actionbar#attack-and-ranged-icons
+0xbc6698	char[260]	s_attackIconPath		unassigned	Holds the weapon icon path of the attack helper	verified	one	ui/actionbar#attack-and-ranged-icons
+0xbc67a0	uint32_t[120]	s_actionNoPower		unassigned	Holds each slot's cached no-power flag	verified	one	ui/actionbar#usable-and-no-power
+0xbc6980	uint32_t[120]	s_actionSlots		ui	Holds the 120 action slot words, the kind in the top nibble	verified	one	ui/actionbar#action-slots
+0xbc6b60	uint32_t[120]	s_actionUsable		unassigned	Holds each slot's cached usable flag	verified	one	ui/actionbar#usable-and-no-power
+0xbc6d4c	const char *	s_iconDirectory		unassigned	Holds the icon directory string, fetched once	verified	one	ui/actionbar#action-icon
+0xbc6d58	char[260]	s_actionIconPath		unassigned	Holds the icon path GetActionTexture formats for an item or macro slot	verified	one	ui/actionbar#action-icon
+0xbc6e5c	uint8_t	s_actionIconInitFlags		unassigned	Holds a byte whose bit 0 marks the icon directory as fetched	verified	one	ui/actionbar#action-icon
+0xbc6e88	uint32_t	s_bonusBarOffset		unassigned	Holds the bonus bar offset of the player's form; 0 at load and with no form record	verified	one	ui/actionuse#bonus-bar-offset
 0xbc6e98	uint8_t			ui	Holds a byte that CGPartyInfo::InitializeGame, Script::GetLookingForGroup read and write; not read here	inferred	none	
 0xbc6f48	uint32_t[8]	s_partyMemberGuids		ui	Holds the GUIDs of the four other party members	verified	one	ui/minimapblips#party-and-pet-arrows
 0xbc70a0	uint32_t			ui	Holds a dword that CGPartyInfo::InitializeGame, Script::GetLookingForGroup read and write; not read here	inferred	none	
@@ -2149,7 +2174,16 @@ address	type	name	name_from	system	meaning	confidence	proof	finding
 0xbdcbac	uint32_t	s_hoverIconMask		ui	Holds the bit mask of the landmark icons the cursor is over	verified	one	ui/hover#nameplate-and-minimap-notifies
 0xbdcbb0	uint32_t	s_hoverArrowMask		ui	Holds the bit mask of the rim arrows the cursor is over	verified	one	ui/hover#nameplate-and-minimap-notifies
 0xbdcbb4	uint32_t	s_hoverPartyMask		ui	Holds the bit mask of the party dots the cursor is over	verified	one	ui/hover#nameplate-and-minimap-notifies
-0xbdcc54	uint32_t			ui	Holds a dword its object file's code reads and writes; not read here	inferred	none	
+0xbdcbec	uint32_t[2]	s_macroLastIds		ui	Holds the last macro id handed out in each scope	verified	one	ui/macros#macro-records
+0xbdcbf8	uint32_t	s_macrosDirty		ui	Holds 1 when the macros need saving	verified	one	ui/macros#macro-files
+0xbdcc00	uint32_t[2]	s_macroCounts		ui	Holds the number of macros in each scope	verified	one	ui/macros#macro-records
+0xbdcc1c	uint32_t	s_macroIconCount		ui	Holds the number of entries in the macro icon list	verified	one	ui/macros#macro-icons
+0xbdcc20	char **	s_macroIconNames		ui	Holds the macro icon basenames, sorted without case	verified	one	ui/macros#macro-icons
+0xbdcc44	void *	s_macroListHead		ui	Holds the first record of the list of all macros	verified	one	ui/macros#macro-records
+0xbdcc54	void *	s_macroBuckets		ui	Holds the bucket array of the macro hash table, keyed by id	verified	one	ui/macros#macro-records
+0xbdcc5c	uint32_t	s_macroBucketMask		ui	Holds the hash table's bucket mask; -1 while the table is empty	verified	one	ui/macros#macro-records
+0xbdcc60	uint32_t[36]	s_macroIdTable		ui	Holds the ids of the 36 macro positions, 18 per scope, each scope sorted by name	verified	one	ui/macros#macro-order
+0xbdcd04	uint32_t[2]	s_macroNonLocalCounts		ui	Holds the number of macros in each scope whose local flag is clear	verified	one	ui/macros#macro-records
 0xbdcd24	uint32_t	s_talentTabCount		ui	Holds the number of talent tabs of the player	verified	one	ui/tooltipspell#the-talent-lines
 0xbdcd28	void **	s_talentTabs		ui	Holds the array of the player's talent tab records	verified	one	ui/tooltipspell#the-talent-lines
 0xbdce1c	uint32_t			ui	Holds a dword that Script::SignPetition reads and writes; not read here	inferred	none	
@@ -2163,7 +2197,11 @@ address	type	name	name_from	system	meaning	confidence	proof	finding
 0xbdcfc0	uint32_t	s_craftCount		ui	Holds the number of entries in the craft window	verified	one	ui/tooltipbuff#craft-spells
 0xbdcfc8	int32_t			ui	Holds an int32_t that Script::GetNumCrafts reads and writes; not read here	inferred	none	
 0xbdd038	uint64_t	s_bankerGuid		ui	Holds the GUID of the open banker, 0 when none	inferred	none	objectlayer/inventory#searching-the-inventory
+0xbdd118	uint8_t[128][28]	s_merchantRows		ui	Holds the open vendor's item rows, slot number first and item entry next	verified	one	ui/merchantcursor#grabbing-a-merchant-row
+0xbddf24	uint32_t[12]	s_buybackSlots		ui	Holds the inventory slot of each buy-back item	verified	one	ui/merchantcursor#merchant-sell-cursors
 0xbddfa0	uint32_t[2]	s_merchantItems		ui	Holds the open merchant's item table pointer and count; both zero when no merchant is open	verified	one	ui/tooltipitemfoot#the-sell-price
+0xbddfa8	uint32_t	s_merchantItemCount		ui	Holds the number of rows of the open vendor	verified	one	ui/merchantcursor#grabbing-a-merchant-row
+0xbddfac	uint32_t	s_buybackCount		ui	Holds the number of items the vendor will buy back	verified	one	ui/merchantcursor#merchant-sell-cursors
 0xbde040	uint32_t	s_currentTradeSkillLine		ui	Holds the skill line the trade-skill window shows; 0x4fc910 sets or clears it	verified	one	spell/cast#cast-attempt-refusals
 0xbde044	uint32_t			ui	Holds a dword that Script::GetTradeskillRepeatCount reads and writes; not read here	inferred	none	
 0xbde054	int32_t			ui	Holds an int32_t that Script::GetNumTradeSkills, Script::GetFirstTradeSkill read and write; not read here	inferred	none	
@@ -2178,25 +2216,61 @@ address	type	name	name_from	system	meaning	confidence	proof	finding
 0xbe0844	uint32_t			ui	Holds a dword its object file's code reads and writes; not read here	inferred	none	
 0xbe0b80	const char *	s_tokenCursor		ui	Holds the expander's place in the description text	verified	one	ui/spelltokens#the-expander
 0xbe0b84	uint32_t	s_tokenPluralKey		ui	Holds the number the last counted token printed, the key of a plural token	verified	one	ui/spelltokens#the-plural-key
-0xbe0cec	uint32_t			uicamera	Holds a dword its object file's code reads and writes; not read here	inferred	none	
-0xbe0cf8	uint32_t			uicamera	Holds a dword its object file's code reads and writes; not read here	inferred	none	
-0xbe0e70	uint32_t			uicamera	Holds a dword its object file's code reads and writes; not read here	inferred	none	
-0xbe0f30	uint32_t			uicamera	Holds a dword its object file's code reads and writes; not read here	inferred	none	
-0xbe0fc0	uint32_t			uicamera	Holds a dword its object file's code reads and writes; not read here	inferred	none	
-0xbe0fc8	uint32_t			uicamera	Holds a dword its object file's code reads and writes; not read here	inferred	none	
-0xbe0fd4	uint32_t			uicamera	Holds a dword its object file's code reads and writes; not read here	inferred	none	
-0xbe1038	uint32_t			uicamera	Holds a dword its object file's code reads and writes; not read here	inferred	none	
-0xbe1050	uint32_t			uicamera	Holds a dword its object file's code reads and writes; not read here	inferred	none	
-0xbe1054	uint32_t			uicamera	Holds a dword its object file's code reads and writes; not read here	inferred	none	
-0xbe105c	uint32_t			uicamera	Holds a dword its object file's code reads and writes; not read here	inferred	none	
-0xbe1064	uint32_t			uicamera	Holds a dword its object file's code reads and writes; not read here	inferred	none	
-0xbe1070	uint32_t			uicamera	Holds a dword its object file's code reads and writes; not read here	inferred	none	
+0xbe0cc0	void *	s_cvarFarclip		uicamera	Holds the CVar record of farclip	verified	one	uicamera/solver#the-per-frame-outer-call
+0xbe0cd0	void *	s_cvarCameraDive		uicamera	Holds the CVar record of cameraDive	verified	one	uicamera/cvars#terrain-water-and-pivot-cvars
+0xbe0cd4	void *	s_cvarCameraHeightSmoothSpeed		uicamera	Holds the CVar record of cameraHeightSmoothSpeed	verified	one	uicamera/cvars#smoothing-speed-cvars
+0xbe0ce4	void *	s_cvarCameraPitchSmoothSpeed		uicamera	Holds the CVar record of cameraPitchSmoothSpeed	verified	one	uicamera/cvars#smoothing-speed-cvars
+0xbe0cec	void *	s_cvarCameraPivotDYMin		uicamera	Holds the CVar record of cameraPivotDYMin	verified	one	uicamera/cvars#terrain-water-and-pivot-cvars
+0xbe0cf4	void *	s_cvarCameraHeightIgnoreStandState		uicamera	Holds the CVar record of cameraHeightIgnoreStandState	verified	one	uicamera/cvars#terrain-water-and-pivot-cvars
+0xbe0cf8	void *	s_cvarCameraBobbingFrequency		uicamera	Holds the CVar record of cameraBobbingFrequency	verified	one	uicamera/cvars#input-and-bobbing-cvars
+0xbe0d00	void *[90]	s_cvarCameraTerrainTiltStyles		uicamera	Holds the CVar records cameraTerrainTilt<style><state><Absorb, Delay or Factor>	verified	one	uicamera/cvars#smoothing-cvars
+0xbe0e68	void *	s_cvarCameraView		uicamera	Holds the CVar record of cameraView	verified	one	uicamera/cvars#input-and-bobbing-cvars
+0xbe0e6c	void *	s_cvarCameraDistanceMax		uicamera	Holds the CVar record of cameraDistanceMax	verified	one	uicamera/cvars#final-pitch-and-band-cvars
+0xbe0e70	void *[42]	s_cvarCameraSmooth		uicamera	Holds the CVar records cameraSmooth<style><state><Delay or Factor>	verified	one	uicamera/cvars#smoothing-cvars
+0xbe0f1c	void *	s_cvarCameraCustomViewSmoothing		uicamera	Holds the CVar record of cameraCustomViewSmoothing	verified	one	uicamera/cvars#terrain-water-and-pivot-cvars
+0xbe0f20	float[3]	s_pivotBiasAxis		uicamera	Holds the axis (0, 1, 0) the pivot bias rotates the basis about	verified	one	uicamera/driver#where-each-channel-enters
+0xbe0f2c	void *	s_cvarCameraSurfaceFinalPitch		uicamera	Holds the CVar record of cameraSurfaceFinalPitch	verified	one	uicamera/cvars#final-pitch-and-band-cvars
+0xbe0f30	void *	s_cvarCameraPivotDXMax		uicamera	Holds the CVar record of cameraPivotDXMax	verified	one	uicamera/cvars#terrain-water-and-pivot-cvars
+0xbe0f44	void *	s_cvarCameraPitchSmoothMin		uicamera	Holds the CVar record of cameraPitchSmoothMin	verified	one	uicamera/cvars#final-pitch-and-band-cvars
+0xbe0f48	void *	s_cvarCameraPitchSmoothMax		uicamera	Holds the CVar record of cameraPitchSmoothMax	verified	one	uicamera/cvars#final-pitch-and-band-cvars
+0xbe0f4c	void *	s_cvarCameraSurfacePitch		uicamera	Holds the CVar record of cameraSurfacePitch	verified	one	uicamera/cvars#terrain-water-and-pivot-cvars
+0xbe0f78	void *	s_cvarCameraPitchMoveSpeed		uicamera	Holds the CVar record of cameraPitchMoveSpeed	verified	one	uicamera/cvars#input-and-bobbing-cvars
+0xbe0f7c	void *[15]	s_cvarCameraViews		uicamera	Holds the CVar records of the five saved views, three per view in the order distance, pitch, yaw	verified	one	uicamera/cvars#saved-view-cvars
+0xbe0fb8	void *	s_cvarCameraYawSmoothMin		uicamera	Holds the CVar record of cameraYawSmoothMin	verified	one	uicamera/cvars#final-pitch-and-band-cvars
+0xbe0fbc	void *	s_cvarCameraDistanceMoveSpeed		uicamera	Holds the CVar record of cameraDistanceMoveSpeed	verified	one	uicamera/cvars#input-and-bobbing-cvars
+0xbe0fc0	void *	s_cvarCameraGroundSmoothSpeed		uicamera	Holds the CVar record of cameraGroundSmoothSpeed	verified	one	uicamera/cvars#smoothing-speed-cvars
+0xbe0fc4	void *	s_cvarCameraSmoothPitch		uicamera	Holds the CVar record of cameraSmoothPitch	verified	one	uicamera/cvars#smoothing-speed-cvars
+0xbe0fc8	void *	s_cvarCameraTargetSmoothSpeed		uicamera	Holds the CVar record of cameraTargetSmoothSpeed	verified	one	uicamera/cvars#smoothing-speed-cvars
+0xbe0fcc	void *	s_cvarCameraYawSmoothMax		uicamera	Holds the CVar record of cameraYawSmoothMax	verified	one	uicamera/cvars#final-pitch-and-band-cvars
+0xbe0fd4	void *	s_cvarCameraTerrainTilt		uicamera	Holds the CVar record of cameraTerrainTilt	verified	one	uicamera/cvars#terrain-water-and-pivot-cvars
+0xbe0fd8	void *	s_cvarCameraSubmergePitch		uicamera	Holds the CVar record of cameraSubmergePitch	verified	one	uicamera/cvars#terrain-water-and-pivot-cvars
+0xbe0fdc	void *	s_cvarCameraSubmergeFinalPitch		uicamera	Holds the CVar record of cameraSubmergeFinalPitch	verified	one	uicamera/cvars#final-pitch-and-band-cvars
+0xbe0fe0	void *	s_cvarCameraDistanceMaxFactor		uicamera	Holds the CVar record of cameraDistanceMaxFactor	verified	one	uicamera/cvars#final-pitch-and-band-cvars
+0xbe0fe8	void *[18]	s_cvarCameraSmoothViewData		uicamera	Holds the CVar records cameraSmoothViewData<style><axis><Delay or Factor>	verified	one	uicamera/cvars#smoothing-cvars
+0xbe1038	void *	s_cvarCameraSmoothTimeMax		uicamera	Holds the CVar record of cameraSmoothTimeMax	verified	one	uicamera/cvars#final-pitch-and-band-cvars
+0xbe103c	float	s_shakeNearSquared		uicamera	Holds 9.0 squared, the squared distance inside which a shake is not cut	verified	one	uicamera/effects#distance-falloff
+0xbe1040	void *	s_cvarMouseInvertPitch		uicamera	Holds the CVar record of mouseInvertPitch	verified	one	uicamera/cvars#input-and-bobbing-cvars
+0xbe104c	void *	s_cvarCameraSmoothYaw		uicamera	Holds the CVar record of cameraSmoothYaw	verified	one	uicamera/cvars#smoothing-speed-cvars
+0xbe1050	void *	s_cvarCameraTerrainTiltTimeMin		uicamera	Holds the CVar record of cameraTerrainTiltTimeMin	verified	one	uicamera/cvars#terrain-water-and-pivot-cvars
+0xbe1054	void *	s_cvarCameraTerrainTiltTimeMax		uicamera	Holds the CVar record of cameraTerrainTiltTimeMax	verified	one	uicamera/cvars#terrain-water-and-pivot-cvars
+0xbe105c	void *	s_cvarCameraSmoothTimeMin		uicamera	Holds the CVar record of cameraSmoothTimeMin	verified	one	uicamera/cvars#final-pitch-and-band-cvars
+0xbe1060	float	s_shakeFarSquared		uicamera	Holds 80.0 squared, the squared distance beyond which a shake is skipped	verified	one	uicamera/effects#distance-falloff
+0xbe1064	void *	s_cvarCameraBobbingLRAmplitude		uicamera	Holds the CVar record of cameraBobbingLRAmplitude	verified	one	uicamera/cvars#input-and-bobbing-cvars
+0xbe1068	void *	s_cvarCameraFoVSmoothSpeed		uicamera	Holds the CVar record of cameraFoVSmoothSpeed	verified	one	uicamera/cvars#smoothing-speed-cvars
+0xbe106c	void *	s_cvarCameraDistanceSmoothSpeed		uicamera	Holds the CVar record of cameraDistanceSmoothSpeed	verified	one	uicamera/cvars#smoothing-speed-cvars
+0xbe1070	void *	s_cvarCameraYawSmoothSpeed		uicamera	Holds the CVar record of cameraYawSmoothSpeed	verified	one	uicamera/cvars#smoothing-speed-cvars
+0xbe1074	void *	s_cvarCamerasmooth		uicamera	Holds the CVar record of camerasmooth	verified	one	uicamera/cvars#smoothing-speed-cvars
 0xbe1078	uint32_t			uicamera	Holds a dword its object file's code reads and writes; not read here	inferred	none	
-0xbe1088	uint32_t			uicamera	Holds a dword its object file's code reads and writes; not read here	inferred	none	
-0xbe10a4	uint32_t			uicamera	Holds a dword its object file's code reads and writes; not read here	inferred	none	
-0xbe10bc	uint32_t			uicamera	Holds a dword its object file's code reads and writes; not read here	inferred	none	
-0xbe10c0	uint32_t			uicamera	Holds a dword its object file's code reads and writes; not read here	inferred	none	
-0xbe10c8	uint32_t			unassigned	Holds a dword its object file's code reads and writes; not read here	inferred	none	
+0xbe1084	void *	s_cvarMouseInvertYaw		uicamera	Holds the CVar record of mouseInvertYaw	verified	one	uicamera/cvars#input-and-bobbing-cvars
+0xbe1088	void *	s_cvarCameraWaterCollision		uicamera	Holds the CVar record of cameraWaterCollision	verified	one	uicamera/cvars#terrain-water-and-pivot-cvars
+0xbe1094	void *	s_cvarCameraYawMoveSpeed		uicamera	Holds the CVar record of cameraYawMoveSpeed	verified	one	uicamera/cvars#input-and-bobbing-cvars
+0xbe1098	void *	s_cvarCameraSmoothStyle		uicamera	Holds the CVar record of cameraSmoothStyle	verified	one	uicamera/cvars#smoothing-speed-cvars
+0xbe10a4	void *	s_cvarCameraPivot		uicamera	Holds the CVar record of cameraPivot	verified	one	uicamera/cvars#terrain-water-and-pivot-cvars
+0xbe10b0	void *	s_cvarCameraViewBlendStyle		uicamera	Holds the CVar record of cameraViewBlendStyle	verified	one	uicamera/cvars#input-and-bobbing-cvars
+0xbe10bc	void *	s_cvarCameraBobbingSmoothSpeed		uicamera	Holds the CVar record of cameraBobbingSmoothSpeed	verified	one	uicamera/cvars#input-and-bobbing-cvars
+0xbe10c0	void *	s_cvarCameraBobbing		uicamera	Holds the CVar record of cameraBobbing	verified	one	uicamera/cvars#input-and-bobbing-cvars
+0xbe10c4	void *	s_cvarCameraSmoothTrackingStyle		uicamera	Holds the CVar record of cameraSmoothTrackingStyle	verified	one	uicamera/cvars#smoothing-speed-cvars
+0xbe10c8	void *	s_cvarCameraBobbingUDAmplitude		uicamera	Holds the CVar record of cameraBobbingUDAmplitude	verified	one	uicamera/cvars#input-and-bobbing-cvars
 0xbe1148	CInputControl *	s_inputControl		input	Holds the CInputControl singleton	verified	one	input#input-state
 0xbe1198	const char *	s_eventNames		ui	Holds the first event name pointer; the names follow in event order and index 0x150 is UPDATE_MOUSEOVER_UNIT	verified	one	ui/tooltipobject#the-publisher
 0xbe160c	uint32_t			ui	Holds a dword its object file's code reads and writes; not read here	inferred	none	
@@ -2205,8 +2279,13 @@ address	type	name	name_from	system	meaning	confidence	proof	finding
 0xbe1b90	uint32_t	s_numAddOnNames		ui	Counts the names in the sorted add-on array	verified	one	ui/addons#the-order-lua-sees
 0xbe1b94	uint32_t	s_addOnNames		ui	Points to the add-on names sorted by title	verified	one	ui/addons#the-order-lua-sees
 0xbe1bd0	uint32_t			ui	Holds a dword that LoadCharacterAddOnState reads and writes; not read here	inferred	none	
-0xbe2c2c	uint32_t			ui	Holds a dword its object file's code reads and writes; not read here	inferred	none	
-0xbe2c4c	uint32_t			ui	Holds a dword its object file's code reads and writes; not read here	inferred	none	
+0xbe1c28	uint32_t[256]	s_cursorPictureBuffer		ui	Holds the 32 by 32 payload picture	verified	one	ui/cursor#dragging-picture
+0xbe2c2c	uint32_t	s_cursorMode		ui	Holds the mode of the cursor shown now	verified	one	ui/worldcursor#setting-the-mode
+0xbe2c48	uint32_t	s_cursorPictureState		ui	Holds 0 for no payload picture, else 1, 2 or 3 by the picture's source	verified	one	ui/cursor#dragging-picture
+0xbe2c4c	uint32_t	s_cursorBaseMode		ui	Holds the mode the cursor rests on, 1 at load	verified	one	ui/worldcursor#setting-the-mode
+0xbe2c60	void *	s_cursorPictureTexture		ui	Holds the texture handle the payload picture is built from	verified	one	ui/cursor#dragging-picture
+0xbe2c70	char[260]	s_customCursorName		ui	Holds the name of the loaded custom cursor	verified	one	ui/worldcursor#custom-cursors
+0xbe2d80	uint32_t[42][1024]	s_cursorImages		ui	Holds the 32 by 32 image of each cursor mode, slot 41 being the named custom cursor	verified	one	ui/cursor#sending-the-picture
 0xc0ce30	uint32_t			ui	Holds a dword its object file's code reads and writes; not read here	inferred	none	
 0xc0ce7c	uint32_t			ui	Holds a dword its object file's code reads and writes; not read here	inferred	none	
 0xc0cea4	uint32_t			ui	Holds a dword its object file's code reads and writes; not read here	inferred	none	
@@ -2314,6 +2393,7 @@ address	type	name	name_from	system	meaning	confidence	proof	finding
 0xc0df8c	uint32_t[5]	s_charBaseInfoStore		dbc	Holds the CharBaseInfo.dbc store of 8-byte race and class records	verified	one	spell/tables#startup-build-of-the-indexes
 0xc0dfa0	uint8_t[20]	s_cfgConfigsStore		dbc	Holds the Cfg_Configs.dbc store: records, count, id map, max row and loaded flag	inferred	none	
 0xc0dfb4	uint8_t[20]	s_cfgCategoriesStore		dbc	Holds the Cfg_Categories.dbc store: records, count, index table, highest ordinal and loaded flag	inferred	none	
+0xc0dfc8	uint8_t[20]	s_cameraShakesStore		dbc	Holds the CameraShakes.dbc store: rows, count, id index, highest id and loaded flag	verified	one	uicamera/effects#spawning-a-shake
 0xc0e02c	uint32_t[2]	s_areaTriggerRows		dbc	Holds the AreaTrigger rows, 0x28 bytes each sorted by map, and their count	inferred	none	objectlayer/players#area-triggers
 0xc0e048	uint32_t	s_areaIdMap		unassigned	Holds the AreaTable.dbc rows by id	verified	one	ui/spelltokens#tokens-that-compute-a-value
 0xc0e04c	uint32_t	s_areaMaxId		dbc	Holds the highest AreaTable.dbc id	verified	one	ui/spelltokens#tokens-that-compute-a-value

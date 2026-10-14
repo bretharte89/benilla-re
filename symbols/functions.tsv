@@ -6486,7 +6486,7 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x481540	144			ui	orchestration		Runs WorldFrame.cpp code that calls ClntObjMgrObjectPtr, 0x614ea0, 0x4815d0 and 1 more; not read here	inferred	none		
 0x4815d0	419			ui	orchestration		Runs WorldFrame.cpp code that calls 0x614f40, SMemAlloc, 0x481780 and 5 more; not read here	inferred	none		
 0x481780	16			ui	orchestration		Runs WorldFrame.cpp code not read here	inferred	none		
-0x481790	338			ui	orchestration		Sets the world cursor from the pick result, the targeting cursor included	inferred	none	spell/targeting#the-targeting-cursor	
+0x481790	338	CGWorldFrame::OnUpdate		ui	orchestration	void __thiscall (CGWorldFrame *this, uint32_t time)	Picks under the pointer and sets the cursor mode when the world is the mouse focus	verified	one	ui/worldcursor#the-world-update	
 0x4818f0	12	GetActiveCamera		ui	orchestration	void * __cdecl (void)	Returns the camera object whose +0x88 holds the GUID it follows	inferred	none	collision/world#camera-notices	
 0x481900	31			ui	orchestration		Runs WorldFrame.cpp code not read here	inferred	none		
 0x481920	51			ui	unreached		Runs WorldFrame.cpp code not read here	inferred	none		
@@ -6495,41 +6495,41 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x481d30	431			ui	primitive		Runs WorldFrame.cpp code that calls EventSetMouseMode, HandleClose, 0x509450 and 7 more; not read here	inferred	none		
 0x481ee0	16			ui	orchestration		Runs WorldFrame.cpp code not read here	inferred	none		
 0x481ef0	16			ui	unreached		Runs WorldFrame.cpp code not read here	inferred	none		
-0x481f00	87	PickObjectUnderCursor		ui	orchestration		Picks the world object under the cursor for the armed click	inferred	none	input#mouse-commands	
-0x481f60	301	DispatchWorldClick		ui	orchestration		Runs world click action 1 or 4 on the object picked at the press	inferred	none	input#click-versus-drag	
-0x482090	94	WorldFramePublishPick		ui	orchestration	void __thiscall (uint32_t lo, uint32_t hi)	Publishes a changed world pick before it stores it	verified	one	ui/hover#world-hover-and-its-tooltip	
-0x4820f0	264			ui	orchestration		Places the area reticle and the targeting cursor over a picked position	inferred	none	spell/targeting#the-targeting-cursor	
-0x482200	1241			ui	primitive		Runs WorldFrame.cpp code that calls ClntObjMgrGetActivePlayer, ClntObjMgrObjectPtr and 14 more; not read here	inferred	none		
-0x4826e0	90			ui	orchestration		Runs WorldFrame.cpp code that calls 0x5f8760, 0x523c20, 0x5f8790 and 2 more; not read here	inferred	none		
-0x482740	394			ui	primitive		Runs WorldFrame.cpp code that calls ClntObjMgrGetActivePlayer, ClntObjMgrObjectPtr, SetVector3 and 8 more; not read here	inferred	none		
-0x4828d0	309			ui	orchestration		Sets the targeting cursor over a hovered object from 0x6e6460	inferred	none	spell/targeting#the-targeting-cursor	
-0x482aa0	34			ui	orchestration		Runs WorldFrame.cpp code that calls CSimpleFrame::OnMouseMove, GetInputControl; not read here	inferred	none		
+0x481f00	87	PickObjectUnderCursor		ui	orchestration		Picks the world object under the cursor for the armed click	verified	one	ui/mouseover#clicks-on-the-world	
+0x481f60	301	DispatchWorldClick		ui	orchestration		Runs world click action 1 or 4 on the object picked at the press	verified	one	ui/mouseover#clicks-on-the-world	
+0x482090	94	CGWorldFrame::PublishMouseover		ui	orchestration	uint32_t __thiscall (CGWorldFrame *this, uint64_t guid)	Stores the mouseover GUID and reports it when it changes	verified	one	ui/worldcursor#classifying-a-hovered-object	
+0x4820f0	264			ui	orchestration		Stores the picked ground position, the reticle state and radius, and the targeting cursor	verified	one	ui/groundreticle#the-reticle-state	
+0x482200	1241	CGWorldFrame::ClassifyHoveredUnit		ui	primitive	void __thiscall (CGWorldFrame *this, CGUnit_C *unit)	Sets the cursor mode for a hovered unit from its flags, state and distance	verified	one	ui/worldcursor#units-charm-and-interaction	
+0x4826e0	90	CGWorldFrame::ClassifyHoveredGameObject		ui	orchestration	void __thiscall (CGWorldFrame *this, CGGameObject_C *object)	Sets the cursor mode a game object gives, or the custom cursor for 41	verified	one	ui/worldcursor#corpses-and-game-objects	
+0x482740	394	CGWorldFrame::ClassifyHoveredCorpse		ui	primitive	void __thiscall (CGWorldFrame *this, CGCorpse_C *corpse)	Sets the cursor mode for a hovered corpse from its loot and skin state	verified	one	ui/worldcursor#corpses-and-game-objects	
+0x4828d0	309	CGWorldFrame::ClassifyHoveredObject		ui	orchestration	void __thiscall (CGWorldFrame *this, void *pick, int x, int y)	Sets the cursor mode for the picked object and publishes it as the mouseover	verified	one	ui/worldcursor#classifying-a-hovered-object	
+0x482aa0	34			ui	orchestration		Overrides the probe of the world frame, calling the base probe	verified	one	ui/mouse#what-the-pointer-is-tested-against	
 0x482ad0	316	StampLightState		ui	primitive		Writes the frame's clock, player, camera, far clip and weather density into the light state	verified	one	lighting/daynight#light-state	
 0x482c10	132			ui	primitive		Runs WorldFrame.cpp code that calls ClntObjMgrGetActivePlayer, SetShowOwnModel and 2 more; not read here	inferred	none		
 0x482ca0	42			ui	orchestration		Runs WorldFrame.cpp code that calls 0x480990; not read here	inferred	none		
 0x482cd0	107			ui	primitive		Runs WorldFrame.cpp code that calls ClntObjMgrObjectPtr, CGUnit_C::Tick, 0x5f8c90; not read here	inferred	none		
 0x482d40	45			ui	orchestration		Runs WorldFrame.cpp code that calls SimpleFrameRegisterLayer, RegisterLayerCallback; not read here	inferred	none		
 0x482d70	292			ui	orchestration		Runs WorldFrame.cpp code that calls GetDeviceProjection, GetDeviceView, 0x482ea0 and 4 more; not read here	inferred	none		
-0x482ea0	1184			ui	primitive		Runs WorldFrame.cpp code that calls OsGetAsyncTimeMs, ClientServices::GetCurrent and 33 more; not read here	inferred	none		
+0x482ea0	1184	CGWorldFrame::OnRender		ui	orchestration	void __thiscall (CGWorldFrame *this)	Applies the idle law at the head of the world frame's render callback, then runs its per-frame work	verified	one	ui/idle#the-idle-law	
 0x483340	235			ui	primitive		Resolves a GUID to a game object, asks its collision candidacy by class, and returns its model and box	verified	one	terrain/entities#entity-gather	
 0x483430	32			ui	primitive		Runs its object file code not read here	inferred	none		
 0x483450	1			ui	orchestration		Runs its object file code not read here	inferred	none		
 0x483460	839	RenderWorldFrame		ui	primitive		Renders the world; calls 0x6ecb20 and then 0x6eca20	inferred	none	spell/visuals#frame-update	
-0x4837b0	442			ui	primitive		Draws the placement preview model 0xceca8c	inferred	none	spell/targeting#placement-model-and-rotation	
+0x4837b0	442			ui	primitive		Draws the area decal at the picked position, or tints the placement model	verified	one	ui/groundreticle#the-area-decal	
 0x483970	410			ui	orchestration		Runs its object file code that calls CSimpleFrame::OnFrameSizeChanged, MultiplyByScreenScaleX and 2 more; not read here	inferred	none		
-0x483b10	94	WorldFrameOnLeave		ui	orchestration	void __thiscall (uint32_t removal)	Runs the base leave, publishes a cleared world mouseover, resets the cursor	verified	one	ui/hover#world-hover-and-its-tooltip	
-0x483b70	94			ui	primitive		Runs its object file code that calls CSimpleFrame::OnKeyDown, 0x4b66b0, 0x4b7990; not read here	inferred	none		
-0x483bd0	112			ui	primitive		Runs its object file code that calls CSimpleFrame::OnKeyUp, 0x4b66b0, 0x4b7990; not read here	inferred	none		
-0x483c40	104			ui	orchestration		Runs its object file code that calls CSimpleFrame::OnMouseDown, 0x492c20, 0x4b6aa0 and 1 more; not read here	inferred	none		
-0x483cb0	104			ui	orchestration		Runs its object file code that calls CSimpleFrame::OnMouseUp, 0x492c80, 0x4b6aa0 and 1 more; not read here	inferred	none		
-0x483d20	121			ui	primitive		Runs its object file code that calls CSimpleFrame::OnMouseWheel, 0x4b6aa0, 0x4b7990; not read here	inferred	none		
+0x483b10	94	CGWorldFrame::OnLeave		ui	primitive	void __thiscall (CGWorldFrame *this, uint32_t flag)	Leaves the world frame: clears the mouseover, shows the base cursor, resets the reticle	verified	one	ui/mouseover#leaving-the-world-frame	
+0x483b70	94	CGWorldFrame::OnKeyDown		ui	orchestration	uint32_t __thiscall (CGWorldFrame *this, void *keyEvent)	Builds the chord of a key press into its latch slot and runs its binding	verified	one	ui/keybindings#key-press-and-release	
+0x483bd0	112	CGWorldFrame::OnKeyUp		ui	orchestration	uint32_t __thiscall (CGWorldFrame *this, void *keyEvent)	Replays the chord latched at the key press as a release and clears the slot	verified	one	ui/keybindings#key-press-and-release	
+0x483c40	104	CGWorldFrame::OnMouseDown		ui	orchestration	uint32_t __thiscall (CGWorldFrame *this, void *mouseEvent)	Runs the binding of a mouse button press unless a frame or mouse look takes it	verified	one	ui/keybindings#key-press-and-release	
+0x483cb0	104	CGWorldFrame::OnMouseUp		ui	orchestration	uint32_t __thiscall (CGWorldFrame *this, void *mouseEvent)	Runs the binding of a mouse button release built from the modifiers held now	verified	one	ui/keybindings#key-press-and-release	
+0x483d20	121	CGWorldFrame::OnMouseWheel		ui	orchestration	uint32_t __thiscall (CGWorldFrame *this, void *wheelEvent)	Runs the binding of a wheel notch as a press and a release	verified	one	ui/keybindings#key-press-and-release	
 0x483da0	45			ui	unreached		Runs its object file code not read here	inferred	none		
 0x483dd0	53			ui	unreached		Runs its object file code that calls 0x6424c0; not read here	inferred	none		
 0x483e10	5			ui	orchestration		Runs its object file code not read here	inferred	none		
 0x483e20	27			ui	unreached		Runs its object file code not read here	inferred	none		
 0x483e40	40			ui	unreached		Runs its object file code not read here	inferred	none		
-0x483e70	14			ui	primitive		Runs its object file code not read here	inferred	none		
-0x483e80	90			ui	primitive		Runs its object file code that calls ShowNamePlates, 0x492e70; not read here	inferred	none		
+0x483e70	14	CGWorldFrame::EndMouselook		ui	primitive	void __thiscall (CGWorldFrame *this)	Clears the mouselook bit and shows the nameplates	verified	one	ui/mouseover#mouselook	
+0x483e80	90	CGWorldFrame::BeginMouselook		ui	primitive	void __thiscall (CGWorldFrame *this)	Sets the mouselook bit, hides the nameplates and clears the mouseover	verified	one	ui/mouseover#mouselook	
 0x483ee0	476			ui	primitive		Runs its object file code that calls TransformVector4, ScaleScreenDelta; not read here	inferred	none		
 0x4840c0	8			ui	primitive		Runs its object file code not read here	inferred	none		
 0x4840d0	74			ui	primitive		Runs its object file code that calls HandleClose2; not read here	inferred	none		
@@ -6669,13 +6669,13 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x489460	10	Script::HideNameplates	idb	ui	orchestration		Implements the Lua function HideNameplates	inferred	none		
 0x489470	10	Script::ShowFriendNameplates	idb	ui	orchestration		Implements the Lua function ShowFriendNameplates	inferred	none		
 0x489480	10	Script::HideFriendNameplates	idb	ui	orchestration		Implements the Lua function HideFriendNameplates	inferred	none		
-0x489490	285	Script::SetCursor	idb	ui	primitive		Implements the Lua function SetCursor	inferred	none		
-0x4895b0	18	Script::ClearCursor	idb	ui	orchestration		Implements the Lua function ClearCursor	inferred	none		
-0x4895d0	44	Script::CursorHasItem	idb	ui	orchestration		Implements the Lua function CursorHasItem	inferred	none		
-0x489600	38	Script::CursorHasSpell	idb	ui	orchestration		Implements the Lua function CursorHasSpell	inferred	none		
-0x489630	38	Script::CursorHasMoney	idb	ui	orchestration		Implements the Lua function CursorHasMoney	inferred	none		
-0x489660	334	Script::EquipCursorItem	idb	ui	primitive		Implements the Lua function EquipCursorItem	inferred	none		
-0x4897b0	311	Script::DeleteCursorItem	idb	ui	primitive		Implements the Lua function DeleteCursorItem	inferred	none		
+0x489490	285	Script::SetCursor	idb	ui	primitive		Implements the Lua function SetCursor	verified	one	ui/worldcursor#setcursor	
+0x4895b0	18	Script::ClearCursor	idb	ui	orchestration		Implements the Lua function ClearCursor	verified	one	ui/cursor#cursor-functions	
+0x4895d0	44	Script::CursorHasItem	idb	ui	orchestration		Implements the Lua function CursorHasItem	verified	one	ui/cursor#cursor-functions	
+0x489600	38	Script::CursorHasSpell	idb	ui	orchestration		Implements the Lua function CursorHasSpell	verified	one	ui/cursor#cursor-functions	
+0x489630	38	Script::CursorHasMoney	idb	ui	orchestration		Implements the Lua function CursorHasMoney	verified	one	ui/cursormoney#money-functions	
+0x489660	334	Script::EquipCursorItem	idb	ui	primitive		Implements the Lua function EquipCursorItem	verified	one	ui/cursor#cursor-functions	
+0x4897b0	311	Script::DeleteCursorItem	idb	ui	primitive		Implements the Lua function DeleteCursorItem	verified	one	ui/cursor#delete_item_confirm	
 0x4898f0	101	Script::EquipPendingItem	idb	ui	orchestration		Implements the Lua function EquipPendingItem	inferred	none		
 0x489960	101	Script::CancelPendingEquip	idb	ui	orchestration		Implements the Lua function CancelPendingEquip	inferred	none		
 0x4899d0	109	Script::TargetUnit	idb	ui	orchestration		Implements the Lua function TargetUnit	inferred	none		
@@ -6693,7 +6693,7 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x489e00	192	Script::FollowUnit	idb	ui	orchestration		Implements the Lua function FollowUnit	inferred	none		
 0x489ec0	302	Script::FollowByName	idb	ui	orchestration		Implements the Lua function FollowByName	inferred	none		
 0x489ff0	74	Script::ClearTarget	idb	ui	primitive		Implements the Lua function ClearTarget	inferred	none		
-0x48a040	43	Script::AutoEquipCursorItem	idb	ui	orchestration		Implements the Lua function AutoEquipCursorItem	inferred	none		
+0x48a040	43	Script::AutoEquipCursorItem	idb	ui	orchestration		Implements the Lua function AutoEquipCursorItem	verified	one	ui/cursor#cursor-functions	
 0x48a070	41	Script::ToggleSheath	idb	ui	orchestration		Implements the Lua function ToggleSheath	inferred	none		
 0x48a0a0	26	Script::GetZoneText	idb	ui	orchestration		Implements the Lua function GetZoneText	inferred	none		
 0x48a0c0	26	Script::GetRealZoneText	idb	ui	orchestration		Implements the Lua function GetRealZoneText	inferred	none		
@@ -6727,11 +6727,11 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x48ab40	15	Script::CancelLogout	idb	ui	orchestration		Implements the Lua function CancelLogout	inferred	none		
 0x48ab50	15	Script::ForceLogout	idb	ui	orchestration		Implements the Lua function ForceLogout	inferred	none		
 0x48ab60	10	Script::ForceQuit	idb	ui	orchestration		Implements the Lua function ForceQuit	inferred	none		
-0x48ab70	44	Script::GetCursorMoney	idb	ui	orchestration		Implements the Lua function GetCursorMoney	inferred	none		
-0x48aba0	19	Script::DropCursorMoney	idb	ui	orchestration		Implements the Lua function DropCursorMoney	inferred	none		
-0x48abc0	160	Script::PickupPlayerMoney	idb	ui	orchestration		Implements the Lua function PickupPlayerMoney	inferred	none		
-0x48ac60	13	Script::ShowInspectCursor	idb	ui	orchestration		Implements the Lua function ShowInspectCursor	inferred	none		
-0x48ac70	8	Script::ResetCursor	idb	ui	orchestration		Implements the Lua function ResetCursor	inferred	none		
+0x48ab70	44	Script::GetCursorMoney	idb	ui	orchestration		Implements the Lua function GetCursorMoney	verified	one	ui/cursormoney#money-functions	
+0x48aba0	19	Script::DropCursorMoney	idb	ui	orchestration		Implements the Lua function DropCursorMoney	verified	one	ui/cursormoney#money-functions	
+0x48abc0	160	Script::PickupPlayerMoney	idb	ui	orchestration		Implements the Lua function PickupPlayerMoney	verified	one	ui/cursormoney#money-functions	
+0x48ac60	13	Script::ShowInspectCursor	idb	ui	orchestration		Implements the Lua function ShowInspectCursor	verified	one	ui/worldcursor#setting-the-mode	
+0x48ac70	8	Script::ResetCursor	idb	ui	orchestration		Implements the Lua function ResetCursor	verified	one	ui/worldcursor#setting-the-mode	
 0x48ac80	228	Script::HasSoulstone	idb	ui	orchestration		Implements the Lua function HasSoulstone	inferred	none		
 0x48ad70	285	Script::UseSoulstone		ui	orchestration		Implements the Lua function UseSoulstone	inferred	none	spell/cancel#who-cancels-a-cast	
 0x48ae90	88	Script::HasKey	idb	ui	orchestration		Implements the Lua function HasKey	inferred	none		
@@ -6849,14 +6849,14 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x48d3f0	189	Script::GetXPExhaustion	idb	ui	primitive		Implements the Lua function GetXPExhaustion	inferred	none		
 0x48d4b0	11	Script::GetTimeToWellRested	idb	ui	orchestration		Implements the Lua function GetTimeToWellRested	inferred	none		
 0x48d4c0	17	Script::GMRequestPlayerInfo	idb	ui	orchestration		Implements the Lua function GMRequestPlayerInfo	inferred	none		
-0x48d4e0	88	Script::GetCoinIcon	idb	ui	orchestration		Implements the Lua function GetCoinIcon	inferred	none		
+0x48d4e0	88	Script::GetCoinIcon	idb	ui	orchestration	int __fastcall (lua_State *L)	Returns the icon path a copper amount shows	verified	one	ui/cursormoney#coin-icons	
 0x48d540	437	Script::GetZonePVPInfo	idb	ui	primitive		Implements the Lua function GetZonePVPInfo	inferred	none		
 0x48d700	100	Script::TogglePVP	idb	ui	orchestration		Implements the Lua function TogglePVP	inferred	none		
 0x48d770	8	Script::ConfirmBindOnUse	idb	ui	orchestration		Implements the Lua function ConfirmBindOnUse	inferred	none		
 0x48d780	290	Script::SetPortraitToTexture	idb	ui	primitive		Implements the Lua function SetPortraitToTexture	inferred	none		
 0x48d8b0	23			ui	orchestration		Runs GameUI.cpp code that calls lua_pushstring; not read here	inferred	none		
 0x48d8d0	130	Script::GetGMTicketCategories	idb	ui	primitive		Implements the Lua function GetGMTicketCategories	inferred	none		
-0x48d960	322	Script::DropItemOnUnit	idb	ui	primitive		Implements the Lua function DropItemOnUnit	inferred	none		
+0x48d960	322	Script::DropItemOnUnit	idb	ui	primitive		Implements the Lua function DropItemOnUnit	verified	one	ui/cursor#dropping-an-item-on-a-unit	
 0x48dab0	18	Script::RestartGx	idb	ui	orchestration		Implements the Lua function RestartGx	inferred	none		
 0x48dad0	8	Script::RestoreVideoDefaults	idb	ui	orchestration		Implements the Lua function RestoreVideoDefaults	inferred	none		
 0x48dae0	88	Script::GetBindLocation	idb	ui	orchestration		Implements the Lua function GetBindLocation	inferred	none		
@@ -6892,15 +6892,15 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x48ebe0	104	Script::NoPlayTime	idb	ui	primitive		Implements the Lua function NoPlayTime	inferred	none		
 0x48ec50	56			ui	orchestration		Runs GameUI.cpp code that calls ClientServices::GetCurrent, lua_pushnumber; not read here	inferred	none		
 0x48ec90	58			ui	primitive		Runs GameUI.cpp code that calls ClntObjMgrGetActivePlayer, ClntObjMgrObjectPtr, 0x4841a0; not read here	inferred	none		
-0x48ecd0	149			ui	primitive		Plays a cinematic, reading EnableMusic and hiding the cursor	inferred	none	objectlayer/playermessages#notices	
+0x48ecd0	149			ui	primitive		Starts a cinematic sequence, hiding the cursor and scheduling its first shot	verified	one	uicamera/cinematic#starting-a-sequence	
 0x48ed70	91			ui	primitive		Runs GameUI.cpp code that calls 0x460410, SndInterfacePauseZoneMusic, SetCursorShown and 3 more; not read here	inferred	none		
-0x48edd0	32			ui	orchestration		Runs GameUI.cpp code that calls EndLoadingScreen, FrameScript_SignalEvent, 0x48edf0; not read here	inferred	none		
-0x48edf0	423			ui	primitive		Runs GameUI.cpp code that calls GetActiveCamera, 0x50c870, CM2Model::GetCamera and 11 more; not read here	inferred	none		
+0x48edd0	32			ui	orchestration		Signals CINEMATIC_START and plays the first shot, or ends the cinematic	verified	one	uicamera/cinematic#starting-a-sequence	
+0x48edf0	423			ui	primitive		Plays the shot in the shot row through the camera object	verified	one	uicamera/cinematic#playing-a-shot	
 0x48efa0	25			ui	orchestration		Runs GameUI.cpp code not read here	inferred	none		
-0x48efc0	32			ui	orchestration		Runs GameUI.cpp code that calls 0x4c0d10; not read here	inferred	none		
-0x48efe0	99			ui	primitive		Runs GameUI.cpp code that calls Sound::Stop, 0x48edf0; not read here	inferred	none		
-0x48f050	34			ui	orchestration		Runs GameUI.cpp code that calls Sound::Stop, 0x4c0d10; not read here	inferred	none		
-0x48f080	377			ui	primitive		Runs GameUI.cpp code that calls GetActiveCamera, FrameScript_SignalEvent, ClntObjMgrObjectPtr and 13 more; not read here	inferred	none		
+0x48efc0	32			ui	orchestration		Schedules the next shot when a shot's animation finishes	verified	one	uicamera/cinematic#stepping-and-ending	
+0x48efe0	99			ui	primitive		Plays the next shot of the sequence, or ends the cinematic	verified	one	uicamera/cinematic#stepping-and-ending	
+0x48f050	34			ui	orchestration		Stops the narration and schedules the end of the cinematic	verified	one	uicamera/cinematic#stepping-and-ending	
+0x48f080	377			ui	primitive		Ends a cinematic, restoring the music, the cursor and the zone channels	verified	one	uicamera/cinematic#stepping-and-ending	
 0x48f200	396			ui	primitive		Ends the loot window, releasing the held loot and showing ERR_LOOT_NO_UI where it applies	inferred	none	objectlayer/players#death	
 0x48f390	5			ui	orchestration		Runs GameUI.cpp code not read here	inferred	none		
 0x48f3a0	54			ui	primitive		Opens the loot window for an object, money and loot type	inferred	none	objectlayer/inventory#loot	
@@ -6940,7 +6940,7 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x491930	5			ui	orchestration		Runs GameUI.cpp code not read here	inferred	none		
 0x491940	30			ui	orchestration		Runs GameUI.cpp code not read here	inferred	none		
 0x491960	98			ui	primitive		Runs GameUI.cpp code that calls ClntObjMgrObjectPtr; not read here	inferred	none		
-0x4919d0	40			ui	orchestration		Runs GameUI.cpp code that calls 0x529fe0; not read here	inferred	none		
+0x4919d0	40	RefreshTooltipForUnit		ui	orchestration	void __fastcall (uint64_t *guid)	Rebuilds the tooltip when it still shows the unit the GUID names	verified	one	ui/mouseover#the-tooltip-stays-put	
 0x491a00	65			ui	orchestration		Marks the name of a GUID's unit dirty	inferred	none	objectlayer/playerfields#watchers-on-every-player	
 0x491a50	5	RefreshPortrait		ui	orchestration		Jumps to 0x524e10	verified	one	objectlayer/party#guild-tabards	
 0x491a60	1145			ui	primitive		Prints and signals an item received, created or looted	inferred	none	objectlayer/playermessages#item-push-bank-and-binding	
@@ -6959,22 +6959,22 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x4923b0	260			ui	primitive		Runs GameUI.cpp code that calls ClntObjMgrGetActivePlayer, ClntObjMgrObjectPtr, 0x4921c0 and 1 more; not read here	inferred	none		
 0x4924c0	190			ui	primitive		Runs GameUI.cpp code that calls ClntObjMgrObjectPtr, CGUnit_C::CanAssist_Unit, 0x4921c0; not read here	inferred	none		
 0x492580	76			ui	orchestration		Binds a clicked position through 0x6e60f0 for a click record whose +0xc is 1	inferred	none	spell/targeting#binding-a-clicked-location	
-0x4925d0	591			ui	primitive		Runs GameUI.cpp code that calls ClntObjMgrGetActivePlayer, ClntObjMgrObjectPtr and 11 more; not read here	inferred	none		
-0x492820	112			ui	orchestration		Runs GameUI.cpp code that calls ClntObjMgrGetActivePlayer, ClntObjMgrObjectPtr, 0x493540 and 1 more; not read here	inferred	none		
+0x4925d0	591	SelectObjectByClick		ui	primitive	void __stdcall (uint64_t guid)	Offers the payload to the clicked object, then makes it the target	verified	one	ui/mouseover#selecting-by-click	
+0x492820	112	InteractWithObjectByClick		ui	orchestration	void __stdcall (uint64_t guid)	Makes the clicked object the target and runs its interact virtual	verified	one	ui/mouseover#interacting-by-click	
 0x492890	552	PublishWorldMouseover		ui	orchestration	void __cdecl (uint32_t new_lo, uint32_t new_hi, uint32_t prev_lo, uint32_t prev_hi)	Fades the game tooltip when a mouseover ends and re-owns it to UIParent	verified	one	ui/hover#world-hover-and-its-tooltip	
-0x492b50	163			ui	primitive		Runs GameUI.cpp code that calls IsWrappingItem, 0x495190; not read here	inferred	none		
-0x492c00	31			ui	orchestration		Runs GameUI.cpp code that calls GetInputControl, CInputControl::AccumulateMotion; not read here	inferred	none		
-0x492c20	90			ui	orchestration		Rotates the placement or stops targeting for a world input whose +0x14 is 4	inferred	none	spell/targeting#placement-model-and-rotation	
+0x492b50	163	WorldButtonHook		ui	primitive	uint32_t __fastcall (void *event)	Clears the payload on a right press or sends the press to the world frame in mouselook	verified	one	ui/mouseover#the-world-input-hook	
+0x492c00	31	WorldMouseDeltaHook		ui	orchestration	uint32_t __fastcall (void *event)	Turns the camera for a mouse delta event and consumes it	verified	one	ui/mouseover#mouselook-and-the-pointer-feed	
+0x492c20	90			ui	orchestration		Rotates the placement or stops targeting for a world input whose +0x14 is 4	verified	one	ui/mouseover#the-right-button	
 0x492c80	3			ui	orchestration		Runs GameUI.cpp code not read here	inferred	none		
-0x492c90	73			ui	orchestration		Runs GameUI.cpp code that calls 0x495190, 0x492580, 0x493540; not read here	inferred	none		
-0x492ce0	68			ui	orchestration		Runs GameUI.cpp code that calls 0x495190, 0x4925d0, 0x492820; not read here	inferred	none		
-0x492d30	318			ui	primitive		Runs GameUI.cpp code that calls ClntObjMgrObjectPtr, CGUnit_C::CanAutoInteract and 4 more; not read here	inferred	none		
+0x492c90	73	WorldClickGround		ui	orchestration	void __fastcall (void *record)	Clears a payload by action, then tries the ground cast or the ground click	verified	one	ui/mouseover#payloads-on-the-world	
+0x492ce0	68	WorldClickObject		ui	orchestration	void __fastcall (void *record)	Clears a preview payload, then selects or interacts with the clicked object	verified	one	ui/mouseover#payloads-on-the-world	
+0x492d30	318	WorldClickNothing		ui	primitive	void __fastcall (void *record)	Handles a click on nothing: clears or confirms the payload, walks, deselects	verified	one	ui/mouseover#the-nothing-leg	
 0x492e70	21	PublishMouseoverRecord		ui	orchestration	void __thiscall (uint32_t *record)	Passes the four dwords of a record to the world mouseover publisher	verified	one	ui/hover#world-hover-and-its-tooltip	
 0x492e90	218			ui	primitive		Runs GameUI.cpp code that calls 0x494550, 0x4901e0, CGGameUI::Reload and 2 more; not read here	inferred	none		
 0x492f70	223	ApplyAutoUiScale		ui	primitive	void __fastcall (uint32_t width, uint32_t height, uint32_t force)	Sets UIParent to 768 over the height, capped for narrow windows and at least 0.9	verified	one	ui/uiscale#the-automatic-scale	
 0x493050	19			ui	orchestration		Runs GameUI.cpp code that calls GetInputControl, 0x514490; not read here	inferred	none		
-0x493070	28			ui	orchestration		Makes the world frame the hovered one: runs 0x483e80 on it, then CSimpleTop::SetMouseFocus	verified	one	ui/hover#freelook-and-the-removal	
-0x493090	27			ui	orchestration		Runs GameUI.cpp code that calls 0x483e70; not read here	inferred	none		
+0x493070	28	EnterWorldMouselook		ui	orchestration	void __cdecl (void)	Begins the world frame's mouselook and makes it the hovered frame	verified	one	ui/mouseover#mouselook	
+0x493090	27	LeaveWorldMouselook		ui	orchestration	void __cdecl (void)	Ends the world frame's mouselook and asks for a hover pick	verified	one	ui/mouseover#mouselook	
 0x4930b0	29			ui	orchestration		Runs GameUI.cpp code not read here	inferred	none		
 0x4930d0	233			ui	primitive		Runs GameUI.cpp code that calls 0x4931c0, ClntObjMgrObjectPtr, CGUnit_C::PlayNPCSound and 2 more; not read here	inferred	none		
 0x4931c0	104			ui	primitive		Sets or clears the unit the interaction windows belong to	inferred	none	objectlayer/players#death	
@@ -6993,7 +6993,7 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x494550	56	SetUiParentScale		ui	orchestration	void __stdcall (float scale)	Raises a scale to at least 0.64, sets it on UIParent with force and drains the layout queue	verified	one	ui/uiscale#applying-a-scale	
 0x494590	20	GetUiParentScale		ui	orchestration	float __cdecl ()	Returns UIParent's effective scale, or 1.0 without UIParent	verified	one	ui/uiscale#reading-the-scale	
 0x4945b0	35	CGGameUI::AddErrorMessage	idb	ui	primitive		Runs GameUI.cpp code that calls FrameScript_SignalEvent2; not read here	inferred	none		
-0x4945e0	18			ui	orchestration		Runs GameUI.cpp code that calls 0x614550; not read here	inferred	none		
+0x4945e0	18	HighlightMouseoverObject		ui	orchestration	void __fastcall (CGObject_C *object)	Sets highlight bit 1 on an object that has a model	verified	one	ui/mouseover#the-publisher	
 0x494600	164	SignalUnitCombat		ui	primitive		Signals UNIT_COMBAT for each unit token of a GUID with an action, a hit word, an amount and a school	verified	one	objectlayer/playercombat#spell-combat-log-messages	
 0x4946b0	27	SignalUnitCombatWound		ui	orchestration		Signals UNIT_COMBAT with WOUND, an amount, a school and marks	verified	one	objectlayer/playercombat#non-melee-damage	
 0x4946d0	77			ui	orchestration		Runs GameUI.cpp code that calls SignalUnitCombat; not read here	inferred	none		
@@ -7002,29 +7002,29 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x494770	3	SignalUnitCombatEnergize		ui	orchestration		Returns at once, dropping its stack argument	verified	one	objectlayer/playercombat#spell-combat-log-messages	
 0x494780	491			ui	primitive		Runs GameUI.cpp code that calls 0x4a6650, SStrCmpI, SMemFree and 6 more; not read here	inferred	none		
 0x494970	126			ui	orchestration		Runs GameUI.cpp code that calls SStrCmpI, SMemFree, SStrDupA; not read here	inferred	none		
-0x4949f0	83			ui	orchestration		Runs GameUI.cpp code that calls ClntObjMgrGetActivePlayer, ClntObjMgrObjectPtr, 0x4925d0 and 1 more; not read here	inferred	none		
+0x4949f0	83	ClickObjectByAction		ui	orchestration	void __stdcall (uint32_t action, uint64_t guid)	Selects for action 1 and interacts for action 4	verified	one	ui/mouseover#interacting-by-click	
 0x494a50	247	CheckActivePlayer		ui	orchestration		Answers whether an action of a kind may run; kinds 0 and 11 refuse a nonzero context and signal	verified	one	ui/protected#protected-action-gate	
-0x494b60	256	CGGameUI::SetCursorItem	idb	ui	primitive		Runs GameUI.cpp code that calls ClntObjMgrGetActivePlayer, ClntObjMgrObjectPtr, 0x495190 and 6 more; not read here	inferred	none		
-0x494c60	26			ui	orchestration		Runs GameUI.cpp code not read here	inferred	none		
-0x494c80	49			ui	orchestration		Returns the cursor's item with its bag and slot	inferred	none	objectlayer/interaction#world-clicks	
-0x494cc0	87			ui	orchestration		Runs GameUI.cpp code that calls 0x495190, SndInterfacePlayInterfaceSound, 0x5239d0; not read here	inferred	none		
-0x494d20	196			ui	orchestration		Runs GameUI.cpp code that calls 0x4e6870, 0x4e6990, 0x495190 and 3 more; not read here	inferred	none		
-0x494df0	22			ui	primitive		Drops what the cursor holds when it holds a spell	inferred	none	objectlayer/playercombat#unlearning-a-spell	
+0x494b60	256	CGGameUI::SetCursorItem	idb	ui	primitive	void __fastcall (uint32_t slot, uint32_t unlock, uint64_t guid, uint64_t containerGuid, uint32_t count)	Puts an item on the cursor, first clearing what it held	verified	one	ui/cursor#item-and-preview-setters	
+0x494c60	26	GetCursorItemGuid		ui	orchestration	uint64_t __cdecl (void)	Returns the item payload's GUID, 0 for any other kind	verified	one	ui/cursor#cursor-functions	
+0x494c80	49	GetCursorItemInfo		ui	orchestration	void __fastcall (uint64_t *guid, uint64_t *containerGuid, uint32_t *slot)	Returns the item payload's GUID, source container and slot without a kind test	verified	one	ui/cursor#cursor-functions	
+0x494cc0	87	SetCursorMoney		ui	orchestration	void __fastcall (uint32_t amount)	Puts an amount of money on the cursor, or clears it for 0	verified	one	ui/cursormoney#the-money-payload	
+0x494d20	196	SetCursorSpell		ui	orchestration	void __fastcall (uint32_t spellId)	Puts a spell on the cursor with its icon as the picture	verified	one	ui/cursor#payload-pictures-by-kind	
+0x494df0	22	ClearCursorIfSpell		ui	primitive	void __cdecl (void)	Drops the cursor when it holds a spell	verified	one	ui/cursor#payload-pictures-by-kind	
 0x494e10	6	GetCursorSpell		ui	orchestration		Returns a ui global dword the unlearn compares with the spell	verified	one	objectlayer/playercombat#unlearning-a-spell	
-0x494e20	285			ui	primitive		Runs GameUI.cpp code that calls 0x4bce50, 0x4bce60, SStrPrintf and 5 more; not read here	inferred	none		
+0x494e20	285	SetCursorPetAction		ui	primitive	void __fastcall (uint32_t actionWord)	Puts a pet action on the cursor with its icon as the picture	verified	one	ui/cursor#payload-pictures-by-kind	
 0x494f60	22			ui	unreached		Runs GameUI.cpp code not read here	inferred	none		
-0x494f80	107			ui	orchestration		Runs GameUI.cpp code that calls 0x4f0fd0, 0x495190, SndInterfacePlayInterfaceSound and 2 more; not read here	inferred	none		
+0x494f80	107	SetCursorMacro		ui	orchestration	void __fastcall (uint32_t macroId)	Puts a macro on the cursor when it has an icon	verified	one	ui/cursor#payload-pictures-by-kind	
 0x494ff0	22			ui	unreached		Runs GameUI.cpp code not read here	inferred	none		
-0x495010	190			ui	primitive		Runs GameUI.cpp code that calls 0x495190, 0x556aa0, SndInterfacePlayInterfaceSound and 1 more; not read here	inferred	none		
+0x495010	190	SetCursorStablePet		ui	primitive	void __fastcall (int32_t stableIndex)	Puts a stabled pet on the cursor with its family icon	verified	one	ui/cursor#payload-pictures-by-kind	
 0x4950d0	22			ui	unreached		Runs GameUI.cpp code not read here	inferred	none		
-0x4950f0	122	CGGameUI::SetCursorVirtualItem	idb	ui	orchestration		Runs GameUI.cpp code that calls 0x495190, CGActionBar::ShowGrid, 0x523b30 and 2 more; not read here	inferred	none		
+0x4950f0	122	CGGameUI::SetCursorVirtualItem	idb	ui	orchestration	void __fastcall (uint32_t entry, uint32_t displayId, uint32_t index, uint32_t mode)	Puts a preview payload of kind 5, 7 or 9 on the cursor	verified	one	ui/cursor#item-and-preview-setters	
 0x495170	6	GetCursorAmmo		ui	orchestration		Returns a ui global dword, the cursor ammo entry	verified	one	objectlayer/inventory#moving-items	
 0x495180	16	CGGameUI::GetCursorVirtualItem	idb	ui	orchestration		Runs GameUI.cpp code not read here	inferred	none		
-0x495190	321			ui	primitive		Drops what the cursor holds, by the kind it holds	inferred	none		
-0x495300	209			ui	orchestration		Asks to confirm destroying an item, or refuses one that cannot be destroyed	inferred	none	objectlayer/interaction#world-clicks	
-0x4953e0	62			ui	primitive		Runs GameUI.cpp code that calls ClntObjMgrObjectPtr, FrameScript_SignalEvent; not read here	inferred	none		
-0x495420	62			ui	primitive		Clears an item's lock bit and signals ITEM_LOCK_CHANGED	inferred	none	objectlayer/playerfields#inventory-and-money-changes	
-0x495460	297			ui	primitive		Runs GameUI.cpp code that calls ClntObjMgrGetActivePlayer, ClntObjMgrObjectPtr, FrameScript_SignalEvent; not read here	inferred	none		
+0x495190	321	ClearCursor		ui	primitive	void __fastcall (uint32_t unlock, uint32_t signalMoney)	Drops the cursor's payload by kind and signals CURSOR_UPDATE	verified	one	ui/cursor#clearing-the-cursor	
+0x495300	209	ConfirmDestroyCursorItem		ui	orchestration	void __cdecl (void)	Signals DELETE_ITEM_CONFIRM for the cursor item, or refuses an undestroyable one	verified	one	ui/cursor#delete_item_confirm	
+0x4953e0	62	LockItem		ui	primitive	void __stdcall (uint64_t guid)	Sets an item's pending-operation lock and signals ITEM_LOCK_CHANGED	verified	one	ui/cursor#the-item-lock	
+0x495420	62	UnlockItem		ui	primitive	void __stdcall (uint64_t guid)	Clears an item's pending-operation lock and signals ITEM_LOCK_CHANGED	verified	one	ui/cursor#the-item-lock	
+0x495460	297	UnlockAllItems		ui	primitive	void __cdecl (void)	Clears the lock of every item the player holds and signals ITEM_LOCK_CHANGED once	verified	one	ui/cursor#the-item-lock	
 0x495590	696			ui	primitive		Runs the game interface frame update, first zeroing the context nesting count	verified	one	ui/luastate#the-context-word	
 0x495850	72			ui	orchestration		Signals PLAYER_DEAD for the active player	inferred	none	objectlayer/playermessages#resurrection-and-summoning	
 0x4958a0	61			ui	orchestration		Runs GameUI.cpp code that calls ClntObjMgrGetActivePlayer, SetActiveMover; not read here	inferred	none		
@@ -7919,58 +7919,58 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x4b21c0	288			ui	primitive		Runs its object file code that calls FreeUint32Array, ReallocUint32Array, 0x4088f0 and 4 more; not read here	inferred	none		
 0x4b22e0	188			ui	primitive		Runs its object file code that calls SMemFree, FreeUint32Array; not read here	inferred	none		
 0x4b23a0	333			ui	primitive		Runs its object file code that calls SMemFree, 0x4b4b90, 0x4088f0; not read here	inferred	none		
-0x4b24f0	130			ui	primitive		Runs its object file code that calls ClntObjMgrGetActivePlayer, ClntObjMgrObjectPtr and 2 more; not read here	inferred	none		
-0x4b2580	46			ui	primitive		Runs its object file code not read here	inferred	none		
-0x4b25b0	1535			ui	primitive		Adds a spell to the spell book's display list; not read here	inferred	none	objectlayer/playercombat#learning-a-spell	
-0x4b2bb0	152			ui	primitive		Runs SpellBookFrame.cpp code not read here	inferred	none		
+0x4b24f0	130	GetSpellTabPosition		ui	primitive	uint32_t __fastcall (uint32_t spellId)	Returns the position of a spell's tab in the tab list, or the tab count when absent	verified	one	ui/spellbook#tabs	
+0x4b2580	46	CountBookSpellsBeforeTab		ui	primitive	uint32_t __fastcall (uint32_t tab)	Sums the spell counts of the tabs before a tab, 0 for tab 0 or a tab past the count	verified	one	ui/spellbook#tabs	
+0x4b25b0	1535	AddSpellToBook		ui	primitive	void __fastcall (uint32_t spellId, bool live, uint32_t oldId)	Marks a spell known, prints its learn line and enters it in its tab of the book	verified	one	ui/spellbook#adding-a-spell	
+0x4b2bb0	152	CompareFormSpells		ui	primitive	int __cdecl (uint32_t *a, uint32_t *b)	Orders two form bar spells by their stance bar order word, -1 last, then by id	verified	one	ui/petbar#form-list	
 0x4b2c50	760			ui	primitive		Removes a spell from the spell book's display list; not read here	inferred	none	objectlayer/playercombat#unlearning-a-spell	
 0x4b2f50	32	ReplaceSpellInBook		ui	orchestration		Calls 0x4b2c50(old, 1) and then 0x4b25b0(new, 1, old)	verified	one	objectlayer/playercombat#spell-book-messages	
 0x4b2f70	22			ui	orchestration		Runs SpellBookFrame.cpp code not read here	inferred	none		
 0x4b2f90	50			ui	primitive		Runs SpellBookFrame.cpp code not read here	inferred	none		
-0x4b2fd0	100			ui	orchestration		Sorts the spell book's lists; not read here	inferred	none	objectlayer/quests#quest-giver-status-refresh	
-0x4b3040	121			ui	orchestration		Runs SpellBookFrame.cpp code that calls SStrCmp; not read here	inferred	none		
-0x4b30c0	228			ui	primitive		Runs SpellBookFrame.cpp code that calls 0x4b24f0, SStrCmp, 0x4b3c30; not read here	inferred	none		
+0x4b2fd0	100	SortSpellBook		ui	orchestration	void __fastcall (bool sortBook, bool sortPet)	Sorts the tab list and book, or the pet book, then signals SPELLS_CHANGED	verified	one	ui/spellbook#book-order	
+0x4b3040	121	CompareBookTabs		ui	primitive	int __cdecl (void **a, void **b)	Orders two tab nodes: General first, then by SkillLine name	verified	one	ui/spellbook#book-order	
+0x4b30c0	228	CompareBookSpells		ui	primitive	int __cdecl (uint32_t *a, uint32_t *b)	Orders two book spells by tab position, name, numeric rank and rank string	verified	one	ui/spellbook#book-order	
 0x4b31b0	15	FireCooldownEvents		ui	orchestration	void __cdecl (void)	Signals ACTIONBAR_UPDATE_COOLDOWN, then SPELL_UPDATE_COOLDOWN	verified	one	spell/records#global-cooldown-start	
 0x4b31c0	144	FireUsableEvents		ui	orchestration		Refreshes the action and spell usable state, signalling ACTIONBAR_UPDATE_USABLE on a change, then SPELL_UPDATE_USABLE	verified	one	spell/cooldowns#cooldown-events-fired	
 0x4b3250	15			ui	orchestration		Calls a game UI function, then fires CURRENT_SPELL_CAST_CHANGED	verified	one	spell/cast#the-in-flight-spell	
-0x4b3260	123			ui	orchestration		Runs SpellBookFrame.cpp code that calls GetCursorSpell, 0x495190, 0x4bd160 and 2 more; not read here	inferred	none		
+0x4b3260	123	PickupBookSpell		ui	orchestration	void __fastcall (uint32_t index, bool pet)	Puts a book spell on the cursor, or drops a held copy of it back	verified	one	ui/spellbook#picking-up-a-book-spell	
 0x4b32e0	10			ui	orchestration		Runs SpellBookFrame.cpp code not read here	inferred	none		
 0x4b32f0	10			ui	orchestration		Runs SpellBookFrame.cpp code not read here	inferred	none		
-0x4b3300	764			ui	primitive		Runs SpellBookFrame.cpp code that calls GetCursorSpell, 0x4b3260, 0x495190 and 10 more; not read here	inferred	none		
-0x4b3600	235			ui	primitive		Runs SpellBookFrame.cpp code that calls ClntObjMgrGetActivePlayer, ClntObjMgrObjectPtr and 1 more; not read here	inferred	none		
-0x4b36f0	373			ui	primitive		Runs SpellBookFrame.cpp code that calls ClntObjMgrGetActivePlayer, ClntObjMgrObjectPtr; not read here	inferred	none		
+0x4b3300	764	CastBookSpell		ui	primitive	void __fastcall (uint32_t index, bool pet, uint64_t target)	Casts a book spell, toggles it off, stops targeting for it or swaps the held spell	verified	one	ui/spellbook#casting-a-book-spell	
+0x4b3600	235	IsBookSpellCurrent		ui	primitive	bool __fastcall (uint32_t index, bool pet)	Answers whether a book spell's trade skill or form is the current one	verified	one	ui/spellbook#checked-spells	
+0x4b36f0	373	BookSpellAuraActive		ui	primitive	bool __fastcall (uint32_t index, bool pet)	Answers whether a book spell's active icon is nonzero and its aura is on the player or pet	verified	one	ui/spellbook#casting-a-book-spell	
 0x4b3870	164	IsCastableAura		ui	primitive	uint32_t __fastcall (uint32_t spell)	Returns whether the spell is in the known-spell set or the pet list and avoids five aura effects	verified	one	ui/tooltipbuff#auras-of-other-units	
 0x4b3920	40	IsInSpellList		ui	primitive	uint32_t __fastcall (uint32_t spell)	Returns whether a spell id is in a counted array of spell ids	verified	one	ui/tooltipbuff#auras-of-other-units	
-0x4b3950	192			ui	primitive		Runs its object file code that calls SStrCopy, SStr::sub_64A450, sgetu8 and 1 more; not read here	inferred	none		
-0x4b3a10	346			ui	primitive		Runs its object file code that calls SStrCmpI; not read here	inferred	none		
+0x4b3950	192	SplitSpellNameAndResolve		ui	primitive	int __fastcall (const char *name, int *book)	Splits Name(Rank N) and returns the book slot of the spell it names	verified	one	ui/macros#name-to-spell	
+0x4b3a10	346	FindBookSpellSlot		ui	primitive	int __fastcall (const char *name, const char *rank, int *book)	Searches both books from the last slot down for a name and rank	verified	one	ui/macros#name-to-spell	
 0x4b3b70	5			ui	orchestration		Runs its object file code not read here	inferred	none		
 0x4b3b80	15			ui	primitive		Runs its object file code not read here	inferred	none		
 0x4b3b90	5			ui	orchestration		Runs its object file code not read here	inferred	none		
 0x4b3ba0	19			ui	primitive		Runs its object file code not read here	inferred	none		
-0x4b3bc0	46			ui	orchestration		Runs its object file code that calls 0x4b3950; not read here	inferred	none		
+0x4b3bc0	46	ResolveSpellName		ui	orchestration	uint32_t __fastcall (const char *name, int *book)	Returns the spell id a name and rank text resolve to, 0 for none	verified	one	ui/macros#name-to-spell	
 0x4b3bf0	60			ui	unreached		Runs its object file code that calls 0x4b3a10; not read here	inferred	none		
-0x4b3c30	119			ui	primitive		Runs its object file code that calls SStrLen, 0x6c9c30; not read here	inferred	none		
-0x4b3cb0	44	Script::GetNumSpellTabs	idb	ui	orchestration		Implements the Lua function GetNumSpellTabs	inferred	none		
-0x4b3ce0	353	Script::GetSpellTabInfo	idb	ui	primitive		Implements the Lua function GetSpellTabInfo	inferred	none		
-0x4b3e50	109	Script::GetSpellTexture	idb	ui	orchestration		Implements the Lua function GetSpellTexture	inferred	none		
-0x4b3ec0	144			ui	primitive		Runs its object file code that calls 0x6f34d0, lua_isstring, 0x6f3620 and 3 more; not read here	inferred	none		
-0x4b3f50	134			ui	orchestration		Runs its object file code that calls 0x4e6990; not read here	inferred	none		
-0x4b3fe0	191	Script::GetSpellName	idb	ui	orchestration		Implements the Lua function GetSpellName	inferred	none		
-0x4b40a0	214	Script::GetSpellCooldown	idb	ui	primitive		Implements the Lua function GetSpellCooldown	inferred	none		
-0x4b4180	191	Script::GetSpellAutocast	idb	ui	primitive		Implements the Lua function GetSpellAutocast	inferred	none		
-0x4b4240	93	Script::ToggleSpellAutocast	idb	ui	orchestration		Implements the Lua function ToggleSpellAutocast	inferred	none		
-0x4b42a0	71	Script::PickupSpell	idb	ui	orchestration		Implements the Lua function PickupSpell	inferred	none		
-0x4b42f0	116	Script::CastSpell	idb	ui	orchestration		Implements the Lua function CastSpell	inferred	none		
-0x4b4370	107	Script::IsCurrentCast	idb	ui	orchestration		Implements the Lua function IsCurrentCast	inferred	none		
-0x4b43e0	12	Script::UpdateSpells	idb	ui	orchestration		Implements the Lua function UpdateSpells	inferred	none		
-0x4b43f0	18	Script::PlayerHasSpells	idb	ui	orchestration		Implements the Lua function PlayerHasSpells	inferred	none		
-0x4b4410	194	Script::HasPetSpells	idb	ui	orchestration		Implements the Lua function HasPetSpells	inferred	none		
-0x4b44e0	162	Script::IsSpellPassive	idb	ui	orchestration		Implements the Lua function IsSpellPassive	inferred	none		
-0x4b4590	44	Script::GetNumShapeshiftForms	idb	ui	orchestration		Implements the Lua function GetNumShapeshiftForms	inferred	none		
-0x4b45c0	577	Script::GetShapeshiftFormInfo	idb	ui	primitive		Returns a form-bar entry's icon, name, active and castable values to Lua	inferred	none	spell/checks#usability-callers-and-events	
-0x4b4810	400	Script::CastShapeshiftForm	idb	ui	primitive		Implements the Lua function CastShapeshiftForm	inferred	none		
-0x4b49a0	266	Script::GetShapeshiftFormCooldown	idb	ui	primitive		Implements the Lua function GetShapeshiftFormCooldown	inferred	none		
-0x4b4ab0	130	Script::CastSpellByName	idb	ui	orchestration		Implements the Lua function CastSpellByName	inferred	none		
+0x4b3c30	119	ParseSpellRank		ui	primitive	uint32_t __fastcall (const void *spellRec)	Returns the first run of digits of a spell's rank string, else its spell level	verified	one	ui/spellbook#book-order	
+0x4b3cb0	44	Script::GetNumSpellTabs	idb	ui	orchestration	uint32_t __fastcall (lua_State *L)	Returns the number of spell book tabs	verified	one	ui/spellbook#tabs	
+0x4b3ce0	353	Script::GetSpellTabInfo	idb	ui	primitive	uint32_t __fastcall (lua_State *L)	Returns a tab's name, icon path, offset and spell count	verified	one	ui/spellbook#tab-info	
+0x4b3e50	109	Script::GetSpellTexture	idb	ui	orchestration	uint32_t __fastcall (lua_State *L)	Returns the icon path of a book slot's spell, or nil	verified	one	ui/spellbook#book-icons	
+0x4b3ec0	144	ReadBookSlotArgs		ui	primitive	bool __fastcall (lua_State *L, uint32_t *index, uint32_t *pet)	Reads a 1-based slot and a book type from Lua; fails outside 0 to 1023	verified	one	ui/spellbook#spell-book-lists	
+0x4b3f50	134	GetBookSpellIconPath		ui	orchestration	const char * __fastcall (uint32_t index, uint32_t pet)	Returns the icon path of a book slot's spell, the attack or ranged helper's for those spells	verified	one	ui/spellbook#book-icons	
+0x4b3fe0	191	Script::GetSpellName	idb	ui	orchestration	uint32_t __fastcall (lua_State *L)	Returns the name and rank strings of a book slot's spell	verified	one	ui/spellbook#getspellname	
+0x4b40a0	214	Script::GetSpellCooldown	idb	ui	primitive	uint32_t __fastcall (lua_State *L)	Returns a book spell's cooldown start and duration in seconds and its enable flag	verified	one	ui/spellbook#book-spell-functions	
+0x4b4180	191	Script::GetSpellAutocast	idb	ui	primitive	uint32_t __fastcall (lua_State *L)	Returns the pet autocast allowed and enabled flags of a book spell, as 1 or nil	verified	one	ui/spellbook#book-spell-functions	
+0x4b4240	93	Script::ToggleSpellAutocast	idb	ui	orchestration	uint32_t __fastcall (lua_State *L)	Toggles the autocast of a pet-book spell	verified	one	ui/spellbook#book-spell-functions	
+0x4b42a0	71	Script::PickupSpell	idb	ui	orchestration	uint32_t __fastcall (lua_State *L)	Picks up a book spell onto the cursor	verified	one	ui/spellbook#picking-up-a-book-spell	
+0x4b42f0	116	Script::CastSpell	idb	ui	orchestration	uint32_t __fastcall (lua_State *L)	Casts a book spell, on the player when the self flag is set	verified	one	ui/spellbook#casting-a-book-spell	
+0x4b4370	107	Script::IsCurrentCast	idb	ui	orchestration	uint32_t __fastcall (lua_State *L)	Returns 1 when a book spell is the current trade skill or form, else nil	verified	one	ui/spellbook#checked-spells	
+0x4b43e0	12	Script::UpdateSpells	idb	ui	orchestration	uint32_t __fastcall (lua_State *L)	Signals SPELLS_CHANGED without sorting	verified	one	ui/spellbook#book-order	
+0x4b43f0	18	Script::PlayerHasSpells	idb	ui	orchestration	uint32_t __fastcall (lua_State *L)	Returns 1	verified	one	ui/spellbook#book-spell-functions	
+0x4b4410	194	Script::HasPetSpells	idb	ui	primitive	uint32_t __fastcall (lua_State *L)	Returns the pet spell count and the class's pet token, or nil, nil	verified	one	ui/spellbook#book-spell-functions	
+0x4b44e0	162	Script::IsSpellPassive	idb	ui	orchestration	uint32_t __fastcall (lua_State *L)	Returns 1 when a book spell is passive, else nil	verified	one	ui/spellbook#book-spell-functions	
+0x4b4590	44	Script::GetNumShapeshiftForms	idb	ui	orchestration	uint32_t __fastcall (lua_State *L)	Returns the number of form bar spells	verified	one	ui/petbar#form-list	
+0x4b45c0	577	Script::GetShapeshiftFormInfo	idb	ui	primitive	uint32_t __fastcall (lua_State *L)	Returns a form bar entry's icon, name, active and castable values	verified	one	ui/petbar#form-info	
+0x4b4810	400	Script::CastShapeshiftForm	idb	ui	primitive	uint32_t __fastcall (lua_State *L)	Cancels or casts the form bar spell of an index	verified	one	ui/petbar#form-cooldown-and-cast	
+0x4b49a0	266	Script::GetShapeshiftFormCooldown	idb	ui	primitive	uint32_t __fastcall (lua_State *L)	Returns a form bar spell's cooldown start and duration in seconds and its enable flag	verified	one	ui/petbar#form-cooldown-and-cast	
+0x4b4ab0	130	Script::CastSpellByName	idb	ui	orchestration		Implements the Lua function CastSpellByName	verified	one	ui/macros#castspellbyname	
 0x4b4b40	33			ui	primitive		Runs its object file code that calls FrameScriptRegisterFunction; not read here	inferred	none		
 0x4b4b70	27			ui	primitive		Runs its object file code that calls FrameScript_UnregisterFunction; not read here	inferred	none		
 0x4b4b90	23			ui	orchestration		Runs its object file code that calls SMemFree; not read here	inferred	none		
@@ -8117,36 +8117,36 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x4b6140	246			ui	primitive		Runs UIBindings.cpp code that calls 0x4b88c0, SStrTokenize, SStrCmpI and 1 more; not read here	inferred	none		
 0x4b6240	107			ui	primitive		Runs UIBindings.cpp code that calls 0x42a670, __alloca_probe, 0x42a520 and 2 more; not read here	inferred	none		
 0x4b62b0	89			ui	orchestration		Runs UIBindings.cpp code that calls SFile::Load, 0x4b6140, 0x648700 and 1 more; not read here	inferred	none		
-0x4b6310	409			ui	primitive		Runs UIBindings.cpp code that calls CheckActivePlayer, 0x4b8f70, SStrHashHT and 7 more; not read here	inferred	none		
+0x4b6310	409	CopyBindingSet		ui	primitive	void __thiscall (CBindings *this, int from, int to)	Copies one binding set into another, marks it, and signals UPDATE_BINDINGS for the live set	verified	one	ui/keybindings#binding-sets	
 0x4b64b0	103			ui	primitive		Runs UIBindings.cpp code that calls 0x4b6310; not read here	inferred	none		
 0x4b6520	144			ui	orchestration		Runs UIBindings.cpp code that calls SStrPrintf, SStrLen, 0x42a5d0; not read here	inferred	none		
 0x4b65b0	41			ui	orchestration		Runs UIBindings.cpp code that calls 0x4b6520; not read here	inferred	none		
 0x4b65e0	80			ui	primitive		Runs UIBindings.cpp code that calls WriteAccountData; not read here	inferred	none		
-0x4b6630	114			ui	primitive		Runs UIBindings.cpp code that calls SStrLen, SStrCopy; not read here	inferred	none		
-0x4b66b0	638			ui	primitive		Runs UIBindings.cpp code that calls 0x4b6630, 0x41abb0, SStrPrintf and 2 more; not read here	inferred	none		
-0x4b6aa0	392			ui	primitive		Runs UIBindings.cpp code that calls 0x4b6630, SStrCopy, SStrPrintf; not read here	inferred	none		
+0x4b6630	114	AppendModifierPrefixes		ui	primitive	void __fastcall (uint32_t mask, char **cursor, int *remaining)	Appends ALT-, CTRL- and SHIFT- to a chord string for the held modifiers	verified	one	ui/keybindings#chord-names	
+0x4b66b0	638	BuildKeyChord		ui	primitive	bool __fastcall (void *keyEvent, char *dst, int size)	Builds the chord string of a key event, or fails for an unnamed or oversized one	verified	one	ui/keybindings#key-names	
+0x4b6aa0	392	BuildMouseChord		ui	primitive	bool __fastcall (void *mouseEvent, char *dst, int size)	Builds the chord string of a mouse button or wheel event	verified	one	ui/keybindings#mouse-names	
 0x4b6c50	311			ui	primitive		Runs UIBindings.cpp code that calls 0x4b98a0, 0x4b8900, 0x4b9b20 and 2 more; not read here	inferred	none		
 0x4b6d90	474			ui	primitive		Runs UIBindings.cpp code that calls 0x4b9260, 0x4b8900, 0x4b9340 and 7 more; not read here	inferred	none		
-0x4b6f70	1297			ui	primitive		Runs UIBindings.cpp code that calls SFile::Load, 0x661dd0, 0x6f2a30 and 15 more; not read here	inferred	none		
-0x4b7490	1020			ui	primitive		Runs UIBindings.cpp code that calls CheckActivePlayer, SStrCmpI, 0x4b7890 and 10 more; not read here	inferred	none		
-0x4b7890	251			ui	primitive		Runs its object file code that calls SStrCmp, sgetu8; not read here	inferred	none		
-0x4b7990	444			ui	primitive		Finds a key binding by command name and runs it with the executing flag set and the Lua context zeroed	verified	one	ui/protected#input-event-flags	
-0x4b7b50	304			ui	primitive		Runs its object file code that calls SStrHashHT, SStrCmpI, FrameScript::GetContext and 5 more; not read here	inferred	none		
+0x4b6f70	1297	LoadBindingsXml		ui	primitive	void __cdecl ()	Reads Bindings.xml into the command table, skipping debug and non-Windows nodes	verified	one	ui/keybindings#bindingsxml	
+0x4b7490	1020	SetKeyBinding		ui	primitive	bool __thiscall (CBindings *this, int set, const char *key, const char *action)	Normalizes a key's alias, validates it, then binds or unbinds it in a set	verified	one	ui/keybindings#setting-a-binding	
+0x4b7890	251	IsValidBindingKey		ui	primitive	bool __fastcall (const char *key)	Answers whether a key string is bindable	verified	one	ui/keybindings#valid-key-strings	
+0x4b7990	444	ExecuteBinding		ui	primitive	bool __thiscall (CBindings *this, const char *chord, bool isDown)	Finds the command of a chord with one modifier fallback and runs it	verified	one	ui/keybindings#dispatch	
+0x4b7b50	304	RunBindingCommand		ui	primitive	bool __thiscall (CBindings *this, const char *name, bool isDown)	Runs a command's script for a press, or for a release when it has runOnUp	verified	one	ui/keybindings#running-a-command	
 0x4b7c80	72			ui	orchestration		Runs its object file code not read here	inferred	none		
 0x4b7cd0	79			ui	unreached		Runs its object file code not read here	inferred	none		
 0x4b7d20	118			ui	orchestration		Runs its object file code that calls SStrCmpI; not read here	inferred	none		
 0x4b7da0	172			ui	primitive		Runs its object file code that calls SStrHashHT, SStrCmpI; not read here	inferred	none		
 0x4b7e50	119			ui	primitive		Runs its object file code that calls SStrCmpI; not read here	inferred	none		
 0x4b7ed0	110			ui	primitive		Runs its object file code that calls SStrCmpI; not read here	inferred	none		
-0x4b7f40	24	Script::GetNumBindings	idb	ui	orchestration		Implements the Lua function GetNumBindings	inferred	none		
-0x4b7f60	153	Script::GetBinding	idb	ui	primitive		Implements the Lua function GetBinding	inferred	none		
-0x4b8000	149	Script::SetBinding	idb	ui	orchestration		Implements the Lua function SetBinding	inferred	none		
-0x4b80a0	118	Script::GetBindingKey	idb	ui	primitive		Implements the Lua function GetBindingKey	inferred	none		
-0x4b8120	88	Script::GetBindingAction	idb	ui	orchestration		Implements the Lua function GetBindingAction	inferred	none		
-0x4b8180	125	Script::RunBinding	idb	ui	orchestration		Implements the Lua function RunBinding	inferred	none		
-0x4b8200	28	Script::GetCurrentBindingSet	idb	ui	orchestration		Implements the Lua function GetCurrentBindingSet	inferred	none		
-0x4b8220	59	Script::LoadBindings	idb	ui	orchestration		Implements the Lua function LoadBindings	inferred	none		
-0x4b8260	92	Script::SaveBindings	idb	ui	orchestration		Implements the Lua function SaveBindings	inferred	none		
+0x4b7f40	24	Script::GetNumBindings	idb	ui	orchestration	uint32_t __fastcall (lua_State *L)	Returns the number of displayed binding commands	verified	one	ui/keybindings#binding-functions	
+0x4b7f60	153	Script::GetBinding	idb	ui	primitive	uint32_t __fastcall (lua_State *L)	Returns a command's name and every key bound to it	verified	one	ui/keybindings#binding-functions	
+0x4b8000	149	Script::SetBinding	idb	ui	orchestration	uint32_t __fastcall (lua_State *L)	Binds a key to a command in the live set; 1 on success, nil on refusal	verified	one	ui/keybindings#setting-a-binding	
+0x4b80a0	118	Script::GetBindingKey	idb	ui	orchestration	uint32_t __fastcall (lua_State *L)	Returns every key bound to a command	verified	one	ui/keybindings#binding-functions	
+0x4b8120	88	Script::GetBindingAction	idb	ui	orchestration	uint32_t __fastcall (lua_State *L)	Returns the command bound to a key, or the empty string	verified	one	ui/keybindings#binding-functions	
+0x4b8180	125	Script::RunBinding	idb	ui	orchestration	uint32_t __fastcall (lua_State *L)	Runs a command by name as a press or a release	verified	one	ui/keybindings#binding-functions	
+0x4b8200	28	Script::GetCurrentBindingSet	idb	ui	orchestration	uint32_t __fastcall (lua_State *L)	Returns the current binding set number	verified	one	ui/keybindings#binding-sets	
+0x4b8220	59	Script::LoadBindings	idb	ui	orchestration	uint32_t __fastcall (lua_State *L)	Copies binding set 0 to 2 into the live set	verified	one	ui/keybindings#binding-sets	
+0x4b8260	92	Script::SaveBindings	idb	ui	orchestration	uint32_t __fastcall (lua_State *L)	Stores the live set into set 1 or 2 and makes it current	verified	one	ui/keybindings#binding-sets	
 0x4b82c0	30			ui	primitive		Runs its object file code that calls FrameScriptRegisterFunction; not read here	inferred	none		
 0x4b82e0	24			ui	primitive		Runs its object file code that calls FrameScript_UnregisterFunction; not read here	inferred	none		
 0x4b8300	5			ui	orchestration		Runs its object file code not read here	inferred	none		
@@ -8341,69 +8341,69 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x4bc6f0	161			ui	primitive		Runs its object file code that calls 0x4bc7e0, ClntObjMgrGetActivePlayer, ClntObjMgrObjectPtr and 2 more; not read here	inferred	none		
 0x4bc7a0	1			ui	orchestration		Runs its object file code not read here	inferred	none		
 0x4bc7b0	40			ui	orchestration		Runs its object file code that calls ClientServices::ClearMessageHandler; not read here	inferred	none		
-0x4bc7e0	321			ui	primitive		Runs PetInfo.cpp code that calls OsGetAsyncTimeMs, FrameScript_SignalEvent2 and 5 more; not read here	inferred	none		
-0x4bc930	7			ui	orchestration		Runs PetInfo.cpp code not read here	inferred	none		
-0x4bc940	27			ui	primitive		Runs PetInfo.cpp code not read here	inferred	none		
-0x4bc960	30			ui	primitive		Runs PetInfo.cpp code not read here	inferred	none		
-0x4bc980	22			ui	orchestration		Runs PetInfo.cpp code not read here	inferred	none		
-0x4bc9a0	514			ui	primitive		Runs PetInfo.cpp code that calls CheckActivePlayer, 0x4bcf70, CDataStore::PutUInt32 and 4 more; not read here	inferred	none		
-0x4bcbb0	254			ui	primitive		Runs PetInfo.cpp code that calls CheckActivePlayer, 0x4bcf70, 0x4bd190 and 5 more; not read here	inferred	none		
-0x4bccb0	327			ui	primitive		Runs PetInfo.cpp code that calls CheckActivePlayer, 0x4bcf70, 0x4bd160 and 5 more; not read here	inferred	none		
-0x4bce00	73			ui	primitive		Runs PetInfo.cpp code that calls 0x4bc9a0, 0x494e20; not read here	inferred	none		
-0x4bce50	11			ui	primitive		Runs PetInfo.cpp code not read here	inferred	none		
-0x4bce60	11			ui	primitive		Runs PetInfo.cpp code not read here	inferred	none		
-0x4bce70	10			ui	orchestration		Runs PetInfo.cpp code not read here	inferred	none		
-0x4bce80	10	CGPetInfo::HideGrid	idb	ui	orchestration		Runs PetInfo.cpp code not read here	inferred	none		
-0x4bce90	10	FirePetBarCooldownEvent		ui	orchestration	void __cdecl (void)	Signals PET_BAR_UPDATE_COOLDOWN	verified	one	spell/records#global-cooldown-start	
-0x4bcea0	195			ui	primitive		Runs PetInfo.cpp code that calls ClntObjMgrObjectPtr; not read here	inferred	none		
-0x4bcf70	312			ui	primitive		Runs PetInfo.cpp code that calls ClntObjMgrGetActivePlayer, ClntObjMgrObjectPtr; not read here	inferred	none		
+0x4bc7e0	321	SetPetGuid		ui	primitive	void __fastcall (uint32_t duration, uint64_t guid)	Stores the pet guid and expiry tick, signals UNIT_PET on a change, and always PET_BAR_UPDATE	verified	one	ui/petbar#pet-state	
+0x4bc930	7	SetPetModeState		ui	orchestration	void __fastcall (uint32_t state)	Stores the whole pet mode word	verified	one	ui/petbar#pet-state	
+0x4bc940	27	SetPetReaction		ui	primitive	void __fastcall (uint32_t reaction)	Replaces the reaction byte of the pet mode word and signals PET_BAR_UPDATE	verified	one	ui/petbar#pet-state	
+0x4bc960	30	SetPetCommand		ui	primitive	void __fastcall (uint32_t command)	Replaces the command byte of the pet mode word and signals PET_BAR_UPDATE	verified	one	ui/petbar#pet-state	
+0x4bc980	22	ClearPetBar		ui	orchestration	void __cdecl ()	Zeroes the ten pet bar slots and the raw pet spell count	verified	one	ui/petbar#pet-state	
+0x4bc9a0	514	SetPetBarSlot		ui	primitive	bool __fastcall (uint32_t slot, uint32_t *word, bool send)	Stores a dropped word in a pet slot, relocating a duplicate or displaced token, and sends the change	verified	one	ui/petbar#picking-up-and-dropping-pet-actions	
+0x4bcbb0	254	TogglePetSlotAutocast		ui	primitive	void __fastcall (uint32_t slot)	Flips the autocast bit of a pet slot, stores it, sends it and signals PET_BAR_UPDATE	verified	one	ui/petbar#pet-autocast	
+0x4bccb0	327	SendSpellAutocast		ui	primitive	void __fastcall (uint32_t spellId, bool enable)	Sends the autocast state of a pet-book spell	verified	one	ui/petbar#pet-autocast	
+0x4bce00	73	DropOnPetBar		ui	orchestration	void __fastcall (uint32_t *payload, uint32_t slot)	Drops a pet action payload on a slot and puts a displaced word back on the cursor	verified	one	ui/petbar#picking-up-and-dropping-pet-actions	
+0x4bce50	11	GetPetReactionToken		ui	primitive	char * __fastcall (uint32_t index)	Returns the 32-byte token string of a reaction without a bound	verified	one	ui/petbar#getpetactioninfo	
+0x4bce60	11	GetPetCommandToken		ui	primitive	char * __fastcall (uint32_t index)	Returns the 32-byte token string of a command without a bound	verified	one	ui/petbar#getpetactioninfo	
+0x4bce70	10	CGPetInfo::ShowGrid		ui	orchestration	void __cdecl ()	Signals PET_BAR_SHOWGRID	verified	one	ui/petbar#pet-events	
+0x4bce80	10	CGPetInfo::HideGrid	idb	ui	orchestration	void __cdecl ()	Signals PET_BAR_HIDEGRID	verified	one	ui/petbar#pet-events	
+0x4bce90	10	FirePetBarCooldownEvent		ui	orchestration	void __cdecl ()	Signals PET_BAR_UPDATE_COOLDOWN	verified	one	ui/petbar#pet-events	
+0x4bcea0	195	PetSpellAuraActive		ui	primitive	bool __fastcall (uint32_t spellId)	Answers whether a spell has an active icon and its aura is on the pet	verified	one	ui/petbar#getpetactioninfo	
+0x4bcf70	312	CanUsePetBar		ui	primitive	bool __cdecl ()	Answers whether the player controls the pet well enough to use its bar	verified	one	ui/petbar#the-pet-gate	
 0x4bd0b0	159			ui	primitive		Runs PetInfo.cpp code that calls 0x4befd0; not read here	inferred	none		
 0x4bd150	12			ui	orchestration		Runs PetInfo.cpp code not read here	inferred	none		
 0x4bd160	44			ui	primitive		Runs PetInfo.cpp code not read here	inferred	none		
-0x4bd190	64			ui	primitive		Runs PetInfo.cpp code not read here	inferred	none		
-0x4bd1d0	765			ui	primitive		Handles a pet bar action press; calls 0x6e2de0 with pet 1 for a spell	inferred	none	spell/records#global-cooldown-start	
-0x4bd4f0	58			ui	orchestration		Runs PetInfo.cpp code that calls 0x4bd1d0; not read here	inferred	none		
-0x4bd530	58			ui	orchestration		Runs PetInfo.cpp code that calls 0x4bd1d0; not read here	inferred	none		
-0x4bd570	58			ui	orchestration		Runs PetInfo.cpp code that calls 0x4bd1d0; not read here	inferred	none		
-0x4bd5b0	58			ui	orchestration		Runs PetInfo.cpp code that calls 0x4bd1d0; not read here	inferred	none		
-0x4bd5f0	58			ui	orchestration		Runs PetInfo.cpp code that calls 0x4bd1d0; not read here	inferred	none		
-0x4bd630	25			ui	orchestration		Runs PetInfo.cpp code that calls 0x4bd1d0; not read here	inferred	none		
-0x4bd650	144			ui	orchestration		Runs PetInfo.cpp code that calls CDataStore::PutUInt32, CDataStore::PutGuid and 2 more; not read here	inferred	none		
-0x4bd6e0	81			ui	orchestration		Runs PetInfo.cpp code that calls 0x4bd1d0, FrameScript_SignalEvent2; not read here	inferred	none		
-0x4bd740	244			ui	primitive		Runs PetInfo.cpp code that calls CheckActivePlayer, CDataStore::PutUInt32, CDataStore::PutGuid and 1 more; not read here	inferred	none		
-0x4bd840	324			ui	orchestration		Runs PetInfo.cpp code that calls ClntObjMgrObjectPtr, CGGameUI::DisplayError and 6 more; not read here	inferred	none		
-0x4bd990	381	OnPetSpells	idb	ui	primitive		Runs PetInfo.cpp code that calls 0x4bc980, ClearPetSpellHistory, CDataStore::GetGuid and 17 more; not read here	inferred	none		
-0x4bdb10	84	HandlePetModePacket	idb	ui	orchestration		Runs PetInfo.cpp code that calls CDataStore::GetGuid, CDataStore::GetUInt32, 0x4bc930 and 1 more; not read here	inferred	none		
-0x4bdb70	120	HandlePetActionFeedbackPacket	idb	ui	primitive		Runs PetInfo.cpp code that calls CDataStore::GetUInt8, CGGameUI::DisplayError; not read here	inferred	none		
-0x4bdc00	21	HandlePetBrokenPacket	idb	ui	orchestration		Runs PetInfo.cpp code that calls CGGameUI::DisplayError; not read here	inferred	none		
-0x4bdc20	42	Script::PetHasActionBar	idb	ui	primitive		Implements the Lua function PetHasActionBar	inferred	none		
-0x4bdc50	810	Script::GetPetActionInfo	idb	ui	primitive		Implements the Lua function GetPetActionInfo	inferred	none		
-0x4bdfa0	259	Script::GetPetActionCooldown	idb	ui	primitive		Implements the Lua function GetPetActionCooldown	inferred	none		
-0x4be0b0	45	Script::GetPetActionsUsable	idb	ui	orchestration		Implements the Lua function GetPetActionsUsable	inferred	none		
-0x4be0e0	152	Script::IsPetAttackActive	idb	ui	primitive		Implements the Lua function IsPetAttackActive	inferred	none		
-0x4be180	268	Script::PickupPetAction	idb	ui	primitive		Implements the Lua function PickupPetAction	inferred	none		
-0x4be290	149	Script::TogglePetAutocast	idb	ui	primitive		Implements the Lua function TogglePetAutocast	inferred	none		
-0x4be330	283	Script::CastPetAction	idb	ui	primitive		Implements the Lua function CastPetAction	inferred	none		
-0x4be450	8	Script::PetPassiveMode	idb	ui	orchestration		Implements the Lua function PetPassiveMode	inferred	none		
-0x4be460	8	Script::PetDefensiveMode	idb	ui	orchestration		Implements the Lua function PetDefensiveMode	inferred	none		
-0x4be470	8	Script::PetAggressiveMode	idb	ui	orchestration		Implements the Lua function PetAggressiveMode	inferred	none		
-0x4be480	8	Script::PetWait	idb	ui	orchestration		Implements the Lua function PetWait	inferred	none		
-0x4be490	8	Script::PetFollow	idb	ui	orchestration		Implements the Lua function PetFollow	inferred	none		
-0x4be4a0	13	Script::PetAttack	idb	ui	orchestration		Implements the Lua function PetAttack	inferred	none		
-0x4be4b0	8	Script::PetStopAttack	idb	ui	orchestration		Implements the Lua function PetStopAttack	inferred	none		
-0x4be4c0	8	Script::PetAbandon	idb	ui	orchestration		Implements the Lua function PetAbandon	inferred	none		
-0x4be4d0	8	Script::PetDismiss	idb	ui	orchestration		Implements the Lua function PetDismiss	inferred	none		
-0x4be4e0	20	Script::PetRename	idb	ui	orchestration		Implements the Lua function PetRename	inferred	none		
-0x4be500	114	Script::PetCanBeAbandoned	idb	ui	orchestration		Implements the Lua function PetCanBeAbandoned	inferred	none		
-0x4be580	114	Script::PetCanBeRenamed	idb	ui	orchestration		Implements the Lua function PetCanBeRenamed	inferred	none		
-0x4be600	97	Script::GetPetTimeRemaining	idb	ui	primitive		Implements the Lua function GetPetTimeRemaining	inferred	none		
-0x4be670	141	Script::HasPetUI	idb	ui	primitive		Implements the Lua function HasPetUI	inferred	none		
-0x4be700	134	Script::GetPetLoyalty	idb	ui	orchestration		Implements the Lua function GetPetLoyalty	inferred	none		
-0x4be790	166	Script::GetPetTrainingPoints	idb	ui	orchestration		Implements the Lua function GetPetTrainingPoints	inferred	none		
-0x4be840	180	Script::GetPetExperience	idb	ui	orchestration		Implements the Lua function GetPetExperience	inferred	none		
-0x4be900	268	Script::GetPetHappiness	idb	ui	primitive		Implements the Lua function GetPetHappiness	inferred	none		
-0x4bea10	243	Script::GetPetFoodTypes	idb	ui	primitive		Implements the Lua function GetPetFoodTypes	inferred	none		
-0x4beb10	119	Script::GetPetIcon	idb	ui	orchestration		Implements the Lua function GetPetIcon	inferred	none		
+0x4bd190	64	SyncPetSlotToSpellArray		ui	primitive	void __fastcall (uint32_t *slot)	Writes a type 1 slot word, flags included, into the matching raw pet spell	verified	one	ui/petbar#pet-autocast	
+0x4bd1d0	765	PressPetAction		ui	primitive	void __fastcall (uint32_t *word, uint64_t *target)	Carries out a pet bar click: mode bytes, aura cancel, cast, attack latch and CMSG_PET_ACTION	verified	one	ui/petbar#pressing-a-pet-action	
+0x4bd4f0	58	PressPetPassive		ui	orchestration	void __cdecl ()	Presses the pet action word 0x06000000 with a zero target	verified	one	ui/petbar#pet-commands-from-lua	
+0x4bd530	58	PressPetDefensive		ui	orchestration	void __cdecl ()	Presses the pet action word 0x06000001 with a zero target	verified	one	ui/petbar#pet-commands-from-lua	
+0x4bd570	58	PressPetAggressive		ui	orchestration	void __cdecl ()	Presses the pet action word 0x06000002 with a zero target	verified	one	ui/petbar#pet-commands-from-lua	
+0x4bd5b0	58	PressPetWait		ui	orchestration	void __cdecl ()	Presses the pet action word 0x07000000 with a zero target	verified	one	ui/petbar#pet-commands-from-lua	
+0x4bd5f0	58	PressPetFollow		ui	orchestration	void __cdecl ()	Presses the pet action word 0x07000001 with a zero target	verified	one	ui/petbar#pet-commands-from-lua	
+0x4bd630	25	PressPetAttack		ui	orchestration	void __fastcall (uint64_t *target)	Presses the pet action word 0x07000002 with the given target	verified	one	ui/petbar#pet-commands-from-lua	
+0x4bd650	144	SendPetStopAttack		ui	primitive	void __cdecl ()	Sends CMSG_PET_STOP_ATTACK, clears the attack latch and signals PET_BAR_UPDATE, when the latch is set	verified	one	ui/petbar#pet-commands-from-lua	
+0x4bd6e0	81	PressPetDismiss		ui	orchestration	void __cdecl ()	Presses the pet action word 0x07000003 and signals PET_DISMISS_START with 10000	verified	one	ui/petbar#pet-commands-from-lua	
+0x4bd740	244	SendPetAbandon		ui	primitive	void __cdecl ()	Sends CMSG_PET_ABANDON and, with the stable window open, the stable list request	verified	one	ui/petbar#abandon-and-rename	
+0x4bd840	324	SendPetRename		ui	orchestration	void __fastcall (const char *name)	Checks the pet and name, then sends CMSG_PET_RENAME with the name cut to 79 bytes	verified	one	ui/petbar#abandon-and-rename	
+0x4bd990	381	OnPetSpells	idb	ui	primitive	uint32_t __stdcall (uint32_t time, void *packet)	Reads SMSG_PET_SPELLS into the pet bar, pet book and pet cooldowns	verified	one	ui/petbar#the-pet-spell-message	
+0x4bdb10	84	HandlePetModePacket	idb	ui	orchestration	uint32_t __stdcall (uint32_t time, void *packet)	Stores the mode word of SMSG_PET_MODE when it names the cached pet	verified	one	ui/petbar#pet-mode-and-feedback-messages	
+0x4bdb70	120	HandlePetActionFeedbackPacket	idb	ui	orchestration	uint32_t __stdcall (uint32_t time, void *packet)	Shows the error message chosen by the one byte of opcode 0x2c6	verified	one	ui/petbar#pet-mode-and-feedback-messages	
+0x4bdc00	21	HandlePetBrokenPacket	idb	ui	orchestration	uint32_t __stdcall (uint32_t time, void *packet)	Shows error message 419 for opcode 0x2af	verified	one	ui/petbar#pet-mode-and-feedback-messages	
+0x4bdc20	42	Script::PetHasActionBar	idb	ui	orchestration	uint32_t __fastcall (lua_State *L)	Returns 1 when the pet guid is nonzero, else nil	verified	one	ui/petbar#the-pet-gate	
+0x4bdc50	810	Script::GetPetActionInfo	idb	ui	primitive	uint32_t __fastcall (lua_State *L)	Returns the name, rank, icon, token, active and autocast values of a pet bar slot	verified	one	ui/petbar#getpetactioninfo	
+0x4bdfa0	259	Script::GetPetActionCooldown	idb	ui	primitive	uint32_t __fastcall (lua_State *L)	Returns a pet spell slot's cooldown start and duration in seconds and its enable flag	verified	one	ui/petbar#pet-predicates-and-cooldowns	
+0x4be0b0	45	Script::GetPetActionsUsable	idb	ui	orchestration	uint32_t __fastcall (lua_State *L)	Returns 1 when the pet bar may be used, else nil	verified	one	ui/petbar#the-pet-gate	
+0x4be0e0	152	Script::IsPetAttackActive	idb	ui	primitive	uint32_t __fastcall (lua_State *L)	Returns a boolean: the slot is the attack command and the attack latch is set	verified	one	ui/petbar#pet-predicates-and-cooldowns	
+0x4be180	268	Script::PickupPetAction	idb	ui	primitive	uint32_t __fastcall (lua_State *L)	Drops a held pet action on a slot, or picks the slot's action up	verified	one	ui/petbar#picking-up-and-dropping-pet-actions	
+0x4be290	149	Script::TogglePetAutocast	idb	ui	primitive	uint32_t __fastcall (lua_State *L)	Drops a held pet action on a slot, or toggles the slot's autocast	verified	one	ui/petbar#pet-autocast	
+0x4be330	283	Script::CastPetAction	idb	ui	primitive	uint32_t __fastcall (lua_State *L)	Drops a held pet action on a slot, or presses the slot	verified	one	ui/petbar#pet-commands-from-lua	
+0x4be450	8	Script::PetPassiveMode	idb	ui	orchestration	uint32_t __fastcall (lua_State *L)	Presses the passive reaction	verified	one	ui/petbar#pet-commands-from-lua	
+0x4be460	8	Script::PetDefensiveMode	idb	ui	orchestration	uint32_t __fastcall (lua_State *L)	Presses the defensive reaction	verified	one	ui/petbar#pet-commands-from-lua	
+0x4be470	8	Script::PetAggressiveMode	idb	ui	orchestration	uint32_t __fastcall (lua_State *L)	Presses the aggressive reaction	verified	one	ui/petbar#pet-commands-from-lua	
+0x4be480	8	Script::PetWait	idb	ui	orchestration	uint32_t __fastcall (lua_State *L)	Presses the wait command	verified	one	ui/petbar#pet-commands-from-lua	
+0x4be490	8	Script::PetFollow	idb	ui	orchestration	uint32_t __fastcall (lua_State *L)	Presses the follow command	verified	one	ui/petbar#pet-commands-from-lua	
+0x4be4a0	13	Script::PetAttack	idb	ui	orchestration	uint32_t __fastcall (lua_State *L)	Presses the attack command on the current target	verified	one	ui/petbar#pet-commands-from-lua	
+0x4be4b0	8	Script::PetStopAttack	idb	ui	orchestration	uint32_t __fastcall (lua_State *L)	Stops the pet attack when the latch is set	verified	one	ui/petbar#pet-commands-from-lua	
+0x4be4c0	8	Script::PetAbandon	idb	ui	orchestration	uint32_t __fastcall (lua_State *L)	Sends the pet abandon message	verified	one	ui/petbar#abandon-and-rename	
+0x4be4d0	8	Script::PetDismiss	idb	ui	orchestration	uint32_t __fastcall (lua_State *L)	Presses the dismiss command and signals PET_DISMISS_START	verified	one	ui/petbar#pet-commands-from-lua	
+0x4be4e0	20	Script::PetRename	idb	ui	orchestration	uint32_t __fastcall (lua_State *L)	Sends the pet rename message for the first argument	verified	one	ui/petbar#abandon-and-rename	
+0x4be500	114	Script::PetCanBeAbandoned	idb	ui	orchestration	uint32_t __fastcall (lua_State *L)	Returns 1 when the player's pet may be abandoned, else nil	verified	one	ui/petbar#abandon-and-rename	
+0x4be580	114	Script::PetCanBeRenamed	idb	ui	orchestration	uint32_t __fastcall (lua_State *L)	Returns 1 when the player's pet may be renamed, else nil	verified	one	ui/petbar#abandon-and-rename	
+0x4be600	97	Script::GetPetTimeRemaining	idb	ui	primitive	uint32_t __fastcall (lua_State *L)	Returns the milliseconds left of the pet's expiry tick, or nil	verified	one	ui/petbar#other-pet-functions	
+0x4be670	141	Script::HasPetUI	idb	ui	primitive	uint32_t __fastcall (lua_State *L)	Returns whether the pet has a UI and whether it passes the hunter pet test	verified	one	ui/petbar#pet-predicates-and-cooldowns	
+0x4be700	134	Script::GetPetLoyalty	idb	ui	primitive	uint32_t __fastcall (lua_State *L)	Returns the loyalty level string of the pet, or nil	verified	one	ui/petbar#pet-stats	
+0x4be790	166	Script::GetPetTrainingPoints	idb	ui	primitive	uint32_t __fastcall (lua_State *L)	Returns the pet's total and spent training points	verified	one	ui/petbar#pet-stats	
+0x4be840	180	Script::GetPetExperience	idb	ui	primitive	uint32_t __fastcall (lua_State *L)	Returns the pet's current and next experience	verified	one	ui/petbar#pet-stats	
+0x4be900	268	Script::GetPetHappiness	idb	ui	primitive	uint32_t __fastcall (lua_State *L)	Returns the pet's happiness bucket, damage percent and loyalty rate	verified	one	ui/petbar#pet-stats	
+0x4bea10	243	Script::GetPetFoodTypes	idb	ui	primitive	uint32_t __fastcall (lua_State *L)	Returns the names of the food types the pet's family eats	verified	one	ui/petbar#other-pet-functions	
+0x4beb10	119	Script::GetPetIcon	idb	ui	orchestration	uint32_t __fastcall (lua_State *L)	Returns the icon string of the pet's creature family, or nil	verified	one	ui/petbar#other-pet-functions	
 0x4beb90	33			ui	primitive		Runs its object file code that calls FrameScriptRegisterFunction; not read here	inferred	none		
 0x4bebc0	27			ui	primitive		Runs its object file code that calls FrameScript_UnregisterFunction; not read here	inferred	none		
 0x4bebe0	5			ui	orchestration		Runs its object file code not read here	inferred	none		
@@ -8484,9 +8484,9 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x4c06f0	10	Script::CancelTradeAccept	idb	ui	orchestration		Implements the Lua function CancelTradeAccept	inferred	none		
 0x4c0700	67	Script::GetPlayerTradeMoney	idb	ui	primitive		Implements the Lua function GetPlayerTradeMoney	inferred	none		
 0x4c0750	50	Script::GetTargetTradeMoney	idb	ui	orchestration		Implements the Lua function GetTargetTradeMoney	inferred	none		
-0x4c0790	85	Script::PickupTradeMoney	idb	ui	orchestration		Implements the Lua function PickupTradeMoney	inferred	none		
-0x4c07f0	34	Script::AddTradeMoney	idb	ui	orchestration		Implements the Lua function AddTradeMoney	inferred	none		
-0x4c0820	63	Script::SetTradeMoney	idb	ui	orchestration		Implements the Lua function SetTradeMoney	inferred	none		
+0x4c0790	85	Script::PickupTradeMoney	idb	ui	orchestration		Implements the Lua function PickupTradeMoney	verified	one	ui/cursormoney#trade-money-from-the-cursor	
+0x4c07f0	34	Script::AddTradeMoney	idb	ui	orchestration		Implements the Lua function AddTradeMoney	verified	one	ui/cursormoney#trade-money-from-the-cursor	
+0x4c0820	63	Script::SetTradeMoney	idb	ui	orchestration		Implements the Lua function SetTradeMoney	verified	one	ui/cursormoney#trade-money-from-the-cursor	
 0x4c0860	30			ui	primitive		Runs its object file code that calls FrameScriptRegisterFunction; not read here	inferred	none		
 0x4c0880	24			ui	primitive		Runs its object file code that calls FrameScript_UnregisterFunction; not read here	inferred	none		
 0x4c08a0	5			ui	orchestration		Runs its object file code not read here	inferred	none		
@@ -8985,7 +8985,7 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x4c8f70	45	Script::PutItemInBackpack	idb	ui	orchestration		Implements the Lua function PutItemInBackpack	inferred	none		
 0x4c8fa0	69	Script::PickupBagFromSlot	idb	ui	orchestration		Implements the Lua function PickupBagFromSlot	inferred	none		
 0x4c8ff0	191	Script::CursorCanGoInSlot	idb	ui	orchestration		Implements the Lua function CursorCanGoInSlot	inferred	none		
-0x4c90b0	157	Script::ShowInventorySellCursor	idb	ui	orchestration		Implements the Lua function ShowInventorySellCursor	inferred	none		
+0x4c90b0	157	Script::ShowInventorySellCursor	idb	ui	orchestration		Implements the Lua function ShowInventorySellCursor	verified	one	ui/merchantcursor#bag-and-sheet-sell-cursors	
 0x4c9150	468	Script::SetInventoryPortaitTexture	idb	ui	primitive		Implements the Lua function SetInventoryPortaitTexture	inferred	none		
 0x4c9330	307	Script::GetGuildInfo	idb	ui	primitive		Implements the Lua function GetGuildInfo	inferred	none		
 0x4c9470	26			ui	orchestration		Runs PaperDollInfoFrame.cpp code that calls 0x515e50; not read here	inferred	none		
@@ -9707,7 +9707,7 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x4d85c0	409			ui	primitive		Runs ClassTrainerFrame.cpp code that calls SStrCmp; not read here	inferred	none		
 0x4d8760	240			ui	primitive		Runs ClassTrainerFrame.cpp code that calls SStrCmp; not read here	inferred	none		
 0x4d8850	340			ui	primitive		Runs ClassTrainerFrame.cpp code that calls SStrCmp; not read here	inferred	none		
-0x4d89b0	20	GetTrainerServiceRow		ui	primitive	void * __fastcall (uint32_t index)	Returns the trainer service row of an index, or 0 past the count	verified	one	ui/tooltipbuff#trainer-services	
+0x4d89b0	20	GetTrainerService		ui	orchestration	void * __fastcall (uint32_t index)	Returns the trainer service record at an index, or null past the count	verified	one	ui/spellbook#trainer-icons	
 0x4d89d0	148			ui	orchestration		Runs ClassTrainerFrame.cpp code that calls 0x4d89b0, CDataStore::PutUInt32 and 2 more; not read here	inferred	none		
 0x4d8a70	35			ui	primitive		Runs ClassTrainerFrame.cpp code that calls 0x4d89d0; not read here	inferred	none		
 0x4d8aa0	169			ui	primitive		Runs ClassTrainerFrame.cpp code that calls FrameScript_GetText; not read here	inferred	none		
@@ -9728,7 +9728,7 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x4d8f10	42	Script::GetTrainerSelectionIndex	idb	ui	primitive		Implements the Lua function GetTrainerSelectionIndex	inferred	none		
 0x4d8f40	16	Script::GetTrainerGreetingText	idb	ui	orchestration		Implements the Lua function GetTrainerGreetingText	inferred	none		
 0x4d8f50	481	Script::GetTrainerServiceIcon	idb	ui	primitive		Implements the Lua function GetTrainerServiceIcon	inferred	none		
-0x4d9140	19			ui	orchestration		Runs ClassTrainerFrame.cpp code that calls 0x4d7d40; not read here	inferred	none		
+0x4d9140	19	OnTrainerItemRecord		ui	orchestration	uint32_t __stdcall (void *record, bool ready)	Refreshes the trainer list when an item template arrives	verified	one	ui/spellbook#trainer-icons	
 0x4d9160	399	Script::GetTrainerServiceSkillLine	idb	ui	primitive		Implements the Lua function GetTrainerServiceSkillLine	inferred	none		
 0x4d92f0	170	Script::GetTrainerServiceCost	idb	ui	primitive		Implements the Lua function GetTrainerServiceCost	inferred	none		
 0x4d93a0	111	Script::GetTrainerServiceLevelReq	idb	ui	primitive		Implements the Lua function GetTrainerServiceLevelReq	inferred	none		
@@ -10315,76 +10315,76 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x4e4f10	19			ui	primitive		Runs its object file code not read here	inferred	none		
 0x4e4f30	5			ui	orchestration		Runs its object file code not read here	inferred	none		
 0x4e4f40	11			ui	orchestration		Runs its object file code not read here	inferred	none		
-0x4e4f50	58			ui	orchestration		Runs its object file code not read here	inferred	none		
-0x4e4f90	10			ui	orchestration		Runs its object file code that calls RefreshActionBarUsable; not read here	inferred	none		
+0x4e4f50	58	ResetActionBarState		ui	orchestration	void __cdecl ()	Zeroes the 120 slot words, item counts, usable and no-power flags and the bonus bar offset	verified	one	ui/actionbar#action-slots	
+0x4e4f90	10	RefreshActionBarOnEnterWorld		ui	orchestration	void __cdecl ()	Refreshes the usable flags, then jumps to the bonus bar offset update	verified	one	ui/actionbar#refreshing-the-flags	
 0x4e4fa0	1			ui	orchestration		Runs its object file code not read here	inferred	none		
 0x4e4fb0	1			ui	orchestration		Runs its object file code not read here	inferred	none		
-0x4e4fc0	98			ui	orchestration		Refreshes the shapeshift bar for the active player	inferred	none	objectlayer/playerfields#combo-points-form-and-far-sight	
-0x4e5030	29			ui	primitive		Runs its object file code that calls 0x4f0ec0; not read here	inferred	none		
-0x4e5050	480	GetActionSlotUsable		ui	primitive		Computes an action slot's usable and no-power pair, through 0x6e3d60 for a spell	inferred	none	spell/checks#usability-callers-and-events	
-0x4e5230	29			ui	orchestration		Runs ActionBarFrame.cpp code not read here	inferred	none		
-0x4e5250	177			ui	primitive		Runs ActionBarFrame.cpp code that calls DBCache_ItemStats_C_int_HASHKEY_INT_::GetRecord; not read here	inferred	none		
-0x4e5310	132			ui	primitive		Runs ActionBarFrame.cpp code that calls ClntObjMgrGetActivePlayer, ClntObjMgrObjectPtr and 1 more; not read here	inferred	none		
-0x4e53a0	513			ui	primitive		Runs ActionBarFrame.cpp code that calls GetCastItemGuidPtr, ClntObjMgrObjectPtr, 0x4e59b0 and 6 more; not read here	inferred	none		
-0x4e55b0	59			ui	primitive		Runs ActionBarFrame.cpp code that calls 0x4e5a50, GetAutoRepeatSpell; not read here	inferred	none		
-0x4e55f0	250			ui	primitive		Runs ActionBarFrame.cpp code that calls 0x4e5a50, ClntObjMgrGetActivePlayer, ClntObjMgrObjectPtr; not read here	inferred	none		
-0x4e56f0	212	GetActionSlotInRange		ui	orchestration		Computes an action slot's range answer through the range pre-check 0x6e4440	inferred	none	spell/checks#range-pre-check	
-0x4e5810	164			ui	primitive		Runs ActionBarFrame.cpp code that calls 0x4e5a50, ClntObjMgrGetActivePlayer and 2 more; not read here	inferred	none		
-0x4e58c0	10	CGActionBar::ShowGrid	idb	ui	orchestration		Runs ActionBarFrame.cpp code not read here	inferred	none		
-0x4e58d0	10	CGActionBar::HideGrid	idb	ui	orchestration		Runs ActionBarFrame.cpp code not read here	inferred	none		
-0x4e58e0	201			ui	primitive		Runs ActionBarFrame.cpp code that calls GetActionSlotUsable, CDataStore::PutUInt32 and 3 more; not read here	inferred	none		
-0x4e59b0	70			ui	orchestration		Runs ActionBarFrame.cpp code that calls 0x4e5a50; not read here	inferred	none		
-0x4e5a00	73			ui	orchestration		Runs ActionBarFrame.cpp code that calls 0x4e5a50; not read here	inferred	none		
-0x4e5a50	130			ui	primitive		Runs ActionBarFrame.cpp code that calls 0x4e5030; not read here	inferred	none		
-0x4e5ae0	158			ui	primitive		Runs ActionBarFrame.cpp code that calls DBCache_ItemStats_C_int_HASHKEY_INT_::GetRecord; not read here	inferred	none		
-0x4e5b80	19			ui	orchestration		Runs ActionBarFrame.cpp code that calls 0x4e5c70; not read here	inferred	none		
-0x4e5ba0	70			ui	primitive		Runs ActionBarFrame.cpp code that calls 0x4f0f40; not read here	inferred	none		
-0x4e5bf0	10			ui	orchestration		Signals event 214 through 0x703e50	verified	one	spell/targeting#the-binds-range-test	
-0x4e5c00	92	RefreshActionBarUsable		ui	orchestration		Recomputes the 120 action slots' usable pairs and signals ACTIONBAR_UPDATE_USABLE on a change	verified	one	spell/checks#usability-callers-and-events	
-0x4e5c60	10	FireActionBarCooldownEvent		ui	orchestration		Signals ACTIONBAR_UPDATE_COOLDOWN	verified	one	spell/cooldowns#cooldown-events-fired	
-0x4e5c70	80			ui	primitive		Refreshes the action slots of an item	inferred	none	objectlayer/inventory#visible-equipment	
-0x4e5cc0	76			ui	primitive		Runs ActionBarFrame.cpp code that calls 0x4e58e0; not read here	inferred	none		
-0x4e5d10	72			ui	primitive		Runs ActionBarFrame.cpp code that calls 0x4e5db0; not read here	inferred	none		
-0x4e5d60	79			ui	primitive		Sets an action slot's value and refreshes it	inferred	none	objectlayer/players#arrival-in-the-world	
-0x4e5db0	33			ui	orchestration		Runs ActionBarFrame.cpp code that calls 0x4e58e0; not read here	inferred	none		
-0x4e5de0	60			ui	primitive		Runs ActionBarFrame.cpp code that calls 0x4e5a50, 0x4e58e0; not read here	inferred	none		
-0x4e5e20	49			ui	primitive		Removes a spell from the action slots; not read here	inferred	none	objectlayer/playercombat#unlearning-a-spell	
-0x4e5e60	119			ui	primitive		Replaces a spell's action slots with its new rank	inferred	none	objectlayer/playercombat#spell-book-messages	
-0x4e5ee0	585			ui	primitive		Runs ActionBarFrame.cpp code that calls GetCursorSpell, 0x494c60, GetCursorAmmo and 17 more; not read here	inferred	none		
-0x4e6130	424			ui	primitive		Runs ActionBarFrame.cpp code that calls GetCursorSpell, 0x494c60, GetCursorAmmo and 8 more; not read here	inferred	none		
-0x4e62e0	1414			ui	primitive		Runs ActionBarFrame.cpp code that calls CheckActivePlayer, GetCursorSpell, GetCursorAmmo and 14 more; not read here	inferred	none		
-0x4e6870	279			ui	orchestration		Runs ActionBarFrame.cpp code that calls ClntObjMgrGetActivePlayer, ClntObjMgrObjectPtr and 3 more; not read here	inferred	none		
-0x4e6990	184			ui	orchestration		Runs ActionBarFrame.cpp code that calls ClntObjMgrGetActivePlayer, ClntObjMgrObjectPtr and 4 more; not read here	inferred	none		
-0x4e6a50	530			ui	primitive		Runs its object file code that calls ClientDBStringLookup, 0x4e59b0, 0x4e6870 and 9 more; not read here	inferred	none		
-0x4e6c70	43			ui	primitive		Runs its object file code not read here	inferred	none		
-0x4e6ca0	118			ui	primitive		Runs its object file code that calls GetItemCooldown, 0x4e5a50, GetSpellCooldown; not read here	inferred	none		
-0x4e6d20	175			ui	orchestration		Runs its object file code that calls ClntObjMgrGetActivePlayer, ClntObjMgrObjectPtr and 3 more; not read here	inferred	none		
-0x4e6dd0	53			ui	primitive		Runs its object file code that calls 0x4e5030; not read here	inferred	none		
-0x4e6e10	92	Script::GetActionTexture	idb	ui	primitive		Implements the Lua function GetActionTexture	inferred	none		
-0x4e6e70	96	Script::GetActionCount	idb	ui	primitive		Implements the Lua function GetActionCount	inferred	none		
-0x4e6ed0	188	Script::GetActionCooldown	idb	ui	primitive		Implements the Lua function GetActionCooldown	inferred	none		
-0x4e6f90	186	Script::GetActionAutocast	idb	ui	primitive		Implements the Lua function GetActionAutocast	inferred	none		
-0x4e7050	128	Script::GetActionText	idb	ui	primitive		Implements the Lua function GetActionText	inferred	none		
-0x4e70d0	97	Script::HasAction	idb	ui	primitive		Implements the Lua function HasAction	inferred	none		
-0x4e7140	99	Script::UseAction	idb	ui	primitive		Implements the Lua function UseAction	inferred	none		
+0x4e4fc0	98	UpdateBonusActionBar		ui	orchestration	void __cdecl ()	Sets the bonus bar offset from the player's form record and signals UPDATE_BONUS_ACTIONBAR	verified	one	ui/actionuse#bonus-bar-offset	
+0x4e5030	29	ActionSlotMacroExists		ui	primitive	bool __fastcall (uint32_t slot)	Answers whether a macro word's id is in the macro id table	verified	one	ui/actionbar#slot-to-spell	
+0x4e5050	480	GetActionSlotUsable		ui	primitive	bool __fastcall (uint32_t slot, uint32_t *noPower)	Computes an action slot's usable flag and no-power flag	verified	one	ui/actionbar#usable-and-no-power	
+0x4e5230	29	GetCachedActionUsable		ui	orchestration	bool __fastcall (uint32_t slot, uint32_t *noPower)	Returns a slot's cached usable flag and stores its cached no-power flag	verified	one	ui/actionbar#usable-and-no-power	
+0x4e5250	177	ActionSlotIsConsumable		ui	primitive	bool __fastcall (uint32_t slot)	Answers whether an item slot is ammo, thrown or has an on-use spell with negative charges	verified	one	ui/actionbar#cooldown-and-flags	
+0x4e5310	132	ActionSlotIsEquipped		ui	primitive	bool __fastcall (uint32_t slot)	Answers whether the item of an item slot is in the equipment slots	verified	one	ui/actionbar#cooldown-and-flags	
+0x4e53a0	513	ActionSlotIsCurrent		ui	primitive	bool __fastcall (uint32_t slot)	Answers whether a slot's item, attack, spell, trade skill or form is the current one	verified	one	ui/actionbar#checked-state	
+0x4e55b0	59	ActionSlotIsAutoRepeat		ui	primitive	bool __fastcall (uint32_t slot)	Answers whether a slot's book-0 spell is the auto-repeat spell	verified	one	ui/actionbar#repeat-and-attack-tests	
+0x4e55f0	250	ActionSlotAuraActive		ui	primitive	bool __fastcall (uint32_t slot)	Answers whether a spell's active icon is nonzero and its own aura is on the player or pet	verified	one	ui/actionbar#active-icon-test	
+0x4e56f0	212	GetActionSlotInRange		ui	primitive	bool __fastcall (uint32_t slot, uint32_t *inRange)	Computes a slot's range answer through the range pre-check 0x6e4440	verified	one	ui/actionbar#range	
+0x4e5810	164	ActionSlotHasRange		ui	primitive	bool __fastcall (uint32_t slot)	Answers whether a slot's spell has a nonzero minimum or maximum range	verified	one	ui/actionbar#range	
+0x4e58c0	10	CGActionBar::ShowGrid	idb	ui	orchestration	void __cdecl ()	Signals ACTIONBAR_SHOWGRID	verified	one	ui/actionbar#action-bar-events	
+0x4e58d0	10	CGActionBar::HideGrid	idb	ui	orchestration	void __cdecl ()	Signals ACTIONBAR_HIDEGRID	verified	one	ui/actionbar#action-bar-events	
+0x4e58e0	201	NotifyActionSlotChanged		ui	orchestration	void __fastcall (uint32_t slot, bool send, bool quiet)	Recomputes a slot's flags, optionally sends CMSG_SET_ACTION_BUTTON and signals ACTIONBAR_SLOT_CHANGED	verified	one	ui/actionbar#slot-changed	
+0x4e59b0	70	ActionSlotIsAttack		ui	primitive	bool __fastcall (uint32_t slot)	Answers whether a slot's spell has the attack effect as its first effect	verified	one	ui/actionbar#repeat-and-attack-tests	
+0x4e5a00	73	ActionSlotIsRangedRepeat		ui	primitive	bool __fastcall (uint32_t slot)	Answers whether a slot's spell uses the ranged slot and auto-repeats	verified	one	ui/actionbar#repeat-and-attack-tests	
+0x4e5a50	130	GetActionSlotSpell		ui	primitive	int32_t __fastcall (uint32_t slot, uint32_t *book)	Returns the spell a slot stands for and which book it comes from	verified	one	ui/actionbar#slot-to-spell	
+0x4e5ae0	158	GetItemSlotOnUseSpell		ui	primitive	int32_t __fastcall (uint32_t slot)	Returns the first on-use spell of an item slot's template, or 0	verified	one	ui/actionbar#slot-to-spell	
+0x4e5b80	19	OnActionItemRecord		ui	orchestration	uint32_t __stdcall (void *record, bool ready)	Recounts an item's action slots when its template arrives	verified	one	ui/actionbar#item-records-arriving	
+0x4e5ba0	70	GetMacroSlotSpell		ui	primitive	int32_t __fastcall (uint32_t slot, uint32_t *book)	Returns a macro slot's cached spell and book selector, or 0 without the record	verified	one	ui/actionbar#slot-to-spell	
+0x4e5bf0	10	FireActionBarStateEvent		ui	orchestration	void __cdecl ()	Signals ACTIONBAR_UPDATE_STATE	verified	one	ui/actionbar#action-bar-events	
+0x4e5c00	92	RefreshActionBarUsable		ui	primitive	void __cdecl ()	Recomputes the 120 slots' flags and signals ACTIONBAR_UPDATE_USABLE when any changed	verified	one	ui/actionbar#refreshing-the-flags	
+0x4e5c60	10	FireActionBarCooldownEvent		ui	orchestration	void __cdecl ()	Signals ACTIONBAR_UPDATE_COOLDOWN	verified	one	ui/actionbar#action-bar-events	
+0x4e5c70	80	RecountItemActionSlots		ui	primitive	void __fastcall (uint32_t entry)	Recounts an item entry and notifies every item slot holding it	verified	one	ui/actionbar#item-records-arriving	
+0x4e5cc0	76	NotifyMacroSlots		ui	primitive	void __fastcall (uint32_t macroId)	Notifies every slot holding a macro id without sending	verified	one	ui/actionbar#replacing-slots	
+0x4e5d10	72	ClearMacroSlots		ui	primitive	void __fastcall (uint32_t macroId)	Clears every slot holding a macro id	verified	one	ui/actionbar#replacing-slots	
+0x4e5d60	79	SetActionSlot		ui	primitive	void __fastcall (uint32_t slot, uint32_t word, bool send, bool quiet)	Stores a slot word, recounts an item word and notifies	verified	one	ui/actionbar#writing-a-slot	
+0x4e5db0	33	ClearActionSlot		ui	primitive	void __fastcall (uint32_t slot)	Stores 0 in a slot and notifies with a send	verified	one	ui/actionbar#writing-a-slot	
+0x4e5de0	60	NotifySpellSlots		ui	primitive	void __fastcall (uint32_t spellId)	Notifies every player-book slot standing for a spell without sending	verified	one	ui/actionbar#replacing-slots	
+0x4e5e20	49	ClearSpellSlots		ui	primitive	void __fastcall (uint32_t spellId)	Clears every slot standing for a spell	verified	one	ui/actionbar#replacing-slots	
+0x4e5e60	119	ReplaceActionSpell		ui	primitive	void __fastcall (uint32_t oldId, uint32_t newId)	Replaces a spell in the slots standing for it and in macro records	verified	one	ui/actionbar#replacing-slots	
+0x4e5ee0	585	UseActionSlot		ui	primitive	void __fastcall (uint32_t slot, bool placeFromCursor, bool onSelf)	Places, runs, casts, equips or uses what a slot holds	verified	one	ui/actionuse#using-an-action	
+0x4e6130	424	PickupActionSlot		ui	primitive	void __fastcall (uint32_t slot)	Puts a slot's content on the cursor and clears the slot	verified	one	ui/actionuse#picking-up-an-action	
+0x4e62e0	1414	PlaceOnActionSlot		ui	primitive	void __fastcall (uint32_t slot)	Stores the cursor's spell, item or macro in a slot, returning the old content to the cursor	verified	one	ui/actionuse#placing-an-action	
+0x4e6870	279	GetAttackIconPath		ui	primitive	const char * __cdecl ()	Returns the icon of the player's form or main-hand weapon, or Spell-Reset	verified	one	ui/actionbar#attack-and-ranged-icons	
+0x4e6990	184	GetRangedIconPath		ui	primitive	const char * __cdecl ()	Returns the icon of the equipped ranged weapon, or null	verified	one	ui/actionbar#attack-and-ranged-icons	
+0x4e6a50	530	GetActionSlotTexture		ui	primitive	const char * __fastcall (uint32_t slot)	Returns the icon path of an action slot, or null	verified	one	ui/actionbar#action-icon	
+0x4e6c70	43	GetActionSlotCount		ui	orchestration	uint32_t __fastcall (uint32_t slot)	Returns an item slot's cached count, else 0	verified	one	ui/actionbar#item-slot-counts	
+0x4e6ca0	118	GetActionSlotCooldown		ui	orchestration	void __fastcall (uint32_t slot, int32_t *start, int32_t *duration, uint32_t *enable)	Reads an item slot's or spell slot's cooldown triple	verified	one	ui/actionbar#cooldown-and-flags	
+0x4e6d20	175	CountItemForAction		ui	primitive	uint32_t __fastcall (uint32_t entry)	Counts an item's stacks or charges in the player's inventory	verified	one	ui/actionbar#item-slot-counts	
+0x4e6dd0	53	ActionSlotHasContent		ui	primitive	bool __fastcall (uint32_t slot)	Answers whether a slot holds a word, a macro word needing its macro to exist	verified	one	ui/actionbar#action-slots	
+0x4e6e10	92	Script::GetActionTexture	idb	ui	orchestration	uint32_t __fastcall (lua_State *L)	Returns the icon path of an action slot, or nil	verified	one	ui/actionbar#action-icon	
+0x4e6e70	96	Script::GetActionCount	idb	ui	orchestration	uint32_t __fastcall (lua_State *L)	Returns an item slot's cached count	verified	one	ui/actionbar#item-slot-counts	
+0x4e6ed0	188	Script::GetActionCooldown	idb	ui	orchestration	uint32_t __fastcall (lua_State *L)	Returns an action's cooldown start and duration in seconds, and its enable flag	verified	one	ui/actionbar#cooldown-and-flags	
+0x4e6f90	186	Script::GetActionAutocast	idb	ui	orchestration	uint32_t __fastcall (lua_State *L)	Returns the pet autocast allowed and enabled flags of an action's spell, as 1 or nil	verified	one	ui/actionbar#cooldown-and-flags	
+0x4e7050	128	Script::GetActionText	idb	ui	orchestration	uint32_t __fastcall (lua_State *L)	Returns a macro slot's macro name, else nil	verified	one	ui/actionbar#action-slots	
+0x4e70d0	97	Script::HasAction	idb	ui	orchestration	uint32_t __fastcall (lua_State *L)	Returns 1 when an action slot has content, else nil	verified	one	ui/actionbar#action-slots	
+0x4e7140	99	Script::UseAction	idb	ui	orchestration	uint32_t __fastcall (lua_State *L)	Reads a slot, cursor flag and self flag and uses the action	verified	one	ui/actionuse#using-an-action	
 0x4e71b0	5			ui	orchestration		Runs its object file code not read here	inferred	none		
 0x4e71c0	15			ui	primitive		Runs its object file code not read here	inferred	none		
-0x4e71d0	64	Script::PickupAction	idb	ui	primitive		Implements the Lua function PickupAction	inferred	none		
+0x4e71d0	64	Script::PickupAction	idb	ui	orchestration	uint32_t __fastcall (lua_State *L)	Picks up the action of a slot	verified	one	ui/actionuse#picking-up-an-action	
 0x4e7210	5			ui	orchestration		Runs its object file code not read here	inferred	none		
 0x4e7220	19			ui	primitive		Runs its object file code not read here	inferred	none		
-0x4e7240	64	Script::PlaceAction	idb	ui	primitive		Implements the Lua function PlaceAction	inferred	none		
-0x4e7280	97	Script::IsAttackAction	idb	ui	primitive		Implements the Lua function IsAttackAction	inferred	none		
-0x4e72f0	97	Script::IsCurrentAction	idb	ui	primitive		Implements the Lua function IsCurrentAction	inferred	none		
-0x4e7360	97	Script::IsAutoRepeatAction	idb	ui	primitive		Implements the Lua function IsAutoRepeatAction	inferred	none		
-0x4e73d0	148	Script::IsUsableAction	idb	ui	primitive		Implements the Lua function IsUsableAction	inferred	none		
-0x4e7470	97	Script::IsConsumableAction	idb	ui	primitive		Implements the Lua function IsConsumableAction	inferred	none		
-0x4e74e0	97	Script::IsEquippedAction	idb	ui	primitive		Implements the Lua function IsEquippedAction	inferred	none		
-0x4e7550	127	Script::IsActionInRange	idb	ui	primitive		Implements the Lua function IsActionInRange	inferred	none		
-0x4e75d0	79	Script::ActionHasRange	idb	ui	primitive		Implements the Lua function ActionHasRange	inferred	none		
-0x4e7620	44	Script::GetBonusBarOffset	idb	ui	orchestration		Implements the Lua function GetBonusBarOffset	inferred	none		
-0x4e7650	13	Script::ChangeActionBarPage	idb	ui	orchestration		Implements the Lua function ChangeActionBarPage	inferred	none		
-0x4e7660	116	Script::GetActionBarToggles	idb	ui	primitive		Implements the Lua function GetActionBarToggles	inferred	none		
-0x4e76e0	155	Script::SetActionBarToggles	idb	ui	primitive		Implements the Lua function SetActionBarToggles	inferred	none		
+0x4e7240	64	Script::PlaceAction	idb	ui	orchestration	uint32_t __fastcall (lua_State *L)	Places the cursor's payload on a slot	verified	one	ui/actionuse#placing-an-action	
+0x4e7280	97	Script::IsAttackAction	idb	ui	orchestration	uint32_t __fastcall (lua_State *L)	Returns 1 when an action slot is an attack action, else nil	verified	one	ui/actionbar#repeat-and-attack-tests	
+0x4e72f0	97	Script::IsCurrentAction	idb	ui	orchestration	uint32_t __fastcall (lua_State *L)	Returns 1 when an action slot is the current one, else nil	verified	one	ui/actionbar#checked-state	
+0x4e7360	97	Script::IsAutoRepeatAction	idb	ui	orchestration	uint32_t __fastcall (lua_State *L)	Returns 1 when an action slot is the auto-repeat spell, else nil	verified	one	ui/actionbar#repeat-and-attack-tests	
+0x4e73d0	148	Script::IsUsableAction	idb	ui	orchestration	uint32_t __fastcall (lua_State *L)	Returns the cached usable and no-power flags of an action slot, each 1 or nil	verified	one	ui/actionbar#usable-and-no-power	
+0x4e7470	97	Script::IsConsumableAction	idb	ui	orchestration	uint32_t __fastcall (lua_State *L)	Returns 1 when an action slot is consumable, else nil	verified	one	ui/actionbar#cooldown-and-flags	
+0x4e74e0	97	Script::IsEquippedAction	idb	ui	orchestration	uint32_t __fastcall (lua_State *L)	Returns 1 when an action slot's item is equipped, else nil	verified	one	ui/actionbar#cooldown-and-flags	
+0x4e7550	127	Script::IsActionInRange	idb	ui	orchestration	uint32_t __fastcall (lua_State *L)	Returns an action slot's range answer as nil, 0 or 1	verified	one	ui/actionbar#range	
+0x4e75d0	79	Script::ActionHasRange	idb	ui	orchestration	uint32_t __fastcall (lua_State *L)	Returns 1 when an action slot's spell has a range, else nil	verified	one	ui/actionbar#range	
+0x4e7620	44	Script::GetBonusBarOffset	idb	ui	orchestration	uint32_t __fastcall (lua_State *L)	Returns the bonus bar offset	verified	one	ui/actionuse#bonus-bar-offset	
+0x4e7650	13	Script::ChangeActionBarPage	idb	ui	orchestration	uint32_t __fastcall (lua_State *L)	Signals ACTIONBAR_PAGE_CHANGED and returns nothing	verified	one	ui/actionbar#action-bar-events	
+0x4e7660	116	Script::GetActionBarToggles	idb	ui	orchestration	uint32_t __fastcall (lua_State *L)	Returns four 1-or-nil values from the active player's bar toggle byte	verified	one	ui/actionuse#bar-toggles	
+0x4e76e0	155	Script::SetActionBarToggles	idb	ui	orchestration	uint32_t __fastcall (lua_State *L)	Sends CMSG_SET_ACTIONBAR_TOGGLES built from four flag arguments	verified	one	ui/actionuse#bar-toggles	
 0x4e7780	33			ui	primitive		Runs its object file code that calls FrameScriptRegisterFunction; not read here	inferred	none		
 0x4e77b0	27			ui	primitive		Runs its object file code that calls FrameScript_UnregisterFunction; not read here	inferred	none		
 0x4e77d0	10			ui	orchestration		Runs its object file code that calls 0x4e77e0; not read here	inferred	none		
@@ -10606,8 +10606,8 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x4eae10	229			ui	orchestration		Runs MinimapFrame.cpp code that calls GetTextureDeviceObject, 0x589e80, GxRsSet and 3 more; not read here	inferred	none		
 0x4eaf00	319			ui	primitive		Runs MinimapFrame.cpp code that calls 0x4eb910; not read here	inferred	none		
 0x4eb040	123			ui	orchestration		Runs MinimapFrame.cpp code that calls CSimpleFrame::OnFrameUpdate, CM2Model::IsLoaded and 4 more; not read here	inferred	none		
-0x4eb0c0	1983	MinimapHoverTooltip		ui	primitive		Builds and shows the tooltip of the elements under the cursor	inferred	none	ui/minimapblips#dots-cadence-and-tooltip	
-0x4eb880	46	MinimapOnLeave		ui	orchestration	void __thiscall (uint32_t removal)	Hides the game tooltip, then runs the base leave	verified	one	ui/hover#nameplate-and-minimap-notifies	
+0x4eb0c0	1983			ui	primitive		Runs MinimapFrame.cpp code that calls CSimpleFrame::OnMouseMove, CLayoutFrame::GetRect and 5 more; not read here	verified	one	ui/mouse#what-the-pointer-is-tested-against	
+0x4eb880	46	CMinimap::OnLeave		ui	orchestration	void __thiscall (CMinimap *this, uint32_t flag)	Hides the game tooltip, then leaves the minimap frame	verified	one	ui/mouse#enter-and-leave	
 0x4eb8b0	36			ui	orchestration		Runs MinimapFrame.cpp code that calls CSimpleFrame::UpdateScale; not read here	inferred	none		
 0x4eb8e0	34			ui	orchestration		Runs MinimapFrame.cpp code not read here	inferred	none		
 0x4eb910	639			ui	primitive		Runs MinimapFrame.cpp code that calls 0x4ef370, 0x4ead90; not read here	inferred	none		
@@ -10722,53 +10722,53 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x4efda0	23			ui	orchestration		Runs its object file code not read here	inferred	none		
 0x4efdc0	12			ui	orchestration		Runs its object file code that calls _atexit; not read here	inferred	none		
 0x4efdd0	47			ui	primitive		Runs its object file code that calls SMemFree; not read here	inferred	none		
-0x4efe00	397			ui	primitive		Runs its object file code that calls SStrTokenize, SStrPrintf, FrameScript_GetText and 4 more; not read here	inferred	none		
-0x4eff90	23			ui	orchestration		Runs its object file code not read here	inferred	none		
-0x4effb0	219			ui	primitive		Runs UIMacros.cpp code that calls 0x4f2430, 0x4f1f00, SMemFree; not read here	inferred	none		
-0x4f0090	399			ui	primitive		Runs UIMacros.cpp code that calls 0x401470, 0x648990, SStrPrintf and 5 more; not read here	inferred	none		
-0x4f0220	303			ui	primitive		Runs its object file code that calls SStrLen, SStrCmpI, 0x64a420 and 2 more; not read here	inferred	none		
-0x4f0350	402			ui	primitive		Runs its object file code that calls SStrLen, SStrCmpI, SStrCopy and 4 more; not read here	inferred	none		
-0x4f04f0	237			ui	primitive		Runs its object file code that calls 0x64a420, SStrCmpI, SStrDupA and 1 more; not read here	inferred	none		
-0x4f05e0	27			ui	orchestration		Runs its object file code that calls SStrCmpI; not read here	inferred	none		
-0x4f0600	1129			ui	primitive		Runs its object file code that calls 0x42a670, __alloca_probe, 0x42a520 and 14 more; not read here	inferred	none		
-0x4f0a70	35			ui	orchestration		Runs its object file code that calls ReadAccountData; not read here	inferred	none		
-0x4f0aa0	447			ui	primitive		Runs its object file code that calls SStrPrintf, SStrTokenize, SStrPack and 2 more; not read here	inferred	none		
-0x4f0c60	54			ui	orchestration		Runs its object file code that calls WriteAccountData; not read here	inferred	none		
-0x4f0ca0	56			ui	orchestration		Runs its object file code that calls 0x4efe00; not read here	inferred	none		
-0x4f0ce0	76			ui	orchestration		Runs its object file code that calls 0x4efe00; not read here	inferred	none		
-0x4f0d30	218			ui	primitive		Runs its object file code that calls __alloca_probe, _qsort, FrameScript_SignalEvent; not read here	inferred	none		
-0x4f0e10	33			ui	primitive		Runs its object file code that calls SStrCmpI; not read here	inferred	none		
-0x4f0e40	106			ui	primitive		Runs its object file code not read here	inferred	none		
-0x4f0eb0	16			ui	orchestration		Runs its object file code not read here	inferred	none		
-0x4f0ec0	21			ui	primitive		Runs its object file code not read here	inferred	none		
-0x4f0ee0	91			ui	orchestration		Runs its object file code that calls SStrCmpI; not read here	inferred	none		
-0x4f0f40	84			ui	primitive		Runs its object file code not read here	inferred	none		
-0x4f0fa0	35			ui	primitive		Runs its object file code that calls 0x4f0ee0; not read here	inferred	none		
-0x4f0fd0	55			ui	primitive		Runs its object file code that calls 0x4f0f40, SStrPrintf; not read here	inferred	none		
-0x4f1010	613			ui	primitive		Runs its object file code that calls 0x4f2730, 0x4f2430, 0x4f1f00 and 6 more; not read here	inferred	none		
-0x4f1280	186			ui	primitive		Runs its object file code that calls SStrCopy, 0x4f1550, 0x4efe00 and 3 more; not read here	inferred	none		
-0x4f1340	281			ui	primitive		Runs its object file code that calls 0x4e5d10; not read here	inferred	none		
-0x4f1460	98			ui	primitive		Runs its object file code not read here	inferred	none		
-0x4f14d0	12			ui	unreached		Runs its object file code that calls 0x4f0ee0; not read here	inferred	none		
-0x4f14e0	111			ui	orchestration		Runs its object file code that calls SStrTokenize, FrameScript_SignalEvent2; not read here	inferred	none		
-0x4f1550	84			ui	primitive		Runs its object file code that calls SStrCopy, sgetu8; not read here	inferred	none		
-0x4f15b0	346	Script::CreateMacro	idb	ui	primitive		Implements the Lua function CreateMacro	inferred	none		
-0x4f1710	80	Script::GetNumMacros	idb	ui	orchestration		Implements the Lua function GetNumMacros	inferred	none		
-0x4f1760	238	Script::GetMacroInfo	idb	ui	orchestration		Implements the Lua function GetMacroInfo	inferred	none		
-0x4f1850	89	Script::DeleteMacro	idb	ui	orchestration		Implements the Lua function DeleteMacro	inferred	none		
-0x4f18b0	313	Script::EditMacro	idb	ui	primitive		Implements the Lua function EditMacro	inferred	none		
-0x4f19f0	64	Script::GetNumMacroIcons	idb	ui	orchestration		Implements the Lua function GetNumMacroIcons	inferred	none		
-0x4f1a30	171	Script::GetMacroIconInfo	idb	ui	primitive		Implements the Lua function GetMacroIconInfo	inferred	none		
-0x4f1ae0	75	Script::PickupMacro	idb	ui	orchestration		Implements the Lua function PickupMacro	inferred	none		
-0x4f1b30	91	Script::GetMacroIndexByName	idb	ui	primitive		Implements the Lua function GetMacroIndexByName	inferred	none		
-0x4f1b90	30			ui	primitive		Runs its object file code that calls FrameScriptRegisterFunction; not read here	inferred	none		
-0x4f1bb0	24			ui	primitive		Runs its object file code that calls FrameScript_UnregisterFunction; not read here	inferred	none		
+0x4efe00	397	MACRONODE::DeriveBoundSpell		ui	primitive	void __thiscall (MACRONODE *this)	Derives the bound spell and book from the body's first cast line	verified	one	ui/macros#the-bound-spell	
+0x4eff90	23	InitMacroIdCounters		ui	orchestration	void __cdecl (void)	Sets each scope's last macro id to its base	verified	one	ui/macros#macro-records	
+0x4effb0	219	ClearMacros		ui	primitive	void __cdecl (void)	Frees every macro record and the icon list and zeroes the counts	verified	one	ui/macros#macro-records	
+0x4f0090	399	BuildMacroIconList		ui	primitive	void __cdecl (void)	Builds the sorted, deduplicated macro icon list from archives and folders	verified	one	ui/macros#macro-icons	
+0x4f0220	303	AddMacroIconFromListfile		ui	primitive		Adds a listfile line's basename when it names a Spell_ or Ability_ icon	verified	one	ui/macros#macro-icons	
+0x4f0350	402	AddMacroIconFromBasePath		ui	primitive		Adds a base-path file's basename when it names a Spell_ or Ability_ icon	verified	one	ui/macros#macro-icons	
+0x4f04f0	237	AddMacroIconFromWorkingDir		ui	primitive		Adds a working-directory icon file's basename, any name	verified	one	ui/macros#macro-icons	
+0x4f05e0	27	CompareMacroIconNames		ui	orchestration		Compares two icon basenames without case	verified	one	ui/macros#macro-icons	
+0x4f0600	1129	LoadMacroFiles		ui	primitive	void __fastcall (int localFile, int cacheFile, uint32_t scope)	Reads a scope's two macro files into records	verified	one	ui/macros#loading-macro-files	
+0x4f0a70	35	RegisterMacroFileReaders		ui	orchestration	void __cdecl (void)	Registers the macro file reader for the account and character scopes	verified	one	ui/macros#loading-macro-files	
+0x4f0aa0	447	SaveMacroFiles		ui	primitive	void __fastcall (int localFile, int cacheFile, uint32_t scope)	Writes a scope's records to its local and cache files	verified	one	ui/macros#macro-files	
+0x4f0c60	54	SaveMacrosIfDirty		ui	orchestration	void __cdecl (void)	Clears the save flag and writes both scopes when it was set	verified	one	ui/macros#macro-files	
+0x4f0ca0	56	DeriveAllBoundSpells		ui	orchestration	void __cdecl (void)	Derives the bound spell of every macro	verified	one	ui/macros#when-the-bound-spell-is-derived	
+0x4f0ce0	76	DeriveUnresolvedBoundSpells		ui	orchestration	void __cdecl (void)	Derives the bound spell of macros unresolved or in the pet book	verified	one	ui/macros#when-the-bound-spell-is-derived	
+0x4f0d30	218	RebuildMacroOrder		ui	primitive	void __cdecl (void)	Sorts each scope by name into the position table and signals UPDATE_MACROS	verified	one	ui/macros#macro-order	
+0x4f0e10	33	CompareMacroNames		ui	primitive		Compares two macro records' names without case	verified	one	ui/macros#macro-order	
+0x4f0e40	106	GetMacroByPosition		ui	primitive	MACRONODE *__fastcall (uint32_t position)	Returns the macro at a position, null for 36 and up or an empty entry	verified	one	ui/macros#macro-order	
+0x4f0eb0	16	GetMacroIdByPosition		ui	orchestration	uint32_t __fastcall (uint32_t position)	Returns the id at a position, 0 for 36 and up	verified	one	ui/macros#macro-order	
+0x4f0ec0	21	GetMacroPositionById		ui	primitive	int __fastcall (uint32_t id)	Returns the position holding an id, -1 for none	verified	one	ui/macros#macro-order	
+0x4f0ee0	91	FindMacroByName		ui	orchestration	MACRONODE *__fastcall (const char *name)	Returns the first macro in list order whose name matches without case	verified	one	ui/macros#macro-records	
+0x4f0f40	84	FindMacroById		ui	primitive	MACRONODE *__fastcall (uint32_t id)	Returns the macro with an id from the hash table, null for none	verified	one	ui/macros#macro-records	
+0x4f0fa0	35	GetMacroPositionByName		ui	primitive	int __fastcall (const char *name)	Returns the position of the first macro of a name, -1 for none	verified	one	ui/macros#macro-order	
+0x4f0fd0	55	FormatMacroIconPath		ui	primitive	void __fastcall (uint32_t id, char *dest, uint32_t size)	Formats the icon directory and a macro's basename into a buffer	verified	one	ui/macros#macro-order	
+0x4f1010	613	CreateMacroRecord		ui	primitive	uint32_t __fastcall (const char *name, const char *icon, const char *body, uint32_t local, uint32_t scope)	Creates a macro and returns its id, 0 when refused	verified	one	ui/macros#macro-records	
+0x4f1280	186	EditMacroRecord		ui	primitive	void __fastcall (uint32_t id, const char *name, const char *icon, const char *body, uint32_t local)	Replaces the given fields of a macro and sets its local flag	verified	one	ui/macros#editing-a-macro	
+0x4f1340	281	DeleteMacroRecord		ui	primitive	void __fastcall (uint32_t id)	Removes a macro, clears the action slots holding it and rebuilds the order	verified	one	ui/macros#macro-functions	
+0x4f1460	98	RunMacroById		ui	primitive	void __fastcall (uint32_t id)	Finds a macro by id and runs it	verified	one	ui/macros#running-a-macro	
+0x4f14d0	12	RunMacroByName		ui	unreached	void __fastcall (const char *name)	Finds a macro by name and runs it	verified	one	ui/macros#running-a-macro	
+0x4f14e0	111	RunMacro		ui	orchestration	void __fastcall (MACRONODE *macro)	Signals EXECUTE_CHAT_LINE once per nonempty body line	verified	one	ui/macros#running-a-macro	
+0x4f1550	84	SetMacroBody		ui	primitive	void __fastcall (MACRONODE *macro, const char *body)	Copies a body into a macro, cut to 256 characters	verified	one	ui/macros#macro-records	
+0x4f15b0	346	Script::CreateMacro	idb	ui	primitive		Implements the Lua function CreateMacro	verified	one	ui/macros#creating-a-macro	
+0x4f1710	80	Script::GetNumMacros	idb	ui	orchestration		Implements the Lua function GetNumMacros	verified	one	ui/macros#macro-functions	
+0x4f1760	238	Script::GetMacroInfo	idb	ui	orchestration		Implements the Lua function GetMacroInfo	verified	one	ui/macros#macro-functions	
+0x4f1850	89	Script::DeleteMacro	idb	ui	orchestration		Implements the Lua function DeleteMacro	verified	one	ui/macros#macro-functions	
+0x4f18b0	313	Script::EditMacro	idb	ui	primitive		Implements the Lua function EditMacro	verified	one	ui/macros#editing-a-macro	
+0x4f19f0	64	Script::GetNumMacroIcons	idb	ui	orchestration		Implements the Lua function GetNumMacroIcons	verified	one	ui/macros#macro-icons	
+0x4f1a30	171	Script::GetMacroIconInfo	idb	ui	primitive		Implements the Lua function GetMacroIconInfo	verified	one	ui/macros#macro-icons	
+0x4f1ae0	75	Script::PickupMacro	idb	ui	orchestration		Implements the Lua function PickupMacro	verified	one	ui/macros#macro-functions	
+0x4f1b30	91	Script::GetMacroIndexByName	idb	ui	primitive		Implements the Lua function GetMacroIndexByName	verified	one	ui/macros#macro-functions	
+0x4f1b90	30	RegisterMacroFunctions		ui	primitive	void __cdecl (void)	Registers the nine macro Lua functions	verified	one	ui/macros#macro-functions	
+0x4f1bb0	24	UnregisterMacroFunctions		ui	primitive	void __cdecl (void)	Unregisters the nine macro Lua functions	verified	one	ui/macros#macro-functions	
 0x4f1bd0	5			ui	orchestration		Runs its object file code not read here	inferred	none		
 0x4f1be0	15			ui	primitive		Runs its object file code not read here	inferred	none		
 0x4f1bf0	5			ui	orchestration		Runs its object file code not read here	inferred	none		
 0x4f1c00	19			ui	primitive		Runs its object file code not read here	inferred	none		
 0x4f1c20	117			ui	orchestration		Runs its object file code that calls 0x4f2400, SMemFree; not read here	inferred	none		
-0x4f1ca0	214			ui	primitive		Runs its object file code that calls SMemAlloc; not read here	inferred	none		
+0x4f1ca0	214	AllocMacroRecord		ui	primitive		Allocates a 0x56c-byte macro record with its text fields cleared	verified	one	ui/macros#macro-records	
 0x4f1d80	189			ui	primitive		Runs its object file code that calls 0x4f1f00, 0x4f1f40, SMemFree; not read here	inferred	none		
 0x4f1e40	190			ui	primitive		Runs its object file code that calls 0x4f2430, 0x4f1f00, 0x4f1fd0 and 1 more; not read here	inferred	none		
 0x4f1f00	60			ui	primitive		Runs its object file code not read here	inferred	none		
@@ -11276,7 +11276,7 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x4f9b30	1085	Script::PickupContainerItem		ui	primitive		Passes a container item to 0x495d60 while the flag word wants an item	inferred	none	spell/targeting#flag-word-predicates	
 0x4f9f70	358	Script::SplitContainerItem	idb	ui	primitive		Implements the Lua function SplitContainerItem	inferred	none		
 0x4fa0e0	889	Script::UseContainerItem	idb	ui	primitive		Implements the Lua function UseContainerItem	inferred	none		
-0x4fa460	142	Script::ShowContainerSellCursor	idb	ui	orchestration		Implements the Lua function ShowContainerSellCursor	inferred	none		
+0x4fa460	142	Script::ShowContainerSellCursor	idb	ui	orchestration		Implements the Lua function ShowContainerSellCursor	verified	one	ui/merchantcursor#bag-and-sheet-sell-cursors	
 0x4fa4f0	374	Script::SetBagPortaitTexture	idb	ui	primitive		Implements the Lua function SetBagPortaitTexture	inferred	none		
 0x4fa670	290	Script::GetBagName	idb	ui	primitive		Implements the Lua function GetBagName	inferred	none		
 0x4fa7a0	30			ui	primitive		Runs its object file code that calls FrameScriptRegisterFunction; not read here	inferred	none		
@@ -11334,10 +11334,10 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x4fac50	72			ui	orchestration		Runs its object file code that calls ClntObjMgrGetActivePlayer, ClntObjMgrSetObjectMirrorHandler; not read here	inferred	none		
 0x4faca0	23			ui	orchestration		Runs its object file code that calls 0x4fafd0, FrameScript_SignalEvent; not read here	inferred	none		
 0x4facc0	35			ui	orchestration		Runs its object file code that calls 0x4fadf0, ClntObjMgrGetActivePlayer and 1 more; not read here	inferred	none		
-0x4facf0	174			ui	primitive		Opens the merchant window for a vendor's list and signals MERCHANT_SHOW; not read here	inferred	none	objectlayer/inventory#vendors	
+0x4facf0	174	OpenMerchantWindow		ui	primitive	void __fastcall (void *rows, uint32_t count, uint64_t vendorGuid)	Replaces the vendor's rows and GUID and signals MERCHANT_SHOW, leaving the cursor	verified	one	ui/merchantcursor#client-faults	
 0x4fada0	8			ui	orchestration		Runs its object file code that calls 0x4fb0f0; not read here	inferred	none		
-0x4fadb0	62			ui	primitive		Runs MerchantFrame.cpp code that calls ClntObjMgrObjectPtr; not read here	inferred	none		
-0x4fadf0	126			ui	primitive		Runs MerchantFrame.cpp code that calls 0x4931c0, FrameScript_SignalEvent, GetCursorAmmo and 3 more; not read here	inferred	none		
+0x4fadb0	62	MerchantCanRepair		ui	primitive	uint32_t __cdecl (void)	Returns 1 when the open vendor's NPC flags have the repair bit	verified	one	ui/merchantcursor#the-repair-cursor	
+0x4fadf0	126	CloseMerchantWindow		ui	primitive	void __cdecl (void)	Closes the vendor session, signals MERCHANT_CLOSED and drops a vendor payload	verified	one	ui/merchantcursor#merchant-close	
 0x4fae70	87			ui	primitive		Runs MerchantFrame.cpp code that calls FrameScript_SignalEvent; not read here	inferred	none		
 0x4faed0	96			ui	primitive		Runs MerchantFrame.cpp code that calls DBCache_ItemStats_C_int_HASHKEY_INT_::GetRecord; not read here	inferred	none		
 0x4faf30	145	GetItemRepairCost		ui	primitive	int32_t __fastcall (void *item)	Returns an item's repair cost scaled by one minus the open merchant's discount	verified	one	ui/tooltipitemfoot#results-of-the-item-methods	
@@ -11351,15 +11351,15 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x4fb570	13			ui	orchestration		Runs its object file code that calls FrameScript_SignalEvent; not read here	inferred	none		
 0x4fb580	239	Script::GetMerchantItemLink	idb	ui	primitive		Implements the Lua function GetMerchantItemLink	inferred	none		
 0x4fb670	228	Script::GetMerchantItemMaxStack	idb	ui	primitive		Implements the Lua function GetMerchantItemMaxStack	inferred	none		
-0x4fb760	240	Script::PickupMerchantItem	idb	ui	primitive		Implements the Lua function PickupMerchantItem	inferred	none		
+0x4fb760	240	Script::PickupMerchantItem	idb	ui	primitive		Implements the Lua function PickupMerchantItem	verified	one	ui/merchantcursor#picking-up-a-merchant-item	
 0x4fb850	247	Script::BuyMerchantItem	idb	ui	primitive		Implements the Lua function BuyMerchantItem	inferred	none		
 0x4fb950	295	Script::BuybackItem	idb	ui	primitive		Implements the Lua function BuybackItem	inferred	none		
-0x4fba80	45	Script::CanMerchantRepair	idb	ui	orchestration		Implements the Lua function CanMerchantRepair	inferred	none		
-0x4fbab0	244	Script::ShowMerchantSellCursor	idb	ui	primitive		Implements the Lua function ShowMerchantSellCursor	inferred	none		
-0x4fbbb0	272	Script::ShowBuybackSellCursor	idb	ui	primitive		Implements the Lua function ShowBuybackSellCursor	inferred	none		
-0x4fbcc0	53	Script::ShowRepairCursor	idb	ui	orchestration		Implements the Lua function ShowRepairCursor	inferred	none		
-0x4fbd00	33	Script::HideRepairCursor	idb	ui	orchestration		Implements the Lua function HideRepairCursor	inferred	none		
-0x4fbd30	46	Script::InRepairMode	idb	ui	orchestration		Implements the Lua function InRepairMode	inferred	none		
+0x4fba80	45	Script::CanMerchantRepair	idb	ui	orchestration		Implements the Lua function CanMerchantRepair	verified	one	ui/merchantcursor#the-repair-cursor	
+0x4fbab0	244	Script::ShowMerchantSellCursor	idb	ui	primitive		Implements the Lua function ShowMerchantSellCursor	verified	one	ui/merchantcursor#merchant-sell-cursors	
+0x4fbbb0	272	Script::ShowBuybackSellCursor	idb	ui	primitive		Implements the Lua function ShowBuybackSellCursor	verified	one	ui/merchantcursor#merchant-sell-cursors	
+0x4fbcc0	53	Script::ShowRepairCursor	idb	ui	orchestration		Implements the Lua function ShowRepairCursor	verified	one	ui/merchantcursor#the-repair-cursor	
+0x4fbd00	33	Script::HideRepairCursor	idb	ui	orchestration		Implements the Lua function HideRepairCursor	verified	one	ui/merchantcursor#the-repair-cursor	
+0x4fbd30	46	Script::InRepairMode	idb	ui	orchestration		Implements the Lua function InRepairMode	verified	one	ui/merchantcursor#the-repair-cursor	
 0x4fbd60	638	Script::GetRepairAllCost	idb	ui	primitive		Implements the Lua function GetRepairAllCost	inferred	none		
 0x4fbfe0	371	Script::RepairAllItems	idb	ui	primitive		Implements the Lua function RepairAllItems	inferred	none		
 0x4fc160	76	Script::GetNumBuybackItems	idb	ui	primitive		Implements the Lua function GetNumBuybackItems	inferred	none		
@@ -11451,7 +11451,7 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x4fd9f0	42	Script::GetTradeSkillSelectionIndex	idb	ui	primitive		Implements the Lua function GetTradeSkillSelectionIndex	inferred	none		
 0x4fda20	190	Script::GetTradeSkillCooldown	idb	ui	primitive		Implements the Lua function GetTradeSkillCooldown	inferred	none		
 0x4fdae0	330	Script::GetTradeSkillIcon	idb	ui	primitive		Implements the Lua function GetTradeSkillIcon	inferred	none		
-0x4fdc30	21			ui	orchestration		Runs its object file code that calls 0x4fca20; not read here	inferred	none		
+0x4fdc30	21	OnTradeSkillItemRecord		ui	orchestration	uint32_t __stdcall (void *record, bool ready)	Rebuilds the trade skill window's list when an item template arrives	verified	one	ui/spellbook#recipe-icons	
 0x4fdc50	234	Script::GetTradeSkillNumMade	idb	ui	primitive		Implements the Lua function GetTradeSkillNumMade	inferred	none		
 0x4fdd40	383	Script::GetTradeSkillLine	idb	ui	primitive		Implements the Lua function GetTradeSkillLine	inferred	none		
 0x4fdec0	5310	Script::GetTradeSkillItemStats	idb	ui	primitive		Implements the Lua function GetTradeSkillItemStats	inferred	none		
@@ -12183,172 +12183,172 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x50b230	27			unassigned			Runs its object file code not read here	inferred	none		
 0x50b250	27			unassigned			Runs its object file code not read here	inferred	none		
 0x50b270	27			unassigned			Runs its object file code not read here	inferred	none		
-0x50b290	5			uicamera			Runs its object file code not read here	inferred	none		
-0x50b2a0	11			uicamera			Runs its object file code not read here	inferred	none		
-0x50b2b0	5			uicamera			Runs its object file code not read here	inferred	none		
-0x50b2c0	19			uicamera			Runs its object file code not read here	inferred	none		
-0x50b2e0	5			uicamera			Runs its object file code not read here	inferred	none		
-0x50b2f0	19			uicamera			Runs its object file code not read here	inferred	none		
-0x50b310	28			uicamera			Runs its object file code that calls ValidateIsInRange; not read here	inferred	none		
-0x50b330	74	ValidateIsInRange	idb	uicamera			Runs its object file code that calls SStrToFloat, ConsoleWriteA; not read here	inferred	none		
-0x50b380	49			uicamera			Runs its object file code that calls ValidateIsInRange; not read here	inferred	none		
-0x50b3c0	49			uicamera			Runs its object file code that calls ValidateIsInRange; not read here	inferred	none		
-0x50b400	77	Script::CameraZoomIn	idb	uicamera			Implements the Lua function CameraZoomIn	inferred	none		
-0x50b450	77	Script::CameraZoomOut	idb	uicamera			Implements the Lua function CameraZoomOut	inferred	none		
-0x50b4a0	7	Script::MoveViewInStart	idb	uicamera			Implements the Lua function MoveViewInStart	inferred	none		
-0x50b4b0	24			uicamera			Runs its object file code that calls GetActiveCamera, 0x50fd40; not read here	inferred	none		
-0x50b4d0	7	Script::MoveViewInStop	idb	uicamera			Implements the Lua function MoveViewInStop	inferred	none		
-0x50b4e0	22			uicamera			Runs its object file code that calls GetActiveCamera, 0x50fd90; not read here	inferred	none		
-0x50b500	10	Script::MoveViewOutStart	idb	uicamera			Implements the Lua function MoveViewOutStart	inferred	none		
-0x50b510	10	Script::MoveViewOutStop	idb	uicamera			Implements the Lua function MoveViewOutStop	inferred	none		
-0x50b520	10	Script::MoveViewRightStart	idb	uicamera			Implements the Lua function MoveViewRightStart	inferred	none		
-0x50b530	10	Script::MoveViewRightStop	idb	uicamera			Implements the Lua function MoveViewRightStop	inferred	none		
-0x50b540	10	Script::MoveViewLeftStart	idb	uicamera			Implements the Lua function MoveViewLeftStart	inferred	none		
-0x50b550	10	Script::MoveViewLeftStop	idb	uicamera			Implements the Lua function MoveViewLeftStop	inferred	none		
-0x50b560	10	Script::MoveViewUpStart	idb	uicamera			Implements the Lua function MoveViewUpStart	inferred	none		
-0x50b570	10	Script::MoveViewUpStop	idb	uicamera			Implements the Lua function MoveViewUpStop	inferred	none		
-0x50b580	10	Script::MoveViewDownStart	idb	uicamera			Implements the Lua function MoveViewDownStart	inferred	none		
-0x50b590	10	Script::MoveViewDownStop	idb	uicamera			Implements the Lua function MoveViewDownStop	inferred	none		
-0x50b5a0	15	Script::ToggleMouseMove	idb	uicamera			Implements the Lua function ToggleMouseMove	inferred	none		
-0x50b5b0	71	Script::SetView	idb	uicamera			Implements the Lua function SetView	inferred	none		
-0x50b600	61	Script::SaveView	idb	uicamera			Implements the Lua function SaveView	inferred	none		
-0x50b640	61	Script::ResetView	idb	uicamera			Implements the Lua function ResetView	inferred	none		
-0x50b680	15	Script::NextView	idb	uicamera			Implements the Lua function NextView	inferred	none		
-0x50b690	15	Script::PrevView	idb	uicamera			Implements the Lua function PrevView	inferred	none		
-0x50b6a0	69	Script::FlipCameraYaw	idb	uicamera			Implements the Lua function FlipCameraYaw	inferred	none		
-0x50b6f0	2245			uicamera			Runs its object file code that calls CVar::Lookup, CVar::Register, SStrPack; not read here	inferred	none		
-0x50bfc0	22			uicamera			Runs its object file code that calls ValidateIsInRange; not read here	inferred	none		
-0x50bfe0	28			uicamera			Runs its object file code that calls ValidateIsInRange; not read here	inferred	none		
-0x50c000	49			uicamera			Runs its object file code that calls ValidateIsInRange; not read here	inferred	none		
-0x50c040	28			uicamera			Runs its object file code that calls ValidateIsInRange; not read here	inferred	none		
-0x50c060	22			uicamera			Runs its object file code that calls ValidateIsInRange; not read here	inferred	none		
-0x50c080	33			uicamera			Runs its object file code that calls FrameScriptRegisterFunction; not read here	inferred	none		
-0x50c0b0	27			uicamera			Runs its object file code that calls FrameScript_UnregisterFunction; not read here	inferred	none		
-0x50c0d0	1			uicamera			Runs its object file code not read here	inferred	none		
-0x50c0e0	813			uicamera			Runs its object file code that calls 0x50a720, OsGetAsyncTimeMs, SStrToFloat and 4 more; not read here	inferred	none		
-0x50c410	5			uicamera			Runs its object file code not read here	inferred	none		
-0x50c420	15			uicamera			Runs its object file code not read here	inferred	none		
-0x50c430	5			uicamera			Runs its object file code not read here	inferred	none		
-0x50c440	19			uicamera			Runs its object file code not read here	inferred	none		
-0x50c460	100			uicamera			Runs its object file code that calls 0x50ca50, 0x63fb40, 0x50c4d0 and 1 more; not read here	inferred	none		
-0x50c4d0	207			uicamera			Runs its object file code that calls OpenAccountDataFile, SStrPrintf, SStrLen and 2 more; not read here	inferred	none		
-0x50c5a0	402			uicamera			Runs its object file code that calls OpenAccountDataFile, 0x42a670, __alloca_probe and 5 more; not read here	inferred	none		
-0x50c740	280			uicamera			Runs its object file code that calls OsGetAsyncTimeMs, 0x50ad10, M2SceneSetTime and 9 more; not read here	inferred	none		
-0x50c860	11			uicamera			Runs its object file code not read here	inferred	none		
-0x50c870	413			uicamera			Runs its object file code that calls 0x50ca50, 0x484700, 0x50ad10 and 9 more; not read here	inferred	none		
-0x50ca10	54			uicamera			Runs its object file code that calls OsGetAsyncTimeMs, 0x50ad10, M2SceneSetTime and 1 more; not read here	inferred	none		
-0x50ca50	53			uicamera			Runs its object file code that calls HandleClose, HandleClose2; not read here	inferred	none		
-0x50ca90	1593			uicamera			Runs its object file code that calls CM2Model::IsLoaded, CM2Model::HasAttachment and 12 more; not read here	inferred	none		
-0x50d0f0	546			uicamera			Runs its object file code that calls 0x50f8f0, OsGetAsyncTimeMs, 0x50d900 and 8 more; not read here	inferred	none		
-0x50d320	98			uicamera			Runs its object file code that calls 0x512e90; not read here	inferred	none		
-0x50d390	28			uicamera			Runs its object file code not read here	inferred	none		
-0x50d3b0	129			uicamera			Runs Camera.cpp code that calls ClntObjMgrObjectPtr, 0x5102b0; not read here	inferred	none		
-0x50d440	186			uicamera			Runs Camera.cpp code that calls ClntObjMgrObjectPtr, 0x5102b0; not read here	inferred	none		
-0x50d500	32			uicamera			Runs Camera.cpp code that calls 0x510120; not read here	inferred	none		
-0x50d520	26			uicamera			Runs Camera.cpp code that calls 0x510120; not read here	inferred	none		
+0x50b290	5			uicamera	orchestration		Runs its object file code not read here	inferred	none		
+0x50b2a0	11			uicamera	orchestration		Runs its object file code not read here	inferred	none		
+0x50b2b0	5			uicamera	orchestration		Runs its object file code not read here	inferred	none		
+0x50b2c0	19	InitShakeNearSquared		uicamera	primitive	void __cdecl (void)	Stores the square of 9.0 in the near distance static	verified	one	uicamera/effects#distance-falloff	
+0x50b2e0	5			uicamera	orchestration		Runs its object file code not read here	inferred	none		
+0x50b2f0	19	InitShakeFarSquared		uicamera	primitive	void __cdecl (void)	Stores the square of 80.0 in the far distance static	verified	one	uicamera/effects#distance-falloff	
+0x50b310	28	CheckDistanceRange		uicamera	orchestration	bool __stdcall (const char *value)	Accepts a distance from 0 to 50	verified	one	uicamera/cvars#input-and-bobbing-cvars	
+0x50b330	74	CheckCVarRange	idb	uicamera	orchestration	bool __fastcall (const char *value, float low, float high)	Accepts a CVar value inside a range inclusive at both ends, else prints the range	verified	one	uicamera/cvars#input-and-bobbing-cvars	
+0x50b380	49	CheckPitchRange		uicamera	primitive	bool __stdcall (const char *value)	Accepts a pitch of plus or minus 89 degrees	verified	one	uicamera/cvars#input-and-bobbing-cvars	
+0x50b3c0	49	CheckYawRange		uicamera	primitive	bool __stdcall (const char *value)	Accepts a yaw from 0 to 360 degrees	verified	one	uicamera/cvars#input-and-bobbing-cvars	
+0x50b400	77	Script::CameraZoomIn	idb	uicamera	orchestration		Implements the Lua function CameraZoomIn	verified	one	uicamera/driver#maximum-distance-and-the-wheel	
+0x50b450	77	Script::CameraZoomOut	idb	uicamera	orchestration		Implements the Lua function CameraZoomOut	verified	one	uicamera/driver#maximum-distance-and-the-wheel	
+0x50b4a0	7	Script::MoveViewInStart	idb	uicamera	orchestration		Implements the Lua function MoveViewInStart	verified	one	uicamera/driver#the-keyboard-axes	
+0x50b4b0	24			uicamera	orchestration		Runs its object file code that calls GetActiveCamera, 0x50fd40; not read here	inferred	none		
+0x50b4d0	7	Script::MoveViewInStop	idb	uicamera	orchestration		Implements the Lua function MoveViewInStop	verified	one	uicamera/driver#the-keyboard-axes	
+0x50b4e0	22			uicamera	orchestration		Runs its object file code that calls GetActiveCamera, 0x50fd90; not read here	inferred	none		
+0x50b500	10	Script::MoveViewOutStart	idb	uicamera	orchestration		Implements the Lua function MoveViewOutStart	verified	one	uicamera/driver#the-keyboard-axes	
+0x50b510	10	Script::MoveViewOutStop	idb	uicamera	orchestration		Implements the Lua function MoveViewOutStop	inferred	none		
+0x50b520	10	Script::MoveViewRightStart	idb	uicamera	orchestration		Implements the Lua function MoveViewRightStart	inferred	none		
+0x50b530	10	Script::MoveViewRightStop	idb	uicamera	orchestration		Implements the Lua function MoveViewRightStop	inferred	none		
+0x50b540	10	Script::MoveViewLeftStart	idb	uicamera	orchestration		Implements the Lua function MoveViewLeftStart	inferred	none		
+0x50b550	10	Script::MoveViewLeftStop	idb	uicamera	orchestration		Implements the Lua function MoveViewLeftStop	inferred	none		
+0x50b560	10	Script::MoveViewUpStart	idb	uicamera	orchestration		Implements the Lua function MoveViewUpStart	inferred	none		
+0x50b570	10	Script::MoveViewUpStop	idb	uicamera	orchestration		Implements the Lua function MoveViewUpStop	inferred	none		
+0x50b580	10	Script::MoveViewDownStart	idb	uicamera	orchestration		Implements the Lua function MoveViewDownStart	inferred	none		
+0x50b590	10	Script::MoveViewDownStop	idb	uicamera	orchestration		Implements the Lua function MoveViewDownStop	inferred	none		
+0x50b5a0	15	Script::ToggleMouseMove	idb	uicamera	orchestration		Implements the Lua function ToggleMouseMove	inferred	none		
+0x50b5b0	71	Script::SetView	idb	uicamera	primitive		Implements the Lua function SetView	inferred	none	uicamera/driver#setting-a-view	
+0x50b600	61	Script::SaveView	idb	uicamera	primitive		Implements the Lua function SaveView	inferred	none	uicamera/driver#setting-a-view	
+0x50b640	61	Script::ResetView	idb	uicamera	primitive		Implements the Lua function ResetView	inferred	none	uicamera/driver#setting-a-view	
+0x50b680	15	Script::NextView	idb	uicamera	orchestration		Implements the Lua function NextView	inferred	none	uicamera/driver#setting-a-view	
+0x50b690	15	Script::PrevView	idb	uicamera	orchestration		Implements the Lua function PrevView	inferred	none	uicamera/driver#setting-a-view	
+0x50b6a0	69	Script::FlipCameraYaw	idb	uicamera	primitive		Implements the Lua function FlipCameraYaw	verified	one	uicamera/driver#view-angles	
+0x50b6f0	2245	RegisterCameraCVars		uicamera	primitive	void __cdecl (void)	Registers the camera CVars and builds the generated families	verified	one	uicamera/cvars#input-and-bobbing-cvars	
+0x50bfc0	22	CheckViewRange		uicamera	orchestration	bool __stdcall (const char *value)	Accepts a view number from 0 to 4	verified	one	uicamera/cvars#input-and-bobbing-cvars	
+0x50bfe0	28	CheckTimeRange		uicamera	orchestration	bool __stdcall (const char *value)	Accepts a time from 0.001 to 300	verified	one	uicamera/cvars#input-and-bobbing-cvars	
+0x50c000	49	CheckAngleRateRange		uicamera	primitive	bool __stdcall (const char *value)	Accepts a rate from 0.1 to 360 degrees	verified	one	uicamera/cvars#input-and-bobbing-cvars	
+0x50c040	28	CheckDistanceRateRange		uicamera	orchestration	bool __stdcall (const char *value)	Accepts a rate from 1/360 to 50	verified	one	uicamera/cvars#input-and-bobbing-cvars	
+0x50c060	22	CheckSmoothStyleRange		uicamera	orchestration	bool __stdcall (const char *value)	Accepts a style from 0 to 3	verified	one	uicamera/cvars#input-and-bobbing-cvars	
+0x50c080	33			uicamera	primitive		Runs its object file code that calls FrameScriptRegisterFunction; not read here	inferred	none		
+0x50c0b0	27			uicamera	primitive		Runs its object file code that calls FrameScript_UnregisterFunction; not read here	inferred	none		
+0x50c0d0	1			uicamera	orchestration		Runs its object file code not read here	inferred	none		
+0x50c0e0	813	CCamera::CCamera		uicamera	primitive	CCamera *__thiscall (CCamera *this)	Constructs the camera, sets its starting view, loads its saved view and registers cameraClip	verified	one	uicamera/view#the-starting-view	
+0x50c410	5			uicamera	orchestration		Runs its object file code not read here	inferred	none		
+0x50c420	15			uicamera	primitive		Runs its object file code not read here	inferred	none		
+0x50c430	5			uicamera	orchestration		Runs its object file code not read here	inferred	none		
+0x50c440	19			uicamera	primitive		Runs its object file code not read here	inferred	none		
+0x50c460	100	CCamera::~CCamera		uicamera	primitive	void __thiscall (CCamera *this)	Saves the camera's view, unregisters cameraClip and releases the camera's lists	verified	one	uicamera/view#lifetime	
+0x50c4d0	207	CCamera::SaveSettings		uicamera	primitive	void __thiscall (CCamera *this)	Writes the target distance and pitch to camera-settings.txt	verified	one	uicamera/view#the-settings-file	
+0x50c5a0	402	CCamera::LoadSettings		uicamera	primitive	void __thiscall (CCamera *this)	Reads the distance and pitch from camera-settings.txt into the current and target values	verified	one	uicamera/view#reading-the-file	
+0x50c740	280	CCamera::ArmShot		uicamera	primitive	bool __thiscall (CCamera *this)	Starts the shot model, takes its camera and applies the first view	verified	one	uicamera/cinematic#arming-and-the-per-frame-step	
+0x50c860	11	CCamera::HasShotCamera		uicamera	orchestration	bool __thiscall (CCamera *this)	Returns whether a shot camera is armed	verified	one	uicamera/cinematic#arming-and-the-per-frame-step	
+0x50c870	413	CCamera::LoadShot		uicamera	primitive	bool __thiscall (CCamera *this, const char *path, const C3Vector *origin, float facing, void *callback, uint32_t a, uint32_t b)	Makes the shot model and installs its origin and facing matrix	verified	one	uicamera/cinematic#loading-a-shot	
+0x50ca10	54	CCamera::RestartShot		uicamera	orchestration	void __thiscall (CCamera *this)	Resets the scene clock and restarts the shot's animation	verified	one	uicamera/cinematic#playing-a-shot	
+0x50ca50	53	CCamera::ReleaseShot		uicamera	primitive	void __thiscall (CCamera *this)	Closes the shot camera and releases the shot model	verified	one	uicamera/cinematic#stepping-and-ending	
+0x50ca90	1593	CCamera::BuildPivotHeights		uicamera	primitive	bool __thiscall (CCamera *this, CGObject_C *unit)	Rebuilds the near, far and swimming pivot heights from the unit's model and arms the height	verified	one	uicamera/driver#pivot-height	
+0x50d0f0	546	CCamera::SetTarget		uicamera	orchestration	void __thiscall (CCamera *this, CGObject_C *target)	Switches the followed object, snapping its tilt and drunk bias, or frees the shakes for none	verified	one	uicamera/effects#where-a-shake-lands	
+0x50d320	98	CCamera::SetFovOverride		uicamera	primitive	void __thiscall (CCamera *this, int degrees)	Switches to first person with a given field of view, or restores the third person view	verified	one	uicamera/transitions#field-of-view	
+0x50d390	28			uicamera	orchestration		Runs its object file code not read here	inferred	none		
+0x50d3b0	129	CCamera::EnterAbsoluteFrame		uicamera	primitive	void __thiscall (CCamera *this)	Raises the absolute frame counter and bakes the facing into the yaw offsets on the first	verified	one	uicamera/transitions#relative-and-absolute-frames	
+0x50d440	186	CCamera::LeaveAbsoluteFrame		uicamera	primitive	void __thiscall (CCamera *this)	Lowers the absolute frame counter and takes the facing off the yaw offsets on the last	verified	one	uicamera/transitions#relative-and-absolute-frames	
+0x50d500	32	CCamera::PushGroundPitch		uicamera	orchestration	void __thiscall (CCamera *this)	Raises the ground pitch counter and bakes the ground pitch into the pitch on the first	verified	one	uicamera/transitions#relative-and-absolute-frames	
+0x50d520	26	CCamera::PopGroundPitch		uicamera	primitive	void __thiscall (CCamera *this)	Lowers the ground pitch counter and takes the ground pitch off the pitch on the last	verified	one	uicamera/transitions#relative-and-absolute-frames	
 0x50d540	143			uicamera	unreached		Runs Camera.cpp code that calls 0x50a780; not read here	inferred	none		
-0x50d5d0	193			uicamera			Runs Camera.cpp code that calls 0x50a930; not read here	inferred	none		
+0x50d5d0	193	CCamera::SetLookAt		uicamera	primitive	void __thiscall (CCamera *this, const C3Vector *eye, const C3Vector *target, float roll)	Stores the eye and builds the view basis toward the target with the roll	verified	one	uicamera/cinematic#applying-the-view	
 0x50d6a0	40			uicamera	unreached		Runs Camera.cpp code that calls 0x50a780; not read here	inferred	none		
-0x50d6d0	70			uicamera			Runs Camera.cpp code not read here	inferred	none		
-0x50d720	97			uicamera			Runs Camera.cpp code that calls 0x455b30; not read here	inferred	none		
+0x50d6d0	70	CCamera::GetFov		uicamera	primitive	float __thiscall (CCamera *this)	Returns the base field of view plus the bias, kept from 0 to 179 degrees	verified	one	uicamera/transitions#field-of-view	
+0x50d720	97	CCamera::ClampAngles		uicamera	orchestration	void __thiscall (CCamera *this)	Clamps the pitch to plus or minus 89 degrees and wraps the yaw and flip bias	verified	one	uicamera/driver#turning-with-the-mouse	
 0x50d790	115			uicamera	unreached		Runs Camera.cpp code not read here	inferred	none		
-0x50d810	227			uicamera			Runs Camera.cpp code not read here	inferred	none		
-0x50d900	697			uicamera			Runs Camera.cpp code that calls 0x5105a0, TraceWorldSegment; not read here	inferred	none		
-0x50dbc0	508			uicamera			Runs Camera.cpp code that calls 0x512490; not read here	inferred	none		
-0x50ddc0	50			uicamera			Runs Camera.cpp code that calls 0x64ac60; not read here	inferred	none		
-0x50de00	131			uicamera			Runs Camera.cpp code not read here	inferred	none		
-0x50de90	1685			uicamera			Runs Camera.cpp code that calls SplatVector3, SetVector3, BuildLookAtMatrix and 14 more; not read here	inferred	none		
-0x50e530	49			uicamera			Runs Camera.cpp code that calls SMemFree; not read here	inferred	none		
-0x50e570	857			uicamera			Runs Camera.cpp code that calls TraceWorldSegment, 0x50de00, 0x50de90; not read here	inferred	none		
-0x50e8d0	1914			uicamera			Runs Camera.cpp code that calls SErrSetLastError, 0x50ca90, CGUnit_C::IsAutoMoving and 23 more; not read here	inferred	none		
-0x50f050	1			uicamera			Runs Camera.cpp code not read here	inferred	none		
-0x50f060	254			uicamera			Runs Camera.cpp code that calls CM2Model::IsLoaded, 0x50c740, OsGetAsyncTimeMs and 7 more; not read here	inferred	none		
-0x50f160	1444			uicamera			Runs Camera.cpp code that calls 0x5106f0, CosineInterpolate, 0x50d720 and 2 more; not read here	inferred	none		
-0x50f710	356			uicamera			Runs Camera.cpp code that calls CGUnit_C::UpdateDisplayFacing, 0x50d810, 0x455b30 and 1 more; not read here	inferred	none		
-0x50f880	101			uicamera			Runs Camera.cpp code that calls 0x5126b0; not read here	inferred	none		
-0x50f8f0	22			uicamera			Runs Camera.cpp code that calls 0x482c10; not read here	inferred	none		
-0x50f910	22			uicamera			Runs Camera.cpp code that calls 0x50f940; not read here	inferred	none		
-0x50f930	5			uicamera			Runs Camera.cpp code not read here	inferred	none		
-0x50f940	79			uicamera			Runs Camera.cpp code that calls 0x50fdd0; not read here	inferred	none		
-0x50f990	149			uicamera			Runs Camera.cpp code that calls SStrPrintf, CVar::Set; not read here	inferred	none		
-0x50fa30	37			uicamera			Runs Camera.cpp code that calls 0x50f990; not read here	inferred	none		
-0x50fa60	59			uicamera	unreached		Runs Camera.cpp code that calls 0x512e90; not read here	inferred	none		
-0x50faa0	29			uicamera			Runs Camera.cpp code that calls 0x512e90; not read here	inferred	none		
-0x50fac0	28			uicamera			Runs Camera.cpp code that calls 0x512e90; not read here	inferred	none		
-0x50fae0	153			uicamera			Runs Camera.cpp code that calls 0x50fae0, SStrToFloat, 0x512e90; not read here	inferred	none		
-0x50fb80	63			uicamera			Runs Camera.cpp code not read here	inferred	none		
-0x50fbc0	108			uicamera			Runs Camera.cpp code that calls SStrToFloat; not read here	inferred	none		
-0x50fc30	43			uicamera			Runs Camera.cpp code that calls 0x50fbc0; not read here	inferred	none		
-0x50fc60	106			uicamera			Runs Camera.cpp code that calls __ftol, 0x50fd90, 0x50fd40; not read here	inferred	none		
-0x50fcd0	106			uicamera			Runs Camera.cpp code that calls __ftol, 0x50fd90, 0x50fd40; not read here	inferred	none		
-0x50fd40	80			uicamera			Runs Camera.cpp code not read here	inferred	none		
-0x50fd90	56			uicamera			Runs Camera.cpp code not read here	inferred	none		
-0x50fdd0	84			uicamera			Runs Camera.cpp code that calls 0x50d440, 0x50d520, SetCursorShown and 3 more; not read here	inferred	none		
-0x50fe30	171			uicamera			Runs Camera.cpp code that calls SetCursorShown, EventSetMouseMode, 0x493070 and 3 more; not read here	inferred	none		
-0x50fee0	561			uicamera			Runs Camera.cpp code that calls 0x41ade0, ClntObjMgrObjectPtr, 0x510690 and 5 more; not read here	inferred	none		
-0x510120	395			uicamera			Runs Camera.cpp code not read here	inferred	none		
-0x5102b0	294			uicamera			Runs Camera.cpp code that calls 0x455b30; not read here	inferred	none		
-0x5103e0	442			uicamera			Runs Camera.cpp code that calls ClntObjMgrObjectPtr, OsGetAsyncTimeMs, GetInputControl and 2 more; not read here	inferred	none		
-0x5105a0	50			uicamera			Runs Camera.cpp code not read here	inferred	none		
-0x5105e0	166			uicamera			Runs Camera.cpp code not read here	inferred	none		
-0x510690	91			uicamera			Runs Camera.cpp code not read here	inferred	none		
-0x5106f0	89			uicamera			Runs Camera.cpp code that calls ClntObjMgrObjectPtr, 0x5105e0; not read here	inferred	none		
-0x510750	3			uicamera			Runs Camera.cpp code not read here	inferred	none		
-0x510760	140			uicamera			Runs Camera.cpp code that calls ClntObjMgrObjectPtr; not read here	inferred	none		
-0x5107f0	92			uicamera			Runs Camera.cpp code that calls 0x511010, ClntObjMgrObjectPtr, 0x510690; not read here	inferred	none		
-0x510850	232			uicamera			Runs Camera.cpp code that calls ClntObjMgrObjectPtr, CGUnit_C::UpdateDisplayFacing, 0x611660; not read here	inferred	none		
-0x510940	31			uicamera			Runs Camera.cpp code that calls 0x50fc30; not read here	inferred	none		
-0x510960	1640			uicamera			Runs Camera.cpp code that calls 0x510940, OsGetAsyncTimeMs, 0x510750 and 11 more; not read here	inferred	none		
-0x510fd0	54			uicamera			Runs Camera.cpp code that calls 0x60f8f0; not read here	inferred	none		
-0x511010	43			uicamera			Runs Camera.cpp code that calls 0x60f8f0; not read here	inferred	none		
-0x511040	161			uicamera			Runs Camera.cpp code that calls 0x510fd0, 0x50d3b0, 0x50d440 and 2 more; not read here	inferred	none		
-0x5110f0	26			uicamera			Runs Camera.cpp code that calls OsGetAsyncTimeMs; not read here	inferred	none		
-0x511110	93			uicamera			Runs Camera.cpp code that calls DominantAxis, OsGetAsyncTimeMs; not read here	inferred	none		
-0x511170	58			uicamera			Runs Camera.cpp code that calls 0x5110f0, 0x511110; not read here	inferred	none		
-0x5111b0	20			uicamera			Runs Camera.cpp code that calls 0x50d440; not read here	inferred	none		
-0x5111d0	32			uicamera			Runs Camera.cpp code that calls 0x50d3b0; not read here	inferred	none		
-0x5111f0	87			uicamera			Runs Camera.cpp code that calls 0x5111d0, GetInputControl, 0x510960 and 1 more; not read here	inferred	none		
-0x511250	116			unassigned	primitive		Sets the camera's drunk level	inferred	none	objectlayer/playerfields#drunk-messages	
-0x5112d0	803			uicamera			Runs Camera.cpp code that calls 0x50fd90; not read here	inferred	none		
-0x511610	194			uicamera			Runs Camera.cpp code not read here	inferred	none		
-0x5116e0	123			uicamera			Runs Camera.cpp code that calls __CIpow; not read here	inferred	none		
-0x511760	443			uicamera			Runs Camera.cpp code that calls OsGetAsyncTimeMs, ClntObjMgrObjectPtr and 6 more; not read here	inferred	none		
-0x511920	337			uicamera			Runs Camera.cpp code that calls ClntObjMgrObjectPtr, 0x5105e0, CMovement::GetCurrentSpeed and 1 more; not read here	inferred	none		
-0x511a80	65			uicamera			Runs Camera.cpp code that calls GetCameraLiquid, 0x458650; not read here	inferred	none		
-0x511ad0	237	UpdateCameraWaterBits		uicamera			Sets the camera's water depth bits from a unit's depth in liquid and returns the depth	verified	one	objectlayer/swim#camera-water-bits	
-0x511bc0	130			uicamera			Runs Camera.cpp code that calls OsGetAsyncTimeMs, 0x50f060, 0x511a80 and 2 more; not read here	inferred	none		
-0x511c50	16			uicamera			Runs Camera.cpp code that calls 0x50ab70; not read here	inferred	none		
-0x511c60	209			uicamera			Runs Camera.cpp code that calls SMemAlloc, OsGetAsyncTimeMs; not read here	inferred	none		
-0x511d40	81	CameraAddShake		uicamera			Adds a camera shake by id at a position to a camera	inferred	none	spell/visuals#camera-shake-groups	
-0x511da0	237	SetCameraTransport		uicamera		void __thiscall (void *camera, uint64_t transport)	Stores the camera's transport GUID, turning the camera by the old and new transports' facings	inferred	none	collision/world#camera-notices	
-0x511e90	174			uicamera			Runs Camera.cpp code that calls ClntObjMgrObjectPtr, 0x7be730; not read here	inferred	none		
-0x511f40	155			uicamera			Runs Camera.cpp code that calls 0x511e90; not read here	inferred	none		
-0x511fe0	155			uicamera			Runs Camera.cpp code that calls 0x511e90; not read here	inferred	none		
-0x512080	155			uicamera			Runs Camera.cpp code that calls 0x511e90; not read here	inferred	none		
-0x512120	218			uicamera			Runs Camera.cpp code that calls __ftol, 0x512200; not read here	inferred	none		
-0x512200	98			uicamera			Runs Camera.cpp code not read here	inferred	none		
-0x512270	329			uicamera			Runs Camera.cpp code that calls __ftol, 0x5123c0; not read here	inferred	none		
-0x5123c0	194			uicamera			Runs Camera.cpp code not read here	inferred	none		
-0x512490	329			uicamera			Runs Camera.cpp code that calls __ftol, 0x5125e0; not read here	inferred	none		
-0x5125e0	194			uicamera			Runs Camera.cpp code not read here	inferred	none		
-0x5126b0	218			uicamera			Runs Camera.cpp code that calls __ftol, 0x512790; not read here	inferred	none		
-0x512790	147			uicamera			Runs Camera.cpp code not read here	inferred	none		
-0x512830	329			uicamera			Runs Camera.cpp code that calls __ftol, 0x512980; not read here	inferred	none		
-0x512980	194			uicamera			Runs Camera.cpp code not read here	inferred	none		
-0x512a50	329			uicamera			Runs Camera.cpp code that calls __ftol, 0x512ba0; not read here	inferred	none		
-0x512ba0	194			uicamera			Runs Camera.cpp code not read here	inferred	none		
-0x512c70	329			uicamera			Runs Camera.cpp code that calls __ftol, 0x512dc0; not read here	inferred	none		
-0x512dc0	194			uicamera			Runs Camera.cpp code not read here	inferred	none		
-0x512e90	1111			uicamera			Runs Camera.cpp code that calls SysMsgPrintf, OsGetAsyncTimeMs, SStrPrintf and 9 more; not read here	inferred	none		
-0x5132f0	34			uicamera			Runs its object file code not read here	inferred	none		
-0x513320	16			uicamera			Runs its object file code not read here	inferred	none		
-0x513330	290			uicamera			Runs its object file code that calls SMemReAlloc, SMemAlloc, SMemFree; not read here	inferred	none		
-0x513460	16			uicamera			Runs its object file code not read here	inferred	none		
-0x513470	248			uicamera			Runs its object file code that calls 0x5138b0, 0x7bf7b0; not read here	inferred	none		
-0x513570	60			uicamera			Runs its object file code not read here	inferred	none		
-0x5135b0	1			uicamera			Runs its object file code not read here	inferred	none		
-0x5135c0	5			uicamera			Runs its object file code not read here	inferred	none		
-0x5135d0	19			uicamera			Runs its object file code not read here	inferred	none		
+0x50d810	227	CCamera::FilterFacing		uicamera	primitive	float __thiscall (CCamera *this, float facing, bool moved)	Limits the rate at which the camera follows a unit's facing	verified	one	uicamera/driver#smoothing-the-facing	
+0x50d900	697	CCamera::ProbeSlope		uicamera	primitive	void __thiscall (CCamera *this, CGObject_C *unit, uint32_t now)	Measures the ground slope ahead of the unit and stores the tilt angle	verified	one	uicamera/effects#probing-the-slope	
+0x50dbc0	508	CCamera::ArmTerrainTilt		uicamera	primitive	void __thiscall (CCamera *this, CGObject_C *unit, uint32_t now, bool snap)	Sets or arms the ground pitch from the probed angle and the unit's state row	verified	one	uicamera/effects#arming-the-tilt	
+0x50ddc0	50	CameraClipCommand		uicamera	orchestration	uint32_t __stdcall (const char *argument)	Stores the number given, or flips the stored flag, in a word nothing reads	verified	one	uicamera/cvars#cameraclip	
+0x50de00	131	CCamera::PlaceEye		uicamera	primitive	void __thiscall (CCamera *this, float *out, float *pivot, float distance, float *offset)	Places the eye at the pivot minus the distance along the forward vector plus an offset	verified	one	uicamera/driver#placing-the-eye	
+0x50de90	1685	CCamera::ClipNearBox		uicamera	primitive	bool __thiscall (CCamera *this, float *distance, const C3Vector *trialEye, uint32_t flags)	Shortens the orbit distance so the near end of the view volume clears the world	inferred	none	uicamera/solver#the-near-box-clip	
+0x50e530	49			uicamera	orchestration		Runs Camera.cpp code that calls SMemFree; not read here	inferred	none		
+0x50e570	857	CCamera::SolveLimits		uicamera	primitive	uint32_t __thiscall (CCamera *this, float *pivot, float *distance, float *height, float *offset, float band)	Solves the distance and pivot height that clear the world	verified	one	uicamera/solver#the-solver	
+0x50e8d0	1914	CCamera::Update		uicamera	primitive	void __thiscall (CCamera *this, CGObject_C *target, uint32_t now)	Updates the follow camera for a target: axes, angles, solver, eye, pull-in, fade	verified	one	uicamera/driver#the-per-frame-update	
+0x50f050	1			uicamera	orchestration		Runs Camera.cpp code not read here	inferred	none		
+0x50f060	254	CCamera::UpdateShot		uicamera	primitive	void __thiscall (CCamera *this)	Advances the shot and applies its eye, look-at and roll	verified	one	uicamera/cinematic#arming-and-the-per-frame-step	
+0x50f160	1444	CCamera::UpdateTransitions		uicamera	primitive	void __thiscall (CCamera *this, CGObject_C *target, uint32_t now)	Eases the bob offsets and the seven channels toward their targets	verified	one	uicamera/transitions#the-ease	
+0x50f710	356	CCamera::MakeViewAngles		uicamera	primitive	void __thiscall (CCamera *this, CGObject_C *target, float *yaw, float *pitch, float *roll)	Makes the view yaw, pitch and roll from the offsets and the target's facing and builds the basis	verified	one	uicamera/driver#view-angles	
+0x50f880	101	CCamera::ArmPivotHeight		uicamera	primitive	void __thiscall (CCamera *this, CGObject_C *target, uint32_t now)	Arms the height transition to the swimming, near or far pivot height	verified	one	uicamera/driver#pivot-height	
+0x50f8f0	22	CCamera::SetTargetAlpha		uicamera	orchestration	void __thiscall (CCamera *this, uint32_t alpha)	Passes the self fade alpha to the world frame	verified	one	uicamera/driver#the-self-fade	
+0x50f910	22	CCamera::ToggleMouselook		uicamera	orchestration	void __thiscall (CCamera *this)	Leaves mouselook when in it, else enters it	verified	one	uicamera/follow#leaving-mouselook	
+0x50f930	5	CCamera::EnterMouselookThunk		uicamera	orchestration	void __thiscall (CCamera *this)	Jumps to the mouselook entry	verified	one	uicamera/follow#leaving-mouselook	
+0x50f940	79	CCamera::LeaveMouselook		uicamera	primitive	void __thiscall (CCamera *this, bool noReturn)	Leaves mouselook, sets or clears the no-return bit and keeps the live angles	verified	one	uicamera/follow#leaving-mouselook	
+0x50f990	149	CCamera::StoreView		uicamera	primitive	void __thiscall (CCamera *this, int view, float distance, float pitch, float yaw)	Stores a view in its slot and writes its CVars in degrees	inferred	none	uicamera/driver#setting-a-view	
+0x50fa30	37	CCamera::SaveView		uicamera	orchestration	void __thiscall (CCamera *this, int view)	Saves the target distance, pitch and yaw as a view	inferred	none	uicamera/driver#setting-a-view	
+0x50fa60	59	CCamera::CycleView		uicamera	unreached	void __thiscall (CCamera *this)	Steps back and forth through views 1 to 3	inferred	none	uicamera/driver#setting-a-view	
+0x50faa0	29	CCamera::NextView		uicamera	primitive	void __thiscall (CCamera *this)	Switches to the next saved view, stopping at the last	inferred	none	uicamera/driver#setting-a-view	
+0x50fac0	28	CCamera::PrevView		uicamera	primitive	void __thiscall (CCamera *this)	Switches to the previous saved view, stopping at the first	inferred	none	uicamera/driver#setting-a-view	
+0x50fae0	153	CCamera::ResetView		uicamera	primitive	void __thiscall (CCamera *this, int view)	Restores a view's slot from the default strings	inferred	none	uicamera/driver#setting-a-view	
+0x50fb80	63			uicamera	primitive		Runs Camera.cpp code not read here	inferred	none		
+0x50fbc0	108	CCamera::ViewIsUncustomised		uicamera	primitive	bool __thiscall (CCamera *this, int view)	Returns whether a view's saved distance, pitch and yaw match their defaults	verified	one	uicamera/follow#gates	
+0x50fc30	43	CCamera::ViewSmoothingAllowed		uicamera	primitive	bool __thiscall (CCamera *this, int view)	Returns whether customised smoothing is on or the view is uncustomised	verified	one	uicamera/follow#gates	
+0x50fc60	106	CCamera::ZoomIn		uicamera	primitive	void __thiscall (CCamera *this, float amount, uint32_t now)	Zooms in by an amount of yards at the glide speed	verified	one	uicamera/driver#maximum-distance-and-the-wheel	
+0x50fcd0	106	CCamera::ZoomOut		uicamera	primitive	void __thiscall (CCamera *this, float amount, uint32_t now)	Zooms out by an amount of yards at the glide speed	verified	one	uicamera/driver#maximum-distance-and-the-wheel	
+0x50fd40	80	CCamera::StartAxis		uicamera	primitive	void __thiscall (CCamera *this, uint32_t axis, uint32_t start, uint32_t extra)	Starts a keyboard axis at a time, with an optional queued stop	verified	one	uicamera/driver#the-keyboard-axes	
+0x50fd90	56	CCamera::StopAxis		uicamera	primitive	void __thiscall (CCamera *this, uint32_t axis, uint32_t end)	Marks an active keyboard axis to stop at a time	verified	one	uicamera/driver#the-keyboard-axes	
+0x50fdd0	84	CameraLeaveFreelook		uicamera	primitive	void __thiscall (CCamera *this)	Shows the cursor, leaves relative mouse mode and ends the world frame's mouselook	verified	one	ui/mouseover#mouselook	
+0x50fe30	171	CameraEnterFreelook		uicamera	primitive	void __thiscall (CCamera *this)	Hides the cursor, switches to relative mouse mode and begins the world frame's mouselook	verified	one	ui/mouseover#mouselook	
+0x50fee0	561	CCamera::MouseTurn		uicamera	primitive	void __thiscall (CCamera *this, float dx, float dy)	Turns the yaw and pitch, or the pivot bias, by a mouse step	verified	one	uicamera/driver#turning-with-the-mouse	
+0x510120	395	CCamera::ShiftPitch		uicamera	primitive	void __thiscall (CCamera *this, float delta)	Adds an angle to the pitch target, start and live value, clamped	inferred	none	uicamera/transitions#relative-and-absolute-frames	
+0x5102b0	294	CCamera::ShiftYaw		uicamera	primitive	void __thiscall (CCamera *this, float delta)	Adds an angle to the yaw target, start and live value, wrapped	verified	one	uicamera/transitions#relative-and-absolute-frames	
+0x5103e0	442	CCamera::CommitFacing		uicamera	primitive	void __thiscall (CCamera *this)	Hands the camera yaw and the final pitch to the player's facing and pitch	verified	one	uicamera/effects#committing-the-facing	
+0x5105a0	50	TerrainTiltEnabled		uicamera	primitive	bool __stdcall (CGUnit_C *unit)	Returns whether the unit is a unit or player and cameraTerrainTilt is set	verified	one	uicamera/cvars#bobbing-and-pivot-tests	
+0x5105e0	166	BobbingActive		uicamera	primitive	uint32_t __thiscall (CCamera *this, CGUnit_C *unit)	Returns the camera's bobbing bit when the unit may bob and the camera is near	verified	one	uicamera/cvars#bobbing-and-pivot-tests	
+0x510690	91	PivotBiasAllowed		uicamera	primitive	uint32_t __thiscall (CCamera *this, CGUnit_C *unit)	Returns the camera's pivot bits when the unit stands and the pitch is level or up	verified	one	uicamera/cvars#bobbing-and-pivot-tests	
+0x5106f0	89	BobbingNeedsClear		uicamera	primitive	bool __thiscall (CCamera *this)	Returns whether the bob offsets are nonzero while bobbing is not active	verified	one	uicamera/cvars#clear-and-band-tests	
+0x510750	3	DistanceNeedsMove		uicamera	orchestration	bool __thiscall (CCamera *this)	Returns 0	verified	one	uicamera/cvars#clear-and-band-tests	
+0x510760	140	PitchNeedsMove		uicamera	orchestration	bool __thiscall (CCamera *this, float low, float high)	Returns whether pitch smoothing is on and the pitch is outside the band	verified	one	uicamera/cvars#clear-and-band-tests	
+0x5107f0	92	PivotBiasNeedsClear		uicamera	primitive	bool __thiscall (CCamera *this)	Returns whether the pivot bias is nonzero while the pivot test is false	verified	one	uicamera/cvars#clear-and-band-tests	
+0x510850	232	YawNeedsMove		uicamera	primitive	bool __thiscall (CCamera *this, float low, float high)	Returns whether yaw smoothing is on and the yaw is outside the band or off the facing	verified	one	uicamera/cvars#clear-and-band-tests	
+0x510940	31	AutoReturnAllowed		uicamera	primitive	bool __thiscall (CCamera *this)	Returns 0 when the camera's bit 5 is set, else whether the view is uncustomised or customised smoothing is on	verified	one	uicamera/cvars#clear-and-band-tests	
+0x510960	1640	CCamera::ArmAutoReturn		uicamera	primitive	void __thiscall (CCamera *this, CInputControl *input, bool stopping)	Picks the input state and arms the yaw, pitch and pivot bias to return to the view	verified	one	uicamera/follow#the-input-state	
+0x510fd0	54	CCamera::WantsAbsoluteFrame		uicamera	primitive	bool __thiscall (CCamera *this)	Returns whether a tracked camera sits in the absolute frame by its tracking style	inferred	none	uicamera/follow#the-frame-of-a-followed-unit	
+0x511010	43			uicamera	primitive		Runs Camera.cpp code that calls 0x60f8f0; not read here	inferred	none		
+0x511040	161	CCamera::SetTrackFlag		uicamera	primitive	void __thiscall (CCamera *this, uint32_t externalBits)	Sets or clears the Track bit from the external movement bits and re-arms	verified	one	uicamera/follow#when-it-runs	
+0x5110f0	26	CCamera::BeginBobbing		uicamera	primitive	void __thiscall (CCamera *this)	Sets the bobbing bit and the start time	verified	one	uicamera/transitions#bob-decay	
+0x511110	93	CCamera::BeginBobDecay		uicamera	primitive	void __thiscall (CCamera *this)	Clears the bobbing bit and arms the decay of the bob offsets	verified	one	uicamera/transitions#bob-decay	
+0x511170	58	CCamera::SetBobbing		uicamera	orchestration	void __thiscall (CCamera *this, bool bobbing)	Begins bobbing on a rising flag and its decay on a falling one	verified	one	uicamera/transitions#bob-decay	
+0x5111b0	20	CCamera::EndExternalMove		uicamera	primitive	void __thiscall (CCamera *this)	Lowers the absolute frame and clears the Fear bit	verified	one	uicamera/follow#when-it-runs	
+0x5111d0	32	CCamera::BeginExternalMove		uicamera	primitive	void __thiscall (CCamera *this)	Raises the absolute frame and sets the Fear bit	verified	one	uicamera/follow#when-it-runs	
+0x5111f0	87	CCamera::SetExternalMove		uicamera	orchestration	void __thiscall (CCamera *this, bool moved)	Arms the auto-return when the external-move flag flips	verified	one	uicamera/driver#the-per-frame-update	
+0x511250	116	CCamera::SetDrunkFov		uicamera	primitive	bool __thiscall (CCamera *this, float fraction, bool immediate)	Sets or eases the field of view bias to 89 degrees times the drunk fraction	verified	one	uicamera/effects#the-drunk-view	
+0x5112d0	803	CCamera::IntegrateAxes		uicamera	primitive	void __thiscall (CCamera *this, uint32_t now)	Moves the distance, yaw and pitch targets by the active keyboard axes	verified	one	uicamera/driver#the-keyboard-axes	
+0x511610	194	EvaluateShake		uicamera	orchestration	void __stdcall (C3Vector *out, float facing, float amplitude, float time, float frequency, int type, float decay, int axis)	Adds one shake's damped sine to the offset along its axis	verified	one	uicamera/effects#evaluating-one-shake	
+0x5116e0	123	ShakeFalloff		uicamera	primitive	bool __stdcall (const C3Vector *eye, const C3Vector *position, float *amplitude, float near, float nearSquared, float unused, float farSquared)	Cuts a shake's amplitude by distance and answers whether it is in range	verified	one	uicamera/effects#distance-falloff	
+0x511760	443	CCamera::ApplyShakes		uicamera	primitive	void __thiscall (CCamera *this, const C3Vector *eye, C3Vector *offset)	Ages the shake records and adds the loudest on each axis to the offset	verified	one	uicamera/effects#walking-the-shakes	
+0x511920	337	CCamera::ComputeBob		uicamera	primitive	void __thiscall (CCamera *this, C3Vector *out)	Writes the side and vertical bob offsets for the followed unit	verified	one	uicamera/effects#bobbing	
+0x511a80	65	CCamera::UpdateListenerLiquid		uicamera	primitive	void __thiscall (CCamera *this)	Updates the listener's submerged flag when the liquid type at the camera changes	verified	one	uicamera/solver#the-per-frame-outer-call	
+0x511ad0	237	CCamera::ClassifyWaterBand		uicamera	primitive	float __thiscall (CCamera *this, CGUnit_C *unit)	Sets the surface or submerged band bit and returns the liquid surface height above the unit	verified	one	uicamera/solver#the-water-bands	
+0x511bc0	130	CCamera::OnFrame		uicamera	orchestration	uint32_t __fastcall (CCamera *this, CGWorldFrame *frame, uint32_t now)	Sets the clip planes and updates the camera or its cinematic, then the listener liquid	verified	one	uicamera/solver#the-per-frame-outer-call	
+0x511c50	16			uicamera	orchestration		Runs Camera.cpp code that calls 0x50ab70; not read here	inferred	none		
+0x511c60	209	CCamera::AddShakeRecord		uicamera	primitive	void __thiscall (CCamera *this, const C3Vector *position, int type, int axis, float amplitude, float frequency, float duration, float preroll, float decay)	Allocates a shake record, links it at the tail and stamps the clock	verified	one	uicamera/effects#spawning-a-shake	
+0x511d40	81	CameraAddShake		uicamera	primitive	void __stdcall (int id, const C3Vector *position)	Adds the shake a CameraShakes row describes at a position	verified	one	uicamera/effects#spawning-a-shake	
+0x511da0	237	SetCameraTransport		uicamera	primitive	void __thiscall (void *camera, uint64_t transport)	Stores the camera's transport GUID, turning the camera by the old and new transports' facings	inferred	none	collision/world#camera-notices	
+0x511e90	174	CCamera::BuildTransportRotation		uicamera	orchestration	void __thiscall (CCamera *this, float *out)	Builds the rotation of the camera's transport about the vertical axis	verified	one	uicamera/driver#riding-a-transport	
+0x511f40	155	CCamera::GetForward		uicamera	primitive	void __thiscall (CCamera *this, float *out)	Returns the first row of the camera's basis	verified	one	uicamera/view#pitch-units-and-sign	
+0x511fe0	155	CCamera::GetLeft		uicamera	primitive	void __thiscall (CCamera *this, C3Vector *out)	Returns the second basis row, turned by the transport's rotation	verified	one	uicamera/driver#riding-a-transport	
+0x512080	155	CCamera::GetUp		uicamera	primitive	void __thiscall (CCamera *this, C3Vector *out)	Returns the third basis row, turned by the transport's rotation	verified	one	uicamera/driver#riding-a-transport	
+0x512120	218	CCamera::ArmDistance		uicamera	primitive	bool __thiscall (CCamera *this, float target, float delay, float factor, uint32_t now)	Arms the distance transition for a duration from the speed CVar	verified	one	uicamera/transitions#arming-a-transition	
+0x512200	98	CCamera::BeginDistanceTransition		uicamera	primitive	bool __thiscall (CCamera *this, float target, float duration, uint32_t start)	Stores the distance transition and sets its flag	verified	one	uicamera/transitions#arming-a-transition	
+0x512270	329	CCamera::ArmFov		uicamera	primitive	bool __thiscall (CCamera *this, float target, float delay, float factor, uint32_t now)	Arms the field of view transition by the shortest arc	verified	one	uicamera/transitions#arming-a-transition	
+0x5123c0	194	CCamera::BeginFovTransition		uicamera	primitive	bool __thiscall (CCamera *this, float target, float duration, uint32_t start)	Wraps the live field of view bias and stores its transition	verified	one	uicamera/transitions#arming-a-transition	
+0x512490	329	CCamera::ArmGroundPitch		uicamera	primitive	bool __thiscall (CCamera *this, float target, float delay, float factor, uint32_t now)	Arms the ground pitch transition by the shortest arc	verified	one	uicamera/transitions#arming-a-transition	
+0x5125e0	194	CCamera::BeginGroundPitchTransition		uicamera	primitive	bool __thiscall (CCamera *this, float target, float duration, uint32_t start)	Wraps the live ground pitch and stores its transition	verified	one	uicamera/transitions#arming-a-transition	
+0x5126b0	218	CCamera::ArmHeight		uicamera	primitive	bool __thiscall (CCamera *this, float target, float delay, float factor, uint32_t now)	Arms the pivot height transition for a duration from the speed CVar	verified	one	uicamera/transitions#arming-a-transition	
+0x512790	147	CCamera::BeginHeightTransition		uicamera	primitive	bool __thiscall (CCamera *this, float target, float duration, uint32_t start)	Stores the height transition and sets its flag	inferred	none	uicamera/transitions#arming-a-transition	
+0x512830	329	CCamera::ArmPitch		uicamera	primitive	bool __thiscall (CCamera *this, float target, float delay, float factor, uint32_t now)	Arms the pitch transition by the shortest arc	verified	one	uicamera/transitions#arming-a-transition	
+0x512980	194	CCamera::BeginPitchTransition		uicamera	primitive	bool __thiscall (CCamera *this, float target, float duration, uint32_t start)	Wraps the live pitch and stores the pitch transition	verified	one	uicamera/transitions#arming-a-transition	
+0x512a50	329	CCamera::ArmPivotBias		uicamera	primitive	bool __thiscall (CCamera *this, float target, float delay, float factor, uint32_t now)	Arms the pivot bias transition by the shortest arc	verified	one	uicamera/transitions#arming-a-transition	
+0x512ba0	194	CCamera::BeginPivotBiasTransition		uicamera	primitive	bool __thiscall (CCamera *this, float target, float duration, uint32_t start)	Wraps the live pivot bias and stores its transition	verified	one	uicamera/transitions#arming-a-transition	
+0x512c70	329	CCamera::ArmYaw		uicamera	primitive	bool __thiscall (CCamera *this, float target, float delay, float factor, uint32_t now)	Arms the yaw transition by the shortest arc	verified	one	uicamera/transitions#arming-a-transition	
+0x512dc0	194	CCamera::BeginYawTransition		uicamera	primitive	bool __thiscall (CCamera *this, float target, float duration, uint32_t start)	Wraps the live yaw and stores the yaw transition	verified	one	uicamera/transitions#arming-a-transition	
+0x512e90	1111	CCamera::SetView		uicamera	primitive	void __thiscall (CCamera *this, int view, int blendStyle)	Makes a saved view current and copies it to the targets	inferred	none	uicamera/driver#setting-a-view	
+0x5132f0	34			uicamera	primitive		Runs its object file code not read here	inferred	none		
+0x513320	16			uicamera	orchestration		Runs its object file code not read here	inferred	none		
+0x513330	290			uicamera	primitive		Runs its object file code that calls SMemReAlloc, SMemAlloc, SMemFree; not read here	inferred	none		
+0x513460	16			uicamera	orchestration		Runs its object file code not read here	inferred	none		
+0x513470	248			uicamera	primitive		Runs its object file code that calls 0x5138b0, 0x7bf7b0; not read here	inferred	none		
+0x513570	60			uicamera	primitive		Runs its object file code not read here	inferred	none		
+0x5135b0	1			uicamera	orchestration		Runs its object file code not read here	inferred	none		
+0x5135c0	5			uicamera	orchestration		Runs its object file code not read here	inferred	none		
+0x5135d0	19			uicamera	primitive		Runs its object file code not read here	inferred	none		
 0x5135f0	5			unassigned			Runs its object file code not read here	inferred	none		
 0x513600	19			unassigned			Runs its object file code not read here	inferred	none		
 0x513620	5			unassigned			Runs its object file code not read here	inferred	none		
@@ -12608,7 +12608,7 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x519ef0	527	Script::SetPortraitTexture	idb	ui	primitive		Implements the Lua function SetPortraitTexture	inferred	none		
 0x51a100	21			ui	orchestration		Runs its object file code that calls RefreshPortrait; not read here	inferred	none		
 0x51a120	100	Script::HasFullControl	idb	ui	orchestration		Implements the Lua function HasFullControl	inferred	none		
-0x51a190	232	Script::GetComboPoints	idb	ui	orchestration		Implements the Lua function GetComboPoints	inferred	none		
+0x51a190	232	Script::GetComboPoints	idb	ui	orchestration	uint32_t __fastcall (lua_State *L)	Returns the combo points of a rogue or druid on its combo target, else 0	verified	one	ui/actionuse#combo-points	
 0x51a280	130	Script::UnitCreatureType	idb	ui	orchestration		Implements the Lua function UnitCreatureType	inferred	none		
 0x51a310	130	Script::UnitCreatureFamily	idb	ui	orchestration		Implements the Lua function UnitCreatureFamily	inferred	none		
 0x51a3a0	268	Script::GetResSicknessDuration	idb	ui	primitive		Implements the Lua function GetResSicknessDuration	inferred	none		
@@ -12881,22 +12881,22 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x523680	19			ui	primitive		Runs its object file code not read here	inferred	none		
 0x5236a0	5			ui	orchestration		Runs its object file code not read here	inferred	none		
 0x5236b0	11			ui	orchestration		Runs its object file code not read here	inferred	none		
-0x5236c0	197			ui	primitive		Runs its object file code that calls _sprintf, TextureCreateFromFile, 0x44ae00 and 2 more; not read here	inferred	none		
-0x523790	130			ui	orchestration		Copies the cursor image chosen by the current state into the device and refreshes it through 0x58b5c0	inferred	none		
-0x523820	26			ui	orchestration		Runs its object file code that calls HandleClose; not read here	inferred	none		
-0x523840	385			ui	primitive		Runs its object file code that calls HandleClose, 0x523790, 0x44ae00 and 1 more; not read here	inferred	none		
-0x5239d0	87			ui	orchestration		Runs its object file code that calls 0x6c62d0, TextureCreateFromFile, HandleClose and 1 more; not read here	inferred	none		
-0x523a30	58			ui	orchestration		Runs its object file code that calls TextureCreateFromFile, HandleClose; not read here	inferred	none		
-0x523a70	186			ui	orchestration		Runs Cursor.cpp code that calls ClntObjMgrObjectPtr, ClientDBStringLookup, 0x5d8af0 and 4 more; not read here	inferred	none		
-0x523b30	178			ui	orchestration		Runs its object file code that calls ClientDBStringLookup, SStrPrintf, TextureCreateFromFile and 2 more; not read here	inferred	none		
-0x523bf0	25			ui	orchestration		Runs its object file code not read here	inferred	none		
-0x523c10	6			ui	unreached		Runs its object file code not read here	inferred	none		
-0x523c20	20			ui	orchestration		Sets the current cursor index and refreshes the cursor when it changes	inferred	none	spell/cast#targeting-refusal-or-cursor	
-0x523c40	207			ui	orchestration		Runs its object file code that calls SStrCmpI, TextureCreateFromFile, 0x44ae00 and 4 more; not read here	inferred	none		
+0x5236c0	197	LoadCursorImages		ui	primitive	void __cdecl (void)	Loads the 42 cursor images, sets both modes to Point and sends the image	verified	one	ui/worldcursor#cursor-modes	
+0x523790	130	SendCursorImage		ui	orchestration	void __cdecl (void)	Sends the cursor image the mode and payload picture choose to the device	verified	one	ui/cursor#sending-the-picture	
+0x523820	26	FreeCursorPictureTexture		ui	orchestration	void __cdecl (void)	Frees the payload picture's texture handle	verified	one	ui/cursor#dragging-picture	
+0x523840	385	BuildCursorPicture		ui	primitive	void __cdecl (void)	Scales a 64 by 64 icon to the 32 by 32 payload picture	verified	one	ui/cursor#dragging-picture	
+0x5239d0	87	SetCursorPictureCoin		ui	orchestration	void __fastcall (uint32_t amount)	Sets the payload picture to the coin icon an amount shows	verified	one	ui/cursor#dragging-picture	
+0x523a30	58	SetCursorPictureFromPath		ui	orchestration	void __fastcall (const char *path)	Sets the payload picture to the texture a path names	verified	one	ui/cursor#dragging-picture	
+0x523a70	186	SetCursorPictureFromItem		ui	orchestration	void __stdcall (uint64_t guid)	Sets the payload picture to an item's icon	verified	one	ui/cursor#dragging-picture	
+0x523b30	178	SetCursorPictureFromDisplayId		ui	orchestration	void __fastcall (uint32_t displayId)	Sets the payload picture to an item display's icon	verified	one	ui/cursor#dragging-picture	
+0x523bf0	25	RestoreCursorModePicture		ui	orchestration	void __cdecl (void)	Ends the payload picture and sends the mode's image again	verified	one	ui/cursor#clearing-the-cursor	
+0x523c10	6	GetCursorMode		ui	unreached	uint32_t __cdecl (void)	Returns the shown cursor mode	verified	one	ui/worldcursor#setting-the-mode	
+0x523c20	20	SetCursorMode		ui	orchestration	void __fastcall (uint32_t mode)	Shows a cursor mode and sends its image when it changes	verified	one	ui/worldcursor#setting-the-mode	
+0x523c40	207	SetCustomCursor		ui	orchestration	uint32_t __fastcall (const char *name)	Loads a named 32 by 32 cursor as mode 41, returning 1 when it is shown	verified	one	ui/worldcursor#custom-cursors	
 0x523d10	6	GetDefaultCursor		ui	orchestration	uint32_t __cdecl (void)	Returns the default cursor index	verified	one	ui/tooltipitemfoot#the-sell-price	
-0x523d20	7			ui	orchestration		Stores the default cursor index	verified	one	spell/cast#targeting-refusal-or-cursor	
-0x523d30	11			ui	orchestration		Sets the shown cursor to the base cursor through 0x523c20	inferred	none	spell/targeting#the-targeting-cursor	
-0x523d40	55			ui	primitive		Runs its object file code that calls SStrCmpI; not read here	inferred	none		
+0x523d20	7	SetBaseCursorMode		ui	orchestration	void __fastcall (uint32_t mode)	Stores the base cursor mode	verified	one	ui/worldcursor#setting-the-mode	
+0x523d30	11	ShowBaseCursor		ui	orchestration	void __cdecl (void)	Shows the base cursor mode	verified	one	ui/worldcursor#setting-the-mode	
+0x523d40	55	CursorModeFromName		ui	primitive	uint32_t __fastcall (const char *name)	Returns the first cursor mode whose name matches, 0 for none	verified	one	ui/worldcursor#custom-cursors	
 0x523d80	5			ui	orchestration		Runs its object file code not read here	inferred	none		
 0x523d90	15			ui	primitive		Runs its object file code not read here	inferred	none		
 0x523da0	5			ui	orchestration		Runs its object file code not read here	inferred	none		
@@ -13217,7 +13217,7 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x5305b0	113			ui	orchestration		Runs Tooltip.cpp code that calls SStrPrintf, 0x771d80, 0x530640; not read here	inferred	none		
 0x530630	16			ui	orchestration		Runs Tooltip.cpp code not read here	inferred	none		
 0x530640	1054	GameTooltipSize		ui	primitive	void __thiscall ()	Sizes the plate from its lines, padding and wrap limit, then re-anchors it	verified	one	ui/tooltipcontent#sizing-the-tooltip	
-0x530a60	24	CGTooltip::HideEffective		ui	orchestration	void __thiscall ()	Gives the tooltip no owner, then runs the base effective hide	verified	one	ui/hover#the-tooltip-of-a-hidden-frame	
+0x530a60	24	CGameTooltip::Hide		ui	orchestration	void __thiscall (CGameTooltip *this)	Clears the owner with SetOwner(0, 0, 0, 0), then hides the frame	verified	one	ui/mouseover#the-tooltip-stays-put	
 0x530a80	82	CGTooltip::ShowEffective		ui	orchestration	void __thiscall ()	Shows the tooltip with an owner and a line, else hides it	verified	one	ui/hover#the-tooltip-of-a-hidden-frame	
 0x530ae0	56			ui	orchestration		Hides a cursor-anchored tooltip, or starts a 2-second fade	verified	one	ui/tooltip#fading-out	
 0x530b20	279			ui	primitive		Keeps a cursor-anchored tooltip at the cursor and fades a fading one	verified	one	ui/tooltip#following-the-cursor	
@@ -28204,7 +28204,7 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x6c6230	35			unassigned			Runs its object file code not read here	inferred	none		
 0x6c6260	59			unassigned	primitive		Splits copper into copper, silver and gold	inferred	none	objectlayer/quests#quest-completion	
 0x6c62a0	34			unassigned	unreached		Runs its object file code that calls CurrencyMultiplier; not read here	inferred	none		
-0x6c62d0	194			unassigned			Runs its object file code that calls ClientDBStringLookup, SStrPrintf, SStrPack; not read here	inferred	none		
+0x6c62d0	194	FormatCoinIconPath		unassigned		void __fastcall (int32_t amount, char *dest, uint32_t size)	Formats the coin icon path an amount shows	verified	one	ui/cursormoney#coin-icons	
 0x6c63a0	41	LootInitialize	idb	unassigned			Runs its object file code not read here	inferred	none		
 0x6c63d0	8	LootDestroy	idb	unassigned			Runs its object file code not read here	inferred	none		
 0x6c63e0	5			unassigned			Runs its object file code not read here	inferred	none		
@@ -29609,7 +29609,7 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x6f1a90	53			ui	orchestration		Reads font flags as substrings: OUTLINE 1, THICKOUTLINE 4, MONOCHROME 2	verified	one	ui/fontstring#setfont	
 0x6f1ad0	85			ui	primitive		Runs its object file code that calls SStrPack; not read here	inferred	none		
 0x6f1b30	130	ParseXMLBool		ui	primitive	int __fastcall (const char *text)	Reads a flag: 1 to 9, t, T, y, Y, on or enabled is true, anything else false	verified	one	ui/addons#toc-directives	
-0x6f1c10	213	GetScriptFlagArg		ui	primitive		Reads a script argument as a flag: nil 0, a number truncated, a string by keyword, else the default	verified	one	ui/tooltipcontent#the-line-bindings	
+0x6f1c10	213	GetScriptFlagArg		ui	primitive	bool __stdcall (lua_State *L, int index, bool defaultValue)	Reads a script argument as a flag: nil 0, boolean itself, number truncated, string by first letter or keyword	verified	one	ui/actionuse#reading-a-script-flag	
 0x6f1d60	328			ui	primitive		Runs its object file code that calls 0x6f2cf0, SStrToFloat, GetScaledScreenAspect and 2 more; not read here	inferred	none		
 0x6f1eb0	486	XmlReadDimension		ui	primitive	uint32_t __fastcall (XmlNode *node, float *x, float *y, void *report)	Reads x and y from a node's attributes or its AbsDimension child, in layout units	verified	one	ui/modelview#model-unit-to-pixel	
 0x6f20a0	806			ui	primitive		Runs its object file code that calls 0x6f2cf0, SStrToFloat, GetScaledScreenAspect and 2 more; not read here	inferred	none		
@@ -33346,7 +33346,7 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x76b2c0	47	CSimpleFrame::OnFrameUpdate		ui	orchestration		Runs the OnUpdate script with the elapsed time	verified	one	ui/tooltip#following-the-cursor	
 0x76b2f0	5	FrameInitDragThresholdThunk		ui	orchestration		Jumps to 0x76b300; a static initializer	verified	one	ui/README#static-initializers	
 0x76b300	19	FrameInitDragThreshold		ui	primitive		Stores 0.01 squared in 0xcf0c14, the squared drag-start distance	verified	one	ui/README#static-initializers	
-0x76b320	125	CSimpleFrame::OnMouseMove		ui	primitive		Starts a drag past the threshold and answers the hit test; slot 0x3c	inferred	none		
+0x76b320	125	CSimpleFrame::OnMouseMove		ui	primitive		Starts a drag past the threshold and answers the hit test; slot 0x3c	verified	one	ui/mouse#what-the-pointer-is-tested-against	
 0x76b3a0	79	SimpleFrameRegisterLayer		ui	orchestration		Adds the regions of one enabled draw layer to a batch	inferred	none		
 0x76b3f0	306	CSimpleFrame::OnFrameRender		ui	orchestration		Rebuilds and draws a self-drawing frame's own batches, then its children	inferred	none		
 0x76b530	25	CSimpleFrame::MarkLayerDirty		ui	orchestration		Sets a bit of the frame's own dirty-layer mask +0x1f8	verified	one	ui/visibility#parent-change	
@@ -33364,7 +33364,7 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x76c140	15	FrameInitTwoPi		ui	primitive		Stores 3.1415927 + 3.1415927 as a float in a global	verified	one	ui/README#static-initializers	
 0x76c150	5	FrameInitInvTwoPiThunk		ui	orchestration		Jumps to 0x76c160; a static initializer	verified	one	ui/README#static-initializers	
 0x76c160	19	FrameInitInvTwoPi		ui	primitive		Stores 1 divided by a global set just before as a float in a global	verified	one	ui/README#static-initializers	
-0x76c180	81	CSimpleFrame::OnMouseWheel		ui	orchestration		Runs OnMouseWheel with 1 or -1 when visible	inferred	none		
+0x76c180	81	CSimpleFrame::OnMouseWheel		ui	orchestration		Runs OnMouseWheel with 1 or -1 when visible	verified	one	ui/mouse#the-wheel	
 0x76c1e0	138	CSimpleFrame::OnDragStart		ui	orchestration		Runs OnDragStart with the name of the lowest held button	inferred	none		
 0x76c2a0	25	CSimpleFrame::OnDragStop		ui	orchestration		Runs the OnDragStop script	inferred	none		
 0x76c2c0	25	CSimpleFrame::OnReceiveDrag		ui	orchestration		Runs the OnReceiveDrag script	inferred	none		
@@ -33664,9 +33664,9 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x776ec0	201	Frame::EnableKeyboard	idb	ui	orchestration		Implements the Frame method EnableKeyboard, its pair in the table 0x878ec0	verified	one	ui/methods#what-the-frame-methods-call	
 0x776f90	218	Frame::IsKeyboardEnabled	idb	ui	orchestration		Implements the Frame method IsKeyboardEnabled, its pair in the table 0x878ec0	inferred	none		
 0x777070	181	Frame::EnableMouse	idb	ui	orchestration		Implements the Frame method EnableMouse, its pair in the table 0x878ec0	verified	one	ui/methods#what-the-frame-methods-call	
-0x777130	182	Frame::IsMouseEnabled	idb	ui	orchestration		Implements the Frame method IsMouseEnabled, its pair in the table 0x878ec0	inferred	none		
+0x777130	182	Frame::IsMouseEnabled	idb	ui	orchestration		Implements the Frame method IsMouseEnabled, its pair in the table 0x878ec0	verified	one	ui/mouse#switching-input-kinds	
 0x7771f0	181	Frame::EnableMouseWheel	idb	ui	orchestration		Implements the Frame method EnableMouseWheel, its pair in the table 0x878ec0	verified	one	ui/methods#what-the-frame-methods-call	
-0x7772b0	182	Frame::IsMouseWheelEnabled	idb	ui	orchestration		Implements the Frame method IsMouseWheelEnabled, its pair in the table 0x878ec0	inferred	none		
+0x7772b0	182	Frame::IsMouseWheelEnabled	idb	ui	orchestration		Implements the Frame method IsMouseWheelEnabled, its pair in the table 0x878ec0	verified	one	ui/mouse#switching-input-kinds	
 0x777370	870	Frame::GetBackdrop	idb	ui	orchestration		Implements the Frame method GetBackdrop, its pair in the table 0x878ec0	inferred	none		
 0x7776e0	1243	Frame::SetBackdrop	idb	ui	orchestration		Implements the Frame method SetBackdrop, its pair in the table 0x878ec0	inferred	none		
 0x777bc0	358	Frame::GetBackdropColor	idb	ui	orchestration		Implements the Frame method GetBackdropColor, its pair in the table 0x878ec0	inferred	none		
@@ -35772,7 +35772,7 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x7bf030	374			cmath	unreached		Runs its object file code that calls 0x7bdfc0, 0x5f8d20; not read here	inferred	none		
 0x7bf1b0	374			cmath	unreached		Runs its object file code that calls 0x7bdfc0, 0x5f8d20; not read here	inferred	none		
 0x7bf330	374			cmath	unreached		Runs its object file code that calls 0x7bdfc0, 0x5f8d20; not read here	inferred	none		
-0x7bf4b0	374			cmath	primitive		Runs its object file code that calls 0x7bdfc0, 0x5f8d20; not read here	inferred	none		
+0x7bf4b0	374	BuildYawPitchRollBasis		cmath	primitive	void __thiscall (float *dest, float yaw, float pitch, float roll)	Builds the transpose of Rz(yaw), Ry(pitch), Rx(roll) multiplied in that order	verified	one	uicamera/view#pitch-units-and-sign	
 0x7bf630	5			cmath	orchestration		Jumps to 0x7bf640, a static initializer of its file	verified	one	cmath/geometry#static-constants	
 0x7bf640	15			cmath	primitive		Stores 2π as π + π in floats, 6.2831855, at 0xcf5c18	verified	one	cmath/geometry#static-constants	
 0x7bf650	5			cmath	orchestration		Jumps to 0x7bf660, a static initializer of its file	verified	one	cmath/geometry#static-constants	
@@ -36565,8 +36565,8 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x7cb650	116			ui	primitive		Runs NamePlateFrame.cpp code that calls 0x778850, SMemFree; not read here	inferred	none		
 0x7cb6d0	373			ui	primitive		Runs NamePlateFrame.cpp code that calls 0x77f750, CGUnit_C::GetUnitName, 0x771d80 and 7 more; not read here	inferred	none		
 0x7cb850	95	NamePlateOnEnter		ui	orchestration	void __thiscall ()	Publishes the plate's unit as the world mouseover, lights the plate and runs the button enter	verified	one	ui/hover#nameplate-and-minimap-notifies	
-0x7cb8b0	91	NamePlateOnLeave		ui	orchestration	void __thiscall (uint32_t removal)	Publishes no world mouseover, dims the plate and runs the button leave	verified	one	ui/hover#nameplate-and-minimap-notifies	
-0x7cb910	49			ui	orchestration		Runs NamePlateFrame.cpp code that calls 0x4949f0, 0x779540; not read here	inferred	none		
+0x7cb8b0	91	CGNamePlateFrame::OnLeave		ui	orchestration	void __thiscall (CGNamePlateFrame *this, uint32_t flag)	Clears the published mouseover and unhighlights the plate	verified	one	ui/mouse#enter-and-leave	
+0x7cb910	49	CGNamePlateFrame::OnClick		ui	orchestration	void __thiscall (CGNamePlateFrame *this, uint32_t action, uint32_t arg)	Selects or interacts with the plate's unit, then runs the button's click	inferred	none	ui/mouseover#clicking-a-nameplate	
 0x7cb950	212			ui	primitive		Runs NamePlateFrame.cpp code that calls __ftol, 0x77f750, ClntObjMgrObjectPtr and 1 more; not read here	inferred	none		
 0x7cba30	56			ui	orchestration		Returns 0 while targeting a position with no unit bit, else defers to its base method	inferred	none	spell/targeting#flag-word-predicates	
 0x7cba70	40			ui	orchestration	void __thiscall (void *frame)	Stores 5000 at +0x514 and passes 0xffff0000 to a call on the object at +0x4fc	inferred	none	ui/README#nameplate-frame-functions	
