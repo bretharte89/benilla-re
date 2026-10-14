@@ -21,7 +21,7 @@ table: while the id is past the lookup or unmapped, it moves to the row's fallba
 falls back to itself ends at the default: animation 0 when mapped, else 0x93, else the first
 sequence.
 
-Addresses: `0x711bf0`, `0xc0e070`, `0xc0e074`
+Addresses: `0x711bf0`, `0x711c22`, `0x711c35`, `0x711c71`, `0xc0e070`, `0xc0e074`
 Confidence: verified
 Proof: one
 Test: none
@@ -31,7 +31,7 @@ The playable table is header `+0x30`, counted at `+0x2c`; the lookup is `+0x28`,
 are `+0x14` and its fallback `+0x18`. Two counters start at 1 and 0; flag 0x10 adds the first to
 the second and negates the first, flag 0x20 adds it and zeroes it. The result flag is 0 for a
 positive first counter, 1 for a negative one, else 3 when the second is positive and 2 otherwise.
-A visited array of 0xd0 dwords stops loops.
+A visited array of 0xd0 dwords stops loops. The default is chosen first: `0x711c22` reads entry 0 of the lookup and `0x711c35` entry `0x93` without comparing the index with the count at `+0x24`, which the walk's own test does check (`0x711c71`), so a lookup shorter than 0x94 entries is read past its end.
 
 ## Playing an animation
 
@@ -188,33 +188,35 @@ under an exception scope: its body runs from `0x74fa8a` through `0x74fac2`, `0x7
 
 ## Billboards
 
-A bone with flag 8, 0x10, 0x20 or 0x40 replaces its rotation with one facing the view: 8 faces
-fully, 0x10, 0x20 and 0x40 turn about one axis. The rows are rescaled to the bone's original row
-lengths and the translation recomputed from the pivot.
+A bone with flag 8, 0x10, 0x20 or 0x40 replaces its rotation with one facing the view: 8 replaces
+all three rows, and 0x10, 0x20 and 0x40 keep row 0, 1 or 2 and turn the other two about it. The
+rows are rescaled to the bone's original row lengths and the translation is recomputed from the
+pivot. The cases, their cross-product orders and their sums are `animation/billboards`.
 
 Addresses: `0x7152ea`, `0x71879c`, `0x718788`
-Confidence: inferred
-Proof: none
+Confidence: verified
+Proof: one
 Test: none
 
 `0x7152ea` reads the byte table `0x71879c` at `(flags & 0x78) − 8` and jumps through `0x718788`.
-The per-axis cross products were read but their row order not settled.
+Any other flag combination in the mask keeps the directions.
 
 ## Element tracks
 
-After the bones, every animated element samples with bone 0's times and blend: colours (an RGB track
-and an alpha track of 16-bit values scaled by 1/32767), transparency weights, texture frame words
+After the bones, every animated element samples its own tracks: colours (an RGB track and an
+alpha track of 16-bit values scaled by 1/32767), transparency weights, texture frame words
 (stepped), texture transforms (`Texture transforms`), light colours and intensities, camera
-positions, ribbon and particle parameters, and attachment visibility.
+positions, ribbon and particle parameters, and attachment visibility. Colours, transparency,
+frames, texture transforms and cameras take the time of bone 0; lights, ribbons, particles and
+attachments take the time of the bone their record names. The families are `animation/elements`.
 
 Addresses: `0x714260`, `0x811610`, `0xcf043c`, `0x71aff0`, `0x71b010`
-Confidence: inferred
-Proof: none
+Confidence: verified
+Proof: one
 Test: none
 
 The 16-bit scale is the float at `0x811610`. The centre is the static at `0xcf043c`, built once
-under a guard bit. The order and the interpolation of each were read; their blend steps were not
-transcribed one by one.
+under a guard bit. The sampling block of every track is `animation/tracks#sampling-block`.
 
 ## Instance colours
 

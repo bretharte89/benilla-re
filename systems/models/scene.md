@@ -68,12 +68,12 @@ queue order; a kind-0 record calls `fn(ecx=model, edx=a, b, c, d, e, f)`, a kind
 copy of its position before the last three arguments. Each record's instance is then released and
 the queue emptied.
 
-Addresses: `0x7074b0`, `0x707490`, `0x719370`, `0x71f860`, `0x70a5a0`, `0x70a280`, `0x70a400`
+Addresses: `0x7074b0`, `0x707490`, `0x719370`, `0x71f860`, `0x70a5a0`, `0x70a280`, `0x70a400`, `0x483659`, `0x483679`, `0x76d846`
 Confidence: verified
 Proof: one
 Test: none
 
-The sort fills an index array with 0 to n−1 and calls `0x71f860` with the comparator `0x70a5a0`,
+The world frame computes `dt` as `ftol(f32[ui+0x3f4] · 1000.0 + 0.5)` (`0x483659` to `0x483679`), rounding to the nearest millisecond; the model frame path truncates (`ui/model`, `0x76d846`). A delta that converts to a whole millisecond less a rounding error comes back one short on the truncating path and exact on the world path; how many do depends on the x87 precision the frame runs at. The sort fills an index array with 0 to n−1 and calls `0x71f860` with the comparator `0x70a5a0`,
 which returns −1 when record i's `+0x24` is greater (unsigned), 1 when smaller, then compares the
 indices. Records are 0x30 bytes at `+0x84`; their kind is `+0x0`, the function `+0x4`, the
 instance `+0x8`. `0x70a280` and `0x70a400` add a reference to the instance when they queue it, and
