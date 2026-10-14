@@ -264,6 +264,10 @@ CGxFont	0x0184	4	float	m_requestedSize	font	Holds the requested size as a fracti
 CGxFont	0x0188	4	float	m_advanceAdjust	font	Holds the ratio that scales a negative kerning	verified	one	font/api#font-object
 CGxFont	0x018c	192	uint8_t[192]	m_pages	font	Holds eight atlas page records of 0x18 bytes	verified	one	font/api#font-object
 CGxFont	0x024c	4	uint32_t	m_pixelSize	font	Holds the rendered pixel size, at most 32	verified	one	font/api#font-object
+CGxMonitorMode	0x0000	4	uint32_t	m_width	console	Holds the width in pixels	verified	one	console/display#format-validation
+CGxMonitorMode	0x0004	4	uint32_t	m_height	console	Holds the height in pixels	verified	one	console/display#format-validation
+CGxMonitorMode	0x0008	4	uint32_t	m_formatWord	console	Holds the format word, 16 or 32	verified	one	console/display#format-validation
+CGxMonitorMode	0x000c	4	uint32_t	m_refresh	console	Holds the refresh rate	verified	one	console/display#format-validation
 CGxString	0x0000	8	void *[2]	m_link	font	Holds the link in the global string list or the pool	verified	one	font/string#string-object
 CGxString	0x0010	8	void *[2]	m_fontLink	font	Holds the link in the font's string list	verified	one	font/string#string-object
 CGxString	0x0018	4	float	m_size	font	Holds the size, or the font's natural height	verified	one	font/string#string-object
@@ -453,6 +457,22 @@ CMovement	0x0148	4	float	m_facingRateTime	collision	Holds the seconds to the que
 CMovement	0x014c	4	int32_t	m_correctionTime	collision	Holds the ms to the queue head at arming, read as int32, the divisor of the position blend; 0 when off	verified	one	collision/status#position-blend-arming
 CMovement	0x0150	12	void *[3]	m_events	collision	Holds the event queue header: link offset, last link, then the first CPlayerMoveEvent	verified	one	collision/events#insertion-in-time-order
 CMovement	0x015c	4	void *	m_unit	collision	Holds the unit that owns the mover, the constructor's fourth argument	verified	one	collision/mover#construction
+CONSOLECOMMAND	0x0000	4	uint32_t	m_hash	console	Holds the hash of the name	verified	one	console/commands#command-records
+CONSOLECOMMAND	0x0004	8	uint32_t[2]	m_bucketLink	console	Holds the link in the hash bucket chain	verified	one	console/commands#command-records
+CONSOLECOMMAND	0x000c	8	uint32_t[2]	m_listLink	console	Holds the link in the list of all commands	verified	one	console/commands#command-records
+CONSOLECOMMAND	0x0014	4	const char *	m_name	console	Holds the name pointer the registrant passed	verified	one	console/commands#command-records
+CONSOLECOMMAND	0x0018	4	void *	m_handler	console	Holds the handler called with the name and the arguments	verified	one	console/commands#command-records
+CONSOLECOMMAND	0x001c	4	const char *	m_help	console	Holds the help line, or 0	verified	one	console/commands#command-records
+CONSOLECOMMAND	0x0020	4	uint32_t	m_category	console	Holds the category id	verified	one	console/commands#command-records
+CONSOLELINE	0x0000	4	void *	m_prevLink	console	Holds the previous link of the line list	verified	one	console/screen#line-records
+CONSOLELINE	0x0004	4	CONSOLELINE *	m_next	console	Holds the next line, older than this one	verified	one	console/screen#line-records
+CONSOLELINE	0x0008	4	char *	m_text	console	Holds the text buffer	verified	one	console/screen#line-records
+CONSOLELINE	0x000c	4	uint32_t	m_length	console	Holds the number of bytes in the text	verified	one	console/screen#line-records
+CONSOLELINE	0x0010	4	uint32_t	m_capacity	console	Holds the size of the text buffer	verified	one	console/screen#line-records
+CONSOLELINE	0x0014	4	uint32_t	m_cursor	console	Holds the cursor index, nonzero only for the input line	verified	one	console/screen#line-records
+CONSOLELINE	0x0018	4	uint32_t	m_floor	console	Holds the first index the cursor may edit	verified	one	console/screen#line-records
+CONSOLELINE	0x001c	4	uint32_t	m_colourClass	console	Holds the colour class of the line	verified	one	console/screen#line-records
+CONSOLELINE	0x0020	4	uint32_t	m_string	console	Holds the handle of the drawn string	verified	one	console/screen#line-records
 CParticle2	0x0000	12	float[3]	m_position	models	Holds the position, in world or emitter space	verified	one	models/particles#particle-life
 CParticle2	0x000c	1	uint8_t	m_gradient	models	Holds which gradient colours the particle, 1 past the midpoint	verified	one	models/particles#particle-life
 CParticle2	0x0010	12	float[3]	m_velocity	models	Holds the velocity	verified	one	models/emission#spawn-space
@@ -607,6 +627,22 @@ CSimpleTop	0x1128	4	void *	m_mouseDownCallback	ui	Holds the host function offere
 CSimpleTop	0x112c	4	void *	m_mouseMoveCallback	ui	Holds the host function offered each mouse move	verified	one	ui/input#mouse-move-and-the-hover-pick
 CSimpleTop	0x1130	4	void *	m_sizeCallback	ui	Holds the host function the size handler calls	verified	one	ui/strata#construction-and-teardown
 CSimpleTop	0x1134	4	void *	m_focusLostCallback	ui	Holds the host function the lost-capture handler calls	verified	one	ui/strata#construction-and-teardown
+CVar	0x0000	4	uint32_t	m_hash	cvar	Holds the hash of the name	verified	one	cvar/registry#cvar-record
+CVar	0x0004	8	uint32_t[2]	m_bucketLink	cvar	Holds the link in the hash bucket chain	verified	one	cvar/registry#cvar-record
+CVar	0x000c	8	uint32_t[2]	m_listLink	cvar	Holds the link in the list of all records	verified	one	cvar/registry#cvar-record
+CVar	0x0014	4	char *	m_name	cvar	Holds the name, a duplicate of the registered text	verified	one	cvar/registry#cvar-record
+CVar	0x0018	4	uint32_t	m_category	cvar	Holds the category id	verified	one	cvar/registry#cvar-record
+CVar	0x001c	4	uint32_t	m_flags	cvar	Holds the flag bits: 0 saved, 1 latched, 2 read-only, 31 script-visible	verified	one	cvar/registry#cvar-record
+CVar	0x0020	4	char *	m_value	cvar	Holds the value text	verified	one	cvar/registry#cvar-record
+CVar	0x0024	4	float	m_floatValue	cvar	Holds the value as a float	verified	one	cvar/registry#cvar-record
+CVar	0x0028	4	int32_t	m_intValue	cvar	Holds the value as an integer	verified	one	cvar/registry#cvar-record
+CVar	0x002c	4	uint32_t	m_changeCount	cvar	Holds the number of accepted sets	verified	one	cvar/registry#cvar-record
+CVar	0x0030	4	char *	m_default	cvar	Holds the default text	verified	one	cvar/registry#cvar-record
+CVar	0x0034	4	char *	m_reset	cvar	Holds the reset text	verified	one	cvar/registry#cvar-record
+CVar	0x0038	4	char *	m_latched	cvar	Holds the latched text applied by Update	verified	one	cvar/registry#cvar-record
+CVar	0x003c	128	char[128]	m_help	cvar	Holds the help line	verified	one	cvar/registry#cvar-record
+CVar	0x00bc	4	void *	m_callback	cvar	Holds the change callback	verified	one	cvar/registry#cvar-record
+CVar	0x00c0	4	void *	m_callbackArg	cvar	Holds the argument passed to the callback	verified	one	cvar/registry#cvar-record
 CharacterSelectionDisplay	0x0000	8	uint64_t	m_guid	glue	Holds the character guid, which the world entry sends	verified	one	glue/flow#two-phase-world-entry
 CharacterSelectionDisplay	0x0008	48	char[48]	m_name	glue	Holds the character's name; the rename applier copies at most 48 bytes into it	verified	one	glue/select#the-roster
 CharacterSelectionDisplay	0x0038	4	uint32_t	m_mapId	glue	Holds the character map, passed to the loading screen and to ClientInitializeGame	verified	one	glue/flow#two-phase-world-entry
@@ -687,6 +723,12 @@ ClientConnection	0x1b18	4	uint32_t	m_worldHandle	net	Holds the handle set when t
 ClientConnection	0x1b1c	1	uint8_t	m_quitAfterLogout	net	Holds the quit flag of the pending logout	verified	one	net/connection#logout
 ClientConnection	0x1b1d	1	uint8_t	m_logoutPending	net	Holds 1 while a logout is requested and not yet answered	verified	one	net/connection#logout
 ClientConnection	0x1b20	4	void *	m_cleanup	net	Holds the operation cleanup callback, run once	verified	one	net/connection#operations
+DYNAMICELEMENTVERT	0x0000	4	float	m_x	loadingscreen	Holds the x position	verified	one	loadingscreen/route#route-ribbon
+DYNAMICELEMENTVERT	0x0004	4	float	m_y	loadingscreen	Holds the y position	verified	one	loadingscreen/route#route-ribbon
+DYNAMICELEMENTVERT	0x0008	4	float	m_z	loadingscreen	Holds the z position, 0	verified	one	loadingscreen/route#route-ribbon
+DYNAMICELEMENTVERT	0x000c	4	float	m_u	loadingscreen	Holds the horizontal texture coordinate	verified	one	loadingscreen/route#route-ribbon
+DYNAMICELEMENTVERT	0x0010	4	float	m_v	loadingscreen	Holds the vertical texture coordinate	verified	one	loadingscreen/route#route-ribbon
+DYNAMICELEMENTVERT	0x0014	4	uint32_t	m_color	loadingscreen	Holds the vertex colour	verified	one	loadingscreen/route#route-ribbon
 DictionaryRecord	0x0000	4	char[4]	m_key	glue	Holds up to three bytes of a lower-cased name window and a terminator	verified	one	glue/create#name-statistics
 DictionaryRecord	0x0004	4	int32_t	m_count	glue	Holds how many times the key was seen, at least 1	verified	one	glue/create#name-statistics
 EvtContext	0x0000	4	void **	__vfptr	core	Holds the vtable 0x801364	verified	one	core/loop#start-and-stop
@@ -778,6 +820,8 @@ ITEMCOOLDOWNHASHNODE	0x0014	1	uint8_t	m_flagHighByte	spell	Holds the high byte o
 ITEMCOOLDOWNHASHNODE	0x0018	4	uint32_t	m_spellId	spell	Holds the spell whose item cooldown waits for the item record	verified	one	spell/go#pending-item-cooldowns
 ITEMCOOLDOWNHASHNODE	0x001c	4	uint32_t	m_time	spell	Holds the time the pending cooldown starts from	verified	one	spell/go#pending-item-cooldowns
 ITEMCOOLDOWNHASHNODE	0x0020	1	uint8_t	m_onHold	spell	Holds the on-hold flag the pending cooldown is inserted with	verified	one	spell/go#pending-item-cooldowns
+LOADINGSCREENTAXIPATHINFO	0x0000	4	uint32_t	m_firstStop	loadingscreen	Holds the id of the first stop node of the run	verified	one	loadingscreen/route#taxi-leg-table
+LOADINGSCREENTAXIPATHINFO	0x0004	4	uint32_t	m_lastStop	loadingscreen	Holds the id of the last stop node seen before the run closed	verified	one	loadingscreen/route#taxi-leg-table
 LightningObject	0x0000	8	void *[2]	m_link	spell	Holds the chain's link in the chain list	verified	one	spell/visuals#chain-effect-creation
 LightningObject	0x0008	16	uint32_t[4]	m_guids	spell	Holds the uint64 GUID array: capacity, count, data, quantum	verified	one	spell/visuals#chain-hop-table
 LightningObject	0x0018	16	uint32_t[4]	m_bolts	spell	Holds the hop array: capacity, count, data, quantum	verified	one	spell/visuals#chain-hop-table
@@ -1035,6 +1079,10 @@ OsThreadRecord	0x0008	4	uint32_t	m_threadId	os	Holds the thread id	verified	one	
 OsThreadRecord	0x000c	4	void *	m_handle	os	Holds a duplicate of the thread handle	verified	one	core/threads#engine-thread-records
 OsThreadRecord	0x0014	4	void *	m_nameObject	os	Holds the name object tied to the thread, or null	verified	one	core/threads#engine-thread-records
 OsThreadRecord	0x181c	128	char[128]	m_name	os	Holds the display text name [id]	verified	one	core/threads#engine-thread-records
+PATHINFO	0x0000	4	uint32_t	m_capacity	loadingscreen	Holds the capacity in entries	verified	one	loadingscreen/route#taxi-leg-table
+PATHINFO	0x0004	4	uint32_t	m_count	loadingscreen	Holds the number of legs	verified	one	loadingscreen/route#taxi-leg-table
+PATHINFO	0x0008	4	uint32_t *	m_data	loadingscreen	Holds the buffer of pair indices	verified	one	loadingscreen/route#taxi-leg-table
+PATHINFO	0x000c	4	uint32_t	m_granularity	loadingscreen	Holds the growth granularity, 0 until set	verified	one	loadingscreen/route#taxi-leg-table
 PLAYERNAMEDESC	0x0000	4	void *	m_prevLink	playername	Holds the address of the previous link in the name list	verified	one	playername/plates#name-record-layout
 PLAYERNAMEDESC	0x0004	4	PLAYERNAMEDESC *	m_next	playername	Holds the next name record	verified	one	playername/plates#name-record-layout
 PLAYERNAMEDESC	0x0008	4	void *	m_text	playername	Holds the name text handle, 0 while none exists	verified	one	playername/plates#name-record-layout
