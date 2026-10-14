@@ -487,6 +487,8 @@ address	type	name	name_from	system	meaning	confidence	proof	finding
 0x80655c	const float	s_float3fd55555		unassigned	Holds the float 1.6666666 (0x3fd55555)	inferred	none	
 0x806574	const float	s_float40b1c71cAt806574		ui	Holds the float 5.5555553 (0x40b1c71c)	inferred	none	
 0x8065ec	const float	s_mailRangeYards		ui	Holds 5.5555553, the mailbox walk-away range in yards, squared into the range cell	verified	one	ui/mail#opening-and-closing
+0x8066dc	void *[11]	s_bubbleLayoutVtable		ui	Holds the vtable of the layout part embedded at +0x24 of a chat bubble frame	inferred	none	
+0x806708	void *[36]	CGChatBubbleFrame::vftable		ui	Holds the chat bubble frame's vtable, 36 slots; slot 0 is the destructor 0x4b0bb0	verified	one	ui/chatbubble#bubble-frame
 0x80679c	const float	s_float3e4ccccd		unassigned	Holds the float 0.2 (0x3e4ccccd)	verified	one	terrain/liquid#wave-field
 0x806b10	const float	s_float42c80000		unassigned	Holds the float 100 (0x42c80000)	inferred	none	
 0x806eb8	const uint32_t			ui	Holds a dword its object file's code reads; not read here	inferred	none	
@@ -675,6 +677,7 @@ address	type	name	name_from	system	meaning	confidence	proof	finding
 0x80c210	void *[36]	s_lotteryKioskHandlerVtable		objectlayer	Holds the type 28 lotteryKiosk handler vtable	verified	one	objectlayer/gameobjects#handler-types-21-to-30
 0x80c2a0	void *[36]	s_auraGeneratorHandlerVtable		objectlayer	Holds the type 30 auraGenerator handler vtable	verified	one	objectlayer/gameobjects#handler-types-21-to-30
 0x80c330	void *[34]	CGGameObject_C::vftable		objectlayer	Holds the game object vtable, 34 slots	verified	one	objectlayer/classes#constructors-and-final-vtables
+0x80c408	const float	s_facingSendDeadBand		objectlayer	Holds 0.1, the change in facing or pitch that sends a set-facing or set-pitch message	verified	one	objectlayer/moveemitter#facing-and-pitch-throttle
 0x80c414	const float	s_float41500000		objectlayer	Holds the float 13 (0x41500000)	inferred	none	
 0x80c418	const float	s_float428c0000		objectlayer	Holds the float 70 (0x428c0000)	inferred	none	
 0x80c450	float	s_pathPointReachedSq		objectlayer	Holds 0.0007716049, (1/36)², under which a path point counts as the unit's position	verified	one	objectlayer/unitmovement#monster-moves
@@ -1287,7 +1290,7 @@ address	type	name	name_from	system	meaning	confidence	proof	finding
 0x83dc2c	uint32_t	s_reticleState		ui	Holds which ground target decal is drawn, 0 acceptable, 1 unacceptable, 3 none	verified	one	ui/mouse#enter-and-leave
 0x83ddb0	const char *[29]	s_invTypeKeys		ui	Holds the global string key of each inventory type, empty for type 0	verified	one	ui/tooltipitemhead#the-slot-and-type-line
 0x83de24	const char *	s_runScriptContext		ui	Points to the empty string, the context word RunScript runs under	verified	one	ui/luastate#the-context-word
-0x83de28	uint32_t			ui	Holds a dword its object file's code reads; not read here	inferred	none	
+0x83de28	const char *[9]	s_victimStateActions		ui	Holds the UNIT_COMBAT action words of victim states 0 to 8, MISS to DEFLECT	verified	one	objectlayer/playercombat#the-unit-combat-event
 0x83de4c	uint32_t			ui	Holds a dword that CGGameUI::InitializeGame, CGGameUI::ShutdownGame read; not read here	inferred	none	
 0x83de58	uint32_t			ui	Holds a dword that Script::IsInInstance reads; not read here	inferred	none	
 0x83de68	uint32_t[432]	s_gameScriptFunctions		ui	Holds the 216 pairs of a name and a C function the game registers as globals	verified	one	ui/luastate#the-c-function-contract
@@ -1344,6 +1347,7 @@ address	type	name	name_from	system	meaning	confidence	proof	finding
 0x8432d4	const char[25]	s_soundNeutralUnit		ui	Holds the interface sound name GAMEHIGHLIGHTNEUTRALUNIT played for a neutral or unfriendly hover target	verified	one	ui/tooltipobject#the-publisher
 0x8432f0	const char[26]	s_soundFriendlyUnit		ui	Holds the interface sound name GAMEHIGHLIGHTFRIENDLYUNIT played for a friendly hover target	verified	one	ui/tooltipobject#the-publisher
 0x84330c	const char[25]	s_soundHostileUnit		ui	Holds the interface sound name GAMEHIGHLIGHTHOSTILEUNIT played for a hostile hover target	verified	one	ui/tooltipobject#the-publisher
+0x84333c	const char[11]	s_unitCombatFormat		ui	Holds the UNIT_COMBAT event format %s%s%s%d%d	verified	one	objectlayer/playercombat#the-unit-combat-event
 0x843414	char[11]	s_textLootButton		ui	Holds the string "LootButton"	inferred	none	
 0x8435fc	uint32_t	s_chatDisplayHold		ui	Holds 1 while chat lines are queued instead of shown, from start-up to world entry	verified	one	ui/chatevents#the-display-latch
 0x843600	uint32_t	s_profanityFilterOn		unassigned	Holds the profanityFilter value, 1 in the file	verified	one	ui/chatfilter#the-two-options
@@ -2314,10 +2318,13 @@ address	type	name	name_from	system	meaning	confidence	proof	finding
 0xb42720	void *	s_componentPool		charactermodel	Holds the character component pool record: the pool and a constructed flag byte	verified	one	charactermodel/component#pool-and-statics
 0xb42724	uint8_t	s_compositing		charactermodel	Holds 1 while the group handlers of a composite run	verified	one	charactermodel/component#target-callback
 0xb42764	uint32_t	s_textureCacheLoadCount		gx	Counts texture cache load attempts; cleared by 0x47b1f0	verified	one	gx/textures#texture-cache
+0xb4b2b4	uint32_t *	s_soundListenerAtCharacter		ui	Holds the SoundListenerAtCharacter variable record, stored by the world frame constructor	verified	one	sound/listener#the-listener-follows-the-mover
 0xb4b2bc	void *	s_worldFrame		ui	Holds the world frame, stored by its constructor	verified	one	ui/mouseover#the-world-input-hook
 0xb4b32c	float	s_unitInteractRangeSq		ui	Holds the squared distance past which a unit's cursor is the unable form	verified	one	ui/worldcursor#units-charm-and-interaction
+0xb4b334	float[3]	s_listenerUp		ui	Holds the listener up vector (0, 0, 1), stored on the first listener update	verified	one	sound/listener#the-listener-follows-the-mover
 0xb4b344	void *[2]	s_reticleTextures		ui	Holds the acceptable and unacceptable ground reticle texture handles	verified	one	ui/groundreticle#the-decal-passes
 0xb4b350	void *	s_normalFfx		ui	Holds the fog effect restored when the ghost state clears	inferred	none	objectlayer/playerfields#ghost-state
+0xb4b36c	uint8_t	s_listenerUpInit		ui	Holds bit 0 set once the up vector is stored	verified	one	sound/listener#the-listener-follows-the-mover
 0xb4b39c	void *	s_ghostFfx		ui	Holds the fog effect the ghost state switches to	inferred	none	objectlayer/playerfields#ghost-state
 0xb4b3a0	float[3]	s_reticlePosition		ui	Holds the picked ground position the reticle is drawn at	verified	one	ui/groundreticle#the-reticle-state
 0xb4b3b0	float	s_reticleRadius		ui	Holds the half-extent of the area decal, 0 when out of range	verified	one	ui/groundreticle#the-reticle-state
@@ -2499,9 +2506,9 @@ address	type	name	name_from	system	meaning	confidence	proof	finding
 0xb6efc4	uint32_t	s_mailListDeadline		ui	Holds the tick before which a CheckInbox does not ask the server again	verified	one	ui/mail#opening-the-inbox
 0xb6efc8	uint32_t	s_mailRequestPending		ui	Holds 1 from sending a mail request until its reply arrives	verified	one	ui/mail#opening-the-inbox
 0xb6efcc	uint32_t	s_mailReadSinceQuery		ui	Holds 1 once a mail is marked read, so closing the mailbox asks for the next-mail time	verified	one	ui/mail#opening-the-inbox
-0xb6eff0	float			ui	Holds a float its object file's code reads and writes; not read here	inferred	none	
-0xb6effc	uint8_t			ui	Holds a byte its object file's code reads and writes; not read here	inferred	none	
-0xb6f038	uint32_t			ui	Holds a dword its object file's code reads and writes; not read here	inferred	none	
+0xb6eff0	float[3]	s_bubbleCameraPos		ui	Holds the camera position the live chat bubbles were last ordered for	verified	one	ui/chatbubble#the-bubble-lists
+0xb6effc	uint8_t	s_bubbleCameraValid		ui	Holds 1 once s_bubbleCameraPos has been stored; the free list drain clears it	verified	one	ui/chatbubble#the-bubble-lists
+0xb6f038	uint32_t	s_liveBubbleHead		ui	Holds the first live chat bubble, the farthest from the camera, with bit 0 set for none	verified	one	ui/chatbubble#the-bubble-lists
 0xb6f064	uint32_t			ui	Holds a dword its object file's code reads and writes; not read here	inferred	none	
 0xb6f098	uint32_t[1024]	s_petBookSpells		unassigned	Holds the pet's spell book, a spell id per slot	verified	one	ui/spellbook#spell-book-lists
 0xb700ac	uint32_t *	s_indexedSpells		ui	Points at the spells 0x5ec720 looks up by index	inferred	none	objectlayer/playercombat#skills

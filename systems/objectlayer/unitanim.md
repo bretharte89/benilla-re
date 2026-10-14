@@ -35,15 +35,29 @@ Proof: one
 Test: `objectlayer::uh_fall_timer_anim_difftest`
 
 A resolver that does not claim returns `(mask & −2·bit) == 0`, so the chain also ends once no
-later bit is asked; the last tests its own bit. Moving (`0x5fd100`): swimming gives 42 Swim, 45 backward, 41 turning, 43 or
-44 strafing; a flying spline 135 Fly; backward 13; stealth (bit 1 of `UNIT_FIELD_BYTES_1` byte 3)
+later bit is asked; the last tests its own bit. Moving (`0x5fd100`): swimming gives 41 for a turn bit, else 43 (left) or 44 (right) for a strafe, else 45
+backward, else 42 (`0x5fd13e` to `0x5fd181`; a turn alone fails the `& 0xf` gate); a flying spline 135 Fly; backward 13; stealth (bit 1 of `UNIT_FIELD_BYTES_1` byte 3)
 119; a speed of 11 (0x80c484) or more 143 Sprint; above twice the walk speed `+0xa30` 5 Run; else 4 Walk.
 Stand states through `0x5fd658`: 1 gives 96 or, already sitting, 97; 3 gives 99 or 100; 4 to 6
 give 102 to 104; 7 gives 6 or 132; 8 gives 114 or 115; 0 after 1, 3 or 8 gives 98, 101 or 116.
 The ready animation `0x5fcdc0` maps the main-hand weapon subclass through `0x5fce14` into
-`0x5fce04`: one-handers 26, two-handers 27, polearms, staves and spears 28, else 25. The idle
+`0x5fce04`: 26 one-handers, 27 two-handers, 28 polearms, staves and spears, else 25. The idle
 `0x5fd830` is 41 swimming, 120 stealthed, 193 Hover when flying, else 0 Stand. `0x5fce30` allows
 a shuffle while turning, not flying, and not in an emote, cast or ranged animation.
+
+## The mover and the pick
+
+No resolver reads the active mover, so a possessed creature picks its animation from its own movement
+flags `+0x9e8`, exactly as the player's body does.
+
+Addresses: `0x5fcff0`, `0x5fe300`, `0x5fd8b0`, `0x5fd100`, `0x6103a0`, `0x468550`, `0xc4da98`, `0xc4da9c`, `0xb41414`
+Confidence: verified
+Proof: one
+Test: none
+
+The span `0x5fcff0` to `0x5fe300` holds no reference to `0xc4da98`, `0xc4da9c`, `0xb41414`,
+`0x6103a0` or `0x468550`. The same patterns find 79 references to the mover words, 50 to
+`0xb41414`, 14 calls of `0x6103a0` and 845 of `0x468550` in the whole image.
 
 ## The airborne hold
 

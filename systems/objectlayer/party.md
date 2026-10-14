@@ -32,6 +32,23 @@ Test: none
 The result switch is `dec` and `cmp 7` through `0x5e6a14`. `0x5e67d0` compares with `SStrCmpI`
 against the active player's name.
 
+## Where the group notices appear
+
+Every group notice (messages 0x3a to 0x4b and 0x13d) is a system chat line except `ERR_PLAYER_WRONG_FACTION` (0xff), which goes
+to the red error line. `ERR_DECLINE_GROUP_S` plays `igPlayerInviteDecline`; `ERR_GROUP_FULL` and `ERR_ALREADY_IN_GROUP_S`
+play an error voice, selectors 8 and 0x14; the rest are silent. A command result of 9 or more shows nothing and returns the same
+1 as a shown one.
+
+Addresses: `0x5e68b0`, `0x5e69dd`, `0x5e69e2`, `0x5e6a06`, `0x496720`, `0x484ca0`, `0x485497`, `0x4855f3`, `0x485603`, `0x485512`, `0x4856d9`, `0x486ece`, `0x486ed8`
+Confidence: verified
+Proof: one
+Test: none
+
+The rows of the message catalog `0xb4b498` are stored by `0x484ca0`: for these ids the route (+4) is the register that holds 0, chat,
+except row 0xff, whose route is 2 (`0x486ed8`). `0x485603` stores the cue name `igPlayerInviteDecline` for 0x44; the rows 0x3d and 0x4a store 0x14
+(`0x485512`) and 8 (`0x4856d9`) where the others store 0x44, the selector that plays the named cue unless it is `NONE`. `0x5e6a06` loads 1
+and returns for results 9 and up without a call.
+
 ## The group list
 
 0x7d reads a raid byte, the player's own flags and a count, then per member a name, a GUID, an
@@ -229,6 +246,45 @@ the stack for the u8 count. The turn-in result: 0 `GUILD_REGISTRAR_CLOSED`, 2
 searches the backpack and bags for an item with flag 0x2000 whose petition (cache `0xc0e0fc`) has
 `+0x1110` bit 0, sends 0x1c4 with its GUID, or shows `ERR_NO_GUILD_CHARTER`; a record still pending
 retries through the callback `0x5ef520`.
+
+## Reading a petition record
+
+`0x7c7a30` reads a petition record (the record in `ecx`, the store on the stack) in the order `0x7c78f0` writes it: a u32 at `+0`, a GUID at `+8`,
+the title into `+0x10` and the text into `+0x110`, eleven values from `+0x1110` to `+0x1138` (the one at `+0x1130` 16-bit),
+the choice count at `+0x13bc`, then that many choices from `+0x113c`, 0x40 bytes apart. Every string is copied with
+the capacity `0x7fffffff`, so a title, text or choice longer than its field runs into the next, and the loop has no cap
+at ten: an eleventh choice lands on the count, which the loop reads again each pass, a client fault. Three readers call it
+(`0x555598`, `0x568306`, `0x568973`).
+
+Addresses: `0x7c7a30`, `0x7c7a4e`, `0x7c7a5e`, `0x7c7aea`, `0x7c7b19`, `0x7c7b33`, `0x7c7b43`, `0x7c7b4d`, `0x7c78f0`, `0x555598`, `0x568306`, `0x568973`
+Confidence: verified
+Proof: one
+Test: none
+
+`0x7c7a4e` and `0x7c7a5e` push `0x7fffffff` for the title and the text, and `0x7c7b33` for each choice; `0x7c7aea`
+calls `0x418d30` for the 16-bit value. The loop tests `[record+0x13bc]` before the first pass (`0x7c7b19`) and after
+each (`0x7c7b43`, `0x7c7b4d`), stepping the destination by 0x40.
+
+## Petition answers
+
+Another player's decline (0x1c2, `0x5ef0e0`) shows `ERR_PETITION_DECLINED_S` only when the decliner's name is already
+cached; an uncached name shows nothing. A rename (0x2c1, `0x5ef1d0`) reads the item GUID and a name of up to 0x60 bytes,
+returns for an empty name, an item without the signable flag (0x2000) or without a petition id in `ITEM_FIELD_ENCHANTMENT`
+slot 0, and otherwise overwrites the cached petition's title and signals `PETITION_SHOW` (390). The offered, signed and
+declined lines go to the chat window as system lines; the five refusals go to the red error line. The two signed lines play
+`igPlayerInviteAccept` and the declined line and the refusals `igPlayerInviteDecline`.
+
+Addresses: `0x5ef0e0`, `0x5ef100`, `0x5ef12a`, `0x5ef139`, `0x5ef1d0`, `0x5ef200`, `0x5ef240`, `0x5ef248`, `0x5ef27c`, `0x5ef292`, `0x5ef29c`, `0x55f080`, `0x567d60`, `0x496720`, `0x484ca0`, `0x487794`, `0x4877cc`, `0x4877e8`, `0x487804`, `0x487826`, `0x487847`, `0x487868`, `0x487889`, `0x4878aa`
+Confidence: verified
+Proof: one
+Test: none
+
+`0x5ef12a` looks the GUID up in the name cache with no callback; `0x5ef131` skips the line for a miss. The rename's cache read
+`0x5ef27c` also passes no callback and sends nothing. Event 0x186 is 390. The catalog rows 0x141 to 0x149 of `0xb4b498` (20
+bytes each) are stored by the static initializer `0x484ca0`, which holds 2, 0xa, 0x44 and 0 in registers: the row's route (+4)
+is 0 for the four lines (chat) and 2 for the five refusals (the red line), +0x10 is 0xa, the chat type of system lines, and
++8 names the sound, `igPlayerInviteAccept` for 0x142 and 0x143, `igPlayerInviteDecline` for 0x144 to 0x149 and none for
+0x141. The route table at `0x496888` is in `ui/inventory#failure-messages`.
 
 ## Group and guild messages sent
 
