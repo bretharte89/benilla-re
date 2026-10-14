@@ -702,8 +702,8 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x40d680	821	_memcpy	idb	crt	boundary		Runs its object file code not read here	inferred	none		
 0x40d9b5	317			crt	boundary		Runs its object file code that calls __lock, ___sbh_alloc_block, 0x40f1eb and 4 more; not read here	inferred	none		
 0x40daf2	23	_strtol	idb	crt	boundary		Runs its object file code that calls _strtoxl; not read here	inferred	none		
-0x40db09	517	_strtoxl	idb	crt	boundary		Runs its object file code that calls __isctype, _toupper, __errno; not read here	inferred	none		
-0x40dd0e	23	_strtoul	idb	crt	boundary		Runs its object file code that calls _strtoxl; not read here	inferred	none		
+0x40db09	517	_strtoxl	idb	crt	boundary	unsigned long __cdecl (const char *s, char **end, int base, int flags)	Parses an integer by C rules: skips white space, takes a sign and base prefix, flags overflow and negation	verified	one	ui/luabase#tonumber	
+0x40dd0e	23	_strtoul	idb	crt	boundary	unsigned long __cdecl (const char *s, char **end, int base)	Calls _strtoxl with the unsigned flag 1	verified	one	ui/luabase#tonumber	
 0x40dd40	188	_strchr	idb	crt	boundary		Runs its object file code not read here	inferred	none		
 0x40de00	128	_strstr	idb	crt	boundary		Runs its object file code not read here	inferred	none		
 0x40de80	56	strncmp		crt	primitive		Compares at most n bytes of two strings, case-sensitive	verified	one	objectlayer/party#guild-events	
@@ -6480,7 +6480,7 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x480df0	600	TracePick		ui	primitive		Traces the terrain and the candidate objects and returns the nearer hit as a pick state	verified	one	ui/worldpick#what-the-pick-returns	ui::glue_geom_480_480a50_480df0_dist_scale, ui::glue_geom_480_480df0_normalize
 0x481050	318	BuildPickFlags		ui	primitive		Builds the pick flag word from the mover or from the pending spell's target word	verified	one	ui/worldpick#the-pick-flags	
 0x481190	535	PickAtCursor		ui	orchestration		Builds the pick ray, traces it with the flag word and caches the picked GUID	verified	one	ui/worldpick#what-the-pick-returns	
-0x4813b0	261			ui	primitive		Runs WorldFrame.cpp code that calls UnprojectScreenPoint; not read here	inferred	none		ui::glue_481_4813b0_gates, ui::glue_481_4813b0_normalize, ui::glue_481_4813b0_vec_add
+0x4813b0	261			ui	primitive	uint32_t __thiscall (float a, float b, float *near_point, float *far_point)	Normalises a point to the frame rectangle and unprojects it to a world ray, or returns 0 outside it	verified	one	ui/worldframe#unprojecting-a-screen-point	ui::glue_481_4813b0_gates, ui::glue_481_4813b0_normalize, ui::glue_481_4813b0_vec_add
 0x4814c0	70			ui	orchestration		Runs WorldFrame.cpp code that calls 0x61ce00; not read here	inferred	none		
 0x481510	40			ui	orchestration		Runs WorldFrame.cpp code that calls 0x620520; not read here	inferred	none		
 0x481540	144			ui	orchestration		Renders one object by GUID for a pass: draws it, or clears its model visible flag	verified	one	terrain/scene#object-election	
@@ -6491,8 +6491,8 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x481900	31			ui	orchestration		Runs WorldFrame.cpp code not read here	inferred	none		
 0x481920	51			ui	unreached		Runs WorldFrame.cpp code not read here	inferred	none		
 0x481960	915	CGWorldFrame::CGWorldFrame	idb	ui	primitive		Runs WorldFrame.cpp code that calls CSimpleFrame::CSimpleFrame, SetVector3, SplatVector3 and 19 more; not read here	inferred	none	ui/worldframe#class-and-place	
-0x481d00	43			ui	orchestration		Runs WorldFrame.cpp code that calls 0x481d30, SMemFree; not read here	inferred	none	ui/worldframe#overrides	
-0x481d30	431			ui	primitive		Runs WorldFrame.cpp code that calls EventSetMouseMode, HandleClose, 0x509450 and 7 more; not read here	inferred	none		
+0x481d00	43			ui	orchestration	void * __thiscall (uint32_t free_flag)	Runs the world frame destructor body and frees the frame when bit 0 of the flag is set	verified	one	ui/worldframe#destruction	
+0x481d30	431			ui	orchestration	void __thiscall ()	Tears down the world frame: singleton, handles, lists, camera and effects, then the base frame	verified	one	ui/worldframe#destruction	
 0x481ee0	16			ui	orchestration		Runs WorldFrame.cpp code not read here	inferred	none		
 0x481ef0	16			ui	unreached		Runs WorldFrame.cpp code not read here	inferred	none		
 0x481f00	87	PickObjectUnderCursor		ui	orchestration		Picks the world object under the cursor for the armed click	verified	one	ui/mouseover#clicks-on-the-world	
@@ -6512,7 +6512,7 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x482d70	292	CGWorldFrame::RenderCallback		ui	orchestration	void __thiscall ()	Pushes identity matrices, runs the world driver, scene render and combat text, and pops them	verified	one	ui/worldframe#drawing-the-world	
 0x482ea0	1184	CGWorldFrame::OnRender		ui	orchestration	void __thiscall (CGWorldFrame *this)	Applies the idle law at the head of the world frame's render callback, then runs its per-frame work	verified	one	ui/idle#the-idle-law	ui::textglue_482_add3, ui::textglue_482_mul_add
 0x483340	235			ui	primitive		Resolves a GUID to a game object, asks its collision candidacy by class, and returns its model and box	verified	one	terrain/entities#entity-gather	ui::textglue_482_gated_triple
-0x483430	32			ui	primitive		Runs its object file code not read here	inferred	none		ui::textglue_482_cos_sin
+0x483430	32			ui	primitive	float * __fastcall (float *out, CGObject *unit)	Writes the unit's facing as a unit vector (cos, sin, 0) and returns the buffer	verified	one	sound/listener#the-listener-follows-the-mover	ui::textglue_482_cos_sin
 0x483450	1			ui	orchestration		Runs its object file code not read here	inferred	none		
 0x483460	839	RenderWorldFrame		ui	primitive		Renders the world; calls 0x6ecb20 and then 0x6eca20	inferred	none	spell/visuals#frame-update	ui::textglue_482_affine_combine, ui::textglue_482_cmp_ge, ui::textglue_482_delta_is_zero, ui::textglue_482_negate, ui::textglue_482_unit_convert
 0x4837b0	442			ui	primitive		Draws the area decal at the picked position, or tints the placement model	verified	one	ui/groundreticle#the-area-decal	ui::textglue_482_corner_build
@@ -6530,9 +6530,9 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x483e40	40			ui	unreached		Runs its object file code not read here	inferred	none		
 0x483e70	14	CGWorldFrame::EndMouselook		ui	primitive	void __thiscall (CGWorldFrame *this)	Clears the mouselook bit and shows the nameplates	verified	one	ui/mouseover#mouselook	
 0x483e80	90	CGWorldFrame::BeginMouselook		ui	primitive	void __thiscall (CGWorldFrame *this)	Sets the mouselook bit, hides the nameplates and clears the mouseover	verified	one	ui/mouseover#mouselook	
-0x483ee0	476			ui	primitive		Runs its object file code that calls TransformVector4, ScaleScreenDelta; not read here	inferred	none		ui::geo_483ee0
+0x483ee0	476			ui	primitive		Projects a world point to the frame's space and answers whether it lies inside the frame	verified	one	ui/worldframe#projecting-a-world-point	ui::geo_483ee0
 0x4840c0	8	SetWorldFrameFlag		ui	primitive		Sets bit 0 of the world frame flag word at +0x3f0	verified	one	ui/smartrect#per-frame-order	
-0x4840d0	74			ui	primitive		Runs its object file code that calls HandleClose2; not read here	inferred	none		
+0x4840d0	74			ui	orchestration	void __thiscall ()	Releases the model at +8 through HandleClose2 and unlinks the node from its list	verified	one	ui/worldframe#destruction	
 0x484120	49			ui	unreached		Runs its object file code that calls HandleClose2, 0x484160; not read here	inferred	none		
 0x484160	54			ui	unreached		Runs its object file code that calls CM2Model::AddRef; not read here	inferred	none		
 0x4841a0	22	SetCameraTarget		ui	orchestration		Passes its argument to the camera set-target call on the camera at +0x65b8	verified	one	ui/gameui#cursor-and-camera	
@@ -6579,7 +6579,7 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x484620	19	InitSquare484620		ui	primitive	void __cdecl (void)	Stores 40 × 40 = 1600 as a float in a global	verified	one	ui/initfloats#squares	
 0x484640	5	InitSquare484650Thunk		ui	orchestration	void __cdecl (void)	Jumps to 0x484650, a static initializer	verified	one	ui/initthunks#jump-thunks	
 0x484650	19	InitSquare484650		ui	primitive	void __cdecl (void)	Stores 1.5 × 1.5 = 2.25 as a float in a global	verified	one	ui/initfloats#squares	
-0x484670	28			ui	primitive		Runs its object file code not read here	inferred	none		
+0x484670	28	SplitBitIndex		ui	primitive	void __stdcall (uint32_t n, uint32_t *word, uint32_t *bit)	Splits a bit number into its dword index n >> 5 and its bit n & 31	verified	one	ui/tutorials#where-tutorials-fire	
 0x484690	41	NextLink484690		ui	primitive		Returns the address a link names, resolving negative offsets through the list's offset	verified	one	ui/containers#links	
 0x4846c0	60	Unlink4846c0		ui	primitive		Unlinks a link from its list and clears it	verified	one	ui/containers#links	
 0x484700	12	InitEndLink484700		ui	primitive		Points a list's end link at itself, marked by bit 0	verified	one	ui/containers#links	
@@ -6916,7 +6916,7 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x4901e0	98	GetConfiguredAspect		ui	primitive	float __cdecl ()	Returns the gxResolution width over height when widescreen is on, else 4/3	verified	one	ui/uiscale#the-automatic-scale	ui::glue_4901e0_aspect_ratio
 0x490250	302	CGGameUI::RegisterScriptFunctions		ui	primitive		Registers the frame types, the game C functions of 0x83de68 and 53 files of functions as globals	verified	one	ui/luastate#the-c-function-contract	
 0x490380	596	LayoutCacheRead		ui	primitive	void __fastcall (void *unused, HANDLE file, void *unused2)	Parses the layout cache file into records and applies each to its frame	verified	one	ui/layoutcache#reading-a-record	
-0x4905e0	316			ui	primitive		Runs GameUI.cpp code that calls CSimpleFrame::SetFrameLevel, CLayoutFrame::ClearAllPointsThunk and 5 more; not read here	inferred	none		ui::glue_4905e0_device_position
+0x4905e0	316			ui	primitive		Applies a saved layout record to a frame, converting its device position and size	verified	one	ui/layoutcache#applying-a-record	ui::glue_4905e0_device_position
 0x490720	77	ValidateNearestDistance		ui	primitive	uint8_t __stdcall (const char *text, void *arg)	Accepts a nearest-target distance option from 1 to 50, else prints the range and refuses	verified	one	ui/targeting#collecting-the-candidates	
 0x490770	115	UiScaleChanged		ui	primitive	uint8_t __thiscall (const char *value, void *userdata)	Applies a new uiScale text to UIParent when useUiScale is on, capped for narrow windows	verified	one	ui/uiscale#applying-a-scale	ui::glue_490770_eps_gates
 0x4907f0	203	UseUiScaleChanged		ui	primitive	uint8_t __thiscall (const char *value, void *userdata)	Applies the uiScale value when useUiScale turns on, else the automatic scale	verified	one	ui/uiscale#applying-a-scale	ui::glue_48fbf0_finite_diff, ui::glue_490770_eps_gates
@@ -6925,7 +6925,7 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x490bd0	270	CGGameUI::Shutdown		ui	primitive		Leaves the world, signals PLAYER_LOGOUT, writes the saved variables and destroys the interface	verified	one	ui/addons#saved-variables-written	
 0x490ce0	301	CGGameUI::UnregisterScriptFunctions		ui	orchestration	void __cdecl ()	Unregisters the frame types, the game C functions of 0x83de68 and 53 files of functions	verified	one	ui/scriptapi#unregistrars	
 0x490e10	75	LayoutCacheWrite		ui	orchestration	void __fastcall (void *unused, HANDLE file, CSimpleTop *top)	Writes a record for every frame of the top's list that passes the saved-frame test	verified	one	ui/layoutcache#which-frames-are-saved	
-0x490e60	799			ui	primitive		Runs GameUI.cpp code that calls CLayoutFrame::GetRect, CLayoutFrame::Resize, SStrPrintf and 5 more; not read here	inferred	none		ui::glue_4c0_490e60_round_pos_legs
+0x490e60	799			ui	primitive		Saves one frame's position and size as a layout record, rounded to device units	verified	one	ui/layoutcache#which-frames-are-saved	ui::glue_4c0_490e60_round_pos_legs
 0x491180	505	CGGameUI::ShutdownGame	idb	ui	orchestration		Runs the shutdown of every interface module in order, resets three CVars and clears 14 message handlers	verified	one	ui/gameui#game-shutdown	
 0x491380	22	CGGameUI::Reload	idb	ui	orchestration	void __fastcall ()	Sets the reload byte 0xb4b3f4 when the protected-action gate allows tag 10	verified	one	ui/bindings#reloading-the-interface	
 0x4913a0	16	DrainWorldFadingModels		ui	orchestration		Drains the fading models of the world frame when one exists	verified	one	ui/gameui#cursor-and-camera	
@@ -7447,9 +7447,9 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x4a6e80	15	InitDouble4a6e80		ui	primitive	void __cdecl (void)	Stores 3.1415927 + 3.1415927 = 6.2831855 as a float in a global	verified	one	ui/initfloats#doubled-constants	
 0x4a6e90	5	InitQuotient4a6ea0Thunk		ui	orchestration	void __cdecl (void)	Jumps to 0x4a6ea0, a static initializer	verified	one	ui/initthunks#jump-thunks	
 0x4a6ea0	19	InitQuotient4a6ea0		ui	primitive	void __cdecl (void)	Stores 1 / 6.2831855 = 0.15915494 as a float in a global	verified	one	ui/initfloats#quotients	
-0x4a6ec0	567			ui	primitive		Runs its object file code that calls __ftol; not read here	inferred	none		ui::geo_4a6ec0
+0x4a6ec0	567			ui	primitive		Returns the area id under a point of the displayed map, or 0	verified	one	ui/geometry#the-cell-of-a-point	ui::geo_4a6ec0
 0x4a7100	418	MapPointToWorld		ui	unreached		Converts a point of the selected map to a world position and map id, or answers 0	verified	one	ui/worldmap#unreached-map-teleport	
-0x4a72b0	104			ui	primitive		Runs its object file code that calls 0x4a7320; not read here	inferred	none		ui::geo_4a72b0
+0x4a72b0	104			ui	primitive		Maps a world position onto the world map view, with the vertical axis flipped	verified	one	ui/geometry#world-to-map	ui::geo_4a72b0
 0x4a7320	64	FindWorldMapContinent		ui	primitive		Returns the WorldMapContinent row for a map id, or 0	verified	one	ui/worldmap#unit-and-corpse-positions	
 0x4a7360	478	ProjectWorldPosition		ui	primitive		Normalises a world position to the displayed map for a map id	verified	one	ui/worldmap#unit-and-corpse-positions	ui::geo_4a7360
 0x4a7540	212	DrillMap		ui	primitive		Selects the continent or zone whose rectangle holds the cursor	verified	one	ui/worldmap#hover-and-click	
@@ -7815,20 +7815,20 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x4b0900	31	InitZero4b0900		ui	orchestration	void __cdecl (void)	Zeroes 3 consecutive dwords	verified	one	ui/initstores#zero-fills	
 0x4b0920	12	InitZero4b0900Register		ui	orchestration	void __cdecl (void)	Registers 0x4b0930 with the C runtime's exit list	verified	one	ui/initexits#exit-registrars	
 0x4b0930	1	InitZero4b0900Exit		ui	orchestration	void __cdecl (void)	Returns at once	verified	one	ui/initexits#exits-that-return	
-0x4b0940	610			ui	primitive		Runs ChatBubbleFrame.cpp code that calls CSimpleFrame::CSimpleFrame, SMemAlloc, 0x77e5f0 and 11 more; not read here	inferred	none		ui::glue_4b0_4b0940_px_unit_idiom
+0x4b0940	610			ui	primitive		Builds a chat bubble frame for an empty bubble list	inferred	none	ui/chatbubble#the-bubble-lists	ui::glue_4b0_4b0940_px_unit_idiom
 0x4b0bb0	116	CGChatBubbleFrame::DeletingDestructor		ui	orchestration	void * __thiscall (uint32_t flags)	Unlinks a chat bubble from its list and frees it when flag bit 0 is set	verified	one	ui/chatbubble#the-bubble-lists	
-0x4b0c30	617			ui	primitive		Runs ChatBubbleFrame.cpp code that calls CM2Model::IsLoaded, CWorld::IsEntityDrawn, 0x4b0ee0 and 5 more; not read here	inferred	none		ui::dist2_4b0c30
+0x4b0c30	617			ui	primitive		Decides a bubble's fate each frame: destroys it, starts its fade-out or keeps it	verified	one	ui/chatbubble#fades	ui::dist2_4b0c30
 0x4b0ea0	59	CGChatBubbleFrame::StartFadeIn		ui	primitive	void __thiscall ()	Starts a 250 ms fade in and shows the frame unless it is fading in or in its final fade out	verified	one	ui/chatbubble#fades	
 0x4b0ee0	70	CGChatBubbleFrame::StartFadeOut		ui	primitive	void __thiscall (bool final)	Starts a 250 ms fade out, marking it final when asked	verified	one	ui/chatbubble#fades	
 0x4b0f30	1	InitChatBubbles		ui	orchestration		Returns at once	verified	one	ui/gameui#start-up-display-and-chat	
 0x4b0f40	50	FreeBubblePool		ui	orchestration		Destroys and frees every bubble on the free list and clears the bubble flag byte	verified	one	ui/chatbubble#the-bubble-lists	
 0x4b0f80	209	RetireAllBubbles		ui	orchestration	void __cdecl ()	Retires every live bubble: releases the speaker's bubble, or hides it and frees it when the speaker is gone	verified	one	ui/chatbubble#the-bubble-lists	
-0x4b1060	757			ui	primitive		Runs ChatBubbleFrame.cpp code that calls GetActiveCamera, 0x4b1de0, ClntObjMgrGetActivePlayer and 10 more; not read here	inferred	none		ui::dist2_4b1060
+0x4b1060	757			ui	primitive		Walks the bubble list each frame, hiding and freeing bubbles that fail the gates	inferred	none	ui/chatbubble#the-bubble-lists	ui::dist2_4b1060
 0x4b1360	251	InsertBubbleByDistance		ui	primitive	void __thiscall ()	Links a bubble into the live list before the first bubble that is nearer the camera	verified	one	ui/chatbubble#the-bubble-lists	
 0x4b1460	58	PlaceChatBubbles		ui	orchestration	void __thiscall (void *worldFrame)	Places every live bubble on the screen, then lays out the pending frames	verified	one	ui/chatbubble#placing-the-bubble	
-0x4b14a0	231			ui	primitive		Runs ChatBubbleFrame.cpp code that calls ClntObjMgrObjectPtr, 0x483ee0, PixelAlignX and 2 more; not read here	inferred	none		ui::glue_4b0_4b14a0_move_gate
+0x4b14a0	231			ui	primitive		Projects a bubble's anchor and snaps its position to whole pixels	verified	one	ui/chatbubble#placing-the-bubble	ui::glue_4b0_4b14a0_move_gate
 0x4b1590	110	CGChatBubbleFrame::Release		ui	orchestration	void __thiscall ()	Hides a bubble and moves it to the free list	verified	one	ui/chatbubble#the-bubble-lists	
-0x4b1600	517			ui	primitive		Runs ChatBubbleFrame.cpp code that calls 0x7716f0, SStrChr, SStrCmp and 9 more; not read here	inferred	none		ui::glue_4b0_4b1600_hi_bound
+0x4b1600	517			ui	primitive		Spawns a bubble: strips the line, sizes its frame and starts its lifetime	inferred	none	ui/chatbubble#spawning-a-bubble	ui::glue_4b0_4b1600_hi_bound
 0x4b1810	91	ChatBubbleDuration		ui	primitive	uint32_t __fastcall (const char *text, bool isSelf)	Returns a bubble's lifetime in ms from the separator runs of its text	verified	one	ui/chatbubble#lifetime	
 0x4b1870	153	AcquireChatBubble		ui	orchestration	CGChatBubbleFrame * __thiscall (void *parent)	Takes a bubble from the free list or builds one, and links it on the live list	verified	one	ui/chatbubble#the-bubble-lists	
 0x4b1910	5	InitDouble4b1920Thunk		ui	orchestration	void __cdecl (void)	Jumps to 0x4b1920, a static initializer	verified	one	ui/initthunks#jump-thunks	
@@ -8119,8 +8119,8 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x4b62b0	89	LoadBindingFiles		ui	orchestration		Loads the default binding file into set 0 and registers the reader 0x4b6240 for the two cache kinds	verified	one	ui/keybindings#binding-files	
 0x4b6310	409	CopyBindingSet		ui	primitive	void __thiscall (CBindings *this, int from, int to)	Copies one binding set into another, marks it, and signals UPDATE_BINDINGS for the live set	verified	one	ui/keybindings#binding-sets	
 0x4b64b0	103	ChooseBindingSets		ui	primitive		Stores the current set, copies set 0 to 1, set 1 to 2 and set 2 to the live set	verified	one	ui/keybindings#choosing-the-sets	
-0x4b6520	144			ui	orchestration		Runs UIBindings.cpp code that calls SStrPrintf, SStrLen, 0x42a5d0; not read here	inferred	none		
-0x4b65b0	41			ui	orchestration		Runs UIBindings.cpp code that calls 0x4b6520; not read here	inferred	none		
+0x4b6520	144	WriteBindingSetLines		ui	orchestration	void __thiscall (uint32_t set, void *handle)	Writes a bind line, key then command, for every key of a binding set to the file handle	verified	one	ui/keybindings#writing-binding-files	
+0x4b65b0	41	WriteBindingSetIfCurrent		ui	orchestration	void __fastcall (void *unused, void *handle, uint32_t set)	Writes a set to a handle when it is set 1 or the current set, ignoring a handle of -1	verified	one	ui/keybindings#writing-binding-files	
 0x4b65e0	80	WriteBindingSets		ui	primitive		Writes the binding sets that the mask selects to the account data	verified	one	ui/keybindings#writing-binding-files	
 0x4b6630	114	AppendModifierPrefixes		ui	primitive	void __fastcall (uint32_t mask, char **cursor, int *remaining)	Appends ALT-, CTRL- and SHIFT- to a chord string for the held modifiers	verified	one	ui/keybindings#chord-names	
 0x4b66b0	638	BuildKeyChord		ui	primitive	bool __fastcall (void *keyEvent, char *dst, int size)	Builds the chord string of a key event, or fails for an unnamed or oversized one	verified	one	ui/keybindings#key-names	
@@ -8132,10 +8132,10 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x4b7890	251	IsValidBindingKey		ui	primitive	bool __fastcall (const char *key)	Answers whether a key string is bindable	verified	one	ui/keybindings#valid-key-strings	
 0x4b7990	444	ExecuteBinding		ui	primitive	bool __thiscall (CBindings *this, const char *chord, bool isDown)	Finds the command of a chord with one modifier fallback and runs it	verified	one	ui/keybindings#dispatch	
 0x4b7b50	304	RunBindingCommand		ui	primitive	bool __thiscall (CBindings *this, const char *name, bool isDown)	Runs a command's script for a press, or for a release when it has runOnUp	verified	one	ui/keybindings#running-a-command	
-0x4b7c80	72			ui	orchestration		Runs its object file code not read here	inferred	none		
+0x4b7c80	72	GetBindingNameByOrdinal		ui	orchestration	void __thiscall (uint32_t index, const char **out)	Stores the name of the displayed command with an ordinal through out, leaving it for an unknown ordinal	verified	one	ui/keybindings#binding-functions	
 0x4b7cd0	79			ui	unreached		Runs its object file code not read here	inferred	none		
-0x4b7d20	118			ui	orchestration		Runs its object file code that calls SStrCmpI; not read here	inferred	none		
-0x4b7da0	172			ui	primitive		Runs its object file code that calls SStrHashHT, SStrCmpI; not read here	inferred	none		
+0x4b7d20	118	GetBindingKeyByOrdinal		ui	orchestration	const char * __thiscall (const char *command, uint32_t index)	Returns the key string of a command's key with an ordinal, or 0	verified	one	ui/keybindings#binding-functions	
+0x4b7da0	172	CBindings::LookupAction		ui	primitive	const char * __thiscall (void *bindings, const char *chord)	Returns the command bound to exactly the chord in the live set, or 0 for no chord or an empty set	verified	one	ui/keybindings#binding-functions	
 0x4b7e50	119			ui	primitive		Runs its object file code that calls SStrCmpI; not read here	inferred	none		
 0x4b7ed0	110	LowerKeyIndices		ui	primitive		Lowers by 1 the index of every other key of a command above the changed key's index	verified	one	ui/keybindings#setting-a-binding	
 0x4b7f40	24	Script::GetNumBindings	idb	ui	orchestration	uint32_t __fastcall (lua_State *L)	Returns the number of displayed binding commands	verified	one	ui/keybindings#binding-functions	
@@ -8458,7 +8458,7 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x4bf0c0	5	InitInfinity4bf0d0Thunk		ui	orchestration	void __cdecl (void)	Jumps to 0x4bf0d0, a static initializer	verified	one	ui/initthunks#jump-thunks	
 0x4bf0d0	11	InitInfinity4bf0d0		ui	orchestration	void __cdecl (void)	Copies the dword 0x7f800000 (+inf as a float) into a global	verified	one	ui/initstores#infinity-copies	
 0x4bf0e0	309			ui	orchestration		Runs its object file code not read here	inferred	none		
-0x4bf220	5			ui	orchestration		Runs its object file code not read here	inferred	none		
+0x4bf220	5			ui	orchestration	void __cdecl ()	Jumps to the trade module's leave-world hook 0x5d4310	verified	one	ui/trade#starting-a-trade	
 0x4bf230	73	CGTradeInfo::PlayerAccept	idb	ui	orchestration	void __fastcall (uint32_t accepted)	Sets the player's accept flag, signals TRADE_ACCEPT_UPDATE on a change and sends accept or unaccept	verified	one	ui/trade#accept-flags	
 0x4bf280	40	CGTradeInfo::TargetAccept	idb	ui	orchestration	void __fastcall (uint32_t accepted)	Sets the partner's accept flag and signals TRADE_ACCEPT_UPDATE on a change	verified	one	ui/trade#accept-flags	
 0x4bf2b0	556	TradeInfoSetTargetItems		ui	orchestration		Takes the partner's trade item records for the interface	inferred	none		
@@ -8722,10 +8722,10 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x4c3d20	35	InitLotteryHandlers	idb	ui	orchestration		Registers the handlers for opcodes 0x335 and 0x337	verified	one	ui/gameui#start-up-services-and-events	
 0x4c3d50	260	HandleLotteryQueryResultPacket	idb	ui	primitive		Runs its object file code that calls CDataStore::GetInt32, OsGetCachedUnixTime, FrameScript_SignalEvent; not read here	inferred	none		
 0x4c3e60	5	HandleLotteryResultPacket	idb	ui	orchestration		Runs its object file code not read here	inferred	none		
-0x4c3e70	13			ui	orchestration		Runs its object file code not read here	inferred	none		
+0x4c3e70	13			ui	orchestration	void __cdecl ()	Zeroes the two dwords that hold the lottery kiosk GUID	verified	one	ui/loot#no-walk-away-leash	
 0x4c3e80	7	CloseLootWindowThunk		ui	orchestration		Loads 1 into cl and jumps to the loot window close 0x4c3f40	verified	one	ui/gameui#interaction-close	
 0x4c3e90	20	ClearLotteryHandlers		ui	orchestration		Clears the handlers for opcodes 0x335 and 0x337	verified	one	ui/gameui#start-up-services-and-events	
-0x4c3eb0	132			ui	unreached		Runs its object file code that calls 0x4930d0, CDataStore::PutUInt32, ClientServices::Send; not read here	inferred	none		
+0x4c3eb0	132	SendLotteryQuery		ui	unreached	void __stdcall (uint32_t guid_lo, uint32_t guid_hi)	Sets the interaction target to the kiosk GUID, stores it and sends opcode 0x334; nothing reaches it	verified	one	ui/lottery#buying	
 0x4c3f40	1	CloseLootWindow		ui	orchestration		Returns at once	verified	one	ui/gameui#interaction-close	
 0x4c3f50	394	GetPrizeItem		ui	primitive		Reads the n-th nonzero prize id and fetches the item record for it	verified	one	ui/lottery#prizes	
 0x4c40e0	81			ui	orchestration		Runs its object file code that calls DBCache_ItemStats_C_int_HASHKEY_INT_::GetRecord and 1 more; not read here	inferred	none		
@@ -9592,11 +9592,11 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x4d55f0	1			ui	orchestration		Runs ReputationInfo.cpp code not read here	inferred	none		
 0x4d5600	32	CGReputationInfo::FactionToIndex	idb	ui	orchestration	int32_t __fastcall (uint32_t faction)	Returns the reputationListID of a faction id, or -1 for none	verified	one	ui/reputation#reputation-slots	
 0x4d5620	22	SlotToFaction		ui	primitive	uint32_t __fastcall (int32_t slot)	Returns the faction id held in a slot, 0 for a slot outside 0 to 63	verified	one	ui/reputation#reputation-slots	
-0x4d5640	112	HandleInitializeFactionsPacket	idb	ui	primitive		Runs ReputationInfo.cpp code that calls CDataStore::GetInt32, CDataStore::GetUInt8, 0x4d5fc0 and 3 more; not read here	inferred	none		
-0x4d56b0	86	HandleSetFactionAtWarPacket	idb	ui	primitive		Runs ReputationInfo.cpp code that calls CDataStore::GetInt32, CDataStore::GetUInt8, 0x4d5fc0 and 1 more; not read here	inferred	none		
-0x4d5710	73	HandleSetFactionVisiblePacket	idb	ui	primitive		Runs ReputationInfo.cpp code that calls CDataStore::GetInt32, 0x4d5a70, 0x4d5fc0 and 1 more; not read here	inferred	none		
-0x4d5760	569	HandleSetFactionStandingPacket	idb	ui	primitive		Runs ReputationInfo.cpp code that calls CDataStore::GetUInt32, CDataStore::GetInt32, 0x4d5620 and 16 more; not read here	inferred	none		
-0x4d59a0	204	HandleSetForcedReactionsPacket	idb	ui	primitive		Runs its object file code that calls CDataStore::GetUInt32, 0x4d7110, 0x4d7150 and 4 more; not read here	inferred	none		
+0x4d5640	112	HandleInitializeFactionsPacket	idb	ui	primitive	uint32_t __stdcall (uint32_t opcode, CDataStore *msg)	Reads SMSG_INITIALIZE_FACTIONS, storing each position's flags and standing, then rebuilds the list and signals	verified	one	ui/reputationwire#faction-messages	
+0x4d56b0	86	HandleSetFactionAtWarPacket	idb	ui	primitive	uint32_t __stdcall (uint32_t opcode, CDataStore *msg)	Sets or clears the at-war bit of a slot from SMSG_SET_FACTION_ATWAR and signals UPDATE_FACTION	verified	one	ui/reputationwire#faction-messages	
+0x4d5710	73	HandleSetFactionVisiblePacket	idb	ui	primitive	uint32_t __stdcall (uint32_t opcode, CDataStore *msg)	Makes a slot visible from SMSG_SET_FACTION_VISIBLE, adding its row and re-sorting the list	verified	one	ui/reputationwire#faction-messages	
+0x4d5760	569	HandleSetFactionStandingPacket	idb	ui	primitive	uint32_t __stdcall (uint32_t event, CDataStore *msg)	Stores each slot's standing from SMSG_SET_FACTION_STANDING, applying visible and at-war rules, then refreshes the player	verified	one	ui/reputationwire#standing-changes	
+0x4d59a0	204	HandleSetForcedReactionsPacket	idb	ui	primitive	uint32_t __stdcall (uint32_t event, CDataStore *msg)	Reads the forced reaction pairs of SMSG_SET_FORCED_REACTIONS into the table and refreshes the player's reaction	verified	one	ui/reputationwire#faction-messages	
 0x4d5a70	425	AddReputationEntry		ui	primitive	bool __fastcall (int32_t slot, bool notify)	Appends a slot's row and, for a non-header, its team header, returning 0 when present	verified	one	ui/reputation#list-membership	
 0x4d5c20	31	AddReputationHeaderKey		ui	primitive	void __fastcall (int32_t key)	Appends a header key and sets every header expanded	verified	one	ui/reputation#header-rows	
 0x4d5c40	380	SortReputationList		ui	primitive	void __cdecl ()	Counts children, sorts headers and rows, recounts the visible rows and signals UPDATE_FACTION	verified	one	ui/reputation#sorting-and-counts	
@@ -9741,7 +9741,7 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x4d96e0	579	Script::GetTrainerServiceAbilityReq	idb	ui	primitive	uint32_t __fastcall (lua_State *L)	Returns a required ability's name and rank text and whether it is known	verified	one	ui/trainer#required-abilities	
 0x4d9930	513	Script::GetTrainerServiceStepReq	idb	ui	primitive	uint32_t __fastcall (lua_State *L)	Returns nil and the number 1 for every trainer service	verified	one	ui/trainerverbs#skill-requirement	
 0x4d9b40	616	Script::GetTrainerServiceDescription	idb	ui	primitive	uint32_t __fastcall (lua_State *L)	Returns the expanded description of a trainer service	verified	one	ui/trainerverbs#description	
-0x4d9db0	19			ui	orchestration		Runs its object file code that calls 0x4d7d40; not read here	inferred	none		
+0x4d9db0	19			ui	orchestration	void __stdcall (uint32_t a, uint8_t flag)	Calls the trainer state re-evaluation when the flag byte is nonzero	verified	one	ui/trainerlist#when-states-are-re-evaluated	
 0x4d9dd0	148	Script::IsTrainerServiceSkillStep	idb	ui	primitive	uint32_t __fastcall (lua_State *L)	Returns 1 when a trainer service teaches a skill step, else nil	verified	one	ui/trainerverbs#row-kind-tests	
 0x4d9e70	251	Script::IsTrainerServiceLearnSpell	idb	ui	primitive	uint32_t __fastcall (lua_State *L)	Returns whether a trainer service teaches a learn spell and a pet spell	verified	one	ui/trainerverbs#row-kind-tests	
 0x4d9f70	192	Script::IsTrainerServiceTradeSkill	idb	ui	primitive	uint32_t __fastcall (lua_State *L)	Returns 1 when a trainer service teaches a trade skill ability, else nil	verified	one	ui/trainerverbs#row-kind-tests	
@@ -9880,9 +9880,9 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x4dd1d0	190	DestroyTable4dd1d0		ui	primitive		Destroys a table: empties it, frees its buckets and frees it when bit 0 of the argument is set	verified	one	ui/containers#hash-tables	
 0x4dd290	56	FreeArrayAndSelf4dd290		ui	orchestration		Frees an array's data and the array when bit 0 of the argument is set	verified	one	ui/containers#deleting-destructors	
 0x4dd2d0	22			ui	orchestration		Runs its object file code not read here	inferred	none		
-0x4dd2f0	38			ui	orchestration		Runs its object file code that calls SMemFree; not read here	inferred	none		
+0x4dd2f0	38	FreeIfFlag4dd2f0		ui	orchestration	void * __thiscall (uint32_t free_flag)	Frees the object with SMemFree when bit 0 of the flag is set and returns it	verified	one	ui/taxi#opening-the-map	
 0x4dd320	56	FreeArrayAndSelf4dd320		ui	orchestration		Frees an array's data and the array when bit 0 of the argument is set	verified	one	ui/containers#deleting-destructors	
-0x4dd360	1			ui	orchestration		Runs its object file code not read here	inferred	none		
+0x4dd360	1			ui	orchestration	void __thiscall ()	Returns at once	verified	one	ui/taxiframe#module-state	
 0x4dd370	10	InitCount4dd380Thunk		ui	orchestration	void __cdecl (void)	Calls 0x4dd380, then jumps to 0x4dd3a0 to register its exit callback	verified	one	ui/initthunks#call-thunks	
 0x4dd380	22	InitCount4dd380		ui	primitive	void __cdecl (void)	Counts one more user of a start-up count shared across files and calls 0x5b71c0 at the first	verified	one	ui/initexits#start-up-counts	
 0x4dd3a0	12	InitCount4dd380Register		ui	orchestration	void __cdecl (void)	Registers 0x4dd3b0 with the C runtime's exit list	verified	one	ui/initexits#exit-registrars	
@@ -10602,15 +10602,15 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x4eaa30	86	ProjectBlip		ui	primitive	void __thiscall (float player_a, float player_b, float radius, float entity_a, float entity_b, float width, float scale)	Writes a blip's disc position from its offset to the player over the zoom radius, with no rotation	verified	one	ui/minimapblips#the-north-up-disc	ui::geo_4eaa30
 0x4eaa90	629	ClassifyObjectDot		ui	primitive	uint32_t __fastcall (void *list, uint32_t guid_lo, uint32_t guid_hi)	Classifies an object into a dot cell, or skips it, and appends its dot	verified	one	ui/minimapblips#object-dots	ui::dist2_4eaa90
 0x4ead10	119			ui	primitive		Runs MinimapFrame.cpp code not read here	inferred	none		
-0x4ead90	113			ui	primitive		Runs MinimapFrame.cpp code not read here	inferred	none		ui::geo_4ead90, ui::geo_4eb910
+0x4ead90	113			ui	primitive		Writes the difference of a value and a table's pair to a float, doubling it, for the minimap	verified	one	ui/minimap#two-small-helpers	ui::geo_4ead90, ui::geo_4eb910
 0x4eae10	229	DrawOutdoorTile		ui	primitive	void __fastcall (void *record, uint32_t index, const uint32_t *colour)	Draws one outdoor tile record through its texture and the circular mask	verified	one	minimap/draw#outdoor-tile-draw	
-0x4eaf00	319	Minimap::ClipBlipRect		ui	primitive	void __thiscall (uint32_t index, float p, float q, float h, float u, float v)	Clips a square to a record of the rectangle table and builds its quad when the overlap has extent	verified	one	ui/minimap#blip-rectangle-clip	ui::glue_4ea_4eaf00_bbox_edges
+0x4eaf00	319			ui	primitive		Computes four edge values of a bounding box clamp from a base and a width	inferred	none	ui/minimap#two-small-helpers	ui::glue_4ea_4eaf00_bbox_edges
 0x4eb040	123			ui	orchestration		Runs MinimapFrame.cpp code that calls CSimpleFrame::OnFrameUpdate, CM2Model::IsLoaded and 4 more; not read here	inferred	none		
 0x4eb0c0	1983			ui	primitive		Runs MinimapFrame.cpp code that calls CSimpleFrame::OnMouseMove, CLayoutFrame::GetRect and 5 more; not read here	verified	one	ui/mouse#what-the-pointer-is-tested-against	ui::glue_4eb0c0_range_and_light
 0x4eb880	46	CMinimap::OnLeave		ui	orchestration	void __thiscall (CMinimap *this, uint32_t flag)	Hides the game tooltip, then leaves the minimap frame	verified	one	ui/mouse#enter-and-leave	
 0x4eb8b0	36			ui	orchestration		Runs MinimapFrame.cpp code that calls CSimpleFrame::UpdateScale; not read here	inferred	none		
 0x4eb8e0	34			ui	orchestration		Runs MinimapFrame.cpp code not read here	inferred	none		
-0x4eb910	639	Minimap::BuildBlipQuad		ui	primitive	void __thiscall (const float *clipped, uint32_t index, const float *pq, float h, const float *square, float u, float v)	Writes the four corners, doubled offsets and fractions of a clipped blip rectangle into the object	verified	one	ui/minimap#blip-quad-geometry	ui::geo_4eb910
+0x4eb910	639			ui	primitive		Builds the minimap quad from a four-float rectangle through 0x4ead90	inferred	none	ui/minimap#two-small-helpers	ui::geo_4eb910
 0x4ebb90	97			ui	orchestration		Calls the blip rectangle clip for 512 objects of 0xa4 bytes; the loop is read, the rest not	inferred	none	ui/minimap#blip-rectangle-clip	
 0x4ebc00	589			ui	primitive		Runs MinimapFrame.cpp code that calls _atexit, GetTextureDeviceObject, 0x589e80 and 3 more; not read here	inferred	none	ui/minimapblips#dots-cadence-and-tooltip	ui::glue_4ebc00_gradient
 0x4ebe50	1			ui	orchestration		Runs MinimapFrame.cpp code not read here	inferred	none		
@@ -12043,17 +12043,17 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x509450	141	SmartRectTeardown		ui	orchestration		Frees the claim worklist, the node pool and the arrays of claim lists 0 and 1; one caller, 0x481d7d	verified	one	ui/smartrect#freeing-the-lists	
 0x5094e0	29	SmartScreenRectClearAllGrids	idb	ui	primitive		Zeroes the counts of claim lists 0 and 1	verified	one	ui/smartrect#claim-lists	
 0x509500	26	ResetClaimList		ui	primitive	void __fastcall (int list)	Zeroes the count of a claim list of id 0 to 2, keeping its array	verified	one	ui/smartrect#claim-lists	
-0x509520	313			ui	primitive		Runs its object file code that calls MultiplyByScreenScaleX, NDCToDDCHeight, 0x509e20 and 2 more; not read here	inferred	none		ui::glue_509_509520_viewport_clamp
+0x509520	313			ui	primitive		Clamps a rectangle's seat on the viewport from its half extents	verified	one	ui/smartrect#the-combat-text-seat	ui::glue_509_509520_viewport_clamp
 0x509660	191	ClaimRect		ui	primitive	void __fastcall (int list, RECT *rect)	Appends a rectangle to a claim list, growing its array in steps	verified	one	ui/smartrect#claim-lists	
-0x509720	120			ui	primitive		Runs its object file code that calls 0x5097a0; not read here	inferred	none		ui::glue_509_509720_midpoint
+0x509720	120			ui	primitive		Solves a rectangle's centre and flags a change, taking a midpoint	verified	one	ui/smartrect#the-nameplate-seat	ui::glue_509_509720_midpoint
 0x5097a0	710	SearchRectPlacement		ui	primitive	RECT * __fastcall (RECT *out, int list, RECT *rect)	Searches breadth first for the nearest free place for a rectangle, or answers it unchanged	verified	one	ui/smartrect#the-placement-search	
 0x509a70	136	RecycleWorklist		ui	primitive		Moves every worklist node onto the free pool	verified	one	ui/smartrect#the-placement-search	
 0x509b00	230	NewPlacementNode		ui	primitive		Takes a node from the pool or allocates 0x1c bytes, links it at the worklist head with strategy -1	verified	one	ui/smartrect#the-placement-search	
-0x509bf0	388			ui	primitive		Runs its object file code that calls MultiplyByScreenScaleX, NDCToDDCHeight; not read here	inferred	none		ui::geo_509bf0
+0x509bf0	388			ui	primitive		Builds the flag word of the screen edges a rectangle crosses	verified	one	ui/smartrect#pushes-by-region	ui::geo_509bf0
 0x509d80	73	PickPushRegion		ui	primitive	int __fastcall (int flags)	Maps the four edge flags to the region 0 to 8 that picks the order of pushes	verified	one	ui/smartrect#pushes-by-region	
-0x509dd0	72			ui	primitive		Runs its object file code that calls MultiplyByScreenScaleX, NDCToDDCHeight, __ftol; not read here	inferred	none		ui::glue_509_509dd0_ratio_product
-0x509e20	154			ui	primitive		Runs its object file code that calls MultiplyByScreenScaleX, NDCToDDCHeight; not read here	inferred	none		ui::geo_509e20
-0x509ec0	401			ui	primitive		Runs its object file code that calls MultiplyByScreenScaleX, NDCToDDCHeight, 0x509e20 and 4 more; not read here	inferred	none		ui::glue_509_509ec0_axis_resolve
+0x509dd0	72			ui	primitive		Returns the product of two cell counts, each a truncated ratio plus one	verified	one	ui/smartrect#the-placement-search	ui::glue_509_509dd0_ratio_product
+0x509e20	154			ui	primitive		Moves a rectangle onto the screen keeping its size, clamping top, bottom, left, right	verified	one	ui/smartrect#normalising-a-rectangle	ui::geo_509e20
+0x509ec0	401			ui	primitive		Solves one axis of a nameplate's seat and anchors it	verified	one	ui/smartrect#the-nameplate-seat	ui::glue_509_509ec0_axis_resolve
 0x50a060	5			unassigned			Runs its object file code not read here	inferred	none		
 0x50a070	15			unassigned			Runs its object file code not read here	inferred	none		
 0x50a080	5			unassigned			Runs its object file code not read here	inferred	none		
@@ -13180,7 +13180,7 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x529480	215			ui	primitive		Runs its object file code that calls 0x467d00, ClntObjMgrClearObjectMirrorHandler and 2 more; not read here	inferred	none		
 0x529560	98	CGTooltip::OnUnitHealthChanged		ui	orchestration	uint32_t __cdecl (uint32_t guidLow, uint32_t guidHigh, uint32_t length, void *statusBar)	Sets the tooltip health bar's range and value from the unit and returns 1	verified	one	ui/tooltipunit#the-health-bar	
 0x5295d0	124	CGTooltip::GetScriptSlot		ui	orchestration	uint32_t * __thiscall (const char *name)	Returns the address of the tooltip script slot of a name, else the frame's own lookup	verified	one	ui/tooltipobject#the-script-slots	
-0x529650	737			ui	primitive		Runs Tooltip.cpp code that calls CSimpleFrame::PostLoadXML, 0x536d10, 0x536c80 and 4 more; not read here	inferred	none		
+0x529650	737	CGTooltip::PostLoadXML		ui	orchestration	void __thiscall (XMLNode *node, uint32_t flags)	Ends the frame load, then finds the template's left and right texts, three textures and status bar by name	verified	one	ui/tooltip#loading-the-template	
 0x529940	243			ui	primitive		Runs Tooltip.cpp code that calls 0x536d10, 0x536c80, 0x536910 and 2 more; not read here	inferred	none		
 0x529a40	1152	CGTooltip::AddStudiedCreatureLines		ui	primitive	void __thiscall (void *unit, char *buffer, uint32_t size)	Adds the damage, armor, health, resistance, diet and pet ability lines of a studied creature	verified	one	ui/tooltipunitstatus#the-studied-creature-lines	
 0x529ec0	222	CGTooltip::AddSkinnableLine		ui	primitive	void __thiscall (void *unit, char *buffer, uint32_t size)	Adds the skinnable line, in the skill colour when the interact spell skins	verified	one	ui/tooltipunitstatus#the-skinnable-line	
@@ -13191,7 +13191,7 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x52ad70	26	QualityColorPointer		ui	primitive	uint32_t * __fastcall (uint32_t quality)	Returns the quality colour pointer, with an index of 7 or more taking entry 1	verified	one	ui/tooltipcontent#the-colours	
 0x52ad90	26	QualityColorEscape		ui	primitive	const char * __fastcall (uint32_t quality)	Returns the inline colour escape string of a quality, with an index of 7 or more taking entry 1	verified	one	ui/tooltipcontent#the-colours	
 0x52adb0	80			ui	orchestration		Formats an item link with its quality colour	inferred	none	objectlayer/quests#quest-completion	
-0x52ae00	238			ui	primitive		Runs Tooltip.cpp code that calls DBCache_ItemStats_C_int_HASHKEY_INT_::GetRecord, 0x5d8bc0, 0x52adb0; not read here	inferred	none		
+0x52ae00	238	ItemObjectLink		ui	orchestration	const char * __thiscall ()	Builds the link text of an item object from its entry, quality, name and enchant, suffix and unique numbers	verified	one	ui/tooltip#item-object-link	
 0x52aef0	230	CGTooltip::BuildCorpse		ui	orchestration	void __thiscall (const uint64_t *guid)	Adds the corpse line with the owner's name, or waits for the name cache	verified	one	ui/tooltipobject#the-corpse-tooltip	
 0x52afe0	88	CGTooltip::OnCorpseOwnerName		ui	primitive	void __stdcall (CGTooltip *tooltip, uint8_t found)	Builds the corpse tooltip again from its stored GUID when the owner's name arrives	verified	one	ui/tooltipobject#the-corpse-tooltip	
 0x52b040	85			ui	primitive		Runs Tooltip.cpp code that calls 0x530050, 0x4f0f40, 0x5303b0; not read here	inferred	none		
@@ -13213,7 +13213,7 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x530270	271			ui	orchestration		Adds a line with a left and a right text while a slot is free and a text is nonempty	verified	one	ui/tooltip#lines	
 0x530380	34	GameTooltipAddGoldDoubleLine		ui	orchestration	void __thiscall (const char *left, const char *right, uint32_t wrap)	Adds a double line with both texts in gold	verified	one	ui/tooltipcontent#the-line-arrays	
 0x5303b0	27			ui	orchestration	void __thiscall (const char *text, uint32_t *colour, uint32_t wrap)	Adds a single left line in a given colour	verified	one	ui/tooltipcontent#the-line-arrays	
-0x5303d0	474			ui	unreached		Runs Tooltip.cpp code that calls GetScaledScreenAspect, MultiplyByScreenScaleX and 4 more; not read here	inferred	none		
+0x5303d0	474	CGTooltip::AddTexture		ui	unreached	void __thiscall (const char *path)	Adds a texture beside the last tooltip line and records its line; nothing reaches it	verified	one	ui/tooltip#unreached-tooltip-code	
 0x5305b0	113			ui	orchestration		Runs Tooltip.cpp code that calls SStrPrintf, 0x771d80, 0x530640; not read here	inferred	none		
 0x530630	16			ui	orchestration		Runs Tooltip.cpp code not read here	inferred	none		
 0x530640	1054	GameTooltipSize		ui	primitive	void __thiscall ()	Sizes the plate from its lines, padding and wrap limit, then re-anchors it	verified	one	ui/tooltipcontent#sizing-the-tooltip	ui::layout_pass_530640
@@ -29611,10 +29611,10 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x6f1ad0	85			ui	primitive		Runs its object file code that calls SStrPack; not read here	inferred	none		
 0x6f1b30	130	ParseXMLBool		ui	primitive	int __fastcall (const char *text)	Reads a flag: 1 to 9, t, T, y, Y, on or enabled is true, anything else false	verified	one	ui/addons#toc-directives	
 0x6f1c10	213	GetScriptFlagArg		ui	primitive	bool __stdcall (lua_State *L, int index, bool defaultValue)	Reads a script argument as a flag: nil 0, boolean itself, number truncated, string by first letter or keyword	verified	one	ui/actionuse#reading-a-script-flag	
-0x6f1d60	328			ui	primitive		Runs its object file code that calls 0x6f2cf0, SStrToFloat, GetScaledScreenAspect and 2 more; not read here	inferred	none		ui::glue_6f1_metric_scale_divide
+0x6f1d60	328			ui	primitive		Converts a length attribute of an XML element and stores it, or a relative value unconverted	verified	one	ui/backdrop#the-xml-element	ui::glue_6f1_metric_scale_divide
 0x6f1eb0	486	XmlReadDimension		ui	primitive	uint32_t __fastcall (XmlNode *node, float *x, float *y, void *report)	Reads x and y from a node's attributes or its AbsDimension child, in layout units	verified	one	ui/modelview#model-unit-to-pixel	ui::glue_6f1_metric_scale_divide
-0x6f20a0	806			ui	primitive		Runs its object file code that calls 0x6f2cf0, SStrToFloat, GetScaledScreenAspect and 2 more; not read here	inferred	none		ui::glue_6f1_metric_scale_divide
-0x6f23d0	601			ui	primitive		Runs its object file code that calls 0x6f2cf0, SStrToFloat, __ftol; not read here	inferred	none		ui::glue_6f1_clamp_quantize_boundaries, ui::glue_6f1_color_pack
+0x6f20a0	806			ui	primitive		Reads four length attributes of an XML element into out values	verified	one	ui/backdrop#the-xml-element	ui::glue_6f1_metric_scale_divide
+0x6f23d0	601			ui	primitive		Reads a colour element's four channels, clamping and quantising them	verified	one	ui/backdrop#the-xml-element	ui::glue_6f1_clamp_quantize_boundaries, ui::glue_6f1_color_pack
 0x6f2630	182	ParseGradientElement		ui	orchestration		Reads a gradient orientation and its minimum and maximum colours	verified	one	ui/texture#a-gradient-element	
 0x6f26f0	143	FrameXML::AddTextureElement		ui	orchestration	CSimpleTexture * __thiscall (void *parentFrame, XmlNode *node, CStatus *status)	Builds a texture region from its XML node, loads it and gives it the implicit anchor	verified	one	ui/regions#where-it-applies	
 0x6f2780	143	FrameXML::AddFontStringElement		ui	orchestration	CSimpleFontString * __thiscall (void *parentFrame, XmlNode *node, CStatus *status)	Builds a font string region from its XML node, loads it and gives it the implicit anchor	verified	one	ui/regions#where-it-applies	
@@ -30140,35 +30140,35 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x702860	153	ScriptDebugProfileStop		ui	primitive		Returns the time-stamp counter's advance divided by a thousandth of 0x42c020	verified	one	core/time#counter-rate	
 0x702900	80			ui	orchestration	int __fastcall (lua_State *L)	Serves seterrorhandler: keeps a reference to a function argument as the error handler, raising its usage otherwise	verified	one	ui/luastate#error-handlers	
 0x702950	22			ui	orchestration	int __fastcall (lua_State *L)	Serves geterrorhandler: returns the function seterrorhandler set, or nil	verified	one	ui/luastate#error-handlers	
-0x702970	123			ui	orchestration		Runs FrameScript.cpp code that calls 0x6f4cd0, __ftol, 0x6f4bb0 and 4 more; not read here	inferred	none		
-0x7029f0	65			ui	orchestration		Runs FrameScript.cpp code that calls 0x6f4bb0, 0x6f3cf0, lua_pushnil and 1 more; not read here	inferred	none		
-0x702a40	123			ui	orchestration		Runs FrameScript.cpp code that calls 0x6f3400, 0x6f4b50, 0x6f4810 and 4 more; not read here	inferred	none		
-0x702ac0	38			ui	orchestration		Runs FrameScript.cpp code that calls 0x702af0, 0x702ba0, lua_settop; not read here	inferred	none		
-0x702af0	168			ui	orchestration		Runs FrameScript.cpp code that calls 0x6f3400, 0x6f3350, 0x6f4cd0 and 5 more; not read here	inferred	none		
-0x702ba0	55			ui	primitive		Runs FrameScript.cpp code that calls 0x6f3d50, 0x6f3840, 0x6f3b00 and 1 more; not read here	inferred	none		
-0x702be0	164			ui	orchestration		Runs FrameScript.cpp code that calls 0x6f4b50, 0x702af0, 0x702ba0 and 7 more; not read here	inferred	none		
-0x702c90	64			ui	orchestration		Runs FrameScript.cpp code that calls 0x6f4b50, lua_settop, 0x6f4450 and 1 more; not read here	inferred	none		
-0x702cd0	198			ui	primitive		Runs FrameScript.cpp code that calls 0x6f3620, 0x6f4b50, 0x6f3400 and 6 more; not read here	inferred	none		
-0x702da0	67			ui	orchestration		Runs FrameScript.cpp code that calls 0x6f4b50, 0x6f3840, 0x6f3b00 and 2 more; not read here	inferred	none		
-0x702df0	50			ui	orchestration		Runs FrameScript.cpp code that calls 0x6f4bb0, 0x6f3400, 0x6f3480 and 1 more; not read here	inferred	none		
-0x702e30	270			ui	primitive		Runs FrameScript.cpp code that calls 0x6f4cd0, __ftol, 0x6f4bb0 and 8 more; not read here	inferred	none		
-0x702f40	310			ui	orchestration		Runs FrameScript.cpp code that calls 0x6f4bb0, 0x6f4d60, 0x6f3400 and 9 more; not read here	inferred	none		
-0x7030a0	78			ui	primitive		Runs FrameScript.cpp code that calls 0x6f4b50, 0x6f5050, 0x6f4b20 and 1 more; not read here	inferred	none		
-0x7030f0	55			ui	orchestration		Runs FrameScript.cpp code that calls 0x6f4bb0, 0x6f3550, 0x6f39f0; not read here	inferred	none		
-0x703130	46			ui	orchestration		Runs FrameScript.cpp code that calls 0x6f4b50, 0x6f4bb0, 0x6f3b00; not read here	inferred	none		
-0x703160	58			ui	orchestration		Runs FrameScript.cpp code that calls 0x6f4b50, 0x6f4bb0, 0x6f3ea0; not read here	inferred	none		
-0x7031a0	81			ui	orchestration		Runs FrameScript.cpp code that calls 0x6f4bb0, 0x6f3660, 0x6f4c20 and 2 more; not read here	inferred	none		
-0x703200	67			ui	orchestration		Runs FrameScript.cpp code that calls 0x6f43f0, lua_pushnumber, 0x6f43e0; not read here	inferred	none		
-0x703250	35			ui	orchestration		Runs FrameScript.cpp code that calls 0x6f4cd0, __ftol, 0x6f4400; not read here	inferred	none		
+0x702970	123			ui	primitive	int __fastcall (lua_State *L)	Serves error: raises argument 1, with the caller's position prepended for a string at a nonzero level	verified	one	ui/luabase#error-and-assert	
+0x7029f0	65			ui	orchestration	int __fastcall (lua_State *L)	Serves getmetatable: answers nil, the __metatable entry, or the metatable	verified	one	ui/luabase#metatables	
+0x702a40	123			ui	orchestration	int __fastcall (lua_State *L)	Serves setmetatable: sets the metatable of a table unless it has a __metatable entry	verified	one	ui/luabase#metatables	
+0x702ac0	38			ui	orchestration	int __fastcall (lua_State *L)	Serves getfenv: answers the environment of a function or level, or its __fenv entry	verified	one	ui/luabase#function-environments	
+0x702af0	168			ui	primitive	void __fastcall (lua_State *L)	Pushes the function that argument 1 names, a function or a call level, raising on a bad level	verified	one	ui/luabase#function-environments	
+0x702ba0	55			ui	primitive	int __fastcall (lua_State *L)	Pushes the environment of the top function and its __fenv entry, answering whether that entry is set	verified	one	ui/luabase#function-environments	
+0x702be0	164			ui	primitive	int __fastcall (lua_State *L)	Serves setfenv: sets a function's environment or, for level 0, the global table, refusing a protected one	verified	one	ui/luabase#function-environments	
+0x702c90	64			ui	orchestration	int __fastcall (lua_State *L)	Serves next: answers the key and value after a key of a table, or nil	verified	one	ui/luabase#iteration	
+0x702cd0	198			ui	primitive	int __fastcall (lua_State *L)	Serves ipairs: answers the iterator triple for one argument, else the next index and element	verified	one	ui/luabase#iteration	
+0x702da0	67			ui	orchestration	int __fastcall (lua_State *L)	Serves pairs: answers the global next, the table and nil	verified	one	ui/luabase#iteration	
+0x702df0	50			ui	orchestration	int __fastcall (lua_State *L)	Serves type: answers the type name of argument 1	verified	one	ui/luabase#type-and-tostring	
+0x702e30	270			ui	primitive	int __fastcall (lua_State *L)	Serves tonumber: converts argument 1 in base 10 or by strtoul in a base from 2 to 36	verified	one	ui/luabase#tonumber	
+0x702f40	310			ui	orchestration	int __fastcall (lua_State *L)	Serves tostring: answers the __tostring result or a text of argument 1	verified	one	ui/luabase#type-and-tostring	
+0x7030a0	78			ui	primitive	int __fastcall (lua_State *L)	Serves unpack: pushes the elements 1 to n of a table and returns n	verified	one	ui/luabase#iteration	
+0x7030f0	55			ui	orchestration	int __fastcall (lua_State *L)	Serves rawequal: pushes whether arguments 1 and 2 are primitively equal	verified	one	ui/luabase#raw-access	
+0x703130	46			ui	orchestration	int __fastcall (lua_State *L)	Serves rawget: pushes the element of a table without metamethods	verified	one	ui/luabase#raw-access	
+0x703160	58			ui	orchestration	int __fastcall (lua_State *L)	Serves rawset: sets an element of a table without metamethods and returns the table	verified	one	ui/luabase#raw-access	
+0x7031a0	81			ui	orchestration	int __fastcall (lua_State *L)	Serves assert: raises its message when argument 1 is false or nil, else keeps argument 1	verified	one	ui/luabase#error-and-assert	
+0x703200	67			ui	primitive	int __fastcall (lua_State *L)	Serves gcinfo: pushes the collector's two counters shifted right by 10	verified	one	ui/luabase#the-collector-pair	
+0x703250	35			ui	primitive	int __fastcall (lua_State *L)	Serves collectgarbage: sets the collection threshold to the optional argument in kilobytes	verified	one	ui/luabase#the-collector-pair	
 0x703280	98			ui	orchestration	int __fastcall (lua_State *L)	Serves loadstring: compiles argument 1 named by argument 2 or itself, returning the function or nil and the message	verified	one	ui/luastate#how-a-chunk-reaches-the-compiler	
-0x7032f0	68			ui	primitive		Runs FrameScript.cpp code that calls 0x6f4bb0, lua_gettop, lua_pcall and 2 more; not read here	inferred	none		
-0x703340	84			ui	orchestration		Runs FrameScript.cpp code that calls 0x6f4bb0, lua_settop, lua_insert and 3 more; not read here	inferred	none		
-0x7033a0	411			ui	primitive		Runs FrameScript.cpp code that calls 0x6f4c20, 0x6f4cd0, __ftol and 10 more; not read here	inferred	none		
-0x703540	44			ui	orchestration		Runs FrameScript.cpp code that calls lua_pushstring, lua_pushnumber, 0x6f3ea0; not read here	inferred	none		
-0x703570	38			ui	orchestration		Runs FrameScript.cpp code that calls lua_pushstring, 0x6f39f0, 0x6f3ea0; not read here	inferred	none		
-0x7035a0	269			ui	primitive		Runs FrameScript.cpp code that calls 0x6f3400, _time, lua_pushnumber and 6 more; not read here	inferred	none		
-0x7036b0	50			ui	orchestration		Runs FrameScript.cpp code that calls lua_pushstring, lua_gettable, 0x6f3660 and 1 more; not read here	inferred	none		
-0x7036f0	106			ui	orchestration		Runs FrameScript.cpp code that calls lua_pushstring, lua_gettable, 0x6f34d0 and 4 more; not read here	inferred	none		
+0x7032f0	68			ui	orchestration	int __fastcall (lua_State *L)	Serves pcall: calls argument 1 with the rest, answers a success boolean before its results	verified	one	ui/luabase#protected-calls	
+0x703340	84			ui	orchestration	int __fastcall (lua_State *L)	Serves xpcall: calls argument 1 under argument 2 as handler, answers a success boolean before its results	verified	one	ui/luabase#protected-calls	
+0x7033a0	411			ui	primitive	int __fastcall (lua_State *L)	Serves date: formats a time as text or as a table, UTC when the format starts with !	verified	one	ui/luabase#date	
+0x703540	44			ui	orchestration	void __fastcall (lua_State *L, const char *name, int value)	Sets a number field of the table at the top, the value taken from the stack	verified	one	ui/luabase#date	
+0x703570	38			ui	orchestration	void __fastcall (lua_State *L, const char *name, int value)	Sets a boolean field of the table at the top, the value taken from the stack	verified	one	ui/luabase#date	
+0x7035a0	269			ui	primitive	int __fastcall (lua_State *L)	Serves time: answers the current time, or mktime of a table of date fields	verified	one	ui/luabase#time-from-a-table	
+0x7036b0	50			ui	orchestration	int __fastcall (lua_State *L, const char *name)	Reads the field of the table at the top as a boolean	verified	one	ui/luabase#time-from-a-table	
+0x7036f0	106			ui	primitive	int __fastcall (lua_State *L, const char *name, int default)	Reads a number field of the table at the top as an int, or the default, or raises when the default is -2	verified	one	ui/luabase#time-from-a-table	
 0x703760	609			ui	primitive	int __fastcall (lua_State *L)	Serves debugstack: returns the call stack from a level as text, one line per level with head and tail windows	verified	one	ui/luastate#debugstack	
 0x7039e0	338	FrameScriptInitialize		ui	orchestration		Creates the Lua state in 0xceef74 and installs the metatable, handlers, libraries and compat.lua	verified	one	ui/luastate#what-a-new-state-holds	
 0x703b40	57	FrameScriptCallErrorHandler		ui	orchestration	int __fastcall (lua_State *L)	Calls the function seterrorhandler set with the message and returns its result, or the message	verified	one	ui/luastate#error-handlers	
@@ -30762,46 +30762,46 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x729d50	120			ui	orchestration		Runs LCD.CPP code that calls 0x6f2cf0, 0x729140, 0x729cc0; not read here	inferred	none		
 0x729dd0	1068	LcdInitialize		ui	host		Starts the LCD layer	inferred	none		
 0x72a200	231	LcdShutdown		ui	host		Shuts the LCD layer down	inferred	none		
-0x72a2f0	87			ui	primitive		Runs its object file code that calls 0x72c850, 0x72a350; not read here	inferred	none		
-0x72a350	20			ui	orchestration		Runs its object file code not read here	inferred	none		
-0x72a370	200			ui	primitive		Runs its object file code that calls 0x72c850, 0x72a350, 0x72b480 and 4 more; not read here	inferred	none		
-0x72a450	71			ui	orchestration		Runs its object file code that calls 0x72c850, 0x72a350, 0x72b480; not read here	inferred	none		
-0x72a4a0	61			ui	orchestration		Runs its object file code that calls 0x72c850, 0x72a350, 0x72a5f0; not read here	inferred	none		
-0x72a4e0	47			ui	unreached		Runs its object file code that calls 0x72c850, 0x72a350; not read here	inferred	none		
-0x72a510	195			ui	orchestration		Runs its object file code that calls 0x72c850, 0x72a350, 0x72cf80 and 2 more; not read here	inferred	none		
-0x72a5e0	15			ui	primitive		Runs its object file code not read here	inferred	none		
-0x72a5f0	734			ui	primitive		Runs its object file code that calls 0x72c850, 0x72a350, ClntObjMgrGetActivePlayer and 7 more; not read here	inferred	none		
-0x72a8d0	2008	UpdateKeyboardLcd		ui	host		Updates the keyboard LCD screens each frame, the wait queue screen among them	inferred	none		
-0x72b0b0	149			ui	orchestration		Runs its object file code that calls 0x72c850, 0x72a350, ClntObjMgrGetActivePlayer and 1 more; not read here	inferred	none		
-0x72b150	191			ui	primitive		Runs its object file code that calls 0x72c850, 0x72a350; not read here	inferred	none		
-0x72b230	51			ui	orchestration		Runs its object file code that calls 0x72c850, 0x72a350; not read here	inferred	none		
-0x72b270	51			ui	orchestration		Runs its object file code that calls 0x72c850, 0x72a350; not read here	inferred	none		
-0x72b2b0	391			ui	primitive		Runs its object file code that calls 0x72c850, 0x72a350, 0x72b480 and 7 more; not read here	inferred	none		
-0x72b440	49			ui	orchestration		Runs its object file code that calls 0x72c850, 0x72a350; not read here	inferred	none		
-0x72b480	65			ui	orchestration		Runs its object file code that calls 0x72c850, 0x72a350, 0x72d0d0; not read here	inferred	none		
-0x72b4d0	122			ui	primitive		Runs its object file code that calls 0x72c850, 0x72a350, SStrCopy; not read here	inferred	none		
-0x72b550	207			ui	primitive		Runs its object file code that calls 0x72c850, 0x72a350, SStrCopy and 2 more; not read here	inferred	none		
+0x72a2f0	87	LcdFindElement		ui	orchestration	void * __fastcall (int32_t id)	Returns the element with an id from the element tree when the LCD is ready, or 0	verified	one	ui/lcd#ready-test-and-element-lookup	
+0x72a350	20	LcdIsModeValid		ui	orchestration	uint8_t __cdecl ()	Answers 1 when the cvar value at 0xc0e080 lies in 0 to 3	verified	one	ui/lcd#ready-test-and-element-lookup	
+0x72a370	200	LcdEnterWorld		ui	orchestration	void __cdecl ()	Shows screen 1, sets the in-world flag, caches the player and sets flags on elements 0x14 and 0x2a by class	verified	one	ui/lcd#entering-and-leaving-the-world	
+0x72a450	71	LcdLeaveWorld		ui	orchestration	void __cdecl ()	Clears the in-world and battlefield flags and the player, shows screen 0 and updates the display	verified	one	ui/lcd#entering-and-leaving-the-world	
+0x72a4a0	61	LcdShowBattlefield		ui	orchestration	void __cdecl ()	Sets the battlefield flag and time, fills the battlefield screen and shows screen 3	verified	one	ui/lcd#entering-and-leaving-the-world	
+0x72a4e0	47	LcdRestoreScreen		ui	unreached	void __cdecl ()	Clears the battlefield flag and shows the previous screen; nothing reaches it	verified	one	ui/lcd#unreached-lcd-code	
+0x72a510	195	LcdChooseScreen		ui	orchestration	void __cdecl ()	Picks screen 5, 3, 2 or 1 from the elements' flags and the notice flag, while in the world	inferred	none	ui/lcd#the-per-frame-update	
+0x72a5e0	15	LcdCompareDescending		ui	primitive	int __cdecl (const int32_t *a, const int32_t *b)	Returns the first dword of the second less the first dword of the first	verified	one	ui/lcd#battlefield-scores	
+0x72a5f0	734	LcdFillBattlefieldScreen		ui	primitive	void __cdecl ()	Writes the player's and the leaders' scoreboard values to the battlefield elements after sorting a copy	inferred	none	ui/lcd#battlefield-scores	
+0x72a8d0	2008	UpdateKeyboardLcd		ui	host	void __cdecl ()	Writes the player's values to the LCD elements each frame and settles which screen shows	inferred	none	ui/lcd#the-per-frame-update	
+0x72b0b0	149	LcdReagentCount		ui	orchestration	uint32_t __cdecl ()	Counts the active player's inventory items of the class's entry, or 0 for another unit	verified	one	ui/lcd#status-readouts	
+0x72b150	191	LcdStatusElement		ui	orchestration	void * __cdecl ()	Returns the element 0x14 or 0x2a that the player's class selects, or 0	verified	one	ui/lcd#status-readouts	
+0x72b230	51	LcdFreeSlotCount		ui	orchestration	uint32_t __cdecl ()	Counts the active player's free inventory slots through CountFreeSlots	verified	one	ui/lcd#status-readouts	
+0x72b270	51	LcdDurabilityPercent		ui	orchestration	int32_t __cdecl ()	Returns the active player's equipment durability percent through GetDurabilityPercent	verified	one	ui/lcd#status-readouts	
+0x72b2b0	391	LcdShowWaitTime		ui	primitive	void __fastcall (const char *name, uint32_t minutes, uint32_t deadline)	Writes a name, stores the wait deadline, shows screen 2 and sets element 0x16 to the time left	inferred	none	ui/lcd#battlefield-status	
+0x72b440	49	LcdReturnFromWait		ui	orchestration	void __cdecl ()	Shows the previous screen when the current screen is 2	verified	one	ui/lcd#changing-screen	
+0x72b480	65	LcdSetScreen		ui	orchestration	void __fastcall (int32_t screen)	Stores a new current screen and the old one and tells the wrapper, unless it is already current	verified	one	ui/lcd#changing-screen	
+0x72b4d0	122	LcdPushNotice		ui	primitive	void __fastcall (const char *text, uint32_t kind)	Shifts the five notice records down, stores a text and kind in the first and redraws them	verified	one	ui/lcd#notice-ring	
+0x72b550	207	LcdDrawNotices		ui	primitive	void __cdecl ()	Formats each notice record through its kind's template and sets its element's text	verified	one	ui/lcd#notice-ring	
 0x72b620	78			ui	primitive		Shows a whisper's sender on the keyboard LCD and arms its timer	inferred	none	ui/chatevents#whisper-notice-on-the-lcd	
-0x72b670	77			ui	primitive		Runs its object file code that calls 0x72c850, 0x72a350, 0x72b4d0 and 2 more; not read here	inferred	none		
-0x72b6c0	78			ui	primitive		Runs its object file code that calls 0x72c850, 0x72a350, 0x72b4d0 and 2 more; not read here	inferred	none		
-0x72b710	248			ui	primitive		Runs its object file code that calls 0x72c850, 0x72a350, CDataStore::GetUInt32 and 5 more; not read here	inferred	none		
-0x72b810	36	RefreshKeyboardLcd		ui	host		Redraws the keyboard LCD player screen when the LCD is present	inferred	none		
-0x72b840	51			ui	unreached		Runs its object file code that calls 0x72c850, 0x72a350, 0x72d3b0; not read here	inferred	none		
+0x72b670	77	LcdNoticeEmpty		ui	orchestration	void __cdecl ()	Stores an empty kind 2 notice, shows screen 5 and arms the notice deadline	verified	one	ui/lcd#notice-kinds	
+0x72b6c0	78	LcdNoticeAuction		ui	orchestration	void __fastcall (const char *text)	Stores a kind 3 notice, shows screen 5 and arms the notice deadline	verified	one	ui/lcd#notice-kinds	
+0x72b710	248	LcdHandleBattlefieldStatus		ui	primitive	void __fastcall (CDataStore *msg)	Reads a battlefield status message and shows the wait screen or the battlefield screen	inferred	none	ui/lcd#battlefield-status	
+0x72b810	36	RefreshKeyboardLcd		ui	host	void __cdecl ()	Redraws the keyboard LCD player screen when the LCD is present	verified	one	ui/lcd#changing-screen	
+0x72b840	51	LcdForwardScreenIndex		ui	unreached	void __fastcall (uint32_t index)	Passes the current screen and an index to 0x72d3b0; nothing reaches it	verified	one	ui/lcd#unreached-lcd-code	
 0x72b880	5	InitDouble72b890Thunk		ui	orchestration	void __cdecl (void)	Jumps to 0x72b890, a static initializer	verified	one	ui/initthunks#jump-thunks	
 0x72b890	15	InitDouble72b890		ui	primitive	void __cdecl (void)	Stores 3.1415927 + 3.1415927 = 6.2831855 as a float in a global	verified	one	ui/initfloats#doubled-constants	
 0x72b8a0	5	InitQuotient72b8b0Thunk		ui	orchestration	void __cdecl (void)	Jumps to 0x72b8b0, a static initializer	verified	one	ui/initthunks#jump-thunks	
 0x72b8b0	19	InitQuotient72b8b0		ui	primitive	void __cdecl (void)	Stores 1 / 6.2831855 = 0.15915494 as a float in a global	verified	one	ui/initfloats#quotients	
-0x72b8d0	30			ui	primitive		Runs its object file code not read here	inferred	none		
-0x72b8f0	89			ui	orchestration		Runs its object file code that calls ObjectAllocNew; not read here	inferred	none		
+0x72b8d0	30	LcdPoolInit		ui	orchestration	void * __thiscall ()	Sets an object pool to block size 0x10 with an empty list	inferred	none	ui/lcd#the-element-tree	
+0x72b8f0	89	LcdPoolNew		ui	orchestration	void __thiscall ()	Takes a record from the pool and clears its fields when the pool is not flagged	inferred	none	ui/lcd#the-element-tree	
 0x72b950	60	Unlink72b950		ui	primitive		Unlinks a link from its list and clears it	verified	one	ui/containers#links	
 0x72b990	16	Clear272b990		ui	orchestration		Zeroes two dwords at this and returns this	verified	one	ui/containers#lists	
-0x72b9a0	412			ui	primitive		Runs its object file code that calls 0x72c130, 0x72b9a0, 0x72c030 and 1 more; not read here	inferred	none		
-0x72bb40	346			ui	primitive		Runs its object file code that calls 0x72bce0, SMemReAlloc, SMemAlloc and 1 more; not read here	inferred	none		
+0x72b9a0	412	LcdTreeInsert		ui	primitive	uint32_t __thiscall (int32_t key, void **slot)	Inserts a key into the element tree, rebalancing, and answers whether the height grew	inferred	none	ui/lcd#the-element-tree	
+0x72bb40	346	LcdNoticeArrayResize		ui	primitive	void __thiscall (uint32_t count)	Resizes the array of 0x50-byte records to a count by reallocation	inferred	none	ui/lcd#the-element-tree	
 0x72bca0	60	Unlink72bca0		ui	primitive		Unlinks a link from its list and clears it	verified	one	ui/containers#links	
 0x72bce0	60	Unlink72bce0		ui	primitive		Unlinks a link from its list and clears it	verified	one	ui/containers#links	
-0x72bd20	781			ui	primitive		Runs its object file code that calls 0x72bd20, 0x72c030; not read here	inferred	none		
-0x72c030	108			ui	primitive		Runs its object file code not read here	inferred	none		
-0x72c0a0	134			ui	primitive		Runs its object file code not read here	inferred	none		
+0x72bd20	781	LcdTreeErase		ui	primitive	uint32_t __thiscall (int32_t key, void **slot)	Erases a key from the element tree, rebalancing on the way back	inferred	none	ui/lcd#the-element-tree	
+0x72c030	108	LcdTreeRotateSingle		ui	primitive	uint32_t __stdcall (void **slot, uint32_t side)	Rotates a tree node once toward a side and updates both balances	inferred	none	ui/lcd#the-element-tree	
+0x72c0a0	134	LcdTreeRotateDouble		ui	primitive	uint32_t __stdcall (void **slot, uint32_t side)	Rotates a tree node twice toward a side and updates the three balances	inferred	none	ui/lcd#the-element-tree	
 0x72c130	41	NextLink72c130		ui	primitive		Returns the address a link names, resolving negative offsets through the list's offset	verified	one	ui/containers#links	
 0x72c160	5	InitSquare72c170Thunk		ui	orchestration	void __cdecl (void)	Jumps to 0x72c170, a static initializer	verified	one	ui/initthunks#jump-thunks	
 0x72c170	19	InitSquare72c170		ui	primitive	void __cdecl (void)	Stores 10 × 10 = 100 as a float in a global	verified	one	ui/initfloats#squares	
@@ -30843,15 +30843,15 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x72c4c0	19	InitSquare72c4c0		ui	primitive	void __cdecl (void)	Stores 10 × 10 = 100 as a float in a global	verified	one	ui/initfloats#squares	
 0x72c4e0	5	InitQuotient72c4f0Thunk		ui	orchestration	void __cdecl (void)	Jumps to 0x72c4f0, a static initializer	verified	one	ui/initthunks#jump-thunks	
 0x72c4f0	19	InitQuotient72c4f0		ui	primitive	void __cdecl (void)	Stores 0.5 / 10 = 0.05 as a float in a global	verified	one	ui/initfloats#quotients	
-0x72c510	137			ui	orchestration		Runs its object file code that calls SLogWrite, SLogClose, CStatus::~CStatus; not read here	inferred	none		
+0x72c510	137	StatusLogDestruct		ui	orchestration	void __thiscall ()	Writes out and closes a log handle, then runs the status base destructor; reached through unwinding only	inferred	none	ui/lcd#the-device-wrapper	
 0x72c5a0	10	InitCount72c5b0Thunk		ui	orchestration	void __cdecl (void)	Calls 0x72c5b0, then jumps to 0x72c5d0 to register its exit callback	verified	one	ui/initthunks#call-thunks	
 0x72c5b0	22	InitCount72c5b0		ui	primitive	void __cdecl (void)	Counts one more user of a start-up count shared across files and calls 0x5b71c0 at the first	verified	one	ui/initexits#start-up-counts	
 0x72c5d0	12	InitCount72c5b0Register		ui	orchestration	void __cdecl (void)	Registers 0x72c5e0 with the C runtime's exit list	verified	one	ui/initexits#exit-registrars	
 0x72c5e0	14	InitCount72c5b0Exit		ui	primitive	void __cdecl (void)	Counts one user less of that shared count and jumps to 0x5b71d0 when none is left	verified	one	ui/initexits#exit-counts	
-0x72c5f0	54			ui	unreached		Runs its object file code that calls SStrPrintf; not read here	inferred	none		
-0x72c630	114			ui	primitive		Runs its object file code that calls 0x72d810; not read here	inferred	none		
-0x72c6b0	410			ui	primitive		Runs its object file code that calls 0x72d6d0, SMemFree, 0x72ddd0 and 3 more; not read here	inferred	none		
-0x72c850	8			ui	primitive		Runs its object file code not read here	inferred	none		
+0x72c5f0	54	LcdFormatAndCall		ui	unreached	void __cdecl (const char *format, ...)	Formats its arguments into a 0x400-byte buffer and passes it to a table function; nothing reaches it	verified	one	ui/lcd#unreached-lcd-code	
+0x72c630	114	LcdWrapperConstruct		ui	orchestration	void * __thiscall (const char *title, uint32_t type, uint32_t flags)	Builds the device wrapper: base, empty list, type, flags and the title or World of Warcraft	inferred	none	ui/lcd#the-device-wrapper	
+0x72c6b0	410	LcdWrapperDestruct		ui	orchestration	void __thiscall ()	Destroys the device wrapper; called by LcdShutdown	inferred	none	ui/lcd#the-device-wrapper	
+0x72c850	8	LcdIsDeviceConnected		ui	orchestration	uint32_t __thiscall ()	Answers 1 when the wrapper's device handle at +0x88 is not -1	verified	one	ui/lcd#ready-test-and-element-lookup	
 0x72c860	100			ui	primitive		Runs its object file code that calls 0x72d5c0; not read here	inferred	none		
 0x72c8d0	532			ui	primitive		Runs EZ_LCD.cpp code that calls 0x72c860, SMemAlloc, 0x72f310 and 9 more; not read here	inferred	none		
 0x72caf0	5	InitInfinity72cb00Thunk		ui	orchestration	void __cdecl (void)	Jumps to 0x72cb00, a static initializer	verified	one	ui/initthunks#jump-thunks	
@@ -33191,8 +33191,8 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x7664f0	195	CSimpleTop::OnMouseWheel		ui	orchestration		Handles category 0x10: offers the wheel to hit frames of the wheel lists from stratum 8 down	verified	one	ui/input#the-handlers	
 0x7665c0	134	CSimpleTop::OnWindowSize		ui	orchestration		Handles category 0x1c: refreshes the fonts and every frame's regions, then the host's size callback	inferred	none	ui/input#the-handlers	
 0x766650	68	CSimpleTop::OnActivationChange		ui	orchestration		Handles category 2, the window's activation change: calls a window-code function, then the host's callback at +0x1134	verified	one	ui/keyscripts#deactivating-the-window	
-0x7666a0	162	PixelAlignX		ui	primitive		Rounds a horizontal size to a whole number of screen pixels	inferred	none		ui::glue_765_7666a0_ratio_round_x
-0x766750	162	PixelAlignY		ui	primitive		Rounds a vertical size to a whole number of screen pixels	inferred	none		ui::glue_765_766750_ratio_round_y
+0x7666a0	162	PixelAlignX		ui	primitive		Rounds a horizontal length up to whole device pixels	verified	one	ui/regions#pixel-alignment	ui::glue_765_7666a0_ratio_round_x
+0x766750	162	PixelAlignY		ui	primitive		Rounds a vertical length up to whole device pixels	verified	one	ui/regions#pixel-alignment	ui::glue_765_766750_ratio_round_y
 0x766800	5	TopInitTwoPiThunk		ui	orchestration		Jumps to 0x766810; a static initializer	verified	one	ui/README#static-initializers	
 0x766810	15	TopInitTwoPi		ui	primitive		Stores 3.1415927 + 3.1415927 as a float in a global	verified	one	ui/README#static-initializers	
 0x766820	5	TopInitInvTwoPiThunk		ui	orchestration		Jumps to 0x766830; a static initializer	verified	one	ui/README#static-initializers	
@@ -33512,71 +33512,71 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x7703f0	29	CSimpleTexture::SetBlendMode		ui	orchestration		Stores the blend mode and marks the texture dirty	verified	one	ui/texture#the-quad-record	
 0x770410	165	CSimpleTexture::SetTexCoordRect		ui	orchestration		Sets the four corners of the coordinates from a rectangle	verified	one	ui/texture#reading-the-image-and-the-coordinates	
 0x7704c0	166	StoreTextureCorners		ui	orchestration		Stores eight floats as the four corners and relays out a rect-modifying texture	verified	one	ui/taxiframe#route-line-textures	
-0x770570	64			ui	primitive		Runs its object file code not read here	inferred	none		ui::glue_770570_lerp
+0x770570	64	CSimpleTexture::ScaleRectToTexCoords		ui	primitive	void __thiscall (float *rect)	Shrinks a rectangle (bottom, left, top, right) to the texture coordinate spans |URx-ULx| and |LLy-ULy|	verified	one	ui/texture#reading-the-image-and-the-coordinates	ui::glue_770570_lerp
 0x7705b0	106	CSimpleTexture::SetVertices		ui	primitive	void __thiscall (float *rect)	Writes the four vertex positions (left top), (left bottom), (right top), (right bottom) with z zero	verified	one	ui/regions#a-region-that-does-not-resolve	
 0x770620	36	GetUiPixelShader		ui	orchestration		Answers the interface pixel shader at an index when it is usable, else 0	verified	one	ui/texture#desaturating	
 0x770650	29	CSimpleTexture::SetPixelShader		ui	orchestration		Stores the pixel-shader slot and marks the texture dirty	verified	one	ui/texture#desaturating	
 0x770670	98	CSimpleTexture::OnFrameSizeChanged		ui	orchestration	void __thiscall (float *oldRect)	Lays out dependents, applies the texture coordinate rule to the rectangle and writes the four vertices	verified	one	ui/regions#a-region-that-does-not-resolve	
 0x7706e0	26	CSimpleTexture::Emit		ui	orchestration	void __thiscall (void *batch)	Appends the texture to a layer batch when it has an image	verified	one	ui/regions#a-region-that-does-not-resolve	
 0x770700	24	CSimpleTexture::GetDeviceTexture		ui	orchestration		Answers the device texture of the image handle, or 0	verified	one	ui/texture#the-quad-record	
-0x770720	98			ui	primitive		Runs its object file code that calls CLayoutFrame::GetWidth, 0x44b3b0, GetScaledScreenAspect and 1 more; not read here	inferred	none		ui::glue_unit_convert_1024
-0x770790	99			ui	primitive		Runs its object file code that calls CLayoutFrame::GetHeight, 0x44b3b0, GetScaledScreenAspect and 1 more; not read here	inferred	none		ui::glue_unit_convert_1024
+0x770720	98	CSimpleTexture::GetWidth		ui	primitive	float __thiscall ()	Returns the authored width, or for 0.0 the image width in texels as interface units	verified	one	ui/regions#a-textures-size	ui::glue_unit_convert_1024
+0x770790	99	CSimpleTexture::GetHeight		ui	primitive	float __thiscall ()	Returns the authored height, or for 0.0 the image height in texels as interface units	verified	one	ui/regions#a-textures-size	ui::glue_unit_convert_1024
 0x770800	265			ui	orchestration		Applies a font's changed font, justify, colour, shadow and spacing to a FontString under its masks	verified	one	ui/fontstring#following-a-font	
-0x770910	434			ui	primitive		Runs its object file code that calls 0x41e4c0, SStrCmpI, TextBlockGenerateFont and 2 more; not read here	inferred	none		ui::glue_settled_eps
-0x770ad0	396			ui	primitive		Runs its object file code that calls 0x41e4c0, SStrCmpI, TextBlockGenerateFont and 2 more; not read here	inferred	none		ui::glue_settled_eps
-0x770c60	193			ui	primitive		Runs its object file code not read here	inferred	none		
+0x770910	434	FontBlockMergeMasked		ui	primitive	void __thiscall (FontBlock *dest, uint32_t mask)	Copies the set, masked groups of a font block into another block where they differ	verified	one	ui/fonttext#merging-font-blocks	ui::glue_settled_eps
+0x770ad0	396	FontBlockMerge		ui	primitive	FontBlock * __thiscall (FontBlock *source)	Copies the set groups of a font block into this one where they differ and returns it	verified	one	ui/fonttext#merging-font-blocks	ui::glue_settled_eps
+0x770c60	193	LinkFontFollower		ui	orchestration	void __thiscall (CSimpleFont *font)	Moves a follower to another font's list and applies all five style groups to it at once	verified	one	ui/fontstring#following-a-font	
 0x770d30	226	CSimpleFontString::CSimpleFontString		ui	orchestration		Builds a FontString with CENTER and MIDDLE justify and the one-to-one size bit	verified	one	ui/fontstring#construction	
-0x770e20	43			ui	orchestration		Runs its object file code that calls 0x770e50, CDataAllocator::PutData; not read here	inferred	none		
-0x770e50	177			ui	primitive		Runs CSimpleRender.cpp code that calls SMemFree, 0x7714f0, UnlockScriptObject and 1 more; not read here	inferred	none		
-0x770f10	41			ui	orchestration		Runs CSimpleRender.cpp code that calls 0x6f2cf0, CScriptRegion::SetName; not read here	inferred	none		
+0x770e20	43	CSimpleFontString::DeletingDestructor		ui	orchestration	void * __thiscall (uint32_t free_flag)	Runs the font string destructor body and returns the object to its pool when bit 0 is set	verified	one	ui/fonttext#creating-and-freeing-a-string	
+0x770e50	177	CSimpleFontString::~CSimpleFontString		ui	orchestration	void __thiscall ()	Frees the text, drops the font, unlinks the font part and ends in the region destructor	verified	one	ui/fonttext#creating-and-freeing-a-string	
+0x770f10	41	ReadRegionNameAttribute		ui	orchestration	void __thiscall (XMLNode *node, CScriptRegion *region)	Sets the region's name to the node's name attribute when it is nonempty	verified	one	ui/fonttext#creating-and-freeing-a-string	
 0x770f40	1329	CSimpleFontString::LoadXML		ui	primitive		Loads a font string's layout node, template, hidden, text, limits, font, justification, colour and shadow	verified	one	ui/xmltypes#regions-and-fonts	ui::glue_unit_convert_1024
 0x771480	110	CSimpleFontString::AnchorToParent		ui	orchestration	void __thiscall (void *node, void *status)	Pins a parented font string with no anchor point to its parent by its horizontal justification	verified	one	ui/regions#the-implicit-anchor	
-0x7714f0	266			ui	primitive		Runs CSimpleRender.cpp code that calls 0x772790, SStrCmpI, 0x772810 and 3 more; not read here	inferred	none		ui::glue_7714f0_scale_mul, ui::glue_settled_eps
+0x7714f0	266	CSimpleFontString::SetFont		ui	orchestration	uint32_t __thiscall (const char *name, float height, uint32_t flags, uint8_t force)	Builds and installs the font of a name, height and flags unless unchanged, and relays the text out	verified	one	ui/fonttext#font-string-members	ui::glue_7714f0_scale_mul, ui::glue_settled_eps
 0x771600	121	CSimpleFontString::SetTextHeight		ui	orchestration		Sets a different text height and clears the one-to-one size bit	verified	one	ui/fontstring#size-and-fitting	ui::glue_settled_eps
-0x771680	102			ui	orchestration		Runs CSimpleRender.cpp code that calls SMemAlloc, SMemFree; not read here	inferred	none		
+0x771680	102	CSimpleFontString::SetFixedLength		ui	orchestration	void __thiscall (uint32_t length)	Sets the fixed text size and allocates an empty text buffer of that size plus one	verified	one	ui/fonttext#creating-and-freeing-a-string	
 0x7716f0	114			ui	orchestration		Rewrites the |1 and |2 grammar escapes of a text	verified	one	ui/fontstring#setting-the-text	
-0x771770	310			ui	primitive		Runs CSimpleRender.cpp code that calls __alloca_probe, SUniConvertUTF8to16, 0x7718b0 and 1 more; not read here	inferred	none		
-0x7718b0	229			ui	primitive		Runs CSimpleRender.cpp code that calls tolower; not read here	inferred	none		
-0x7719a0	445			ui	primitive		Runs CSimpleRender.cpp code that calls __alloca_probe, SUniConvertUTF8to16, 0x771b60 and 1 more; not read here	inferred	none		
-0x771b60	145			ui	primitive		Runs CSimpleRender.cpp code not read here	inferred	none		
+0x771770	310	ExpandKoreanParticles		ui	primitive	char * __fastcall (const char *text)	Rewrites each |1first;second; in a UTF-8 text to the part its preceding sound selects	verified	one	ui/fonttext#korean-escape	
+0x7718b0	229	SelectKoreanParticle		ui	primitive	const uint16_t * __fastcall (const uint16_t *out, int32_t index, const uint16_t *first, const uint16_t *second)	Picks the first or second part of a particle by the last sounded character before the index	verified	one	ui/fonttext#korean-escape	
+0x7719a0	445	ExpandFrenchArticles		ui	primitive	char * __fastcall (const char *text)	Rewrites each |2 article to de la, du, l', d' or de according to the word after it	verified	one	ui/fonttext#french-escape-and-digit-groups	
+0x771b60	145	IsLatinVowel		ui	primitive	uint8_t __fastcall (uint16_t ch)	Answers whether a character is an ASCII vowel or a Latin-1 accented vowel letter	verified	one	ui/fonttext#french-escape-and-digit-groups	
 0x771c40	7	SetEuropeanNumberFlag		ui	orchestration	void __fastcall (uint32_t flag)	Stores the European number formatting switch	verified	one	ui/cvarverbs#modifier-keys-and-layout-mode	
-0x771c50	302			ui	primitive		Runs CSimpleRender.cpp code not read here	inferred	none		
+0x771c50	302	SwapNumberSeparators		ui	primitive	char * __fastcall (const char *text)	Writes the text with the dots and commas of each single-dot number swapped	verified	one	ui/fonttext#french-escape-and-digit-groups	
 0x771d80	312	CSimpleFontString::SetText		ui	orchestration		Sets a FontString's text, expanding the grammar escapes when asked, and lays it out again	verified	one	ui/fontstring#setting-the-text	
 0x771ec0	575			ui	primitive		Fits a FontString's text to a box, appending ... while backing off one character at a time	verified	one	ui/fontstring#size-and-fitting	ui::textglue_add_reload, ui::textglue_linecount_scale, ui::textglue_scale_mul, ui::textglue_settled_poseps
-0x772100	119			ui	primitive		Runs its object file code that calls 0x44d600; not read here	inferred	none		ui::textglue_scale_offset
+0x772100	119	CSimpleFontString::SetTextOffset		ui	primitive	void __thiscall (float x, float y)	Stores the text offset and moves a built string to it times the layout scale from the rectangle corner	verified	one	ui/fonttext#text-offset-and-spacing	ui::textglue_scale_offset
 0x772180	189			ui	primitive		Draws a FontString's colour and, with a shadow, its shadow pass at the scaled offset	verified	one	ui/fontstring#shadow	ui::textglue_scale_mul
-0x772240	88			ui	primitive		Runs its object file code that calls 0x7724a0; not read here	inferred	none		ui::textglue_settled_eps
+0x772240	88	CSimpleFontString::SetSpacing		ui	primitive	void __thiscall (float spacing)	Clamps a negative spacing to 0, stores a changed one and rebuilds the string	verified	one	ui/fonttext#text-offset-and-spacing	ui::textglue_settled_eps
 0x7722a0	231			ui	primitive		Sets the shadow bit and passes the shadow colour and offset to the attached font	verified	one	ui/fontmethods#shadow-offsets-and-spacing	
 0x772390	38			ui	primitive		Clears the shadow bit and tells the attached font	verified	one	ui/fontmethods#shadow-offsets-and-spacing	
 0x7723c0	41			ui	orchestration		Stores a changed shadow colour and refreshes the attached font	verified	one	ui/fontmethods#shadow-offsets-and-spacing	
 0x7723f0	109			ui	orchestration		Stores a changed shadow offset and sets or clears the shadow bit by whether it is zero	verified	one	ui/fontmethods#shadow-offsets-and-spacing	
-0x772460	57			ui	orchestration		Runs its object file code that calls 0x44dc40; not read here	inferred	none		
-0x7724a0	667			ui	primitive		Runs its object file code that calls HandleClose, 0x771ec0, CLayoutFrame::GetWidth and 7 more; not read here	inferred	none		ui::textglue_recip_span_pair, ui::textglue_scale_offset_7724a0, ui::textglue_settled_poseps
+0x772460	57	CSimpleFontString::SetAlphaGradient		ui	orchestration	uint8_t __thiscall (uint32_t start, uint32_t length)	Stores the alpha gradient pair and answers whether the built string takes it	verified	one	ui/fonttext#text-offset-and-spacing	
+0x7724a0	667	CSimpleFontString::RebuildString		ui	primitive	void __thiscall ()	Closes and rebuilds the engine string from the fitted text, offset, size, spacing, shadow and gradient	verified	one	ui/fonttext#building-the-string	ui::textglue_recip_span_pair, ui::textglue_scale_offset_7724a0, ui::textglue_settled_poseps
 0x772740	5	InitDouble772750Thunk		ui	orchestration	void __cdecl (void)	Jumps to 0x772750, a static initializer	verified	one	ui/initthunks#jump-thunks	
 0x772750	15	InitDouble772750		ui	primitive	void __cdecl (void)	Stores 3.1415927 + 3.1415927 = 6.2831855 as a float in a global	verified	one	ui/initfloats#doubled-constants	
 0x772760	5	InitQuotient772770Thunk		ui	orchestration	void __cdecl (void)	Jumps to 0x772770, a static initializer	verified	one	ui/initthunks#jump-thunks	
 0x772770	19	InitQuotient772770		ui	primitive	void __cdecl (void)	Stores 1 / 6.2831855 = 0.15915494 as a float in a global	verified	one	ui/initfloats#quotients	
-0x772790	18			ui	orchestration		Runs its object file code not read here	inferred	none		
-0x7727b0	90			ui	primitive		Runs its object file code that calls TextBlockGetFontPtr, GxuFontGetOneToOneHeight, ScaleScreenDelta; not read here	inferred	none		ui::textglue_div_scale
-0x772810	18			ui	orchestration		Runs its object file code not read here	inferred	none		
-0x772830	34			ui	orchestration		Runs its object file code that calls CLayoutFrame::SetWidth; not read here	inferred	none		
-0x772860	34			ui	orchestration		Runs its object file code that calls CLayoutFrame::SetHeight; not read here	inferred	none		
+0x772790	18	CSimpleFontString::GetFontPath		ui	orchestration	const char * __thiscall ()	Returns the path of the engine font, or 0 without one	verified	one	ui/fonttext#font-string-members	
+0x7727b0	90	CSimpleFontString::GetTextHeight		ui	primitive	float __thiscall (uint8_t scaled)	Returns the text height, or for the one-to-one size with scaled set the font's height over the layout scale	verified	one	ui/fonttext#text-size-reads	ui::textglue_div_scale
+0x772810	18	CSimpleFontString::GetFontFlags		ui	orchestration	uint32_t __thiscall ()	Returns the flags of the engine font, or 0 without one	verified	one	ui/fonttext#font-string-members	
+0x772830	34	CSimpleFontString::SetWidth		ui	orchestration	void __thiscall (float width)	Sets the layout width and zeroes the layout part's measures	verified	one	ui/fonttext#layout-slots-of-a-font-string	
+0x772860	34	CSimpleFontString::SetHeight		ui	orchestration	void __thiscall (float height)	Sets the layout height and zeroes the layout part's measures	verified	one	ui/fonttext#layout-slots-of-a-font-string	
 0x772890	149			ui	primitive		Returns the unwrapped text width in layout units, measuring and caching it when none is cached	verified	one	ui/tooltipcontent#sizing-the-tooltip	
-0x772930	113			ui	primitive		Runs its object file code that calls CLayoutFrame::GetWidth, 0x772890, GetScaledScreenAspect and 1 more; not read here	inferred	none		ui::textglue_set_scaled_chain
+0x772930	113	CSimpleFontString::GetWidth		ui	primitive	float __thiscall ()	Returns the authored width, or the text width, floored at one interface unit	verified	one	ui/regions#a-font-strings-size	ui::textglue_set_scaled_chain
 0x7729b0	170			ui	primitive		Returns the text height in layout units, measuring and caching it when none is cached	verified	one	ui/tooltipcontent#the-spacer-line	ui::textglue_scale_mul
 0x772a60	113	CSimpleFontString::GetHeight		ui	primitive	float __thiscall ()	Returns the authored or measured text height, at least one interface unit	verified	one	ui/regions#a-font-strings-size	
 0x772ae0	119	MeasureRunWidth		ui	primitive	float __thiscall (const char *text, int32_t bytes)	Measures the width of a byte range of the label's text, escapes giving none	verified	one	ui/editboxmarkup#how-the-box-draws-and-measures	ui::textglue_scale_mul
 0x772b60	87			ui	primitive		Splits the text into wrapped pieces for a width and a piece count	verified	one	ui/tooltipcontent#sizing-the-tooltip	ui::textglue_scale_mul
-0x772bc0	101			ui	primitive		Runs its object file code that calls SStrLen, 0x7727b0, 0x44d860; not read here	inferred	none		ui::textglue_scale_mul
+0x772bc0	101	CSimpleFontString::MeasureText		ui	primitive	float __thiscall (const char *text, uint32_t length, float height)	Returns the font engine's width of a text at a height times the layout scale, 0 without a font	verified	one	ui/fonttext#text-size-reads	ui::textglue_scale_mul
 0x772c30	101	CountGlyphsFromRight		ui	primitive	int32_t __thiscall (float x)	Counts the glyphs that fit from the right edge of the line to a point	verified	one	ui/editboxmarkup#faults	ui::textglue_scale_mul
-0x772ca0	122			ui	primitive		Runs its object file code that calls CLayoutFrame::SetLayoutScale, 0x772790, SStrCopy and 3 more; not read here	inferred	none		
-0x772d20	24			ui	orchestration		Runs its object file code that calls CLayoutFrame::Resize; not read here	inferred	none		
-0x772d40	191			ui	primitive		Runs its object file code that calls CLayoutFrame::OnFrameSizeChanged, 0x44d600, 0x772e00 and 2 more; not read here	inferred	none		ui::textglue_rect_axis2_settled, ui::textglue_rect_axis_settled, ui::textglue_rect_pos_transform, ui::textglue_settled_poseps
+0x772ca0	122	CSimpleFontString::SetLayoutScale		ui	orchestration	uint32_t __thiscall (float scale, uint32_t force)	Sets the layout scale and reloads the font at the stored height when it was accepted	verified	one	ui/fonttext#layout-slots-of-a-font-string	
+0x772d20	24	CSimpleFontString::InvalidateText		ui	orchestration	void __thiscall ()	Zeroes the text measures and queues a layout with Resize(0)	verified	one	ui/fonttext#layout-slots-of-a-font-string	
+0x772d40	191	CSimpleFontString::OnFrameSizeChanged		ui	primitive	void __thiscall (float *rect)	Rebuilds the text when the rectangle's size changed, else moves it and notifies the layer on an off-screen change	verified	one	ui/fonttext#font-string-rectangle-callback	ui::textglue_rect_axis2_settled, ui::textglue_rect_axis_settled, ui::textglue_rect_pos_transform, ui::textglue_settled_poseps
 0x772e00	72	RectWhollyOffScreen		ui	primitive	bool __thiscall (float *rect)	Answers 1 for a rectangle with its top or right below 0 or its bottom or left above 1.0	verified	one	ui/regions#a-region-that-does-not-resolve	
 0x772e50	41	CSimpleFontString::Emit		ui	orchestration		Appends the font string to a layer batch when it has a font and text	verified	one	ui/draworder#what-a-batch-drains	
-0x772e80	55			ui	primitive		Runs its object file code not read here	inferred	none		
+0x772e80	55	BatchInit		ui	orchestration	void __thiscall ()	Zeroes a layer batch, empties its quad array and callback list and stores its vtable	verified	one	ui/draworder#batch-construction	
 0x772ec0	43	DeletingDestructor772ec0		ui	orchestration		Destroys the object through 0x772ef0 and frees it when bit 0 of the argument is set	verified	one	ui/containers#deleting-destructors	
-0x772ef0	213			ui	primitive		Runs its object file code that calls 0x7731d0, 0x773370, SMemFree; not read here	inferred	none		
+0x772ef0	213	BatchDestroy		ui	orchestration	void __thiscall ()	Empties a layer batch, unlinks its callback list and frees its quad records	verified	one	ui/draworder#batch-construction	
 0x772fd0	164	CSimpleTexture::AppendQuad		ui	primitive	void __thiscall (void *batch)	Appends a 0x1c-byte quad record of the texture's image, vertices, texcoords, blend, colours and shader	verified	one	ui/regions#a-region-that-does-not-resolve	
 0x773080	130	CSimpleFontString::AppendToBatch		ui	orchestration	void __thiscall (void *batch)	Appends the text to a batch when its rectangle is valid and not wholly off screen	verified	one	ui/regions#a-region-that-does-not-resolve	
 0x773110	142	BatchAddCallback		ui	primitive		Adds a draw callback and its context to a batch, drained after the quads and the text	verified	one	ui/draworder#what-a-batch-drains	
@@ -33584,19 +33584,19 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x7731c0	15	CompareQuadHandles		ui	primitive	int __cdecl (int *a, int *b)	Returns the first dword of one quad record minus that of the other, the texture handles	verified	one	ui/draworder#layer-batches	
 0x7731d0	104	BatchBegin		ui	orchestration		Empties a batch: zeroes the quad count, frees the text sub-batch and releases the callback list	verified	one	ui/draworder#layer-batches	
 0x773240	60	Unlink773240		ui	primitive		Unlinks a link from its list and clears it	verified	one	ui/containers#links	
-0x773280	231			ui	primitive		Runs its object file code that calls SMemReAlloc, SMemAlloc, SMemFree; not read here	inferred	none		
+0x773280	231	QuadArrayReserve		ui	primitive	void __thiscall (uint32_t extra, uint32_t round)	Grows the batch's quad array to hold extra more records, rounded to its step when asked	verified	one	ui/draworder#batch-construction	
 0x773370	41	NextLink773370		ui	primitive		Returns the address a link names, resolving negative offsets through the list's offset	verified	one	ui/containers#links	
 0x7733a0	8	LayoutThunk7733a0		ui	primitive		Moves this back by 0x24 and jumps to 0x770e20	verified	one	ui/containers#layout-thunks	
-0x7733b0	11			ui	primitive		Runs its object file code not read here	inferred	none		
+0x7733b0	11	FontPartDeletingDestructor		ui	orchestration	void * __thiscall (uint32_t free_flag)	Moves from the font part back to the font string and jumps to its deleting destructor	verified	one	ui/fonttext#font-part-and-region-slots	
 0x7733c0	8	LayoutThunk7733c0		ui	primitive		Moves this back by 0x24 and jumps to 0x76fd10	verified	one	ui/containers#layout-thunks	
-0x7733d0	30			ui	orchestration		Runs its object file code that calls 0x77fd10; not read here	inferred	none		
-0x7733f0	1			ui	orchestration		Runs its object file code not read here	inferred	none		
+0x7733d0	30	ScriptRegionSetParentKeepLayer		ui	orchestration	void __thiscall (CSimpleFrame *parent)	Moves the region to a new parent with its own layer and sublevel	verified	one	ui/fonttext#font-part-and-region-slots	
+0x7733f0	1			ui	orchestration	void __thiscall ()	Returns without doing anything	verified	one	ui/fonttext#font-part-and-region-slots	
 0x773400	37	IsTypeId2773400		ui	orchestration		Answers 1 for two type ids of its class and 0 for any other	verified	one	ui/containers#type-tests	
 0x773430	67	TextureIsTypeName		ui	orchestration	bool __thiscall (const char *name)	Answers whether a name is Texture or one of its bases, ignoring case	verified	one	ui/widgettype#type-chains	
 0x773480	6	TextureGetTypeName		ui	orchestration	const char * __thiscall ()	Returns the type name Texture	verified	one	ui/widgettype#type-chains	
-0x773490	110			ui	primitive		Runs its object file code that calls 0x770c60, SMemFree; not read here	inferred	none		
-0x773500	39			ui	orchestration		Runs its object file code that calls 0x7724a0; not read here	inferred	none		
-0x773530	26			ui	primitive		Runs its object file code that calls 0x770800; not read here	inferred	none		
+0x773490	110	CSimpleFont::DeletingDestructor		ui	orchestration	void * __thiscall (uint32_t free_flag)	Detaches a Font object from its font, unlinks its node and frees it when bit 0 of the flag is set	verified	one	ui/fonttext#font-part-and-region-slots	
+0x773500	39	CSimpleFontString::SetJustifyWord		ui	orchestration	void __thiscall (uint32_t word)	Stores a changed justify word at +0x120 and rebuilds the built string	verified	one	ui/fonttext#text-offset-and-spacing	
+0x773530	26	CSimpleFontString::OnFontChanged		ui	orchestration	void __thiscall (FontBlock *block)	Applies a font block to the string under the string's inherit mask	verified	one	ui/fonttext#font-part-and-region-slots	
 0x773550	37	IsTypeId2773550		ui	orchestration		Answers 1 for two type ids of its class and 0 for any other	verified	one	ui/containers#type-tests	
 0x773580	67	FontStringIsTypeName		ui	orchestration	bool __thiscall (const char *name)	Answers whether a name is FontString or one of its bases, ignoring case	verified	one	ui/widgettype#type-chains	
 0x7735d0	6	FontStringGetTypeName		ui	orchestration	const char * __thiscall ()	Returns the type name FontString	verified	one	ui/widgettype#type-chains	
@@ -33668,12 +33668,12 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x777130	182	Frame::IsMouseEnabled	idb	ui	orchestration		Implements the Frame method IsMouseEnabled, its pair in the table 0x878ec0	verified	one	ui/mouse#switching-input-kinds	
 0x7771f0	181	Frame::EnableMouseWheel	idb	ui	orchestration		Implements the Frame method EnableMouseWheel, its pair in the table 0x878ec0	verified	one	ui/methods#what-the-frame-methods-call	
 0x7772b0	182	Frame::IsMouseWheelEnabled	idb	ui	orchestration		Implements the Frame method IsMouseWheelEnabled, its pair in the table 0x878ec0	verified	one	ui/mouse#switching-input-kinds	
-0x777370	870	Frame::GetBackdrop	idb	ui	orchestration		Implements the Frame method GetBackdrop, its pair in the table 0x878ec0	inferred	none		ui::luabind_777_get_backdrop
-0x7776e0	1243	Frame::SetBackdrop	idb	ui	orchestration		Implements the Frame method SetBackdrop, its pair in the table 0x878ec0	inferred	none		ui::luabind_777_set_backdrop
-0x777bc0	358	Frame::GetBackdropColor	idb	ui	orchestration		Implements the Frame method GetBackdropColor, its pair in the table 0x878ec0	inferred	none		ui::luabind_777_get_backdrop_color, ui::luabind_777_normalize_full_domain
-0x777d30	545	Frame::SetBackdropColor	idb	ui	orchestration		Implements the Frame method SetBackdropColor, its pair in the table 0x878ec0	inferred	none		ui::luabind_777_set_backdrop_color
-0x777f60	358	Frame::GetBackdropBorderColor	idb	ui	orchestration		Implements the Frame method GetBackdropBorderColor, its pair in the table 0x878ec0	inferred	none		ui::luabind_777_get_backdrop_color
-0x7780d0	545	Frame::SetBackdropBorderColor	idb	ui	orchestration		Implements the Frame method SetBackdropBorderColor, its pair in the table 0x878ec0	inferred	none		ui::luabind_777_set_backdrop_color
+0x777370	870	Frame::GetBackdrop	idb	ui	primitive		Implements the Frame method GetBackdrop, its pair in the table 0x878ec0	verified	one	ui/backdrop#reading-a-backdrop-back	ui::luabind_777_get_backdrop
+0x7776e0	1243	Frame::SetBackdrop	idb	ui	primitive		Implements the Frame method SetBackdrop, its pair in the table 0x878ec0	verified	one	ui/backdrop#setbackdrop-from-a-script	ui::luabind_777_set_backdrop
+0x777bc0	358	Frame::GetBackdropColor	idb	ui	primitive		Implements the Frame method GetBackdropColor, its pair in the table 0x878ec0	verified	one	ui/backdrop#reading-a-backdrop-back	ui::luabind_777_get_backdrop_color, ui::luabind_777_normalize_full_domain
+0x777d30	545	Frame::SetBackdropColor	idb	ui	primitive		Implements the Frame method SetBackdropColor, its pair in the table 0x878ec0	verified	one	ui/backdrop#the-two-colours	ui::luabind_777_set_backdrop_color
+0x777f60	358	Frame::GetBackdropBorderColor	idb	ui	primitive		Implements the Frame method GetBackdropBorderColor, its pair in the table 0x878ec0	verified	one	ui/backdrop#reading-a-backdrop-back	ui::luabind_777_get_backdrop_color
+0x7780d0	545	Frame::SetBackdropBorderColor	idb	ui	primitive		Implements the Frame method SetBackdropBorderColor, its pair in the table 0x878ec0	verified	one	ui/backdrop#the-two-colours	ui::luabind_777_set_backdrop_color
 0x778300	10	InitFrameMethodHashThunk		ui	orchestration		Builds the Frame method hash table, then registers its exit handler; a static initializer	verified	one	ui/README#static-initializers	
 0x778310	190	InitFrameMethodHash		ui	orchestration		Builds the empty Frame method hash table at 0xcf4d38	verified	one	ui/README#static-initializers	
 0x7783d0	12	RegisterDestroyFrameMethodHash		ui	orchestration		Registers 0x7783e0 with _atexit	verified	one	ui/README#static-initializers	
@@ -33696,15 +33696,15 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x7787b0	89	ButtonIsTypeName		ui	orchestration	bool __thiscall (const char *name)	Answers whether a name is Button or one of its bases, ignoring case	verified	one	ui/widgettype#type-chains	
 0x778810	6	ButtonGetTypeName		ui	orchestration	const char * __thiscall ()	Returns the type name Button	verified	one	ui/widgettype#type-chains	
 0x778820	43	DeletingDestructor778820		ui	orchestration		Destroys the object through 0x778850 and frees it when bit 0 of the argument is set	verified	one	ui/containers#deleting-destructors	
-0x778850	105			ui	primitive		Runs its object file code that calls 0x778fd0, FrameScriptReleaseScript, 0x783b20; not read here	inferred	none		
+0x778850	105	CSimpleButton::~CSimpleButton		ui	orchestration	void __thiscall ()	Clears the state textures, releases the script slots, destroys the three label fonts and runs the frame destructor	verified	one	ui/button#button-teardown-and-text-colour-slots	
 0x7788c0	901	CSimpleButton::LoadXML		ui	primitive		Loads a Button's frame node, then its state textures, fonts, colours, texts and text attribute	verified	one	ui/xmltypes#elements-and-attributes-by-type	
 0x778c50	92	CSimpleButton::GetScriptByName		ui	orchestration		Returns a Button's handler slot by name, adding OnClick and OnDoubleClick to the frame's	verified	one	ui/xmltypes#handler-names-by-type	
 0x778cb0	101			ui	orchestration		Clears every button slot that holds a region being removed, then removes it from the frame	verified	one	ui/button#state-and-highlight-textures	
 0x778d20	149	CSimpleButton::SetFontString		ui	orchestration		Installs a label, deleting the old, and anchors an unanchored one by the normal font's justify	verified	one	ui/button#the-label-and-its-fonts	
 0x778dc0	91	CSimpleButton::SetText		ui	orchestration		Sets the label's text, creating a label when there is none	verified	one	ui/button#the-label-and-its-fonts	
-0x778e20	69			ui	primitive		Runs its object file code not read here	inferred	none		
-0x778e70	69			ui	primitive		Runs its object file code not read here	inferred	none		
-0x778ec0	69			ui	primitive		Runs its object file code not read here	inferred	none		
+0x778e20	69	CSimpleButton::SetNormalTextColor		ui	orchestration	void __thiscall (const uint32_t *colour)	Stores the normal label colour, marks it changed, stops it inheriting and runs the font part's slot 5	verified	one	ui/button#button-teardown-and-text-colour-slots	
+0x778e70	69	CSimpleButton::SetDisabledTextColor		ui	orchestration	void __thiscall (const uint32_t *colour)	Stores the disabled label colour, marks it changed, stops it inheriting and runs the font part's slot 5	verified	one	ui/button#button-teardown-and-text-colour-slots	
+0x778ec0	69	CSimpleButton::SetHighlightTextColor		ui	orchestration	void __thiscall (const uint32_t *colour)	Stores the highlight label colour, marks it changed, stops it inheriting and runs the font part's slot 5	verified	one	ui/button#button-teardown-and-text-colour-slots	
 0x778f10	188	CSimpleButton::SetStateTexturePath		ui	orchestration		Reloads a state's texture from a path, or creates one anchored to the button and installs it	verified	one	ui/button#state-and-highlight-textures	
 0x778fd0	125	CSimpleButton::SetStateTexture		ui	orchestration		Replaces a state's texture, deleting the old, and shows the new one when its state is current	verified	one	ui/button#state-and-highlight-textures	
 0x779050	191	CSimpleButton::SetHighlightTexturePath		ui	orchestration		Reloads or creates the highlight texture from a path in the HIGHLIGHT layer with a blend mode	verified	one	ui/button#state-and-highlight-textures	
@@ -33724,8 +33724,8 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x779620	40	RestoreBase779620		ui	orchestration		Restores the base vtable and frees the object when bit 0 of the argument is set	verified	one	ui/containers#deleting-destructors	
 0x779650	177	CSimpleButton::RunDoubleClick		ui	orchestration		Runs the C++ listener and OnDoubleClick with the button's name, on an enabled button	verified	one	ui/button#double-click	
 0x779730	16	CSimpleButton::RegisterForClicks		ui	orchestration		Stores the click mask	verified	one	ui/button#registerforclicks-and-click	
-0x779740	25			ui	unreached		Runs its object file code not read here	inferred	none		
-0x779760	34			ui	unreached		Runs its object file code not read here	inferred	none		
+0x779740	25			ui	unreached	void __thiscall (uint32_t a, uint32_t b)	Stores two dwords at +0x314 and +0x318; nothing reaches it	verified	one	ui/button#unreached-button-code	
+0x779760	34			ui	unreached	void __thiscall (uint32_t a, uint32_t b, uint32_t c)	Stores three dwords at +0x31c, +0x320 and +0x324; nothing reaches it	verified	one	ui/button#unreached-button-code	
 0x779790	125	CSimpleButton::SetState		ui	orchestration		Stores the lock and, for a new state, swaps to that state's texture when it has one and refreshes the label	verified	one	ui/button#setting-the-state	
 0x779810	115	CSimpleButton::UpdateLabel		ui	orchestration		Offsets the label for PUSHED and gives it the disabled, highlight or normal font by state	verified	one	ui/button#the-label-and-its-fonts	
 0x779890	6	IsButtonClickRunning		ui	orchestration	uint32_t __cdecl (void)	Returns the flag that a button click is running from the mouse	verified	one	ui/button#running-a-click	
@@ -33746,7 +33746,7 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x779d50	89	EditBoxIsTypeName		ui	orchestration	bool __thiscall (const char *name)	Answers whether a name is EditBox or one of its bases, ignoring case	verified	one	ui/widgettype#type-chains	
 0x779db0	6	EditBoxGetTypeName		ui	orchestration	const char * __thiscall ()	Returns the type name EditBox	verified	one	ui/widgettype#type-chains	
 0x779dc0	43	DeletingDestructor779dc0		ui	orchestration		Destroys the object through 0x779df0 and frees it when bit 0 of the argument is set	verified	one	ui/containers#deleting-destructors	
-0x779df0	439			ui	primitive		Runs CSimpleEditBox.cpp code that calls 0x77e410, 0x77cd90, SMemFree and 1 more; not read here	inferred	none		
+0x779df0	439	CSimpleEditBox::~CSimpleEditBox		ui	orchestration	void __thiscall ()	Clears focus and history, deletes its font, label, caret and candidate frame, frees buffers, runs the frame destructor	verified	one	ui/editboxmembers#destruction	
 0x779fb0	863	CSimpleEditBox::LoadXML		ui	primitive		Loads an EditBox's frame node, then its font, limits, flags, history and text elements	verified	one	ui/xmltypes#elements-and-attributes-by-type	
 0x77a310	352	CSimpleEditBox::GetScriptByName		ui	orchestration		Returns an EditBox's handler slot by name, adding its ten text handlers to the frame's	verified	one	ui/xmltypes#handler-names-by-type	
 0x77a470	42	CSimpleEditBox::SetAutoFocus		ui	primitive	void __thiscall (CSimpleEditBox *this, int on)	Sets or clears bit 0 of an EditBox's flag word	verified	one	ui/xmltypes#editbox-flags	
@@ -33755,36 +33755,36 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x77a680	42			ui	orchestration		Sets or clears the password flag	verified	one	ui/editbox#lua-methods	
 0x77a6b0	42			ui	orchestration		Sets or clears the ignoreArrows flag	verified	one	ui/editbox#lua-methods	
 0x77a6e0	48	CSimpleEditBox::SetTextInsets		ui	orchestration		Stores the four text insets and lays the box out again	verified	one	ui/editbox#multi-line-and-the-labels-justify	
-0x77a710	56			ui	orchestration		Runs CSimpleEditBox.cpp code that calls 0x77b8c0; not read here	inferred	none		
+0x77a710	56	CSimpleEditBox::GetTextInsets		ui	orchestration	void __thiscall (float *a, float *b, float *c, float *d)	Writes the four text insets through its pointers and lays the box out again	verified	one	ui/editboxmembers#slots-and-listeners	
 0x77a750	36			ui	orchestration		Runs the frame's show, then focuses an autoFocus box when nothing holds the focus	verified	one	ui/editbox#keyboard-focus	
 0x77a780	16			ui	orchestration		Runs the frame's hide, then clears the box's focus	verified	one	ui/editbox#keyboard-focus	
 0x77a790	193			ui	primitive		Flushes the box's changes and blinks the caret of the focused box	verified	one	ui/editbox#text-changes-and-their-scripts	ui::glue_77a_77a790_fill_accumulate
 0x77a860	100	CSimpleEditBox::OnMouseMove		ui	primitive	void __thiscall (void *event)	Moves the cursor and the selection under a drag with the point's glyph index	verified	one	ui/editboxmarkup#where-a-step-is-atomic	
-0x77a8d0	33			ui	orchestration		Runs CSimpleEditBox.cpp code that calls CSimpleFrame::OnSizeChanged, 0x77b8c0; not read here	inferred	none		
+0x77a8d0	33	CSimpleEditBox::OnSizeChanged		ui	orchestration	void __thiscall (float *rect, uint32_t flags)	Runs the frame's size callback and lays the label and caret out again	verified	one	ui/editboxmembers#slots-and-listeners	
 0x77a900	93	CSimpleEditBox::OnChar		ui	orchestration		Takes a typed character for the focused box and inserts it	verified	one	ui/editbox#which-box-takes-a-key	
-0x77a960	138			ui	orchestration		Runs CSimpleEditBox.cpp code that calls GetBlockPoolData, 0x76fc40, 0x770360 and 2 more; not read here	inferred	none		
-0x77a9f0	446			ui	primitive		Runs CSimpleEditBox.cpp code that calls 0x7727b0, SMemAlloc and 9 more; not read here	inferred	none		ui::glue_77a_77a9f0_height_x10
+0x77a960	138	CSimpleEditBox::CreateCompositionTexture		ui	orchestration	void __thiscall ()	Creates once the composition texture in colour 0xff202010 and sizes it to the label's line height	verified	one	ui/editboxmembers#candidate-window	
+0x77a9f0	446	CSimpleEditBox::CreateCandidateFrame		ui	primitive	void __thiscall ()	Creates once the candidate message frame at stratum 8 with its background and highlight, ten line heights wide	verified	one	ui/editboxmembers#candidate-window	ui::glue_77a_77a9f0_height_x10
 0x77abb0	106	CSimpleEditBox::UpdateInputLanguage		ui	orchestration		Classifies the keyboard layout, stores a changed index and runs OnInputLanguageChanged	verified	one	ui/inputlanguage#the-language-index	
 0x77ac30	14	CSimpleEditBox::GetInputLanguageName		ui	orchestration		Returns the name of the language index at +0x3d0	verified	one	ui/inputlanguage#the-language-index	
 0x77ac40	20	CSimpleEditBox::ToggleInputLanguage		ui	orchestration		Asks the input method to switch to native mode when the index is 0, else off	verified	one	ui/inputlanguage#the-language-index	
 0x77ac60	164	CSimpleEditBox::GetCompositionSpan		ui	primitive	void __thiscall (void)	Computes the composition span with non-atomic link steps	verified	one	ui/editboxmarkup#where-a-step-is-atomic	
-0x77ad10	568			ui	primitive		Runs CSimpleEditBox.cpp code that calls 0x42c500, SMemFree, 0x77a9f0 and 7 more; not read here	inferred	none		ui::glue_77a_77ad10_row_geom
+0x77ad10	568	CSimpleEditBox::ShowCandidates		ui	primitive	uint32_t __thiscall (void *hwnd)	Fills the candidate frame from the input method: height, highlighted row, header and candidate lines	verified	one	ui/editboxmembers#candidate-window	ui::glue_77a_77ad10_row_geom
 0x77af50	100			ui	orchestration		Switches the input method and runs OnEditFocusGained or OnEditFocusLost, then marks the cursor	verified	one	ui/editbox#keyboard-focus	
 0x77afc0	384	CSimpleEditBox::OnInputLanguage		ui	primitive		Handles the input method event of a box that holds or takes the focus, inserting its text	inferred	none	ui/keyscripts#the-edit-box-in-the-walk	
 0x77b160	1340	CSimpleEditBox::OnKeyDown		ui	orchestration		Takes a key for the focused box and runs its editing, scripts and history	verified	one	ui/editbox#which-box-takes-a-key	
-0x77b730	64			ui	orchestration		Runs CSimpleEditBox.cpp code not read here	inferred	none		
+0x77b730	64	CSimpleEditBox::RunKeyListener		ui	orchestration	void __thiscall (uint32_t kind)	Calls the key listener registered for a kind with an event record	verified	one	ui/editboxmembers#slots-and-listeners	
 0x77b770	75	CSimpleEditBox::OnKeyRepeat		ui	orchestration		Forwards a key repeat to the box's own key down when it holds or takes the focus	verified	one	ui/keyscripts#the-edit-box-in-the-walk	
-0x77b7c0	55			ui	orchestration		Runs CSimpleEditBox.cpp code that calls 0x77e3d0; not read here	inferred	none		
+0x77b7c0	55	CSimpleEditBox::TakesKeyboard		ui	orchestration	uint32_t __thiscall (void *event)	Answers whether the box takes the keyboard, taking the focus when it is autoFocus and none holds it	verified	one	ui/editboxmembers#slots-and-listeners	
 0x77b800	143	CSimpleEditBox::OnMouseDown		ui	orchestration		Places the cursor at a press and focuses the box	verified	one	ui/editbox#which-box-takes-a-key	
-0x77b890	45			ui	orchestration		Runs CSimpleEditBox.cpp code that calls CSimpleFrame::OnMouseUp; not read here	inferred	none		
+0x77b890	45	CSimpleEditBox::OnMouseUp		ui	orchestration	uint32_t __thiscall (uint32_t button)	Runs the frame's mouse up and clears the drag flag when it did not handle the release	verified	one	ui/editboxmembers#slots-and-listeners	
 0x77b8c0	463			ui	primitive		Lays the label and the caret out inside the insets	verified	one	ui/editbox#multi-line-and-the-labels-justify	ui::glue_77a_77b8c0_fill_edges
 0x77ba90	160	CSimpleEditBox::RebuildTokenClasses		ui	primitive	void __thiscall (void)	Rebuilds the per-byte token class array of the text with every escape enabled	verified	one	ui/editboxmarkup#which-escapes-are-on	ui::editbox_markup_class_array, ui::editbox_markup_has_no_inline_texture_escape, ui::editbox_markup_insert_refusal_range, ui::editbox_markup_reachable_cursor_indices, ui::editbox_markup_step_consumes_whole_characters, ui::editbox_markup_step_law_hangs_on_a_trailing_skip_class
 0x77bb30	335			ui	primitive		Counts the bytes a cursor moves over for a count of characters, skipping escapes	verified	one	ui/editbox#a-negative-letter-limit-hangs	ui::editbox_markup_has_no_inline_texture_escape, ui::editbox_markup_reachable_cursor_indices, ui::editbox_markup_step_consumes_whole_characters, ui::editbox_markup_step_law_hangs_on_a_trailing_skip_class
 0x77bc80	136			ui	primitive		Counts the letters in a byte range of the text	verified	one	ui/editbox#a-negative-letter-limit-hangs	
 0x77bd10	26	CSimpleEditBox::NextTokenStart		ui	primitive	uint32_t __thiscall (uint32_t index)	Returns the index of the token after the one at an index	verified	one	ui/editboxmarkup#boundaries-and-letters	
 0x77bd30	25			ui	primitive		Returns the nearest index below a position whose character class entry is nonzero, or -1	verified	one	ui/editbox#word-steps	
-0x77bd50	55			ui	primitive		Runs CSimpleEditBox.cpp code not read here	inferred	none		
-0x77bd90	108			ui	primitive		Runs CSimpleEditBox.cpp code that calls SMemReAlloc; not read here	inferred	none		
+0x77bd50	55	CSimpleEditBox::LineOfIndex		ui	primitive	uint32_t __thiscall (uint32_t index)	Returns the line that holds a byte position, walking the line starts	verified	one	ui/editboxmembers#text-capacity-and-lines	
+0x77bd90	108	CSimpleEditBox::ReserveText		ui	primitive	void __thiscall (uint32_t length)	Grows the text and class buffers to hold length plus one, rounded up to a multiple of 32	verified	one	ui/editboxmembers#text-capacity-and-lines	
 0x77be00	184	CSimpleEditBox::SetText		ui	orchestration		Replaces a different text without the typing scripts, then runs OnTextSet	verified	one	ui/editbox#setting-and-reading-text	
 0x77bec0	5	InitDouble77bed0Thunk		ui	orchestration	void __cdecl (void)	Jumps to 0x77bed0, a static initializer	verified	one	ui/initthunks#jump-thunks	
 0x77bed0	15	InitDouble77bed0		ui	primitive	void __cdecl (void)	Stores 3.1415927 + 3.1415927 = 6.2831855 as a float in a global	verified	one	ui/initfloats#doubled-constants	
@@ -33809,16 +33809,16 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x77c980	98			ui	orchestration		Moves the cursor back to the start of its line	verified	one	ui/editbox#keys	
 0x77c9f0	105			ui	orchestration		Moves the cursor forward to the end of its line	verified	one	ui/editbox#keys	
 0x77ca60	91			ui	orchestration		Moves the cursor to the start of the text	verified	one	ui/editbox#keys	
-0x77cac0	93			ui	primitive		Runs CSimpleEditBox.cpp code that calls 0x77c6b0; not read here	inferred	none		
+0x77cac0	93	CSimpleEditBox::MoveToEnd		ui	orchestration	void __thiscall (uint32_t extend)	Steps the cursor forward to the end of the text, clearing a selection when not extending	verified	one	ui/editboxmembers#cursor-and-selection-setters	
 0x77cb20	309	CSimpleEditBox::MoveLine		ui	primitive	void __thiscall (int32_t direction, int32_t extend)	Moves the cursor to the line above or below with non-atomic link steps	verified	one	ui/editboxmarkup#where-a-step-is-atomic	
-0x77cc60	18			ui	orchestration		Runs CSimpleEditBox.cpp code that calls 0x77cb20; not read here	inferred	none		
-0x77cc80	18			ui	orchestration		Runs CSimpleEditBox.cpp code that calls 0x77cb20; not read here	inferred	none		
+0x77cc60	18	CSimpleEditBox::MoveLineDown		ui	orchestration	void __thiscall (uint32_t extend)	Moves the cursor one line down through MoveLine	verified	one	ui/editboxmembers#cursor-and-selection-setters	
+0x77cc80	18	CSimpleEditBox::MoveLineUp		ui	orchestration	void __thiscall (uint32_t extend)	Moves the cursor one line up through MoveLine	verified	one	ui/editboxmembers#cursor-and-selection-setters	
 0x77cca0	66	CSimpleEditBox::HighlightText		ui	orchestration		Selects from a start to an end, an end past the text or before the start meaning the end	verified	one	ui/editbox#selection	
-0x77ccf0	19			ui	orchestration		Runs CSimpleEditBox.cpp code not read here	inferred	none		
-0x77cd10	89			ui	primitive		Runs CSimpleEditBox.cpp code not read here	inferred	none		
+0x77ccf0	19	CSimpleEditBox::CollapseSelection		ui	orchestration	void __thiscall ()	Sets both selection ends to the cursor	verified	one	ui/editboxmembers#cursor-and-selection-setters	
+0x77cd10	89	CSimpleEditBox::ExtendSelection		ui	primitive	void __thiscall (int32_t delta)	Moves the selection end that the cursor step passes and marks the selection dirty	verified	one	ui/editboxmembers#cursor-and-selection-setters	
 0x77cd70	20			ui	orchestration		Deletes the selection	verified	one	ui/editbox#ctrl-letter-keys	
-0x77cd90	385			ui	primitive		Runs CSimpleEditBox.cpp code that calls 0x77e440, 0x77cf20, SMemReAlloc and 3 more; not read here	inferred	none		
-0x77cf20	25			ui	orchestration		Runs CSimpleEditBox.cpp code that calls SMemFree; not read here	inferred	none		
+0x77cd90	385	CSimpleEditBox::SetHistoryLineCount		ui	primitive	void __thiscall (uint32_t count)	Resizes the history array to a count of records, freeing dropped strings, and clamps the position	verified	one	ui/editboxmembers#history-array	
+0x77cf20	25	CSimpleEditBox::FreeHistoryLine		ui	orchestration	void __thiscall ()	Frees the string of a history record when set	verified	one	ui/editboxmembers#history-array	
 0x77cf40	139	CSimpleEditBox::AddHistoryLine		ui	orchestration		Stores a line at the history position and advances it around the ring	verified	one	ui/editbox#history	
 0x77cfd0	95			ui	orchestration		Sets the text to the nearest stored history line after the history position	verified	one	ui/editbox#history	
 0x77d030	154			ui	orchestration		Sets the text to the nearest stored history line before the history position	verified	one	ui/editbox#history	
@@ -33828,27 +33828,27 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x77d4d0	1142			ui	primitive		Rebuilds the label's visible text and sizes a multi-line box to its text	verified	one	ui/editbox#text-changes-and-their-scripts	ui::glue_77d4d0
 0x77d950	294			ui	orchestration		Places and shows the selection textures over the selected text	verified	one	ui/editbox#selection	
 0x77da80	997			ui	primitive		Scrolls the text to the cursor, places the caret and runs OnCursorChanged	verified	one	ui/editbox#text-changes-and-their-scripts	ui::glue_77da80
-0x77de70	859			ui	primitive		Runs its object file code that calls 0x7727b0, PixelAlignY, 0x772890 and 6 more; not read here	inferred	none		ui::glue_77de70
+0x77de70	859			ui	primitive	void __thiscall (CSimpleTexture *piece, int32_t from, int32_t to)	Places one selection texture over a byte range of a line by the label's justify and shows or hides it	verified	one	ui/editbox#selection	ui::glue_77de70
 0x77e1d0	127			ui	orchestration		Copies the selection to the clipboard, or an empty string for a password box	verified	one	ui/editbox#ctrl-letter-keys	
-0x77e250	76			ui	primitive		Runs its object file code that calls OsClipboardGetString, sgetu8, 0x77c200 and 1 more; not read here	inferred	none		
+0x77e250	76	CSimpleEditBox::Paste		ui	orchestration	void __thiscall ()	Inserts the clipboard text one UTF-8 character at a time	verified	one	ui/editboxmembers#text-capacity-and-lines	
 0x77e2a0	55			ui	orchestration		Lays the box out again for a font change and takes the font's colour for the caret	verified	one	ui/editbox#the-caret	
-0x77e2e0	44			ui	unreached		Runs its object file code not read here	inferred	none		
+0x77e2e0	44	CSimpleEditBox::SetOwnFontWord		ui	unreached	void __thiscall (uint32_t word)	Stores a justify word in the box's own font block and marks it changed; nothing reaches it	verified	one	ui/editboxmembers#unreached-edit-box-code	
 0x77e310	22			ui	orchestration		Colours the caret	verified	one	ui/editbox#the-caret	
 0x77e330	41			ui	orchestration		Colours the three selection textures	verified	one	ui/editbox#construction	
-0x77e360	43			ui	primitive		Runs its object file code not read here	inferred	none		
-0x77e390	29			ui	orchestration		Runs its object file code not read here	inferred	none		
-0x77e3b0	29			ui	orchestration		Runs its object file code not read here	inferred	none		
+0x77e360	43	CSimpleEditBox::SetCursorPosition		ui	primitive	void __thiscall (int32_t position)	Sets the cursor clamped to the text length and marks it dirty	verified	one	ui/editboxmembers#cursor-and-selection-setters	
+0x77e390	29	CSimpleEditBox::ShowCandidateFrame		ui	orchestration	void __thiscall ()	Marks the candidate frame shown at +0xd0 and runs its show slot	verified	one	ui/editboxmembers#candidate-window	
+0x77e3b0	29	CSimpleEditBox::HideCandidateFrame		ui	orchestration	void __thiscall ()	Clears the candidate frame's +0xd0 and runs its hide slot	verified	one	ui/editboxmembers#candidate-window	
 0x77e3d0	51	CSimpleEditBox::SetFocus		ui	orchestration		Moves the keyboard focus to a visible edit box, running the old box's loss and the new one's gain	verified	one	ui/editbox#keyboard-focus	
 0x77e410	30	CSimpleEditBox::ClearFocus		ui	orchestration		Clears the keyboard focus when this box holds it, running its loss	verified	one	ui/editbox#keyboard-focus	
 0x77e430	6	IsEnterScriptRunning		ui	orchestration	uint32_t __cdecl (void)	Returns the flag that is 1 while an edit box runs its enter script	verified	one	ui/protected#input-event-flags	
-0x77e440	79			ui	primitive		Runs its object file code that calls SMemFree; not read here	inferred	none		
+0x77e440	79	CSimpleEditBox::FreeHistory		ui	orchestration	void __thiscall ()	Frees every history string and then the history array	verified	one	ui/editboxmembers#history-array	
 0x77e490	8	LayoutThunk77e490		ui	primitive		Moves this back by 0x24 to the object and jumps to its deleting destructor 0x779dc0	verified	one	ui/containers#layout-thunks	
-0x77e4a0	4			ui	orchestration		Runs its object file code not read here	inferred	none		
-0x77e4b0	47			ui	orchestration		Runs its object file code that calls 0x770910; not read here	inferred	none		
-0x77e4e0	23			ui	orchestration		Runs its object file code not read here	inferred	none		
+0x77e4a0	4			ui	orchestration	uint32_t __thiscall ()	Returns the dword at +0x68 of the object	verified	one	ui/editboxmembers#font-follower-slots	
+0x77e4b0	47			ui	orchestration	void __thiscall (FontBlock *block)	Merges a font block into the block at +0x14 under the mask at +8, then runs slot 5 of the object at -0x24	verified	one	ui/editboxmembers#font-follower-slots	
+0x77e4e0	23			ui	orchestration	uint32_t __stdcall (void *p)	Answers whether its argument equals the dword at 0xcf4ea8	verified	one	ui/editboxmembers#font-follower-slots	
 0x77e500	32	FontIsTypeName		ui	primitive	bool __thiscall (const char *name)	Answers whether a name is Font or one of its bases, ignoring case	verified	one	ui/widgettype#type-chains	
 0x77e520	6	FontGetTypeName		ui	orchestration	const char * __thiscall ()	Returns the type name Font	verified	one	ui/widgettype#type-chains	
-0x77e530	24			ui	orchestration		Runs its object file code that calls 0x784180; not read here	inferred	none		
+0x77e530	24			ui	orchestration	void __thiscall ()	Pushes the font's changes to its followers, then runs slot 0 of the object at +0x7c with the changed word	verified	one	ui/editboxmembers#font-follower-slots	
 0x77e550	43	DeletingDestructor77e550		ui	orchestration		Destroys the object through 0x783b20 and frees it when bit 0 of the argument is set	verified	one	ui/containers#deleting-destructors	
 0x77e580	5	InitSquare77e590Thunk		ui	orchestration	void __cdecl (void)	Jumps to 0x77e590, a static initializer	verified	one	ui/initthunks#jump-thunks	
 0x77e590	19	InitSquare77e590		ui	primitive	void __cdecl (void)	Stores 10 × 10 = 100 as a float in a global	verified	one	ui/initfloats#squares	
@@ -33860,12 +33860,12 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x77e6c0	484	CSimpleBackdrop::LoadXML		ui	orchestration		Reads the attributes and children of a Backdrop element into the object	verified	one	ui/backdrop#the-xml-element	
 0x77e8b0	5	InitInfinity77e8c0Thunk		ui	orchestration	void __cdecl (void)	Jumps to 0x77e8c0, a static initializer	verified	one	ui/initthunks#jump-thunks	
 0x77e8c0	11	InitInfinity77e8c0		ui	orchestration	void __cdecl (void)	Copies the dword 0x7f800000 (+inf as a float) into a global	verified	one	ui/initstores#infinity-copies	
-0x77e8d0	2025			ui	primitive		Runs its object file code that calls SErrSetLastError, 0x41e4b0, GetBlockPoolData and 5 more; not read here	inferred	none		ui::glue_geom_77e8d0_negate
-0x77f0c0	833			ui	primitive		Runs its object file code that calls SErrSetLastError, 0x41e4b0, 0x7704c0 and 2 more; not read here	inferred	none		ui::glue_geom_77f0c0_scale_offset_divide
+0x77e8d0	2025	CSimpleBackdrop::BuildPieces		ui	primitive	void __thiscall (CSimpleFrame *frame)	Creates and anchors the background and edge textures of a backdrop on a frame	verified	one	ui/backdrop#the-pieces-and-their-anchors	ui::glue_geom_77e8d0_negate
+0x77f0c0	833	CSimpleBackdrop::ApplyTexCoords		ui	primitive	void __thiscall (float *rect)	Computes the edge and tile texture coordinates from the frame rectangle and edge size and applies the colours	verified	one	ui/backdrop#the-edge-file	ui::glue_geom_77f0c0_scale_offset_divide
 0x77f410	45	CSimpleBackdrop::SetColor		ui	orchestration	void __thiscall (const uint32_t *colour)	Stores the background colour in the backdrop object and repaints it	verified	one	ui/backdrop#the-two-colours	
 0x77f440	143	CSimpleBackdrop::SetBorderColor		ui	orchestration		Stores the border colour and repaints the eight edge textures	verified	one	ui/backdrop#the-two-colours	
 0x77f4d0	151	CSimpleBackdrop::ReleasePieces		ui	orchestration		Releases the nine piece textures and clears their pointers	verified	one	ui/backdrop#the-object	
-0x77f570	21			ui	primitive		Runs its object file code not read here	inferred	none		
+0x77f570	21	StoreRetained		ui	orchestration	void __thiscall (void *p)	Stores a pointer and counts a reference on it at +4 when it is not null	verified	one	ui/regions#the-region-base	
 0x77f590	5	InitDouble77f5a0Thunk		ui	orchestration	void __cdecl (void)	Jumps to 0x77f5a0, a static initializer	verified	one	ui/initthunks#jump-thunks	
 0x77f5a0	15	InitDouble77f5a0		ui	primitive	void __cdecl (void)	Stores 3.1415927 + 3.1415927 = 6.2831855 as a float in a global	verified	one	ui/initfloats#doubled-constants	
 0x77f5b0	5	InitQuotient77f5c0Thunk		ui	orchestration	void __cdecl (void)	Jumps to 0x77f5c0, a static initializer	verified	one	ui/initthunks#jump-thunks	
@@ -33874,9 +33874,9 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x77f5f0	19	InitSquare77f5f0		ui	primitive	void __cdecl (void)	Stores 10 × 10 = 100 as a float in a global	verified	one	ui/initfloats#squares	
 0x77f610	5	InitQuotient77f620Thunk		ui	orchestration	void __cdecl (void)	Jumps to 0x77f620, a static initializer	verified	one	ui/initthunks#jump-thunks	
 0x77f620	19	InitQuotient77f620		ui	primitive	void __cdecl (void)	Stores 0.5 / 10 = 0.05 as a float in a global	verified	one	ui/initfloats#quotients	
-0x77f640	122			ui	orchestration		Runs its object file code that calls CScriptRegion::CScriptRegion, 0x77fd10; not read here	inferred	none		
+0x77f640	122	SimpleRegionConstruct		ui	orchestration	void * __thiscall (CSimpleFrame *parent, uint32_t layer, uint32_t sublevel)	Builds a region base: script and layout parts, zeroed fields, vtables, and the parent link when given	verified	one	ui/regions#the-region-base	
 0x77f6c0	43	DeletingDestructor77f6c0		ui	orchestration		Destroys the object through 0x77f6f0 and frees it when bit 0 of the argument is set	verified	one	ui/containers#deleting-destructors	
-0x77f6f0	85			ui	orchestration		Runs its object file code that calls 0x77fd10, SMemFree; not read here	inferred	none		
+0x77f6f0	85	SimpleRegionDestruct		ui	orchestration	void __thiscall ()	Unparents the region, frees its two arrays and runs the script region destructor	verified	one	ui/regions#the-region-base	
 0x77f750	355	CScriptRegion::SetVertexColor		ui	primitive		Sets a region's vertex colour, skipping a repeat and an opaque white when none is set	verified	one	ui/texture#setting-a-vertex-colour	
 0x77f8c0	77	CScriptRegion::GetVertexColor		ui	orchestration		Copies the vertex colour, or opaque white when it holds no entry	verified	one	ui/texture#two-colour-stores	
 0x77f910	387	CScriptRegion::SetGradient		ui	primitive		Sets the four corner colours of a region from a minimum, a maximum and an orientation	verified	one	ui/texture#gradients	
@@ -33926,7 +33926,7 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x781960	16	Button::SetNormalTexture	idb	ui	orchestration		Implements the Button method SetNormalTexture, its pair in the table 0x879d00	verified	one	ui/button#state-and-highlight-textures	
 0x781970	564			ui	primitive		Sets a Button state texture from a Texture, a path or nil, raising a usage error otherwise	verified	one	ui/button#state-and-highlight-textures	
 0x781bb0	10	Button::GetNormalTexture	idb	ui	orchestration		Implements the Button method GetNormalTexture, its pair in the table 0x879d00	verified	one	ui/button#lua-methods	
-0x781bc0	242			ui	primitive		Runs its object file code that calls 0x6f3400, luaL_error, lua_rawgeti and 4 more; not read here	inferred	none		
+0x781bc0	242	ButtonGetStateTextureTable		ui	orchestration	uint32_t __fastcall (lua_State *L, uint32_t state)	Pushes the Lua table of a state texture of the Button at argument 1, or nil, raising on a wrong self	verified	one	ui/button#button-method-helper-and-type-test	
 0x781cc0	16	Button::SetPushedTexture	idb	ui	orchestration		Implements the Button method SetPushedTexture, its pair in the table 0x879d00	verified	one	ui/button#state-and-highlight-textures	
 0x781cd0	10	Button::GetPushedTexture	idb	ui	orchestration		Implements the Button method GetPushedTexture, its pair in the table 0x879d00	verified	one	ui/button#lua-methods	
 0x781ce0	13	Button::SetDisabledTexture	idb	ui	orchestration		Implements the Button method SetDisabledTexture, its pair in the table 0x879d00	verified	one	ui/button#state-and-highlight-textures	
@@ -33957,20 +33957,20 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x782d50	5	InitQuotient782d60Thunk		ui	orchestration	void __cdecl (void)	Jumps to 0x782d60, a static initializer	verified	one	ui/initthunks#jump-thunks	
 0x782d60	19	InitQuotient782d60		ui	primitive	void __cdecl (void)	Stores 0.5 / 10 = 0.05 as a float in a global	verified	one	ui/initfloats#quotients	
 0x782d80	68	CSimpleStatusBar::CSimpleStatusBar	idb	ui	primitive		Constructs a StatusBar frame and stores its two vtables	verified	one	ui/xmltypes#handler-names-by-type	
-0x782dd0	26			ui	orchestration		Runs its object file code that calls 0x77f750; not read here	inferred	none		
+0x782dd0	26	CSimpleStatusBar::SetBarColour		ui	orchestration	void __thiscall (const void *colour)	Sets the bar texture's vertex colour when the bar has a texture	verified	one	ui/slider#a-status-bars-texture-and-teardown	
 0x782df0	45	IsTypeId782df0		ui	orchestration		Answers 1 for the three type ids of its class and 0 for any other	verified	one	ui/containers#type-tests	
 0x782e20	89	StatusBarIsTypeName		ui	orchestration	bool __thiscall (const char *name)	Answers whether a name is StatusBar or one of its bases, ignoring case	verified	one	ui/widgettype#type-chains	
 0x782e80	6	StatusBarGetTypeName		ui	orchestration	const char * __thiscall ()	Returns the type name StatusBar	verified	one	ui/widgettype#type-chains	
 0x782e90	43	DeletingDestructor782e90		ui	orchestration		Destroys the object through 0x782ec0 and frees it when bit 0 of the argument is set	verified	one	ui/containers#deleting-destructors	
-0x782ec0	47			ui	orchestration		Runs its object file code that calls 0x7831f0, FrameScriptReleaseScript; not read here	inferred	none		
+0x782ec0	47	CSimpleStatusBar::~CSimpleStatusBar		ui	orchestration	void __thiscall ()	Clears the bar texture, releases the script slot and runs the frame destructor	verified	one	ui/slider#a-status-bars-texture-and-teardown	
 0x782ef0	441	CSimpleStatusBar::LoadXML		ui	primitive		Loads a StatusBar's frame node, then its bar texture and colour, range, value and orientation	verified	one	ui/xmltypes#slider-and-statusbar-values	
 0x7830b0	5	InitInfinity7830c0Thunk		ui	orchestration	void __cdecl (void)	Jumps to 0x7830c0, a static initializer	verified	one	ui/initthunks#jump-thunks	
 0x7830c0	11	InitInfinity7830c0		ui	orchestration	void __cdecl (void)	Copies the dword 0x7f800000 (+inf as a float) into a global	verified	one	ui/initstores#infinity-copies	
 0x7830d0	60	CSimpleStatusBar::GetScriptByName		ui	orchestration		Returns a StatusBar's handler slot by name, adding OnValueChanged	verified	one	ui/xmltypes#handler-names-by-type	
-0x783110	34			ui	orchestration		Runs its object file code that calls CSimpleFrame::RemoveRegion; not read here	inferred	none		
-0x783140	174			ui	orchestration		Runs its object file code that calls 0x770200, GetBlockPoolData, 0x76fc40 and 2 more; not read here	inferred	none		
+0x783110	34	CSimpleStatusBar::RemoveRegion		ui	orchestration	void __thiscall (CScriptRegion *region)	Forgets the bar texture when it is the removed region, then removes the region	verified	one	ui/slider#a-status-bars-texture-and-teardown	
+0x783140	174	CSimpleStatusBar::SetBarTexture		ui	orchestration	uint32_t __thiscall (const char *path, uint32_t layer)	Loads the path into the bar texture, creating and installing one, answering 0 when the file fails	verified	one	ui/slider#a-status-bars-texture-and-teardown	
 0x7831f0	85			ui	orchestration		Installs a status bar texture that changes its rectangle with its coordinates	verified	one	ui/slider#a-status-bars-fill	
-0x783250	23			ui	primitive		Runs its object file code not read here	inferred	none		
+0x783250	23	CSimpleStatusBar::SetOrientation		ui	orchestration	void __thiscall (uint32_t orientation)	Stores the orientation at +0x328 and sets bit 0 of +0x314	verified	one	ui/slider#a-status-bars-texture-and-teardown	
 0x783270	86			ui	primitive		Sets a status bar's range, the minimum no greater than the maximum, reapplying a pending value	verified	one	ui/xmltypes#slider-and-statusbar-values	
 0x7832d0	173	CSimpleStatusBar::SetValue		ui	orchestration		Clamps a status bar value to its range and runs OnValueChanged for a change	verified	one	ui/slider#a-status-bars-value	
 0x783380	49			ui	primitive		Returns a status bar's fill, (value - minimum) / (maximum - minimum), or 0	verified	one	ui/slider#a-status-bars-value	ui::glue_767_783380_guarded_fraction
@@ -33984,25 +33984,25 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x7834d0	19	InitSquare7834d0		ui	primitive	void __cdecl (void)	Stores 10 × 10 = 100 as a float in a global	verified	one	ui/initfloats#squares	
 0x7834f0	5	InitQuotient783500Thunk		ui	orchestration	void __cdecl (void)	Jumps to 0x783500, a static initializer	verified	one	ui/initthunks#jump-thunks	
 0x783500	19	InitQuotient783500		ui	primitive	void __cdecl (void)	Stores 0.5 / 10 = 0.05 as a float in a global	verified	one	ui/initfloats#quotients	
-0x783520	63			ui	orchestration		Runs CSimpleFont.cpp code that calls SMemAlloc, 0x783a40; not read here	inferred	none		
-0x783560	161			ui	primitive		Runs its object file code that calls SMemFree; not read here	inferred	none		
+0x783520	63	FontRecordConstruct		ui	orchestration	void * __thiscall ()	Zeroes the five dwords of a font record and builds its font object	verified	one	ui/containers#font-records	
+0x783560	161	FontRecordDestruct		ui	orchestration	void __thiscall ()	Deletes the record's font object, frees its block and unlinks its two links	verified	one	ui/containers#font-records	
 0x783610	10	InitHashTable783620Thunk		ui	orchestration	void __cdecl (void)	Calls 0x783620, then jumps to 0x7836e0 to register its exit callback	verified	one	ui/initthunks#call-thunks	
 0x783620	190	InitHashTable783620		ui	primitive	void __cdecl (void)	Builds an empty hash table in a global: link offset 0xc, a self-linked head, no buckets and a mask of -1	verified	one	ui/initstores#hash-tables	
 0x7836e0	12	InitHashTable783620Register		ui	orchestration	void __cdecl (void)	Registers 0x7836f0 with the C runtime's exit list	verified	one	ui/initexits#exit-registrars	
 0x7836f0	375	InitHashTable783620Exit		ui	primitive	void __cdecl (void)	Empties the hash table that 0x783620 built and frees its bucket array	verified	one	ui/initexits#exit-hash-tables	
 0x783870	325			ui	primitive		Returns the font object of a name, ignoring case, creating one when its flag is nonzero	verified	one	ui/framexml#the-elements-of-a-file	
-0x7839c0	113			ui	primitive		Runs its object file code that calls 0x7845d0; not read here	inferred	none		
-0x783a40	171			ui	primitive		Runs its object file code that calls ConstructScriptObject, 0x77f570, 0x41e3a0; not read here	inferred	none		
+0x7839c0	113	FontTableClear		ui	orchestration	void ()	Unlinks every node of the font table's main list and deletes each bucket node	verified	one	ui/containers#font-records	
+0x783a40	171	CSimpleFont::CSimpleFont		ui	orchestration	void * __thiscall ()	Builds a Font object: script part, empty block, 0x212 justify word, empty follower list and the vtables	verified	one	ui/fonttext#the-font-object	
 0x783af0	43	DeletingDestructor783af0		ui	orchestration		Destroys the object through 0x783b20 and frees it when bit 0 of the argument is set	verified	one	ui/containers#deleting-destructors	
-0x783b20	270			ui	primitive		Runs its object file code that calls 0x784150, 0x770c60, 0x7845a0 and 1 more; not read here	inferred	none		
+0x783b20	270	CSimpleFont::~CSimpleFont		ui	orchestration	void __thiscall ()	Clears the name, detaches every follower and the font's own link and ends in the script object destructor	verified	one	ui/fonttext#the-font-object	
 0x783c30	1265	CFontObject::LoadXML		ui	primitive		Loads a named font's template, file, height, outline, spacing, justification, colour and shadow	verified	one	ui/xmltypes#regions-and-fonts	ui::glue_geom_783c30_fontheight_spacing
 0x784130	5	InitInfinity784140Thunk		ui	orchestration	void __cdecl (void)	Jumps to 0x784140, a static initializer	verified	one	ui/initthunks#jump-thunks	
 0x784140	11	InitInfinity784140		ui	orchestration	void __cdecl (void)	Copies the dword 0x7f800000 (+inf as a float) into a global	verified	one	ui/initstores#infinity-copies	
 0x784150	42	FontSetName		ui	orchestration		Clears the font name global, stores the new name and publishes it as a global	verified	one	ui/widgettype#naming-a-widget	
 0x784180	66			ui	orchestration		Pushes a font's changed groups to each follower, then clears the change bits	verified	one	ui/fontstring#following-a-font	
-0x7841d0	268			ui	primitive		Runs its object file code that calls 0x770ad0; not read here	inferred	none		
+0x7841d0	268	CSimpleFont::SetFontObject		ui	orchestration	CSimpleFont * __thiscall (CSimpleFont *source)	Takes the source's mask and block and the font it follows, then runs slot 5	verified	one	ui/fonttext#font-object-setfontobject	
 0x7842e0	34	FreeRecord7842e0		ui	orchestration		Clears the record its argument points at through 0x783560 and frees it	verified	one	ui/containers#block-frees	
-0x784310	182			ui	primitive		Runs its object file code that calls SMemAlloc, 0x783520; not read here	inferred	none		
+0x784310	182	FontTableInsertRecord		ui	orchestration	void __thiscall (void *list, uint32_t extra, uint32_t flags)	Allocates a font record of extra plus 0x1c bytes, constructs it and links it at the head of the list	verified	one	ui/containers#font-table	
 0x7843d0	189	EmptyTable7843d0		ui	primitive		Empties the table, frees its buckets and sets the mask to -1	verified	one	ui/containers#hash-tables	
 0x784490	5	InitDouble7844a0Thunk		ui	orchestration	void __cdecl (void)	Jumps to 0x7844a0, a static initializer	verified	one	ui/initthunks#jump-thunks	
 0x7844a0	15	InitDouble7844a0		ui	primitive	void __cdecl (void)	Stores 3.1415927 + 3.1415927 = 6.2831855 as a float in a global	verified	one	ui/initfloats#doubled-constants	
@@ -34015,13 +34015,13 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x7846a0	135	FreeBuckets7846a0		ui	primitive		Empties a table's bucket lists and frees the bucket array	verified	one	ui/containers#hash-tables	
 0x784730	25	LinkOrEnd784730		ui	primitive		Returns a node's link, or the list's end link for a null node	verified	one	ui/containers#links	
 0x784750	181	Relink784750		ui	primitive		Unlinks a node and links it again into a list by a placement argument	verified	one	ui/containers#links	
-0x784810	337			ui	primitive		Runs its object file code that calls 0x784e10, 0x784e50, 0x784e70 and 3 more; not read here	inferred	none		
+0x784810	337	FontTableInit		ui	orchestration	void __thiscall ()	Sets the font table's mask to 3 and its buckets to four empty heads	verified	one	ui/containers#font-table	
 0x784970	176	FreeBucketNodes784970		ui	primitive		Unlinks and frees the nodes of a bucket list	verified	one	ui/containers#lists	
 0x784a20	33	InitList784a20		ui	primitive		Makes an empty list: link offset 0 and an end link marked by bit 0	verified	one	ui/containers#lists	
 0x784a50	483	GrowOnLongChain784a50		ui	primitive		Doubles a table's buckets and rehashes when a bucket walks more than 13 nodes, up to mask 0x1fff	verified	one	ui/containers#hash-tables	
 0x784c40	77	ClearBucket784c40		ui	primitive		Unlinks every node of a bucket list	verified	one	ui/containers#lists	
 0x784c90	12	InitEndLink784c90		ui	primitive		Points a list's end link at itself, marked by bit 0	verified	one	ui/containers#links	
-0x784ca0	317			ui	primitive		Runs its object file code that calls 0x784e70, 0x7845d0, 0x784de0; not read here	inferred	none		
+0x784ca0	317	ResizeBuckets784ca0		ui	primitive	void __thiscall (uint32_t count)	Sets a bucket array's count, rounding the capacity to its quantum below 21 and freeing dropped nodes	verified	one	ui/containers#font-table	
 0x784de0	41	NextLink784de0		ui	primitive		Returns the address a link names, resolving negative offsets through the list's offset	verified	one	ui/containers#links	
 0x784e10	57	Quantum21784e10		ui	primitive		Returns the grow quantum for a count: the largest power of two not above it below 21, else 21	verified	one	ui/containers#arrays	
 0x784e50	31	RoundUp784e50		ui	primitive		Rounds a size up to a multiple of a quantum	verified	one	ui/containers#arrays	
@@ -34034,11 +34034,11 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x784ff0	5	InitInfinity785000Thunk		ui	orchestration	void __cdecl (void)	Jumps to 0x785000, a static initializer	verified	one	ui/initthunks#jump-thunks	
 0x785000	11	InitInfinity785000		ui	orchestration	void __cdecl (void)	Copies the dword 0x7f800000 (+inf as a float) into a global	verified	one	ui/initstores#infinity-copies	
 0x785010	55	CSimpleCheckbox::CSimpleCheckbox	idb	ui	orchestration		Constructs a CheckButton on a Button and stores its two vtables	verified	one	ui/xmltypes#handler-names-by-type	
-0x785050	53			ui	orchestration		Runs its object file code not read here	inferred	none		
+0x785050	53	IsTypeId785050		ui	orchestration	uint32_t __stdcall (uint32_t id)	Answers 1 for the CheckButton, Button, Frame and Region type ids and 0 for any other	verified	one	ui/button#button-method-helper-and-type-test	
 0x785090	110	CheckButtonIsTypeName		ui	orchestration	bool __thiscall (const char *name)	Answers whether a name is CheckButton or one of its bases, ignoring case	verified	one	ui/widgettype#type-chains	
 0x785100	6	CheckButtonGetTypeName		ui	orchestration	const char * __thiscall ()	Returns the type name CheckButton	verified	one	ui/widgettype#type-chains	
 0x785110	43	DeletingDestructor785110		ui	orchestration		Destroys the object through 0x785140 and frees it when bit 0 of the argument is set	verified	one	ui/containers#deleting-destructors	
-0x785140	40			ui	orchestration		Runs its object file code that calls 0x785330, 0x785440; not read here	inferred	none		
+0x785140	40	CSimpleCheckbox::~CSimpleCheckbox		ui	orchestration	void __thiscall ()	Clears the two checked textures and runs the button destructor body	verified	one	ui/button#button-teardown-and-text-colour-slots	
 0x785170	177	CSimpleCheckbox::LoadXML		ui	orchestration		Loads a CheckButton's Button node, then checked and its two checked textures	verified	one	ui/xmltypes#elements-and-attributes-by-type	
 0x785230	50			ui	orchestration		Clears the checked slots that hold a removed region, then the button's	verified	one	ui/button#checkbutton	
 0x785270	179			ui	orchestration		Reloads the checked texture from a path, or creates one with blend mode ADD	verified	one	ui/button#checked-textures	
@@ -34062,42 +34062,42 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x785790	89	MessageFrameIsTypeName		ui	orchestration	bool __thiscall (const char *name)	Answers whether a name is MessageFrame or one of its bases, ignoring case	verified	one	ui/widgettype#type-chains	
 0x7857f0	6	MessageFrameGetTypeName		ui	orchestration	const char * __thiscall ()	Returns the type name MessageFrame	verified	one	ui/widgettype#type-chains	
 0x785800	43	DeletingDestructor785800		ui	orchestration		Destroys the object through 0x785830 and frees it when bit 0 of the argument is set	verified	one	ui/containers#deleting-destructors	
-0x785830	180			ui	primitive		Runs CSimpleMessageFrame.cpp code that calls 0x786720, 0x785e00, SMemFree and 1 more; not read here	inferred	none		
+0x785830	180	CSimpleMessageFrame::~CSimpleMessageFrame		ui	orchestration	void __thiscall ()	Releases the line holders and the queued messages, deletes the font and runs the frame destructor	verified	one	ui/messagemembers#message-frame-teardown	
 0x7858f0	5	InitInfinity785900Thunk		ui	orchestration	void __cdecl (void)	Jumps to 0x785900, a static initializer	verified	one	ui/initthunks#jump-thunks	
 0x785900	11	InitInfinity785900		ui	orchestration	void __cdecl (void)	Copies the dword 0x7f800000 (+inf as a float) into a global	verified	one	ui/initstores#infinity-copies	
 0x785910	622	CSimpleMessageFrame::LoadXML		ui	primitive		Loads a MessageFrame's frame node, then its font, fading, insert mode and text elements	verified	one	ui/xmltypes#elements-and-attributes-by-type	
-0x785b80	48			ui	orchestration		Runs CSimpleMessageFrame.cpp code that calls 0x785ea0; not read here	inferred	none		
-0x785bb0	75			ui	unreached		Runs CSimpleMessageFrame.cpp code that calls 0x771680; not read here	inferred	none		
-0x785c00	24			ui	orchestration		Runs CSimpleMessageFrame.cpp code that calls 0x785ea0; not read here	inferred	none		
-0x785c20	94			ui	primitive		Runs CSimpleMessageFrame.cpp code not read here	inferred	none		
-0x785c80	94			ui	primitive		Runs CSimpleMessageFrame.cpp code not read here	inferred	none		
+0x785b80	48	CSimpleMessageFrame::SetInsets		ui	orchestration	void __thiscall (float a, float b, float c, float d)	Stores the four insets at +0x330 to +0x33c and lays the lines out	verified	one	ui/messagemembers#message-frame-setters	
+0x785bb0	75	CSimpleMessageFrame::SetFixedLength		ui	unreached	void __thiscall (uint32_t length)	Stores a length at +0x340 and sets it on each line's FontString; nothing reaches it	verified	one	ui/messagemembers#message-frame-setters	
+0x785c00	24	CSimpleMessageFrame::RelayoutOnFlags		ui	orchestration	void __thiscall (uint32_t a, uint32_t flags)	Lays the lines out when bit 0 or 4 of the flags is set	verified	one	ui/messagemembers#message-frame-setters	
+0x785c20	94	CSimpleMessageFrame::SetTimeVisible		ui	primitive	void __thiscall (float seconds)	Stores the visible time and copies it into every line whose own time is 0	verified	one	ui/messagemembers#message-frame-setters	
+0x785c80	94	CSimpleMessageFrame::SetFadeDuration		ui	primitive	void __thiscall (float seconds)	Stores the fade time and copies it into every line whose own fade time is 0	verified	one	ui/messagemembers#message-frame-setters	
 0x785ce0	21			ui	orchestration		Stores the insert mode of a message frame and redraws its lines	verified	one	ui/fontmethods#message-frame-insert-mode	
 0x785d00	177			ui	orchestration		Queues a message frame line, copying its text and colour	verified	one	ui/messageframe#a-message-frames-addmessage	
-0x785dc0	61			ui	primitive		Runs its object file code that calls 0x786570; not read here	inferred	none		
-0x785e00	121			ui	primitive		Runs its object file code that calls SMemFree; not read here	inferred	none		
-0x785e80	28			ui	orchestration		Runs its object file code that calls CSimpleFrame::OnFrameSizeChanged, 0x785ea0; not read here	inferred	none		
-0x785ea0	786			ui	primitive		Runs its object file code that calls PixelAlignY, __ftol, 0x786570 and 9 more; not read here	inferred	none		ui::glue_785ea0_header, ui::glue_785ea0_quantize, ui::glue_785ea0_sum_divide, ui::glue_785ea0_tail
-0x7861c0	57			ui	primitive		Runs its object file code that calls SMemAlloc, 0x7865f0; not read here	inferred	none		
+0x785dc0	61	CSimpleMessageFrame::ClearLines		ui	orchestration	void __thiscall ()	Deactivates every line and frees the queued messages	verified	one	ui/messagemembers#message-frame-setters	
+0x785e00	121	CSimpleMessageFrame::FreeQueue		ui	orchestration	void __thiscall ()	Frees each queued message's text and then the queue	verified	one	ui/messagemembers#message-frame-teardown	
+0x785e80	28	CSimpleMessageFrame::OnFrameSizeChanged		ui	orchestration	void __thiscall (float *rect)	Runs the frame's size callback and lays the lines out	verified	one	ui/messagemembers#message-frame-setters	
+0x785ea0	786	CSimpleMessageFrame::LayoutLines		ui	primitive	void __thiscall ()	Sets the line count from the inner height over a row and brings the line holders and their anchors to it	verified	one	ui/messagemembers#message-frame-layout	ui::glue_785ea0_header, ui::glue_785ea0_quantize, ui::glue_785ea0_sum_divide, ui::glue_785ea0_tail
+0x7861c0	57	MessageLineHolderConstruct		ui	orchestration	void * __thiscall ()	Builds a line holder: a new counted line and two zeroed floats	verified	one	ui/messagemembers#making-a-line	
 0x786200	421			ui	primitive		Places the queued lines of a message frame and fades its lines	verified	one	ui/messageframe#a-message-frames-addmessage	ui::glue_786200_alpha
-0x7863b0	214			ui	primitive		Runs its object file code that calls SErrSetLastError, 0x786490, 0x771d80 and 5 more; not read here	inferred	none		ui::glue_7863b0_level_fraction
-0x786490	212			ui	primitive		Runs its object file code that calls CLayoutFrame::SetPoint, 0x786570; not read here	inferred	none		ui::glue_786490_negate
-0x786570	56			ui	primitive		Runs its object file code that calls 0x77fc60; not read here	inferred	none		
-0x7865b0	56			ui	primitive		Runs its object file code that calls 0x77fcb0; not read here	inferred	none		
-0x7865f0	130			ui	primitive		Runs its object file code that calls GetBlockPoolData, 0x770d30, 0x7724a0; not read here	inferred	none		
+0x7863b0	214	CSimpleMessageFrame::AddLine		ui	primitive	void __thiscall (const char *text, const uint32_t *colour)	Opens line slot 0, sets its colour and text, activates it and pushes older lines down	verified	one	ui/messagemembers#adding-a-message	ui::glue_7863b0_level_fraction
+0x786490	212	CSimpleMessageFrame::ShiftLines		ui	primitive	void __thiscall (uint32_t index)	Moves the line holders from an index toward the end and re-anchors them	verified	one	ui/messagemembers#adding-a-message	ui::glue_786490_negate
+0x786570	56	CSimpleMessageFrame::DeactivateLine		ui	primitive	void __thiscall (MessageLine *line)	Unregisters an active line and clears its times and active byte	verified	one	ui/messagemembers#activating-a-line	
+0x7865b0	56	CSimpleMessageFrame::ActivateLine		ui	orchestration	void __thiscall (MessageLine *line, float a, float b)	Registers a line, stores its two times, marks it active and counts it	verified	one	ui/messagemembers#activating-a-line	
+0x7865f0	130	MessageLineConstruct		ui	orchestration	void * __thiscall ()	Builds a message line with its FontString from the region pool, bit 0x4000 set	verified	one	ui/messagemembers#making-a-line	
 0x786680	43	DeletingDestructor786680		ui	orchestration		Destroys the object through 0x7866b0 and frees it when bit 0 of the argument is set	verified	one	ui/containers#deleting-destructors	
-0x7866b0	30			ui	orchestration		Runs its object file code not read here	inferred	none		
+0x7866b0	30	MessageLineDestruct		ui	orchestration	void __thiscall ()	Deletes the line's FontString and puts the base vtable back	verified	one	ui/messagemembers#message-frame-teardown	
 0x7866d0	5	InitDouble7866e0Thunk		ui	orchestration	void __cdecl (void)	Jumps to 0x7866e0, a static initializer	verified	one	ui/initthunks#jump-thunks	
 0x7866e0	15	InitDouble7866e0		ui	primitive	void __cdecl (void)	Stores 3.1415927 + 3.1415927 = 6.2831855 as a float in a global	verified	one	ui/initfloats#doubled-constants	
 0x7866f0	5	InitQuotient786700Thunk		ui	orchestration	void __cdecl (void)	Jumps to 0x786700, a static initializer	verified	one	ui/initthunks#jump-thunks	
 0x786700	19	InitQuotient786700		ui	primitive	void __cdecl (void)	Stores 1 / 6.2831855 = 0.15915494 as a float in a global	verified	one	ui/initfloats#quotients	
-0x786720	69			ui	primitive		Runs its object file code that calls SMemFree; not read here	inferred	none		
-0x786770	38			ui	orchestration		Runs its object file code that calls SMemFree; not read here	inferred	none		
-0x7867a0	46			ui	primitive		Runs its object file code that calls SMemFree; not read here	inferred	none		
+0x786720	69	MessageLineHoldersRelease		ui	orchestration	void __thiscall ()	Releases the line of every holder in the array and frees the array	verified	one	ui/messagemembers#message-frame-teardown	
+0x786770	38	FreeIfFlag786770		ui	orchestration	void * __thiscall (uint32_t free_flag)	Frees the object with SMemFree when bit 0 of the flag is set and returns it	verified	one	ui/messagemembers#message-frame-teardown	
+0x7867a0	46	MessageLineHolderRelease		ui	orchestration	void * __thiscall (uint32_t free_flag)	Releases the holder's line and frees the holder when bit 0 of the flag is set	verified	one	ui/messagemembers#message-frame-teardown	
 0x7867d0	31	RoundUp7867d0		ui	primitive		Rounds a size up to a multiple of a quantum	verified	one	ui/containers#arrays	
 0x7867f0	144	ResizeArray7867f0		ui	primitive		Resizes an array of 8-byte entries, copying the kept ones when it must move	verified	one	ui/containers#arrays	
 0x786880	57	Quantum21786880		ui	primitive		Returns the grow quantum for a count: the largest power of two not above it below 21, else 21	verified	one	ui/containers#arrays	
 0x7868c0	31	RoundUp7868c0		ui	primitive		Rounds a size up to a multiple of a quantum	verified	one	ui/containers#arrays	
-0x7868e0	229			ui	primitive		Runs its object file code that calls SMemReAlloc, SMemAlloc, SMemFree; not read here	inferred	none		
+0x7868e0	229	MessageLineHoldersSetCapacity		ui	primitive	void __thiscall (uint32_t count)	Sets the holder array's capacity, releasing holders past it and moving the kept ones with a reference added	verified	one	ui/messagemembers#message-frame-layout	
 0x7869d0	8	LayoutThunk7869d0		ui	primitive		Moves this back by 0x24 to the object and jumps to its deleting destructor 0x785800	verified	one	ui/containers#layout-thunks	
 0x7869e0	5	InitSquare7869f0Thunk		ui	orchestration	void __cdecl (void)	Jumps to 0x7869f0, a static initializer	verified	one	ui/initthunks#jump-thunks	
 0x7869f0	19	InitSquare7869f0		ui	primitive	void __cdecl (void)	Stores 10 × 10 = 100 as a float in a global	verified	one	ui/initfloats#squares	
@@ -34108,7 +34108,7 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x786ae0	89	ScrollFrameIsTypeName		ui	orchestration	bool __thiscall (const char *name)	Answers whether a name is ScrollFrame or one of its bases, ignoring case	verified	one	ui/widgettype#type-chains	
 0x786b40	6	ScrollFrameGetTypeName		ui	orchestration	const char * __thiscall ()	Returns the type name ScrollFrame	verified	one	ui/widgettype#type-chains	
 0x786b50	43	DeletingDestructor786b50		ui	orchestration		Destroys the object through 0x786b80 and frees it when bit 0 of the argument is set	verified	one	ui/containers#deleting-destructors	
-0x786b80	64			ui	orchestration		Runs its object file code that calls FrameScriptReleaseScript; not read here	inferred	none		
+0x786b80	64	CSimpleScrollFrame::~CSimpleScrollFrame		ui	orchestration	void __thiscall ()	Releases the script slots at +0x32c, +0x334 and +0x33c and runs the frame destructor	verified	one	ui/scrollframe#teardown	
 0x786bc0	125	CSimpleScrollFrame::LoadXML		ui	primitive		Loads a ScrollFrame's frame node, then creates its scroll child from XML	verified	one	ui/xmltypes#scroll-child	
 0x786c40	124	CSimpleScrollFrame::GetScriptByName		ui	orchestration		Returns a ScrollFrame's handler slot by name, adding its three scroll handlers	verified	one	ui/xmltypes#handler-names-by-type	
 0x786cc0	5	InitInfinity786cd0Thunk		ui	orchestration	void __cdecl (void)	Jumps to 0x786cd0, a static initializer	verified	one	ui/initthunks#jump-thunks	
@@ -34120,9 +34120,9 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x786f80	381			ui	primitive		Joins a frame's rectangle with its shown regions' and its shown children's	verified	one	ui/scrollframe#the-scroll-range	
 0x787100	61			ui	orchestration		Anchors the scroll child's TOPLEFT to the frame's at the offsets	verified	one	ui/scrollframe#offsets	
 0x787140	118			ui	orchestration		Measures the scroll range on an update when it is marked	verified	one	ui/scrollframe#the-scroll-range	ui::glue_787140_rect_delta
-0x7871c0	46			ui	orchestration		Runs its object file code that calls SimpleFrameRegisterLayer, RegisterLayerCallback; not read here	inferred	none		
+0x7871c0	46	CSimpleMessageScrollFrame::Emit		ui	orchestration	void __thiscall (void *batch, uint32_t layer)	Runs the frame's emit and, for layer 4, adds the draw callback 0x787220 to the batch	verified	one	ui/messagemembers#scroll-frame-draw	
 0x7871f0	36			ui	orchestration		Marks the scroll range after the frame's size change	verified	one	ui/scrollframe#the-scroll-range	
-0x787220	868			ui	primitive		Runs its object file code that calls CSimpleFrame::GetHitRect, GetDeviceProjection and 8 more; not read here	inferred	none		ui::glue_787220_clamp01
+0x787220	868	CSimpleMessageScrollFrame::DrawCallback		ui	primitive	void __cdecl (void *frame)	Projects the frame's rectangle, clamps its texture coordinates to 0 to 1 per axis and draws	inferred	none	ui/messagemembers#scroll-frame-draw	ui::glue_787220_clamp01
 0x787590	5	InitDouble7875a0Thunk		ui	orchestration	void __cdecl (void)	Jumps to 0x7875a0, a static initializer	verified	one	ui/initthunks#jump-thunks	
 0x7875a0	15	InitDouble7875a0		ui	primitive	void __cdecl (void)	Stores 3.1415927 + 3.1415927 = 6.2831855 as a float in a global	verified	one	ui/initfloats#doubled-constants	
 0x7875b0	5	InitQuotient7875c0Thunk		ui	orchestration	void __cdecl (void)	Jumps to 0x7875c0, a static initializer	verified	one	ui/initthunks#jump-thunks	
@@ -34135,35 +34135,35 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x787650	5	InitInfinity787660Thunk		ui	orchestration	void __cdecl (void)	Jumps to 0x787660, a static initializer	verified	one	ui/initthunks#jump-thunks	
 0x787660	11	InitInfinity787660		ui	orchestration	void __cdecl (void)	Copies the dword 0x7f800000 (+inf as a float) into a global	verified	one	ui/initstores#infinity-copies	
 0x787670	635			ui	primitive		Constructs a ScrollingMessageFrame frame and stores its two vtables	verified	one	ui/xmltypes#handler-names-by-type	
-0x7878f0	22			ui	orchestration		Runs CSimpleMessageScrollFrame.cpp code that calls SMemFree; not read here	inferred	none		
+0x7878f0	22	FreeLineRecordText		ui	orchestration	void __thiscall ()	Frees the text of a scroll frame line record when set	verified	one	ui/messagemembers#scroll-frame-teardown	
 0x787910	45	IsTypeId787910		ui	orchestration		Answers 1 for the three type ids of its class and 0 for any other	verified	one	ui/containers#type-tests	
 0x787940	89	ScrollingMessageFrameIsTypeName		ui	orchestration	bool __thiscall (const char *name)	Answers whether a name is ScrollingMessageFrame or one of its bases, ignoring case	verified	one	ui/widgettype#type-chains	
 0x7879a0	6	ScrollingMessageFrameGetTypeName		ui	orchestration	const char * __thiscall ()	Returns the type name ScrollingMessageFrame	verified	one	ui/widgettype#type-chains	
 0x7879b0	43	DeletingDestructor7879b0		ui	orchestration		Destroys the object through 0x7879e0 and frees it when bit 0 of the argument is set	verified	one	ui/containers#deleting-destructors	
-0x7879e0	311			ui	primitive		Runs CSimpleMessageScrollFrame.cpp code that calls 0x788f40, 0x788f90, 0x788c00 and 5 more; not read here	inferred	none		
+0x7879e0	311	CSimpleMessageScrollFrame::Destruct		ui	orchestration	void __thiscall ()	Frees the arrays and link buttons, releases the script slot and runs the hyperlink frame destructor	verified	one	ui/messagemembers#scroll-frame-teardown	
 0x787b20	615	CSimpleMessageScrollFrame::LoadXML		ui	primitive		Loads a ScrollingMessageFrame's frame node, then its font, fading, line count and text elements	verified	one	ui/xmltypes#elements-and-attributes-by-type	
 0x787d90	60	CSimpleMessageScrollFrame::GetScriptByName		ui	orchestration		Returns a ScrollingMessageFrame handler slot by name, adding OnMessageScrollChanged	verified	one	ui/xmltypes#handler-names-by-type	
 0x787dd0	478			ui	orchestration		Empties a scrolling message frame and sets its line limit	verified	one	ui/messageframe#the-ring-of-lines	
-0x787fb0	48			ui	orchestration		Runs CSimpleMessageScrollFrame.cpp code that calls 0x788310; not read here	inferred	none		
-0x787fe0	64			ui	unreached		Runs CSimpleMessageScrollFrame.cpp code that calls 0x771680; not read here	inferred	none		
-0x788020	112			ui	primitive		Runs CSimpleMessageScrollFrame.cpp code that calls SMemFree, 0x788750; not read here	inferred	none		
-0x788090	85			ui	primitive		Runs CSimpleMessageScrollFrame.cpp code not read here	inferred	none		
-0x7880f0	85			ui	primitive		Runs CSimpleMessageScrollFrame.cpp code not read here	inferred	none		
+0x787fb0	48	CSimpleMessageScrollFrame::SetInsets		ui	orchestration	void __thiscall (float a, float b, float c, float d)	Stores the four insets at +0x37c to +0x388 and runs the rectangle change callback	verified	one	ui/messagemembers#scroll-frame-setters	
+0x787fe0	64	CSimpleMessageScrollFrame::SetFixedLength		ui	unreached	void __thiscall (uint32_t length)	Stores a length at +0x358 and sets it on each display node's FontString; nothing reaches it	verified	one	ui/messagemembers#unreached-scroll-frame-code	
+0x788020	112	CSimpleMessageScrollFrame::OnFlagsChanged		ui	orchestration	void __thiscall (void *a, uint32_t flags)	Destroys the display nodes and frees their array when flag bits 0x11 changed, then lays out	verified	one	ui/messagemembers#scroll-frame-teardown	
+0x788090	85	CSimpleMessageScrollFrame::SetTimeVisible		ui	primitive	void __thiscall (float seconds)	Stores the visible time and copies it into every shown record that has a node	verified	one	ui/messagemembers#scroll-frame-setters	
+0x7880f0	85	CSimpleMessageScrollFrame::SetFadeDuration		ui	primitive	void __thiscall (float seconds)	Stores the fade time and copies it into every shown record that has a node	verified	one	ui/messagemembers#scroll-frame-setters	
 0x788150	256			ui	orchestration		Writes a line into the next ring slot, freeing the oldest's text when full	verified	one	ui/messageframe#the-ring-of-lines	
 0x788250	89			ui	orchestration		Recolours the lines with an id, doing nothing for id 0	verified	one	ui/messageframe#a-scrolling-frames-addmessage	
-0x7882b0	52			ui	orchestration		Runs CSimpleMessageScrollFrame.cpp code that calls 0x788750; not read here	inferred	none		
-0x7882f0	28			ui	orchestration		Runs CSimpleMessageScrollFrame.cpp code that calls CSimpleFrame::OnFrameSizeChanged, 0x788310; not read here	inferred	none		
-0x788310	289			ui	primitive		Runs CSimpleMessageScrollFrame.cpp code that calls SMemFree, 0x788750; not read here	inferred	none		ui::glue_788_788310_rect_changed
-0x788440	24			ui	orchestration		Runs CSimpleMessageScrollFrame.cpp code that calls CSimpleFrame::OnFrameShow, 0x788750; not read here	inferred	none		
+0x7882b0	52	CSimpleMessageScrollFrame::Clear		ui	orchestration	void __thiscall ()	Empties the ring, lays out, resets the scroll and sets the write position to -1	verified	one	ui/messagemembers#scroll-frame-setters	
+0x7882f0	28	CSimpleMessageScrollFrame::OnFrameSizeChanged		ui	orchestration	void __thiscall (float *rect)	Runs the frame's size callback and the rectangle change callback	verified	one	ui/messagemembers#scroll-frame-setters	
+0x788310	289	CSimpleMessageScrollFrame::OnRectChanged		ui	primitive	void __thiscall ()	Recomputes the four edges and lays the lines out again when the size changed by 1e-5 or more	inferred	none	ui/messagemembers#scroll-frame-layout	ui::glue_788_788310_rect_changed
+0x788440	24	CSimpleMessageScrollFrame::OnShow		ui	orchestration	void __thiscall ()	Runs the frame's show and lays the lines out at the scroll position	verified	one	ui/messagemembers#scroll-frame-setters	
 0x788460	328			ui	primitive		Counts down each shown line's visible and fade times and fades or hides it, while at the bottom	verified	one	ui/messageframe#fading-a-scrolling-frame	ui::glue_788_788460_alpha_step
 0x7885b0	44			ui	orchestration		Scrolls up a line as many times as lines are shown, stopping when a step cannot move, then down a line	verified	one	ui/messageframe#paging	
 0x7885e0	44			ui	orchestration		Scrolls down a line as many times as lines are shown, stopping when a step cannot move, then up a line	verified	one	ui/messageframe#paging	
 0x788610	57			ui	orchestration		Scrolls up a line, or re-arms the shown lines at the top	verified	one	ui/messageframe#scrolling-brings-lines-back	
 0x788650	61			ui	orchestration		Scrolls down a line, or re-arms the shown lines at the bottom	verified	one	ui/messageframe#scrolling-brings-lines-back	
-0x788690	49			ui	orchestration		Runs CSimpleMessageScrollFrame.cpp code that calls 0x788750; not read here	inferred	none		
-0x7886d0	33			ui	orchestration		Runs CSimpleMessageScrollFrame.cpp code that calls 0x788750; not read here	inferred	none		
+0x788690	49	CSimpleMessageScrollFrame::ScrollToTop		ui	orchestration	void __thiscall ()	Lays the lines out from the oldest line of the ring	verified	one	ui/messagemembers#scroll-frame-setters	
+0x7886d0	33	CSimpleMessageScrollFrame::ScrollToBottom		ui	orchestration	void __thiscall ()	Restores the shown lines or lays out at the write position, doing nothing for an empty ring	verified	one	ui/messagemembers#scroll-frame-setters	
 0x788700	78			ui	orchestration		Scrolls to a line from the bottom, or re-arms when already there	verified	one	ui/messageframe#scrolling-brings-lines-back	
-0x788750	874			ui	primitive		Runs CSimpleMessageScrollFrame.cpp code that calls 0x789060, 0x788d90, 0x788af0 and 10 more; not read here	inferred	none		ui::glue_geom_788750_acc_and_sum, ui::glue_geom_788750_bounds_ratios
+0x788750	874	CSimpleMessageScrollFrame::LayoutLines		ui	primitive	void __thiscall (int32_t position)	Places the shown lines from a ring position, anchoring and showing or hiding a node per line	inferred	none	ui/messagemembers#scroll-frame-layout	ui::glue_geom_788750_acc_and_sum, ui::glue_geom_788750_bounds_ratios
 0x788ac0	41			ui	primitive		Runs CSimpleMessageScrollFrame.cpp code not read here	inferred	none		
 0x788af0	138			ui	orchestration		Shows a line in a node, re-arming it unless the frame is at the bottom and not forced	verified	one	ui/messageframe#scrolling-brings-lines-back	
 0x788b80	128			ui	orchestration		Restores every shown line to full alpha and restarts its times	verified	one	ui/messageframe#scrolling-brings-lines-back	
@@ -34690,20 +34690,20 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x79a780	270	Texture::SetDrawLayer	idb	ui	primitive		Implements the Texture method SetDrawLayer	verified	one	ui/texture#draw-layer-and-blend-mode	
 0x79a890	188	Texture::GetBlendMode	idb	ui	primitive		Implements the Texture method GetBlendMode	verified	one	ui/texture#draw-layer-and-blend-mode	
 0x79a950	256	Texture::SetBlendMode	idb	ui	primitive		Implements the Texture method SetBlendMode	verified	one	ui/texture#draw-layer-and-blend-mode	
-0x79aa50	376	Texture::GetVertexColor	idb	ui	primitive		Implements the Texture method GetVertexColor	inferred	none		ui::luabind_79a_get_vertex_color, ui::luabind_79a_normalize_full_domain
-0x79abd0	594	Texture::SetVertexColor	idb	ui	primitive		Implements the Texture method SetVertexColor	inferred	none		ui::luabind_79a_set_vertex_color
-0x79ae30	806	Texture::SetGradient	idb	ui	primitive		Implements the Texture method SetGradient	inferred	none		ui::luabind_79a_set_gradient
+0x79aa50	376	Texture::GetVertexColor	idb	ui	primitive		Answers the texture's vertex colour as r, g, b, a, or white unless it holds one entry	verified	one	ui/texture#two-colour-stores	ui::luabind_79a_get_vertex_color, ui::luabind_79a_normalize_full_domain
+0x79abd0	594	Texture::SetVertexColor	idb	ui	primitive		Stores a clamped, packed vertex colour as the texture's only entry	verified	one	ui/texture#setting-a-vertex-colour	ui::luabind_79a_set_vertex_color
+0x79ae30	806	Texture::SetGradient	idb	ui	primitive		Gives the four corners two colours by orientation, with alpha 1	verified	one	ui/texture#gradients	ui::luabind_79a_set_gradient
 0x79b160	5	InitInfinity79b170Thunk		ui	orchestration	void __cdecl (void)	Jumps to 0x79b170, a static initializer	verified	one	ui/initthunks#jump-thunks	
 0x79b170	11	InitInfinity79b170		ui	orchestration	void __cdecl (void)	Copies the dword 0x7f800000 (+inf as a float) into a global	verified	one	ui/initstores#infinity-copies	
-0x79b180	1019	Texture::SetGradientAlpha	idb	ui	primitive		Implements the Texture method SetGradientAlpha	inferred	none		ui::luabind_79a_pack_color_pair
-0x79b580	265	Texture::SetAlpha	idb	ui	primitive		Implements the Texture method SetAlpha	inferred	none		ui::luabind_79a_set_alpha
+0x79b180	1019	Texture::SetGradientAlpha	idb	ui	primitive		Gives the four corners two colours with alphas by orientation	verified	one	ui/texture#gradients	ui::luabind_79a_pack_color_pair
+0x79b580	265	Texture::SetAlpha	idb	ui	primitive		Replaces the alpha of the vertex colour with the value times 255, truncated and unclamped	verified	one	ui/texture#setting-a-vertex-colour	ui::luabind_79a_set_alpha
 0x79b690	222	Texture::GetAlpha	idb	ui	primitive		Pushes the alpha byte of the texture's vertex colour times 1/255 as a double	verified	one	ui/framemethods#strata-level-and-texture-alpha	
 0x79b770	180	Texture::Show	idb	ui	primitive		Implements the Texture method Show	verified	one	ui/texture#showing-and-hiding-a-texture	
 0x79b830	180	Texture::Hide	idb	ui	primitive		Implements the Texture method Hide	verified	one	ui/texture#showing-and-hiding-a-texture	
 0x79b8f0	178	Texture::IsVisible	idb	ui	primitive		Implements the Texture method IsVisible	verified	one	ui/texture#showing-and-hiding-a-texture	
 0x79b9b0	178	Texture::IsShown	idb	ui	primitive		Implements the Texture method IsShown	verified	one	ui/texture#showing-and-hiding-a-texture	
 0x79ba70	205	Texture::GetTexture	idb	ui	primitive		Implements the Texture method GetTexture	verified	one	ui/texture#reading-the-image-and-the-coordinates	
-0x79bb40	687	Texture::SetTexture	idb	ui	primitive		Implements the Texture method SetTexture	inferred	none		ui::luabind_79a_set_vertex_color
+0x79bb40	687	Texture::SetTexture	idb	ui	primitive		Loads an image file, sets a solid fill from numbers or clears the image, answering 1 or nil	verified	one	ui/texture#settexture	ui::luabind_79a_set_vertex_color
 0x79bdf0	190	Texture::GetTexCoord	idb	ui	primitive		Implements the Texture method GetTexCoord	verified	one	ui/texture#reading-the-image-and-the-coordinates	
 0x79beb0	451	Texture::SetTexCoord	idb	ui	primitive		Stores four corner texture coordinates from 4 or 8 numbers	verified	one	ui/texture#reading-the-image-and-the-coordinates	
 0x79c080	159	Texture::SetTexCoordModifiesRect	idb	ui	primitive		Implements the Texture method SetTexCoordModifiesRect	verified	one	ui/texture#reading-the-image-and-the-coordinates	
@@ -34813,7 +34813,7 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x7a0f50	375	InitHashTable7a0e80Exit		ui	primitive	void __cdecl (void)	Empties the hash table that 0x7a0e80 built and frees its bucket array	verified	one	ui/initexits#exit-hash-tables	
 0x7a10d0	21			ui	orchestration		Adds the 22 Font methods of 0x87c7c8 to the Font method hash	verified	one	ui/fontstring#lua-methods	
 0x7a10f0	10	UnregisterFontMethods		ui	orchestration	void __cdecl ()	Unregisters the 22 Font methods that 0x7a10d0 registers	verified	one	ui/scriptapi#method-table-unregistrars	
-0x7a1100	23			ui	orchestration		Runs its object file code that calls FrameScriptPushMethod; not read here	inferred	none		
+0x7a1100	23			ui	orchestration	void __stdcall (const char *name, void *object)	Looks a method of the Font type up through FrameScriptPushMethod with the Font method table	verified	one	ui/widgettype#asking-for-a-type	
 0x7a1120	5	InitDouble7a1130Thunk		ui	orchestration	void __cdecl (void)	Jumps to 0x7a1130, a static initializer	verified	one	ui/initthunks#jump-thunks	
 0x7a1130	15	InitDouble7a1130		ui	primitive	void __cdecl (void)	Stores 3.1415927 + 3.1415927 = 6.2831855 as a float in a global	verified	one	ui/initfloats#doubled-constants	
 0x7a1140	5	InitQuotient7a1150Thunk		ui	orchestration	void __cdecl (void)	Jumps to 0x7a1150, a static initializer	verified	one	ui/initthunks#jump-thunks	

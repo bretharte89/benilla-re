@@ -65,14 +65,14 @@ answer is 0.0. The image is loaded on demand.
 Addresses: `0x770720`, `0x770790`, `0x770729`, `0x77072e`, `0x770736`, `0x770739`, `0x77073b`, `0x77074e`, `0x770778`, `0x44b3b0`, `0x44b3c1`, `0x44b3ee`, `0x44b3fd`, `0x6f1eb0`
 Confidence: verified
 Proof: one
-Test: none
+Test: `ui::glue_unit_convert_1024`
 
 `0x770720` calls the plain getter, compares with 0.0 by `fcom; test ah,0x44; jp`, which falls through
 on equal only, loads the image object `[this+0xa8]` (the texture's `+0xcc`) and calls `0x44b3b0` with the load
 flag set and a null height out-pointer. The texel width is converted as `0x6f1eb0` does: divided by
 `[0x832a4c]·1024` and multiplied by `K1`. `0x44b3b0` loads the image when `[+0x120]` is 0 and the flag is set
 (`0x44b3c1` to `0x44b3e5`), then stores `+0x144` and `+0x148` through the non-null out-pointers. `0x770790` is
-the height twin with `+0x54` and `+0x148`.
+the height twin with `+0x54` and `+0x148`. `ui::glue_unit_convert_1024` runs the `fmul` by 1024.0 and `fdivr` of the unit conversion as a copied-byte island of the family (`0x770720`, `0x770790`, `0x770f40`).
 
 ## A font string's size
 
@@ -83,14 +83,14 @@ fixes the opposite edge of a font string.
 Addresses: `0x772930`, `0x772a60`, `0x772890`, `0x7729b0`, `0x772937`, `0x77294a`, `0x772957`, `0x772971`, `0x77297a`, `0x772983`
 Confidence: verified
 Proof: one
-Test: none
+Test: `ui::textglue_set_scaled_chain`
 
 `0x772930` stores the plain width, tests it against 0.0 and, when equal, calls `0x772890` for the
 measured width (`0x77294f`). The floor is `1.0 / ([0x832a4c]·1024)` times `K1` (`0x772957` to
 `0x77296c`). `fcomp` of the floor with the candidate and `test ah,5; jp` return the floor when the
 floor is at least the candidate or either is NaN, the candidate otherwise. `0x772a60` repeats it with
 `0x768410` and `0x7729b0`. `0x772890` returns the cached `+0xfc` when it is nonzero, else measures the text with the font
-`+0xe0` and divides by the scale `+0x7c`; it is 0.0 without a font or text.
+`+0xe0` and divides by the scale `+0x7c`; it is 0.0 without a font or text. `ui::textglue_set_scaled_chain` runs the floor of `0x772930` and `0x772a60`: the `fmul`/`fdivr` bytes of `0x77295c` and `0x772963` as a copied-byte island, then `0x41ae60`.
 
 ## The implicit anchor
 
@@ -159,6 +159,22 @@ queue leg `0x768140` never reads it, so a model's ready hook that lays out with 
 
 `ui::layout_recompute` runs `0x768d20` whole with `0x767a20` stubbed to fail or to succeed, and reads the flags and the stored rectangle.
 
+## The region base
+
+Textures and font strings share a region base. `0x77f640(parent, layer, sublevel)` runs `CScriptRegion::CScriptRegion`, zeroes the eight dwords `+0xa0` to `+0xbc` and
+`+0xc0` to `+0xc8`, stores the vtables `0x81c9f4` and `0x81c9c8` (at `+0x24`) and, for a nonnull parent, calls `CScriptRegion::SetRegionParent` with the parent, layer
+and sublevel. `0x77f6f0` is its destructor body: it stores the vtables, calls `SetRegionParent(0, 1, 0)`, frees the arrays at `+0xb8` and `+0xa8` and ends in
+`CScriptRegion::~CScriptRegion`. `0x77f570(p)` stores `p` at `this` and, for a nonnull `p`, increments the count at `p+4`.
+
+Addresses: `0x77f640`, `0x77f646`, `0x77f682`, `0x77f688`, `0x77f6ae`, `0x77f6f0`, `0x77f6f9`, `0x77f706`, `0x77f71e`, `0x77f737`, `0x77f740`, `0x77f570`, `0x77fd10`, `0x76c4f0`, `0x76c560`, `0x81c9c8`, `0x84f09c`, `0x854040`
+Confidence: verified
+Proof: one
+Test: none
+
+`0x77f6f0` pushes `0, 1, 0` before `0x77fd10` (`0x77f706`); the two frees pass the tags `0x84f09c` (line −2) and `0x854040`. `0x77f640` is called by the texture
+constructor (`0x76fc57`) and the font string constructor (`0x770d44`), `0x77f6f0` by the font string destructor body (`0x770efc`) and `0x76fd76`. `0x77f570` has two callers, in the backdrop constructor (`0x77e63e`)
+and the font object constructor (`0x783a5c`).
+
 ## Pixel alignment
 
 `PixelAlignX(x)` and `PixelAlignY(y)` round a layout length up to a whole number of device pixels. A length below 2^-22
@@ -170,8 +186,9 @@ unless it already is a whole number of pixels, and a negative length is truncate
 Addresses: `0x7666a0`, `0x7666b3`, `0x7666e0`, `0x7666f6`, `0x76670a`, `0x76671f`, `0x766725`, `0x766737`, `0x766750`, `0x7667ba`, `0x7667cf`, `0x7667e7`, `0x41ae40`, `0x41ae50`, `0x41ae60`, `0x41ae70`, `0x58a250`, `0x808120`
 Confidence: verified
 Proof: one
-Test: none
+Test: `ui::glue_765_7666a0_ratio_round_x`, `ui::glue_765_766750_ratio_round_y`
 
 `0x7666b3` compares the length with the float 2.38e-07 (`0x8029d4`). `0x7666e0` reads the viewport as four floats from the device (`0x58a250`) and takes right less left
 as the horizontal pixel count (`0x7666e8`); `0x766750` takes top less bottom (`0x766798`). `0x76670a` divides by the screen scale with `0x41ae40` (`0x7667ba` with `0x41ae50` for the vertical), `0x76671f`
 adds the float at `0x808120`, 0.99999, when the product is above zero, and `0x766725` truncates. `0x766737` multiplies by the scale again with `0x41ae60` (`0x7667e7` with `0x41ae70`).
+`ui::glue_765_7666a0_ratio_round_x` and `ui::glue_765_766750_ratio_round_y` run the arithmetic of `0x7666a0` and `0x766750` (two `fabs`, a `fsub`, `fmul`, `fadd` and `fdiv`) with the divisors 0.8 and 0.6.
