@@ -30,6 +30,8 @@ address	type	name	name_from	system	meaning	confidence	proof	finding
 0x465e78	void *[8]	s_createHookJumpTable		objectlayer	Holds the create notify's cases for type ids 0 to 7, each calling the type's create hook	verified	one	objectlayer/update#notify-pass
 0x466084	void *[6]	s_createPassJumpTable		objectlayer	Holds the create pass's six cases for block types 0 to 5	verified	one	objectlayer/update#block-types
 0x46767c	uint8_t[129]	s_destroyIndexTable		objectlayer	Maps a type mask minus 1 to the destroy handler's case: the eight masks to the destructor call	verified	one	objectlayer/update#destroy-object
+0x467ac8	void *[3]	s_cases467800		ui	Holds the two destructor arms and the skip arm of the manager's destruction 0x467800	verified	one	ui/worldenter#a-world-transfer
+0x467ad4	uint8_t[129]	s_destroyTypeMap		ui	Maps an object type value to the destructor arm or the skip arm of the manager's destruction	verified	one	ui/worldenter#a-world-transfer
 0x46aaac	void *[4]	s_glueSignatureJumpTable		glue	Holds the four case addresses of the glue build's switch on the signature check's answer	verified	one	glue/manager#signature-and-digest-check
 0x46b7a8	void *[12]	s_statusDialogClickCases		glue	Holds the case addresses of the status-dialog click 0x46b720 for screen states 0 to 11	verified	one	glue/flow#screen-states
 0x46c2ac	void *[5]	s_logonStateCases		glue	Holds the case addresses of the per-frame update's logon arm for logon states 5 to 9	verified	one	glue/flow#logon-arm
@@ -47,7 +49,10 @@ address	type	name	name_from	system	meaning	confidence	proof	finding
 0x47911c	void *[15]	s_equipTypeJumps		charactermodel	Holds the arm of the equip by inventory type	verified	one	charactermodel/equipment#entry-points
 0x479158	const uint8_t[27]	s_equipTypeArms		charactermodel	Maps an inventory type to an arm of the equip jump table	verified	one	charactermodel/equipment#entry-points
 0x47a0a8	void *[5]	s_sheathAttachJumps		charactermodel	Holds the arm of the sheath attachment by sheathe type	verified	one	charactermodel/equipment#held-items
+0x48083c	uint32_t[5]	s_worldPickCaseTargets		ui	Holds the jump targets of 0x480780 for unit, player, game object, corpse and refused types	verified	one	ui/worldpick#the-candidate-filters
 0x480850	uint8_t[121]	s_worldPickTypeCaseTable		ui	Maps an object type mask less 9 to the four cases of 0x480780: unit, player, game object, corpse, else 4	verified	one	spell/targeting#object-pick-filters
+0x480d00	uint32_t[4]	s_hitTestValueTargets		ui	Holds the jump targets of 0x480c90 for unit, game object, corpse and other types	verified	one	ui/worldpick#the-candidate-filters
+0x480d10	uint8_t[121]	s_hitTestValueCaseTable		ui	Maps an object type mask less 9 to the cases of 0x480c90: unit and player 0, game object 1, corpse 2, else 3	verified	one	ui/worldpick#the-candidate-filters
 0x4901c8	const uint32_t[4]	s_signatureAnswerCases		ui	Holds the four case addresses CGGameUI::Initialize jumps through on the FrameXML signature answer	verified	one	ui/framexml#building-the-game-interface
 0x492ab8	void *[4]	s_hoverKindArms		ui	Holds the four arms of the mouseover kind switch of 0x492890	verified	one	ui/tooltipobject#the-publisher
 0x492ac8	uint8_t[121]	s_hoverKindMap		ui	Maps an object type mask minus 9 to an arm of the mouseover kind switch	verified	one	ui/tooltipobject#the-publisher
@@ -55,8 +60,13 @@ address	type	name	name_from	system	meaning	confidence	proof	finding
 0x494b54	uint8_t[12]	s_protectedGateTagArm		ui	Holds the arm index of each action gate tag 0 to 11	verified	one	ui/protected#protected-action-gate
 0x494f40	void *[7]	s_cases494e20		ui	Holds the 7 case addresses of the switch in 0x494e20	inferred	none	
 0x496888	void *[4]	s_cases496720		ui	Holds the 4 case addresses of the switch in 0x496720	inferred	none	
+0x499a64	void *[5]	s_cases498a60		ui	Holds the five line-state arms of the settings loader 0x498a60	verified	one	ui/chatwindows#settings-file-reader
+0x49a6dc	void *[2]	s_cases49a6c0		ui	Holds the keep and skip arms of the history type test 0x49a6c0	verified	one	ui/chatevents#the-history-ring
+0x49a6e4	uint8_t[93]	s_caseIndexes49a6c0		ui	Holds 1 for each chat type the history keeps	verified	one	ui/chatevents#the-history-ring
 0x49afe0	void *[5]	s_cases49a870		ui	Holds the 5 case addresses of the switch in 0x49a870	inferred	none	
 0x49aff4	uint8_t[92]	s_caseIndexes49a870		ui	Holds the 92 case indexes of the switch in 0x49a870	inferred	none	
+0x49b050	void *[5]	s_cases49a870Log		ui	Holds the five log-line arms of the chat line function	verified	one	ui/chatevents#the-chat-log-line
+0x49b064	uint8_t[75]	s_caseIndexes49a870Log		ui	Maps chat types 17 to 91 to a log-line arm	verified	one	ui/chatevents#the-chat-log-line
 0x49c60c	void *[32]	s_cases49bf80		ui	Holds the 32 case addresses of the switch in 0x49bf80	inferred	none	
 0x49e45c	void *[4]	s_cases49e1c0		ui	Holds the 4 case addresses of the switch in 0x49e1c0	inferred	none	
 0x4ab604	void *[4]	s_cases4ab4a0		ui	Holds the 4 case addresses of the switch in 0x4ab4a0	inferred	none	
@@ -65,14 +75,20 @@ address	type	name	name_from	system	meaning	confidence	proof	finding
 0x4ad1a0	uint8_t[16]	s_caseIndexes4ad050		ui	Holds the 16 case indexes of the switch in 0x4ad050	inferred	none	
 0x4bdbe8	void *[4]	s_cases4bdb70		ui	Holds the 4 case addresses of the switch in 0x4bdb70	inferred	none	
 0x4bfa08	void *[23]	s_cases4bf720		ui	Holds the 23 case addresses of the switch in 0x4bf720	inferred	none	
-0x4ca3a4	void *[5]	s_cases4ca230		ui	Holds the 5 case addresses of the switch in 0x4ca230	inferred	none	
+0x4ca3a4	void *[5]	s_meetingStoneQueueArms		ui	Holds the five case addresses of the queue message's status switch	verified	one	ui/meetingstone#the-queue-message
+0x4ca4d4	void *[5]	s_meetingStoneMessageArms		ui	Holds the five case addresses of the meeting stone status message switch	verified	one	ui/meetingstone#the-status-messages
+0x4ca4e8	uint8_t[37]	s_meetingStoneMessageMap		ui	Maps the opcodes 0x297 to 0x2bb to the five arms of the status message switch	verified	one	ui/meetingstone#the-status-messages
 0x4cad98	void *[5]	s_cases4cacb0		ui	Holds the 5 case addresses of the switch in 0x4cacb0	inferred	none	
 0x4cadac	uint8_t[11]	s_caseIndexes4cacb0		ui	Holds the 11 case indexes of the switch in 0x4cacb0	inferred	none	
-0x4d0f44	void *[8]	s_cases4d0d50		ui	Holds the 8 case addresses of the switch in 0x4d0d50	inferred	none	
+0x4d0f44	void *[8]	s_guildSortKeyArms		ui	Holds the eight case addresses of the comparator's key switch	verified	one	ui/guild#the-roster-order
 0x504b44	void *[14]	s_cases504540		ui	Holds the 14 case addresses of the switch in 0x504540	inferred	none	
 0x504b7c	uint8_t[28]	s_caseIndexes504540		ui	Holds the 28 case indexes of the switch in 0x504540	inferred	none	
+0x507590	void *[9]	s_serverTokenArms		ui	Holds the nine arms of the server text token handler 0x5070a0	verified	one	ui/questtext#the-tokens
+0x5075b4	uint8_t[54]	s_serverTokenIndexes		ui	Maps a token letter from B to w to its arm	verified	one	ui/questtext#the-tokens
 0x5080e0	void *[22]	s_tokenArms		ui	Holds the 22 arms of the description token switch of 0x507710	verified	one	ui/spelltokens#the-token-syntax
 0x508138	uint8_t[58]	s_caseIndexes507710		ui	Holds the 58 case indexes of the switch in 0x507710	inferred	none	
+0x51bc84	void *[5]	s_unitWatchLengthArms		ui	Holds the five case addresses that set a unit field watcher's length	verified	one	ui/unittokens#unit-field-events
+0x51bc98	uint8_t[175]	s_unitWatchLengthSelector		ui	Holds a byte per unit field index that selects the watcher length arm	verified	one	ui/unittokens#unit-field-events
 0x52e4fc	void *[13]	s_cases52b650		ui	Holds the 13 case addresses of the switch in 0x52b650	inferred	none	
 0x52f7c4	void *[5]	s_cases52e610		ui	Holds the 5 case addresses of the switch in 0x52e610	inferred	none	
 0x52f7d8	uint8_t[59]	s_chanceEffectMap		ui	Maps the first effect minus 20 to an arm of the chance line switch	verified	one	ui/tooltipspellreq#the-chance-lines
@@ -287,10 +303,13 @@ address	type	name	name_from	system	meaning	confidence	proof	finding
 0x718788	void *[5]	s_m2BillboardTable		models	Holds the jump targets of the billboard cases	verified	one	animation/billboards#billboard-cases
 0x71879c	uint8_t[57]	s_m2BillboardIndex		models	Maps a bone's billboard flags minus 8 to a billboard case	verified	one	animation/billboards#billboard-cases
 0x768c44	void *[9]	s_dragGripArms		ui	Holds the nine grip arms of 0x768710, one per anchor point	verified	one	ui/resizebounds#the-drag
+0x77ac1c	void *[4]	s_cases77abb0		ui	Holds the arms that map a classified language to the edit box's language index	verified	one	ui/inputlanguage#the-language-index
 0x7a3054	void *[3]	s_pointXCases		ui	Holds the three case addresses of the relative point x getter	verified	one	ui/anchors#relative-point-coordinates
 0x7a3060	uint8_t[9]	s_pointXCaseIndex		ui	Holds the case of each anchor point for the x getter: 0, 1, 2 repeated	verified	one	ui/anchors#relative-point-coordinates
 0x7a3134	void *[3]	s_pointYCases		ui	Holds the three case addresses of the relative point y getter	verified	one	ui/anchors#relative-point-coordinates
 0x7a3140	uint8_t[9]	s_pointYCaseIndex		ui	Holds the case of each anchor point for the y getter: 0, 0, 0, 1, 1, 1, 2, 2, 2	verified	one	ui/anchors#relative-point-coordinates
+0x7a3850	void *[6]	s_cases7a37e0		ui	Holds the six button name arms of the hyperlink click firer 0x7a37e0	verified	one	ui/hyperlinks#the-three-hyperlink-scripts
+0x7a3868	uint8_t[16]	s_caseIndexes7a37e0		ui	Maps a button mask to a button name arm, 5 for none	verified	one	ui/hyperlinks#the-three-hyperlink-scripts
 0x7c229c	void *[4]	s_circleBoxModeCases		cmath	Holds the four mode case addresses of the circle against a box test 0x7c2040	verified	one	cmath/geometry#circle-and-point-against-a-box
 0x7c5468	void *[5]	s_displacementCases		collision	Holds the five case labels of the displacement dispatcher 0x7c5360	verified	one	collision/kinematics#displacement-dispatcher
 0x7c547c	uint8_t[15]	s_displacementCaseIndex		collision	Holds the case index for modes 1 to 15 of the displacement dispatcher	verified	one	collision/kinematics#displacement-dispatcher
@@ -398,11 +417,14 @@ address	type	name	name_from	system	meaning	confidence	proof	finding
 0x804498	const float	s_float41200000At804498		ui	Holds the float 10 (0x41200000)	inferred	none	
 0x8044a4	const float	s_float41f00000		ui	Holds the float 30 (0x41f00000)	inferred	none	
 0x8044b0	const float	s_float41200000At8044b0		ui	Holds the float 10 (0x41200000)	inferred	none	
+0x8044cc	float	s_corpseRange		ui	Holds 40.0, the corpse range in yards	verified	one	ui/deathui#corpse-range-events
 0x8044d0	const float	s_float41a00000At8044d0		ui	Holds the float 20 (0x41a00000)	inferred	none	
 0x804510	const float	s_float42240000		ui	Holds the float 41 (0x42240000)	inferred	none	
 0x804518	const uint32_t			ui	Holds a dword that Script::SetWorldDetail reads; not read here	inferred	none	
 0x804524	const float			ui	Holds the first float of a table that Script::GetWorldDetail, Script::SetWorldDetail read; not read here	inferred	none	
 0x804550	const uint32_t			ui	Holds a dword its object file's code reads; not read here	inferred	none	
+0x804554	float	s_shotUnloadRange		ui	Holds 30.0, the camera distance beyond which a new cinematic shot unloads the areas	verified	one	ui/distancegates#thresholds
+0x804558	float	s_shotEndRange		ui	Holds 30.0, the camera distance beyond which the end of a cinematic unloads the areas	verified	one	ui/distancegates#thresholds
 0x804570	const float	s_float3f9fbe77		unassigned	Holds the float 1.248 (0x3f9fbe77)	inferred	none	
 0x804578	const double	s_double3f70101010101010		ui	Holds the double 0.00392156862745098 (0x3f70101010101010)	inferred	none	
 0x804580	const float	s_float3f8ccccd		ui	Holds the float 1.1 (0x3f8ccccd)	inferred	none	
@@ -411,10 +433,11 @@ address	type	name	name_from	system	meaning	confidence	proof	finding
 0x80458c	const float	s_float768		ui	Holds 768.0, the interface height the automatic scale divides by	verified	one	ui/uiscale#the-automatic-scale
 0x804594	void *[11]			ui	Holds 11 function addresses its object file's code stores; not read here	inferred	none	
 0x8045c0	void *[40]	s_guiButtonVtable		ui	Holds the 40 virtual function slots of a CSimpleButton subclass the game interface creates	verified	one	ui/hover#the-notifies-by-class
-0x8046d8	const uint32_t			ui	Holds a dword its object file's code reads; not read here	inferred	none	
+0x8046d8	const uint32_t[14]	s_profanityChatTypes		ui	Holds the 14 chat types whose lines are profanity masked	verified	one	ui/chatfilter#which-lines-are-filtered
 0x804710	uint8_t[94][67]	s_chatTypeInfo		ui	Holds each chat type's name and colour, 67 bytes a type	verified	one	objectlayer/combatlog#a-line
-0x805fb0	const uint32_t			ui	Holds a dword that Script::GetChatWindowMessages, Script::AddChatWindowMessages read; not read here	inferred	none	
-0x806458	const uint8_t			ui	Holds a byte its object file's code reads; not read here	inferred	none	
+0x805fb0	ChatMessageGroup[68]	s_chatMessageGroups		ui	Holds the 68 message groups a window can show	verified	one	ui/chatwindows#message-groups-of-a-window
+0x8062e0	const uint32_t[94]	s_chatTypeEvents		ui	Holds the event id each of the 94 chat types fires	verified	one	ui/chatevents#the-ten-event-arguments
+0x806458	char[8]	s_maskCharacters		ui	Holds the mask characters !@#$%^&*	verified	one	ui/chatfilter#masking
 0x806498	const double	s_double406fe00000000000		ui	Holds the double 255 (0x406fe00000000000)	inferred	none	
 0x806534	const float	s_thirtyTwo		unassigned	Holds 32.0	inferred	none	lighting/precipitation#sand
 0x80653c	const float	s_oneTwentyEight		unassigned	Holds 128.0	verified	one	lighting/clouds#cloud-cover
@@ -439,7 +462,7 @@ address	type	name	name_from	system	meaning	confidence	proof	finding
 0x807338	const float	s_float43b68000		ui	Holds the float 365 (0x43b68000)	inferred	none	
 0x80733c	const float	s_float3b338cfa		ui	Holds the float 0.002739726 (0x3b338cfa)	inferred	none	
 0x807520	const uint32_t			ui	Holds data whose address its object file's code takes; not read here	inferred	none	
-0x8076c0	const uint32_t			ui	Holds a dword that Script::GetQuestGreenRange reads; not read here	inferred	none	
+0x8076c0	uint32_t[20]	s_questGrayGaps		ui	Holds the gray-range gap by the player's level divided by 5, read by GetQuestGreenRange	verified	one	ui/unitlevels#the-gray-range
 0x807a28	const float	s_arrowModelScale		ui	Holds 0.6, the model scale of the minimap's eight arrow frames	verified	one	ui/minimapblips#blip-sizes
 0x807a3c	const float	s_float3ba3d70a		unassigned	Holds the float 0.005 (0x3ba3d70a)	inferred	none	
 0x807a40	const float	s_float3eaaaaab		unassigned	Holds the float 0.33333334 (0x3eaaaaab)	inferred	none	
@@ -486,6 +509,7 @@ address	type	name	name_from	system	meaning	confidence	proof	finding
 0x808acc	const float	s_float3fc90fdb		unassigned	Holds the float 1.5707964 (0x3fc90fdb)	inferred	none	
 0x808b5c	float	s_dragTravel		input	Holds 8.0, the travel either sum must reach for a slow release to count as a drag	verified	two	input#click-versus-drag
 0x808be4	const float			ui	Holds the first float of a table that Script::UnitSex reads; not read here	inferred	none	
+0x808bf4	float	s_five		ui	Holds 5.0, the factor of the drunk level reduction	verified	one	ui/unitlevels#unitlevel
 0x808de4	const float	s_sixtyFour		unassigned	Holds 64.0	verified	one	lighting/clouds#cloud-cover
 0x808e6c	const float	s_tooltipLineGap		ui	Holds 2.0, the gap in FrameXML units between shown tooltip lines	verified	one	ui/tooltipcontent#sizing-the-tooltip
 0x808e70	const float	s_tooltipColumnGap		ui	Holds 38.4, the gap between a line's left and right texts	verified	one	ui/tooltipcontent#sizing-the-tooltip
@@ -917,7 +941,8 @@ address	type	name	name_from	system	meaning	confidence	proof	finding
 0x81d570	const float	s_framePointPiConst		ui	Holds pi, the point getters' copy of the shared header's constant	verified	one	ui/README#frame-core-object-files
 0x81d574	const float	s_framePointTenConst		ui	Holds 10.0, the point getters' copy of the shared header's constant	verified	one	ui/README#frame-core-object-files
 0x81d578	const float	s_hyperlinkedFrameInfinityConst		ui	Holds +inf, CSimpleHyperlinkedFrame.cpp's copy of the shared header's constant	verified	one	ui/README#frame-core-object-files
-0x81d5b0	void *[40]			ui	Holds 40 function addresses its object file's code stores; not read here	inferred	none	
+0x81d5b0	void *[40]	CSimpleHyperlinkButton::vftable		ui	Holds the vtable of the hyperlink button	verified	one	ui/hyperlinks#the-two-classes
+0x81d680	void *[39]	CSimpleHyperlinkedFrame::vftable		ui	Holds the vtable of the hyperlinked frame base, with its three hyperlink firers at +0x90	verified	one	ui/hyperlinks#the-two-classes
 0x81d728	const float	s_cutoffFadeFraction		sound	Holds 0.10000002, the fraction of the cutoff the distance gain fades over	verified	one	sound/engine#distance-cutoff
 0x81d72c	const float	s_volumeLevelBias		sound	Holds 512.5, the bias that reads a volume back as a level	verified	one	sound/engine#volume-of-a-sound
 0x81d7b0	float	s_defaultDistance		camera	Holds 100.0, the default distance and eye x	verified	one	camera#properties
@@ -950,8 +975,9 @@ address	type	name	name_from	system	meaning	confidence	proof	finding
 0x81da6c	float	s_halfInvGravity		collision	Holds 1/(2g), 0.025918681 (0x3cd4536a)	verified	one	collision/falling#arc-fields-and-constants
 0x81da70	float	s_risingSpeedLimit		collision	Holds -2^-22 (0xb4800000), below which 0x7c60c0 counts a launch as rising	verified	one	collision/falling#fall-height-from-the-apex
 0x81da74	float	s_yardsPerMeter		collision	Holds 1.0936 (0x3f8bfb16), the factor the terminal velocity setters apply	verified	one	collision/falling#unreached-functions
-0x81dda8	const uint32_t			ui	Holds a dword its object file's code reads; not read here	inferred	none	
+0x81dda8	uint32_t[20]	s_difficultyGrayGaps		ui	Holds the gray-range gap by the player's level divided by 5, read by the difficulty colour	verified	one	ui/unitlevels#the-gray-range
 0x81de50	void *[40]	s_namePlateVtable		ui	Holds the 40 virtual function slots of the nameplate frame, which its constructor stores	verified	one	ui/hover#the-notifies-by-class
+0x81df88	float	s_plateLowHealthFraction		ui	Holds 0.2, the fill fraction at or below which the auto-colour is red	verified	one	ui/nameplates#bar-colour-and-values
 0x822c18	luaL_reg[9]	bitlib		lua	Pairs the bit library names bnot to mod with their functions, ending in a null pair	verified	one	ui/luastate#the-library-scripts-see
 0x822c60	luaL_reg[25]	mathlib		lua	Pairs the Lua math library's names with its C functions, ending in a null pair	verified	one	random#the-c-runtime-rand
 0x822d40	luaL_reg[9]	tab_funcs		lua	Pairs the table library names concat to remove with their functions, ending in a null pair	verified	one	ui/luastate#the-library-scripts-see
@@ -1215,11 +1241,13 @@ address	type	name	name_from	system	meaning	confidence	proof	finding
 0x8432f0	const char[26]	s_soundFriendlyUnit		ui	Holds the interface sound name GAMEHIGHLIGHTFRIENDLYUNIT played for a friendly hover target	verified	one	ui/tooltipobject#the-publisher
 0x84330c	const char[25]	s_soundHostileUnit		ui	Holds the interface sound name GAMEHIGHLIGHTHOSTILEUNIT played for a hostile hover target	verified	one	ui/tooltipobject#the-publisher
 0x843414	char[11]	s_textLootButton		ui	Holds the string "LootButton"	inferred	none	
-0x8435fc	uint32_t			ui	Holds a dword that ClientChatHandler, ClientTextEmoteHandler, HandleZoneUnderAttackPacket read and write; not read here	inferred	none	
-0x843600	uint32_t			unassigned	Holds a dword its object file's code reads and writes; not read here	inferred	none	
-0x843604	uint32_t			unassigned	Holds a dword its object file's code reads and writes; not read here	inferred	none	
-0x843608	int32_t			ui	Holds an int32_t that Script::GetGuildRecruitmentMode reads and writes; not read here	inferred	none	
-0x843628	uint32_t			unassigned	Holds a dword no instruction names directly; not read here	inferred	none	
+0x8435fc	uint32_t	s_chatDisplayHold		ui	Holds 1 while chat lines are queued instead of shown, from start-up to world entry	verified	one	ui/chatevents#the-display-latch
+0x843600	uint32_t	s_profanityFilterOn		unassigned	Holds the profanityFilter value, 1 in the file	verified	one	ui/chatfilter#the-two-options
+0x843604	uint32_t	s_spamFilterOn		unassigned	Holds the spamFilter value, 1 in the file	verified	one	ui/chatfilter#the-two-options
+0x843608	int32_t	s_guildRecruitmentAuto		ui	Holds 1 while guild recruitment joins its channel by itself	verified	one	ui/chatwindows#settings-file-reader
+0x84360c	const char *[2]	s_logPaths		ui	Holds the paths Logs\WoWChatLog.txt and Logs\WoWCombatLog.txt	verified	one	ui/chatwindows#chat-logging
+0x843614	const char *	s_guildRecruitmentOption		ui	Points at the option name written before the recruitment mode in the settings header	verified	one	ui/chatwindows#settings-file-writer
+0x843618	luaL_reg[50]	s_chatFunctions		ui	Holds the 50 name and function pairs of the Lua functions of ChatFrame.cpp	verified	one	ui/chatwindows#chat-script-functions
 0x84439c	const char[7]	s_keyLocked		ui	Holds the global string key LOCKED of the locked line	verified	one	ui/tooltipobject#the-game-object-lock-lines
 0x844538	char[3]	s_textR		unassigned	Holds the string "|r"	inferred	none	
 0x84453c	char[3]	s_textH		unassigned	Holds the string "|h"	inferred	none	
@@ -1229,12 +1257,15 @@ address	type	name	name_from	system	meaning	confidence	proof	finding
 0x84480c	const char[3]	s_listSeparator		unassigned	Holds the string comma and space that joins the names of a list	verified	one	ui/tooltipitemreq#race-and-class-lines
 0x844864	char[9]	s_textDSAt844864		ui	Holds the string "[%d]: %s"	inferred	none	
 0x844afc	char[17]	s_textUnknownLanguage		ui	Holds the string "Unknown language"	inferred	none	
-0x84506c	uint32_t			unassigned	Holds a dword that CGGameUI::HandlePacket, Script::GetCurrentMapContinent read and write; not read here	inferred	none	
-0x845070	uint32_t			unassigned	Holds a dword that CGGameUI::HandlePacket, Script::GetCurrentMapZone read and write; not read here	inferred	none	
-0x845074	uint32_t			unassigned	Holds a dword that CGGameUI::HandlePacket reads and writes; not read here	inferred	none	
+0x844d28	char[41]	s_textUsageChangeChatColor		ui	Holds the string "Usage(ChangeChatColor(chatType, r, g, b)", the usage error of ChangeChatColor	verified	one	ui/chatcolors#changechatcolor
+0x84506c	int32_t	s_mapContinent		unassigned	Holds the selected continent index, -1 for the world view, -2 for a direct area	verified	one	ui/worldmap#the-selection
+0x845070	int32_t	s_mapZone		unassigned	Holds the selected zone index within the continent, -1 for none	verified	one	ui/worldmap#the-selection
+0x845074	int32_t	s_mapDirectArea		unassigned	Holds the WorldMapArea row id of the selected instance map, -1 for none	verified	one	ui/worldmap#the-selection
 0x845374	char[26]	s_textInterfaceWorldMapSZmp		ui	Holds the string "Interface\WorldMap\%s.zmp"	inferred	none	
 0x8453c0	char[35]	s_textInterfaceMinimapMinimapArrowMdx		ui	Holds the string "Interface\Minimap\MinimapArrow.mdx"	inferred	none	
-0x8457cc	uint32_t			ui	Holds a dword that CGBattlefieldInfo::InitializeGame, HandleBattlefieldStatusPacket read and write; not read here	inferred	none	
+0x8457cc	int32_t	s_bgActiveSlot		ui	Holds the queue slot of the active battleground, -1 for none	verified	one	ui/battlefield#caches-and-lifecycle
+0x8457d0	int32_t	s_bgScoreFilter		ui	Holds the team shown first in the score list, -1 for all	verified	one	ui/battlefield#caches-and-lifecycle
+0x8457d4	const char *[2]	s_flagTokens		ui	Holds the flag token strings by faction side: the Alliance flag, then the Horde flag	verified	one	ui/worldmapmarkers#the-flag-carrier
 0x845c48	char[33]	s_textUsageGetBattlefieldInfoIndex		ui	Holds the string "Usage: GetBattlefieldInfo(index)"	inferred	none	
 0x845eac	float			ui	Holds a float that HandleQueryNextMailTimePacket, HandleReceivedMailPacket read and write; not read here	inferred	none	
 0x8468b0	char[8]	s_textSSAt8468b0		unassigned	Holds the string "%s (%s)"	inferred	none	
@@ -1273,7 +1304,8 @@ address	type	name	name_from	system	meaning	confidence	proof	finding
 0x848894	char[47]	s_textInvalidInventorySlotInGetInventorySlotInfo		ui	Holds the string "Invalid inventory slot in GetInventorySlotInfo"	inferred	none	
 0x848984	char[48]	s_textInvalidInventorySlotIn		ui	Holds the string "Invalid inventory slot in GetInventoryItemCount"	inferred	none	
 0x8489b4	char[41]	s_textUsageGetInventoryItemCountUnitSlot		ui	Holds the string "Usage: GetInventoryItemCount(unit, slot)"	inferred	none	
-0x84966c	uint32_t			ui	Holds a dword that Script::GuildControlGetRankFlags, Script::GuildControlSaveRank read and write; not read here	inferred	none	
+0x84966c	int32_t	s_guildStagedRank		ui	Holds the staged rank index of the rank control functions, -1 for none	verified	one	ui/guild#rank-control
+0x849670	uint32_t[26]	s_guildRankFlags		ui	Holds thirteen pairs of a rights mask and its staged value, in flag order	verified	one	ui/guild#rank-control
 0x849fa8	uint32_t			ui	Holds a dword its object file's code reads; not read here	inferred	none	
 0x84a0a4	uint32_t			ui	Holds a dword that Script::GetFactionInfo reads and writes; not read here	inferred	none	
 0x84b4ec	char[34]	s_textMissingHeaderQuestDesigners		ui	Holds the string "Missing header! (quest designers)"	inferred	none	
@@ -1291,6 +1323,7 @@ address	type	name	name_from	system	meaning	confidence	proof	finding
 0x84bd10	luaL_reg[21]	s_actionFunctions		unassigned	Pairs the 21 action bar Lua names with their functions	verified	one	ui/actionbar#action-slots
 0x84bf58	char[30]	s_textInterfaceButtonsSpellReset		ui	Holds the string "Interface\Buttons\Spell-Reset"	inferred	none	
 0x84bff4	char[27]	s_textUsageGetActionTextSlot		ui	Holds the string "Usage: GetActionText(slot)"	inferred	none	
+0x84c150	int32_t	s_partyLeaderIndex		ui	Holds the party slot of the group leader, -1 for the player or a leader outside the party	verified	one	ui/party#the-group-leader
 0x84c36c	char[28]	s_textDebugOnlyLockNoticeS		ui	Holds the string "(Debug-Only Lock Notice) %s"	inferred	none	
 0x84c42c	char[53]	s_textUsageSetLootMethodMethodMasterThreshold		ui	Holds the string "Usage: SetLootMethod("method" [,master][,threshold])"	inferred	none	
 0x84c538	uint32_t[20]	s_minimapMethods		ui	Holds the 10 pairs of a name and a function of the Minimap methods	verified	one	ui/minimap#lua-methods
@@ -1353,6 +1386,7 @@ address	type	name	name_from	system	meaning	confidence	proof	finding
 0x8500b8	void *[52]	s_bindingCommands		input	Pairs the 26 movement and mouse binding commands' names with their handlers	verified	one	input#mouse-commands
 0x850340	char[53]	s_inputControlSourcePath		input	Holds the source path the object file asserts with, ending InputControl.cpp	verified	one	input#input-state
 0x850378	char[51]	s_inputControlTag		input	Holds the path ending InputControl.h, the allocation tag of CInputControl	verified	one	input#input-state
+0x8503d8	char *[7]	s_unitTokenBuffers		ui	Holds the seven pointers to the buffers that receive the tokens naming a GUID	verified	one	ui/unittokens#the-tokens-of-a-guid
 0x8503f4	uint32_t			ui	Holds a dword that LoadGameScriptFunctions, UnloadGameScriptFunctions read; not read here	inferred	none	
 0x850424	uint32_t			ui	Holds a dword that Script::UnitClassification reads; not read here	inferred	none	
 0x850438	uint32_t			ui	Holds a dword its object file's code reads; not read here	inferred	none	
@@ -1700,7 +1734,7 @@ address	type	name	name_from	system	meaning	confidence	proof	finding
 0x872c98	char[18]	s_textInFunctionS		ui	Holds the string " in function `%s'"	inferred	none	
 0x872cb4	char[5]	s_debugstackElision		ui	Holds ... and a newline, the line debugstack writes for elided levels	verified	one	ui/luastate#debugstacks-lines
 0x872cbc	char[11]	s_compatChunkName		ui	Holds compat.lua	verified	one	ui/luastate#what-a-new-state-holds
-0x872cc8	char[8]	s_getTextName		ui	Holds GetText	verified	one	ui/script#text-counts-and-running-code
+0x872cc8	char[8]	s_getTextName		ui	Holds GetText	verified	one	ui/chatserver#the-text-lookup
 0x872cd0	char[15]	s_getPluralIndexName		ui	Holds GetPluralIndex	verified	one	ui/script#text-counts-and-running-code
 0x872ce0	char[4]	s_assignText		ui	Holds " = ", written between a saved name and its value	verified	one	ui/addons#the-saved-variables-format
 0x872e50	char[17]	s_textErrorLoadingS		ui	Holds the string "Error loading %s"	inferred	none	
@@ -1747,6 +1781,7 @@ address	type	name	name_from	system	meaning	confidence	proof	finding
 0x879810	char[24]	s_textFrameSIsNotMovable		ui	Holds the string "Frame %s is not movable"	inferred	none	
 0x879828	char[26]	s_textFrameSIsNotResizable		ui	Holds the string "Frame %s is not resizable"	inferred	none	
 0x879844	char[37]	s_textFrameSIsNotMovableOrResizable		ui	Holds the string "Frame %s is not movable or resizable"	inferred	none	
+0x879a5c	const char *[4]	s_inputLanguageNames		ui	Holds the names ROMAN, KOREAN, CHINESE and JAPANESE	verified	one	ui/inputlanguage#the-language-index
 0x879b78	char[13]	s_textIgnoreArrows		ui	Holds the string "ignoreArrows"	inferred	none	
 0x879c8c	char[15]	s_onEnterPressed		ui	Holds the script name OnEnterPressed of an edit box	verified	one	ui/protected#input-event-flags
 0x879cac	char[3]	s_editBoxPipeText		ui	Holds ||, the text an edit box inserts for a typed pipe	verified	one	ui/editbox#typed-characters
@@ -1850,11 +1885,12 @@ address	type	name	name_from	system	meaning	confidence	proof	finding
 0x8826d8	uint32_t	s_readScanning		cvar	Points at the readScanning option's record	inferred	none	
 0x882704	uint32_t			client	Holds a dword that ClientRegisterConsoleCommands reads and writes; not read here	inferred	none	
 0x882720	uint32_t	s_readTos		cvar	Points at the readTOS option's record	inferred	none	
-0x88272c	uint32_t			unassigned	Holds a dword that ClientInitializeGame, Script::GetZonePVPInfo read and write; not read here	inferred	none	
+0x88272c	uint32_t	s_pvpRealmGate		unassigned	Holds 1 when the selected realm type allows player killing, set at world entry	verified	one	ui/zonetext#the-realm-gate
 0x882730	uint32_t	s_iniRegion		client	Holds the Region value read from the WoW Config section of Wow.ini, 0 by default	inferred	none	
 0x882734	uint32_t			client	Holds a dword that ClientInitializeGame, ClientDestroyGame read and write; not read here	inferred	none	
 0x882738	uint32_t	s_quitCode		client	Holds the quit code 0x401560 stores, shown from Startup_Strings.dbc at teardown when nonzero	inferred	none	
 0x882748	const char[1]	s_emptyString		unassigned	Holds the empty string	verified	one	ui/tooltipcontent#localized-lines
+0x882894	float	s_loadProgressDrawn		ui	Holds the last progress fraction the loading bar drew, 0 when the loading screen starts	verified	one	ui/worldenter#handlers-and-frames-during-the-load
 0x882be0	uint32_t	s_loadingScreen		loadingscreen	Holds the loading screen object, or null	inferred	none	
 0x882e04	uint32_t			loadingscreen	Holds a dword that EndLoadingScreen reads and writes; not read here	inferred	none	
 0x882e10	uint32_t			loadingscreen	Holds a dword that SetLoadingScreenTip, BeginLoadingScreen, EndLoadingScreen read and write; not read here	inferred	none	
@@ -2101,12 +2137,14 @@ address	type	name	name_from	system	meaning	confidence	proof	finding
 0xb4b3c8	uint64_t	s_cursorItemContainerGuid		ui	Holds the GUID of the container the item payload came from	verified	one	ui/cursor#payload-kinds
 0xb4b3e4	uint32_t	s_playerHasControl		ui	Holds 1 while the player controls the character; 0 at load, written by 0x4958e0 and two stores of 1	verified	one	spell/checks#lost-control-exemption
 0xb4b3f4	uint8_t			ui	Holds a byte that CGGameUI::Initialize, CGGameUI::Reload read and write; not read here	inferred	none	
+0xb4b3f8	char *	s_zoneText		ui	Holds the zone name GetZoneText pushes, set by the zone commit	verified	one	ui/zonetext#the-commit-and-its-events
 0xb4b400	uint32_t	s_cursorItemSourceSlot		ui	Holds the slot the item payload came from	verified	one	ui/cursor#payload-kinds
-0xb4b404	uint32_t			ui	Holds a dword that Script::GetRealZoneText, CGGameUI::ShutdownGame read and write; not read here	inferred	none	
+0xb4b404	char *	s_realZoneText		ui	Holds the zone name before the map object override that GetRealZoneText pushes	verified	one	ui/zonetext#the-commit-and-its-events
 0xb4b40c	uint32_t	s_cursorItemSplitCount		ui	Holds the split count of the item payload, 0 for a whole stack	verified	one	ui/cursor#payload-kinds
 0xb4b410	uint32_t			unassigned	Holds a dword that CGGameUI::Initialize reads and writes; not read here	inferred	none	
 0xb4b41c	uint32_t	s_cursorPreviewEntry		ui	Holds the entry of the preview payload, nonzero for kinds 5, 7 and 9	verified	one	ui/cursor#payload-kinds
 0xb4b420	uint32_t	s_cursorPreviewIndex		ui	Holds the index of the preview payload, the vendor row for kind 5	verified	one	ui/cursor#payload-kinds
+0xb4b424	uint8_t	s_worldEntered		ui	Holds 1 from the enter cascade to the leave function, the once-per-world latch	verified	one	ui/worldenter#the-enter-cascade
 0xb4b440	uint32_t			ui	Holds a dword that Script::GetMultisampleFormats, Script::GetCurrentMultisampleFormat read and write; not read here	inferred	none	
 0xb4b444	uint32_t			ui	Holds a dword that Script::GetMultisampleFormats, Script::GetCurrentMultisampleFormat read and write; not read here	inferred	none	
 0xb4b44c	void *	s_uiParent		ui	Points to the frame named UIParent, which the interface scale is set on	verified	one	ui/uiscale#applying-a-scale
@@ -2121,21 +2159,27 @@ address	type	name	name_from	system	meaning	confidence	proof	finding
 0xb4d918	float			ui	Holds a float that Script::CanInspect, Script::CheckInteractDistance read and write; not read here	inferred	none	
 0xb4d920	char[260]	s_coinIconPath		ui	Holds the coin icon path GetCoinIcon returns	verified	one	ui/cursormoney#coin-icons
 0xb4da24	uint32_t	s_cursorGridShown		ui	Holds 1 when a pick-up showed the action or pet bar grid	verified	one	ui/cursor#payload-kinds
-0xb4da28	uint32_t			ui	Holds a dword that Script::GetMinimapZoneText, CGGameUI::ShutdownGame read and write; not read here	inferred	none	
+0xb4da28	char *	s_minimapZoneText		ui	Holds the subzone-else-zone name GetMinimapZoneText pushes	verified	one	ui/zonetext#the-text-functions
 0xb4da40	char[2048]	s_lastDisplayedMessage		ui	Holds the text DisplayError last formatted; empty at load	inferred	none	spell/failures#display-log-and-events
 0xb4e248	uint64_t	s_cursorItemGuid		ui	Holds the GUID of the item payload	verified	one	ui/cursor#payload-kinds
-0xb4e260	uint8_t			ui	Holds a byte that CGGameUI::Initialize reads and writes; not read here	inferred	none	
+0xb4e258	float	s_interactRange3Squared		ui	Holds 10 squared, the range of CheckInteractDistance index 3	verified	one	ui/distancegates#thresholds
+0xb4e260	uint8_t	s_loginArmed		ui	Holds 1 from the interface initializer until the enter cascade fires PLAYER_LOGIN	verified	one	ui/worldenter#arming-player_login
 0xb4e264	void *	s_cinematicSequenceRow		ui	Holds the CinematicSequences row being played	verified	one	uicamera/cinematic#starting-a-sequence
 0xb4e268	uint32_t	s_cinematicSequenceSound		ui	Holds the handle of the sequence's own sound	verified	one	uicamera/cinematic#starting-a-sequence
 0xb4e26c	uint32_t	s_cinematicShotIndex		ui	Holds the index of the playing shot in the sequence row	verified	one	uicamera/cinematic#stepping-and-ending
 0xb4e270	void *	s_cinematicShotRow		ui	Holds the CinematicCamera row of the playing shot	verified	one	uicamera/cinematic#playing-a-shot
 0xb4e274	uint32_t	s_cinematicNarration		ui	Holds the handle of the shot's own sound	verified	one	uicamera/cinematic#playing-a-shot
 0xb4e278	uint32_t	s_cinematicMusicPaused		ui	Holds 1 when the cinematic paused the music and must restore it	verified	one	uicamera/cinematic#starting-a-sequence
-0xb4e2ac	float			ui	Holds a float its object file's code reads and writes; not read here	inferred	none	
+0xb4e280	char *	s_subZoneText		ui	Holds the subzone name GetSubZoneText pushes, set by the zone commit	verified	one	ui/zonetext#the-commit-and-its-events
+0xb4e284	float[3]	s_corpsePosition		ui	Holds the cached corpse position x, y and z	verified	one	ui/deathui#the-corpse-location
+0xb4e29c	float	s_interactRange2Squared		ui	Holds 11.11 squared, the range of CheckInteractDistance index 2	verified	one	ui/distancegates#thresholds
+0xb4e2a0	float	s_interactRange4Squared		ui	Holds 30 squared, the range of CheckInteractDistance index 4	verified	one	ui/distancegates#thresholds
+0xb4e2ac	float	s_corpseRangeSquared		ui	Holds 1600.0, the squared range of the corpse range events	verified	one	ui/deathui#corpse-range-events
 0xb4e2b0	void *	s_uiScaleOption		ui	Points to the uiScale option's record	verified	one	ui/uiscale#the-two-options
 0xb4e2b4	void *	s_useUiScaleOption		ui	Points to the useUiScale option's record	verified	one	ui/uiscale#the-two-options
 0xb4e2b8	void *	s_cvarDeselectOnClick		ui	Holds the CVar record of deselectOnClick, default 1	verified	one	ui/mouseover#the-nothing-leg
 0xb4e2bc	void *	s_showLootSpamVar		ui	Holds the showLootSpam variable, whose value gates the roll lines and picks the winner line	verified	one	objectlayer/lootroll#the-roll-announcement
+0xb4e2c0	float	s_interactRangeSquared		ui	Holds the squared leash of the open interaction, 196.0 for a player and the opener's range otherwise	verified	one	ui/questshare#the-offer-leash
 0xb4e2c8	uint64_t	s_mouseoverGuid		ui	Holds the GUID of the published mouseover object, 0 for none	verified	one	ui/mouseover#publishing-the-mouseover
 0xb4e2d0	uint64_t	s_interactionTargetGuid		ui	Holds the GUID of the unit the interaction windows belong to	inferred	none	objectlayer/interaction#talking-to-an-npc
 0xb4e2d8	uint64_t	s_targetGuid		ui	Holds the selected target's GUID, which the checks read when given none	inferred	none	spell/checks#usability-predicate
@@ -2152,53 +2196,101 @@ address	type	name	name_from	system	meaning	confidence	proof	finding
 0xb4e310	uint32_t	s_inCinematic		ui	Holds 1 from the start of a cinematic to its end	verified	one	uicamera/cinematic#what-else-reads-the-cinematic-word
 0xb4e314	uint32_t	s_zoneId		ui	Holds the player's zone, read into party records and the binder dialog	inferred	none	objectlayer/party#the-party-member-record
 0xb4e318	uint32_t	s_subZoneId		ui	Holds the player's area, which the binder dialog prefers	inferred	none	objectlayer/interaction#confirmation-dialogs
-0xb4e328	uint32_t			ui	Holds a dword that Script::RetrieveCorpse reads and writes; not read here	inferred	none	
-0xb4e330	uint32_t			ui	Holds a dword its object file's code reads and writes; not read here	inferred	none	
-0xb4e338	uint32_t			ui	Holds a dword its object file's code reads and writes; not read here	inferred	none	
+0xb4e31c	int32_t	s_corpseDisplayMap		ui	Holds the map id the corpse arrow is drawn on, -1 for no cached corpse	verified	one	ui/deathui#the-corpse-location
+0xb4e320	int32_t	s_corpseMap		ui	Holds the map id of the corpse itself	verified	one	ui/deathui#the-corpse-location
+0xb4e324	uint32_t	s_corpseInRange		ui	Holds 1 while the cached corpse position is within range of the player	verified	one	ui/deathui#corpse-range-events
+0xb4e328	uint64_t	s_corpseGuid		ui	Holds the GUID of the active player's own corpse that RetrieveCorpse sends	verified	one	ui/deathui#retrievecorpse
+0xb4e330	uint64_t	s_areaSpiritHealerGuid		ui	Holds the GUID of the spirit healer in range, 0 for none	verified	one	ui/popups#the-area-spirit-healer
+0xb4e338	uint32_t	s_areaSpiritHealerDeadline		ui	Holds the clock value at which the spirit healer resurrection happens, 0 when unset	verified	one	ui/popups#the-area-spirit-healer
 0xb4e33c	uint32_t			ui	Holds the rest start time 0x496240 stores; nothing reads it	verified	one	objectlayer/playermessages#error-notices
-0xb4e340	uint32_t	s_releaseTime		ui	Holds the time the release timer ends, 0 when off	verified	one	objectlayer/players#death
-0xb4e34c	uint32_t			ui	Holds a dword that CGGameUI::Initialize reads and writes; not read here	inferred	none	
-0xb4e350	uint32_t			ui	Holds a dword that CGGameUI::Initialize reads and writes; not read here	inferred	none	
-0xb4e354	uint32_t			ui	Holds a dword that Script::GetSummonConfirmAreaName reads and writes; not read here	inferred	none	
-0xb4e358	uint32_t			ui	Holds a dword that Script::GetSummonConfirmSummoner, Script::ConfirmSummon read and write; not read here	inferred	none	
-0xb4e35c	uint32_t			ui	Holds a dword that Script::GetSummonConfirmSummoner, Script::ConfirmSummon read and write; not read here	inferred	none	
+0xb4e340	uint32_t	s_releaseTime		ui	Holds the time the release timer ends, 0 when off	verified	one	ui/deathui#the-release-timer
+0xb4e344	uint8_t	s_noReleaseTimer		ui	Holds 1 when the map has no release timer, 0 when the timer is armed or unset	verified	one	ui/deathui#the-release-timer
+0xb4e348	uint32_t	s_corpseReclaimDeadline		ui	Holds the clock value at which the corpse can be reclaimed, 0 when unset	verified	one	ui/deathui#the-reclaim-delay
+0xb4e34c	uint32_t	s_instanceBootDeadline		ui	Holds the clock value at which the player is removed from the instance, 0 when unset	verified	one	ui/popups#the-instance-boot-countdown
+0xb4e350	uint32_t	s_summonDeadline		ui	Holds the clock value at which the summon request expires, 0 when unset	verified	one	ui/summon#the-request
+0xb4e354	int32_t	s_summonZone		ui	Holds the AreaTable id of the summon's destination	verified	one	ui/summon#the-request
+0xb4e358	uint64_t	s_summonerGuid		ui	Holds the GUID of the player who summoned, 0 before the first request	verified	one	ui/summon#the-request
+0xb4e360	uint32_t	s_playTimeWarnDeadline		ui	Holds the clock value at which the remaining billing time ends, 0 when not armed	verified	one	ui/billing#the-warning-timer
+0xb4e364	uint32_t	s_playTimeWarnA		ui	Holds a word of the play time warning that start-up zeroes and the poller reads and writes	verified	one	ui/billing#the-warning-timer
+0xb4e368	uint32_t	s_playTimeWarnB		ui	Holds a word of the play time warning that start-up zeroes and the poller reads and writes	verified	one	ui/billing#the-warning-timer
 0xb4e370	uint32_t			ui	Holds a dword its object file's code reads and writes; not read here	inferred	none	
 0xb4e374	uint32_t			ui	Holds a dword its object file's code reads and writes; not read here	inferred	none	
 0xb4e378	uint32_t			unassigned	Holds a dword that ClntObjMgrCreate, Script::IsInInstance read and write; not read here	inferred	none	
 0xb4e37c	uint32_t			ui	Holds a dword its object file's code reads and writes; not read here	inferred	none	
 0xb4e3c0	uint32_t			ui	Holds a dword that Script::BindEnchant, Script::ReplaceEnchant read and write; not read here	inferred	none	
 0xb4e3c4	uint32_t			ui	Holds a dword that Script::BindEnchant, Script::ReplaceEnchant read and write; not read here	inferred	none	
+0xb4e3cc	float[4]	s_interactRangesSquared		ui	Holds the squared ranges of CheckInteractDistance indices 1 to 4, copied at the first call	verified	one	ui/distancegates#thresholds
 0xb4e3dc	uint32_t			ui	Holds a dword that Script::LoadAddOn reads and writes; not read here	inferred	none	
 0xb4e3e0	uint32_t			ui	Holds a dword that Script::LoadAddOn reads and writes; not read here	inferred	none	
 0xb4e3e4	uint32_t	s_forbiddenSignalGuard		ui	Holds 1 while 0x494a50 signals a forbidden action	verified	one	ui/luastate#the-context-word
-0xb4e4f0	uint32_t			ui	Holds a dword that CGChat::InitializeGame reads and writes; not read here	inferred	none	
-0xb4e518	uint8_t			ui	Holds a byte that CGChat::InitializeGame, Script::ChangeChatColor, Script::ResetChatColors read; not read here	inferred	none	
-0xb4fe04	uint32_t			ui	Holds a dword that HandleZoneUnderAttackPacket, HandleDefenseMessagePacket read and write; not read here	inferred	none	
-0xb4fe50	uint8_t			ui	Holds a byte that CGChat::InitializeGame, Script::GetChatWindowInfo read and write; not read here	inferred	none	
-0xb4ff78	uint32_t			ui	Holds a dword that CGChat::InitializeGame reads and writes; not read here	inferred	none	
-0xb6e5c4	uint32_t			ui	Holds a dword its object file's code reads and writes; not read here	inferred	none	
-0xb6e5c8	uint32_t			ui	Holds a dword that CGChat::InitializeGame reads and writes; not read here	inferred	none	
+0xb4e3f8	uint32_t[60]	s_chatHistoryTimes		ui	Holds the time each history slot was written	verified	one	ui/chatevents#the-history-ring
+0xb4e4f0	void *	s_cityAreaRow		ui	Points at the one AreaTable row whose flags include 0x200, which names a capital's channels	verified	one	ui/chatchannels#composing-a-channel-name
+0xb4e500	uint32_t	s_extraChatColorCount		ui	Holds the number of extra channel colour entries	verified	one	ui/chatcolors#the-colour-registry
+0xb4e504	void *	s_extraChatColors		ui	Points at the extra channel colour entries, 67 bytes each	verified	one	ui/chatcolors#the-colour-registry
+0xb4e518	uint8_t[94][67]	s_chatColors		ui	Holds the live chat type names and colours, seeded from the table at 0x804710	verified	one	ui/chatcolors#the-colour-registry
+0xb4fdb4	uint32_t[2]	s_loggingFlags		ui	Holds whether chat and combat logging are on, set by LoggingChat and LoggingCombat	verified	one	ui/chatwindows#chat-logging
+0xb4fdc0	uint32_t	s_pendingChatHead		ui	Holds the list head of the queued chat lines	verified	one	ui/chatevents#pending-lines
+0xb4fdc4	void *	s_pendingChatFirst		ui	Points at the first queued chat line	verified	one	ui/chatevents#pending-lines
+0xb4fdd4	uint32_t	s_deferredJoinCapacity		ui	Holds the capacity of the list of channel names the settings header asked to join	verified	one	ui/chatwindows#settings-file-lines
+0xb4fdd8	uint32_t	s_deferredJoinCount		ui	Holds the count of channel names in the deferred-join list	verified	one	ui/chatwindows#settings-file-lines
+0xb4fddc	char **	s_deferredJoins		ui	Points at the deferred-join list of channel name strings	verified	one	ui/chatwindows#settings-file-lines
+0xb4fe00	uint32_t	s_joinedChannelCount		ui	Holds the number of joined-channel slots, each 0xa0 bytes	verified	one	ui/chatchannels#joined-channel-slots
+0xb4fe04	ChatChannel *	s_joinedChannels		ui	Points at the array of joined-channel slots	verified	one	ui/chatchannels#joined-channel-slots
+0xb4fe0c	uint32_t[3]	s_pendingTextEmotes		ui	Holds the list of text emotes waiting for a performer name	verified	one	ui/chatemote#the-pending-list
+0xb4fe50	ChatWindow[10]	s_chatWindows		ui	Holds the ten chat window records	verified	one	ui/chatwindows#window-records
+0xb50440	char[128]	s_guildRecruitmentShortcut		ui	Holds the guild recruitment channel's shortcut, written once by the name composer	verified	one	ui/channelverbs#guild-recruitment-cascade
+0xb504c0	char[128]	s_guildRecruitmentName		ui	Holds the guild recruitment channel's composed capital name, written once by the name composer	verified	one	ui/channelverbs#guild-recruitment-cascade
+0xb50540	void *[2]	s_logWriters		ui	Holds the open chat log and combat log writers, null while closed	verified	one	ui/chatwindows#chat-logging
+0xb50580	char[60][2048]	s_chatHistory		ui	Holds the 60 slots of the chat history ring	verified	one	ui/chatevents#the-history-ring
+0xb6e598	uint32_t[7]	s_languageWordIndex		ui	Holds the hash table object of the language word index	verified	one	ui/chatlanguage#choosing-the-substitute
+0xb6e5b4	void *	s_languageWordBuckets		ui	Points at the bucket array of the language word index, 12 bytes a bucket	verified	one	ui/chatlanguage#choosing-the-substitute
+0xb6e5bc	uint32_t	s_languageWordMask		ui	Holds the bucket mask of the language word index, -1 while it is not built	verified	one	ui/chatlanguage#choosing-the-substitute
+0xb6e5c4	uint32_t	s_chatSettingsDirty		ui	Holds a flag the saver registration clears and channel join and leave set; no instruction reads it	verified	one	ui/chatwindows#settings-file-writer
+0xb6e5c8	uint32_t	s_chatReady		ui	Holds 1 once the settings loader has finished	verified	one	ui/chatwindows#settings-file-backfill
 0xb6e5cc	uint32_t	s_isAfk		ui	Holds whether the active player is marked AFK	verified	one	objectlayer/interaction#afk
-0xb6e5d0	uint32_t			ui	Holds a dword that HandleZoneUnderAttackPacket, HandleDefenseMessagePacket read and write; not read here	inferred	none	
-0xb6e5e0	uint32_t			ui	Holds a dword its object file's code reads and writes; not read here	inferred	none	
-0xb6e5e4	uint8_t			ui	Holds a byte its object file's code reads and writes; not read here	inferred	none	
-0xb6e5f0	uint32_t			ui	Holds a dword its object file's code reads and writes; not read here	inferred	none	
-0xb6e630	uint32_t			ui	Holds a dword that Script::UpdateMapHighlight, Script::GetMapOverlayInfo read and write; not read here	inferred	none	
-0xb6e664	uint32_t			ui	Holds a dword that Script::GetMapContinents, Script::GetMapZones read and write; not read here	inferred	none	
-0xb6e860	uint32_t			ui	Holds a dword that HandleBattlefieldListPacket reads and writes; not read here	inferred	none	
-0xb6e868	uint32_t			ui	Holds a dword that HandleBattlefieldListPacket, Script::SetSelectedBattlefield read and write; not read here	inferred	none	
-0xb6e870	float			ui	Holds a float that HandleBattlefieldListPacket reads and writes; not read here	inferred	none	
-0xb6e9d0	uint32_t			ui	Holds a dword that CGBattlefieldInfo::InitializeGame, HandleBattlefieldStatusPacket read and write; not read here	inferred	none	
-0xb6eba0	uint32_t			ui	Holds a dword that Script::SetSelectedBattlefield, Script::GetSelectedBattlefield read and write; not read here	inferred	none	
-0xb6eba4	uint32_t			ui	Holds a dword that HandleBattlefieldListPacket, Script::GetBattlefieldInfo read and write; not read here	inferred	none	
-0xb6eba8	uint32_t			ui	Holds a dword that HandleBattlefieldListPacket, Script::GetBattlefieldInfo read and write; not read here	inferred	none	
-0xb6ebac	uint32_t			ui	Holds a dword that HandleBattlefieldListPacket, Script::GetBattlefieldInfo read and write; not read here	inferred	none	
-0xb6ebb8	uint32_t			ui	Holds a dword that CGBattlefieldInfo::InitializeGame, HandleBattlefieldStatusPacket read and write; not read here	inferred	none	
-0xb6ebbc	uint32_t			ui	Holds a dword that CGBattlefieldInfo::InitializeGame, HandleBattlefieldStatusPacket read and write; not read here	inferred	none	
-0xb6ebc0	uint32_t			ui	Holds a dword that CGBattlefieldInfo::InitializeGame, HandlePvPLogDataPacket read and write; not read here	inferred	none	
-0xb6ebc4	uint32_t			ui	Holds a dword that CGBattlefieldInfo::InitializeGame, Script::GetNumBattlefieldScores read and write; not read here	inferred	none	
-0xb6ebd4	uint32_t			ui	Holds a dword that CGBattlefieldInfo::InitializeGame, HandlePvPLogDataPacket read and write; not read here	inferred	none	
-0xb6ebe0	uint32_t			ui	Holds a dword its object file's code reads and writes; not read here	inferred	none	
+0xb6e5d0	uint32_t	s_walkZone		ui	Holds the parent zone id the last zone walk read, before the walk's checks	verified	one	ui/chatchannels#the-zone-walk
+0xb6e5d4	uint32_t	s_chatHistoryNext		ui	Holds the next history slot to write, wrapping at 60	verified	one	ui/chatevents#the-history-ring
+0xb6e5d8	uint32_t	s_chatHistoryReady		ui	Holds 1 once the history ring is cleared	verified	one	ui/chatevents#the-history-ring
+0xb6e5dc	uint32_t	s_inDefenseChannel		ui	Holds 1 while a confirmed zone-scoped defence channel is joined	verified	one	ui/chatchannels#defence-channel-state
+0xb6e5e0	uint32_t	s_zoneChannelMask		ui	Holds the bit set of ChatChannels ids that join by zone, bit id-1	verified	one	ui/chatwindows#settings-file-reader
+0xb6e5e4	uint8_t	s_zoneRefreshRetry		ui	Holds 1 when the guild recruitment cascade could not act and the next zone walk runs it	verified	one	ui/chatchannels#walk-rows-not-held
+0xb6e5ec	uint8_t	s_guildNamesComposed		ui	Holds 1 once the guild recruitment names are composed	verified	one	ui/channelverbs#guild-recruitment-cascade
+0xb6e5f0	uint32_t	s_maskIndex		ui	Holds the index of the next mask character, advanced by each masked byte and wrapped at 8	verified	one	ui/chatfilter#masking
+0xb6e608	uint32_t[3]	s_orphanAreas		ui	Holds the capacity, count and data of the WorldMapArea ids that belong to no continent	verified	one	ui/worldmap#the-lists
+0xb6e628	uint32_t[4]	s_mapOverlayList		ui	Holds the WorldMapOverlay row ids shown on the map: count, capacity, data and granularity	verified	one	ui/worldmap#the-overlays
+0xb6e648	uint32_t[4]	s_mapLandmarkList		ui	Holds the landmark entries of 20 bytes: count, capacity, data and granularity	verified	one	ui/worldmap#the-landmarks
+0xb6e664	uint32_t	s_continentCount		ui	Holds the number of continent records	verified	one	ui/worldmap#the-selection
+0xb6e668	void *	s_continents		ui	Points at the continent records of 0x10024 bytes: map id, own row, zone count, zone ids	verified	one	ui/worldmap#the-selection
+0xb6e6b0	uint32_t	s_mapLandmarkCount		ui	Holds the number of landmarks GetNumMapLandmarks returns	verified	one	ui/worldmap#the-landmarks
+0xb6e6b4	uint32_t	s_mapOverlayCount		ui	Holds the number of overlays GetNumMapOverlays returns	verified	one	ui/worldmap#the-overlays
+0xb6e6b8	void *	s_worldMapArrow		ui	Points at the world map arrow model frame, 0 before it is created	verified	one	ui/worldmapmarkers#the-arrow-frame
+0xb6e6bc	void *	s_miniMapArrow		ui	Points at the battleground minimap arrow model frame, 0 before it is created	verified	one	ui/worldmapmarkers#the-arrow-frame
+0xb6e6d8	uint64_t	s_bgFlagCarrierGuid		ui	Holds the GUID of the flag carrier the last 0x2e9 packet named, 0 for none	verified	one	ui/worldmapmarkers#the-position-packet
+0xb6e6ec	uint32_t[9]	s_bgStatColumns		ui	Holds the WorldStateUI row ids of the active battleground's stat columns	verified	one	ui/battlefield#the-status-message
+0xb6e710	uint64_t[40]	s_bgPositionGuids		ui	Holds the teammate GUIDs of the last 0x2e9 packet	verified	one	ui/worldmapmarkers#the-position-packet
+0xb6e854	float	s_bgLeashSquared		ui	Holds the squared walk-away radius of the battlemaster list, 5.5555553 yards squared	verified	one	ui/battlefield#the-list-message
+0xb6e860	uint32_t[4]	s_bgInstanceList		ui	Holds the battleground instance id array: capacity, count, data pointer and growth state	verified	one	ui/battlefield#caches-and-lifecycle
+0xb6e870	float[3]	s_bgListAnchor		ui	Holds the player position when the battlemaster list arrived, zero when cleared	verified	one	ui/battlefield#the-list-message
+0xb6e880	void *[80]	s_bgScores		ui	Holds the 80 pointers to the 0x40-byte score blocks	verified	one	ui/battlefield#caches-and-lifecycle
+0xb6e9d0	uint8_t[96]	s_bgQueue		ui	Holds the three battleground queue slots of 0x20 bytes	verified	one	ui/battlefield#caches-and-lifecycle
+0xb6ea30	float[80]	s_bgPositionXY		ui	Holds the x and y world coordinates of each teammate, 8 bytes per entry	verified	one	ui/worldmapmarkers#the-position-packet
+0xb6eb94	float[2]	s_bgFlagCarrierXY		ui	Holds the flag carrier's world x and y from the last 0x2e9 packet	verified	one	ui/worldmapmarkers#the-position-packet
+0xb6eba0	uint32_t	s_bgSelectedInstance		ui	Holds the selected battleground instance id, 0 for none	verified	one	ui/battlefield#the-list-and-the-selection
+0xb6eba4	int32_t	s_bgMapId		ui	Holds the Map row id of the last battlemaster list	verified	one	ui/battlefield#the-list-message
+0xb6eba8	uint32_t	s_bgMinLevel		ui	Holds the minimum level of the listed bracket	verified	one	ui/battlefield#the-list-message
+0xb6ebac	uint32_t	s_bgMaxLevel		ui	Holds the maximum level of the listed bracket, at most 60	verified	one	ui/battlefield#the-list-message
+0xb6ebb0	uint64_t	s_bgBattlemasterGuid		ui	Holds the GUID of the battlemaster of the last list, 0 for a list without one	verified	one	ui/battlefield#caches-and-lifecycle
+0xb6ebb8	uint32_t	s_bgInstanceDeadline		ui	Holds the clock value at which the running instance expires, 0 when unset	verified	one	ui/battlefield#queue-status
+0xb6ebbc	uint32_t	s_bgInstanceStamp		ui	Holds the clock value minus the instance run time, 0 when unset	verified	one	ui/battlefield#queue-status
+0xb6ebc0	uint32_t	s_bgScoreCount		ui	Holds the row count of the last score message, not clamped to 80	verified	one	ui/battlefield#names-and-the-score-order
+0xb6ebc4	uint32_t	s_bgFilteredCount		ui	Holds the number of score rows of the filtered team	verified	one	ui/battlefield#names-and-the-score-order
+0xb6ebc8	uint32_t	s_bgScoreThrottle		ui	Holds the clock value before which the score request is not repeated	verified	one	ui/battlefield#joining-and-leaving
+0xb6ebcc	uint32_t	s_bgEnded		ui	Holds 1 once a score message reported the battleground ended	verified	one	ui/battlefield#joining-and-leaving
+0xb6ebd0	uint32_t	s_bgWinner		ui	Holds the winner byte of the last ended score message	verified	one	ui/battlefield#names-and-the-score-order
+0xb6ebd4	uint32_t	s_bgPendingNames		ui	Holds the number of score rows whose player name is still unknown	verified	one	ui/battlefield#names-and-the-score-order
+0xb6ebd8	uint32_t	s_bgStatColumnCount		ui	Holds the number of battleground stat columns	verified	one	ui/battlefield#the-status-message
+0xb6ebdc	uint32_t	s_bgPositionCount		ui	Holds the teammate count of the last 0x2e9 packet	verified	one	ui/worldmapmarkers#the-position-packet
+0xb6ebe0	uint32_t	s_bgPositionThrottle		ui	Holds the clock value before which the position request is not repeated	verified	one	ui/battlefield#joining-and-leaving
 0xb6ef88	uint32_t			ui	Holds a dword that HandleMailListResultPacket, HandleReceivedMailPacket, Script::SendMail read and write; not read here	inferred	none	
 0xb6ef8c	uint32_t			ui	Holds a dword that HandleMailListResultPacket, HandleReceivedMailPacket, Script::SendMail read and write; not read here	inferred	none	
 0xb6ef90	uint64_t	s_heldItemGuidA		ui	Holds an item GUID 0x622210 leaves locked	inferred	none	objectlayer/inventory#searching-the-inventory
@@ -2222,19 +2314,24 @@ address	type	name	name_from	system	meaning	confidence	proof	finding
 0xb71100	uint32_t			ui	Holds a dword its object file's code reads and writes; not read here	inferred	none	
 0xb71104	uint32_t	s_formSpellCount		unassigned	Holds the number of spells on the form bar	verified	one	ui/petbar#form-list
 0xb71108	uint32_t *	s_formSpells		unassigned	Points at the form bar's sorted spell ids	verified	one	ui/petbar#form-list
+0xb71110	uint32_t[3]	s_dispelTypes		ui	Holds capacity, count and data of the dispel types of the player's known dispel spells	verified	one	ui/auradisplay#the-per-slot-display-test
 0xb71130	uint32_t			ui	Holds a dword its object file's code reads and writes; not read here	inferred	none	
 0xb71160	void **	s_bookTabs		unassigned	Points at the tab nodes of the book, each a skill line key and a spell count	verified	one	ui/spellbook#spell-book-lists
 0xb7116c	uint32_t	s_bookSpellCount		unassigned	Holds the number of spells in the player's book	verified	one	ui/spellbook#spell-book-lists
 0xb71170	uint32_t	s_bookTabCount		unassigned	Holds the number of tabs in the book	verified	one	ui/spellbook#spell-book-lists
 0xb71174	uint32_t	s_petBookSpellCount		ui	Holds the number of spells in the pet's book	verified	one	ui/spellbook#spell-book-lists
-0xb711b8	uint32_t			ui	Holds a dword that CGTutorial::InitializeGame, CGTutorial::OnTutorialFlags read and write; not read here	inferred	none	
-0xb711e4	uint32_t			ui	Holds a dword that CGTutorial::InitializeGame, CGTutorial::OnTutorialFlags read and write; not read here	inferred	none	
-0xb711ec	uint32_t			ui	Holds a dword that CGTutorial::InitializeGame, CGTutorial::OnTutorialFlags read and write; not read here	inferred	none	
+0xb71178	uint32_t[3]	s_tutorialTimers		ui	Holds the list of delayed tutorial prompts, each a node with a number and a deadline	verified	one	ui/tutorials#the-delayed-trigger
+0xb711b8	uint32_t	s_tutorialFiredBits		ui	Holds the bit count of the fire-once tutorial set, 0 until the server sends it	verified	one	ui/tutorials#the-two-bit-sets
+0xb711bc	uint32_t[3]	s_tutorialFired		ui	Holds capacity, dword count and data of the fire-once tutorial set	verified	one	ui/tutorials#the-two-bit-sets
+0xb711d8	uint32_t	s_tutorialTimerHandle		ui	Holds the handle of the game timer that runs ProcessTutorialTimers, 0 when none	verified	one	ui/tutorials#the-delayed-trigger
+0xb711e4	uint32_t	s_tutorialAckedBits		ui	Holds the bit count of the acknowledged tutorial set, 0 until the server sends it	verified	one	ui/tutorials#the-two-bit-sets
+0xb711e8	uint32_t[3]	s_tutorialAcked		ui	Holds capacity, dword count and data of the acknowledged tutorial set	verified	one	ui/tutorials#the-two-bit-sets
 0xb71290	void *	s_bindings		ui	Holds the key binding object of 0xdc bytes that 0x4b6050 builds, whose +0xd8 is 1 while a binding runs	verified	one	ui/protected#input-event-flags
-0xb712a8	uint8_t			unassigned	Holds a byte that Script::UninviteFromRaid, CGGameUI::ClosestObjectMatch read and write; not read here	inferred	none	
+0xb712a8	void *[40]	s_raidRoster		ui	Holds the pointers to the 40 raid roster records of 0x160 bytes	verified	one	ui/raid#the-roster-record
+0xb71368	uint64_t[8]	s_raidTargetGuids		ui	Holds the GUID of the unit carrying each of the eight raid target icons	verified	one	ui/raid#the-raid-target-table
 0xb713e0	uint32_t	s_raidMemberCount		ui	Holds the number of raid members, 0 outside a raid	verified	one	ui/minimap#a-click-on-the-map
 0xb713f0	uint32_t			ui	Holds a dword that CGRaidInfo::InitializeGame reads and writes; not read here	inferred	none	
-0xb713f4	uint32_t			ui	Holds a dword that CGRaidInfo::InitializeGame, HandleRaidReadyCheckPacket read and write; not read here	inferred	none	
+0xb713f4	uint32_t	s_readyCheckDeadline		ui	Holds the clock value at which the running ready check ends, 0 when none	verified	one	ui/raid#starting-a-ready-check
 0xb71438	uint32_t[10]	s_petBar		ui	Holds the ten pet bar slot words	verified	one	ui/petbar#pet-state
 0xb71468	uint32_t	s_petModeState		ui	Holds the pet mode word: reaction byte, command byte and server bit 27	verified	one	ui/petbar#pet-state
 0xb714a0	uint64_t	s_petBarGuid		ui	Holds the guid of the pet whose spells the pet bar holds	inferred	none	spell/cooldowns#spell-cooldown-packet
@@ -2242,6 +2339,7 @@ address	type	name	name_from	system	meaning	confidence	proof	finding
 0xb714b0	uint32_t	s_petAttackLatch		ui	Holds 1 while the pet attack command is active, 0 at load	verified	one	ui/petbar#pet-state
 0xb7150c	uint32_t	s_tradeWindowState		ui	Holds a trade window state that the trade-slot bind requires nonzero	inferred	none	spell/targeting#binding-the-trade-slot
 0xb715a0	uint32_t			ui	Holds a dword that TradeInfoSetTargetItems, Script::GetTradeTargetItemLink read and write; not read here	inferred	none	
+0xb715d8	uint32_t	s_targetTradeEnchantId		ui	Holds the enchantment id of the item in the target's seventh trade slot	verified	one	ui/popups#the-trade-enchant-clash
 0xb716d0	uint32_t			ui	Holds a dword that CGTradeInfo::SetTradePartner, TradeInfoClearPlayerItem read and write; not read here	inferred	none	
 0xb71728	uint32_t			ui	Holds a dword that Script::DropItemOnUnit, CGTradeInfo::SetTradePartner read and write; not read here	inferred	none	
 0xb71730	uint32_t			ui	Holds a dword that CGTradeInfo::PlayerAccept, CGTradeInfo::TargetAccept read and write; not read here	inferred	none	
@@ -2249,12 +2347,14 @@ address	type	name	name_from	system	meaning	confidence	proof	finding
 0xb71b44	uint32_t			ui	Holds a dword its object file's code reads and writes; not read here	inferred	none	
 0xb71b48	uint64_t	s_lootOpenedGuid		ui	Holds a GUID whose presence makes an inventory failure signal LOOT_OPENED	inferred	none	objectlayer/playermessages#inventory-change-failures
 0xb71b64	uint32_t			ui	Holds a dword its object file's code reads and writes; not read here	inferred	none	
-0xb71e7c	uint32_t			ui	Holds a dword that Script::GetWorldStateUIInfo reads and writes; not read here	inferred	none	
-0xb71e84	uint32_t			ui	Holds a dword its object file's code reads and writes; not read here	inferred	none	
+0xb71e74	uint32_t[4]	s_worldStateUiList		ui	Holds the always-visible world state row ids: capacity, count, data and chunk size	verified	one	ui/worldstate#the-list-builder
+0xb71e84	uint32_t			ui	Holds a signed value the defence channel refresh tests before it updates the world states; not read here	inferred	none	ui/chatchannels#defence-channel-state
 0xb71ea8	uint32_t			ui	Holds a dword its object file's code reads and writes; not read here	inferred	none	
-0xb71ec8	uint32_t			ui	Holds a dword its object file's code reads and writes; not read here	inferred	none	
+0xb71ec8	uint32_t	s_worldStateBuckets		ui	Points at the bucket array of the world state table, three dwords a bucket	verified	one	ui/questtext#world-state-numbers
+0xb71ed0	uint32_t	s_worldStateMask		ui	Holds the bucket mask of the world state table, -1 while it is empty	verified	one	ui/questtext#world-state-numbers
 0xb71fcc	uint32_t			ui	Holds a dword that HandleInspectHonorStatsPacket, SetInspectTarget read and write; not read here	inferred	none	
-0xb7203c	uint32_t			ui	Holds a dword that Script::GetMeetingStoneStatusText reads and writes; not read here	inferred	none	
+0xb72038	uint32_t	s_meetingStoneAreaId		ui	Holds the id of the area the player is queued for at a meeting stone, 0 when not queued	verified	one	ui/meetingstone#state-and-lua-functions
+0xb7203c	char *	s_meetingStoneText		ui	Holds the heap status text of the meeting stone queue, null while unset	verified	one	ui/meetingstone#state-and-lua-functions
 0xb72060	uint32_t			ui	Holds a dword that HandleListStabledPetsPacket, Script::SetPetStablePaperdoll read and write; not read here	inferred	none	
 0xb72250	uint32_t			ui	Holds a dword that Script::ClickStablePet, Script::GetSelectedStablePet read and write; not read here	inferred	none	
 0xb72410	float			ui	Holds a float its object file's code reads and writes; not read here	inferred	none	
@@ -2262,15 +2362,17 @@ address	type	name	name_from	system	meaning	confidence	proof	finding
 0xb72608	uint64_t	s_heldItemGuidB		ui	Holds an item GUID 0x622210 leaves locked	inferred	none	objectlayer/inventory#searching-the-inventory
 0xb72650	uint32_t			ui	Holds a dword that HandleAuctionCommandResultPacket reads and writes; not read here	inferred	none	
 0xb72654	uint32_t			ui	Holds a dword that HandleAuctionCommandResultPacket reads and writes; not read here	inferred	none	
-0xb72680	uint32_t			ui	Holds a dword its object file's code reads and writes; not read here	inferred	none	
-0xb726d0	uint32_t			ui	Holds a dword that OnGuildRoster, Script::CanGuildPromote, Script::CanGuildDemote read; not read here	inferred	none	
-0xb72720	uint32_t			ui	Holds data whose address OnGuildRoster, Script::GetGuildInfoText take; not read here	inferred	none	
-0xb73118	uint32_t			ui	Holds a dword that OnGuildRoster, Script::GetNumGuildMembers, Script::GetGuildRosterInfo read and write; not read here	inferred	none	
-0xb7311c	uint32_t			ui	Holds a dword that OnGuildRoster, Script::GetNumGuildMembers read and write; not read here	inferred	none	
-0xb73120	uint32_t			ui	Holds a dword that OnGuildRoster, Script::GuildControlGetNumRanks read and write; not read here	inferred	none	
-0xb73124	uint32_t			ui	Holds a dword that Script::GetNumGuildMembers, Script::GetGuildRosterShowOffline read and write; not read here	inferred	none	
-0xb73128	uint32_t			ui	Holds a dword that Script::SetGuildRosterSelection reads and writes; not read here	inferred	none	
-0xb73130	uint32_t			ui	Holds a dword its object file's code reads and writes; not read here	inferred	none	
+0xb72680	uint32_t[16]	s_guildSortChain		ui	Holds the eight sort slots, a key and a direction each, the latest first	verified	one	ui/guild#the-roster-order
+0xb726d0	uint32_t[10]	s_guildRankRights		ui	Holds the rights bit mask of each of the ten ranks	verified	one	ui/guild#rank-rights
+0xb726fc	uint32_t[4]	s_guildRosterVector		ui	Holds the member array's capacity, high-water count, data pointer and growth hint	verified	one	ui/guild#state-and-start-up
+0xb72720	char[2000]	s_guildInfoText		ui	Holds the guild information text	verified	one	ui/guild#notes-and-text
+0xb72f00	char[512]	s_guildMotd		ui	Holds the guild message of the day	verified	one	ui/guild#notes-and-text
+0xb73118	uint32_t	s_guildMemberCount		ui	Holds the member count of the last roster message, the bound of every roster index	verified	one	ui/guild#the-roster-message
+0xb7311c	uint32_t	s_guildOnlineCount		ui	Holds the number of online members in the last roster message	verified	one	ui/guild#the-roster-message
+0xb73120	uint32_t	s_guildRankCount		ui	Holds the rank count of the last roster message	verified	one	ui/guild#the-roster-message
+0xb73124	uint32_t	s_guildShowOffline		ui	Holds 1 when offline members are shown among the online ones	verified	one	ui/guild#changing-the-order
+0xb73128	uint64_t	s_guildSelection		ui	Holds the GUID of the selected roster member, 0 for none	verified	one	ui/guild#last-online-and-selection
+0xb73130	uint32_t	s_guildRosterDeadline		ui	Holds the clock value before which GuildRoster sends nothing	verified	one	ui/guild#notes-and-text
 0xb73240	uint32_t			ui	Holds a dword that CGDuelInfo::OnDuelRequested, CGDuelInfo::OnDuelComplete read and write; not read here	inferred	none	
 0xb73294	uint8_t			ui	Holds a byte that HandleSetFactionAtWarPacket, HandleSetFactionVisiblePacket read and write; not read here	inferred	none	
 0xb73764	uint32_t			ui	Holds a dword that Script::GetNumFactions, Script::GetSelectedFaction read and write; not read here	inferred	none	
@@ -2279,22 +2381,29 @@ address	type	name	name_from	system	meaning	confidence	proof	finding
 0xb73a10	uint32_t			ui	Holds a dword its object file's code reads and writes; not read here	inferred	none	
 0xb73a18	uint32_t			ui	Holds a dword that Script::GetNumTrainerServices reads and writes; not read here	inferred	none	
 0xbb4a80	uint32_t			ui	Holds a dword its object file's code reads and writes; not read here	inferred	none	
-0xbb70a0	uint32_t			ui	Holds a dword that Script::IsQuestWatched, Script::GetQuestIndexForWatch read and write; not read here	inferred	none	
-0xbb71c0	uint32_t[160]			ui	Holds the quest log list: 40 entries of 16 bytes, an id at +0 and a header flag at +8	verified	one	objectlayer/quests#quest-updates
-0xbb7478	uint32_t			ui	Holds a dword that Script::GetNumQuestLogEntries, Script::GetQuestLogTitle read and write; not read here	inferred	none	
-0xbb7480	uint32_t			ui	Holds a dword that CloseQuestIfCurrent, Script::SetAbandonQuest read and write; not read here	inferred	none	
+0xbb7040	uint32_t[20]	s_questHeaderIds		ui	Holds the zone or sort ids of the list's headers, sorted by name	verified	one	ui/questlog#the-display-list
+0xbb70a0	uint32_t[5]	s_questWatchIds		ui	Holds the ids of up to five watched quests	verified	one	ui/questlog#quest-watches
+0xbb71c0	uint32_t[160]	s_questLogRows		ui	Holds the quest log list: 40 rows of 16 bytes, id, slot, header flag and expiry latch	verified	one	ui/questlog#the-display-list
+0xbb7478	uint32_t	s_questLogRowCount		ui	Holds the number of rows in the quest log list, headers included	verified	one	ui/questlog#the-display-list
+0xbb747c	uint32_t	s_questHeaderCount		ui	Holds the number of header ids in the list	verified	one	ui/questlog#the-display-list
+0xbb7480	uint32_t	s_selectedQuestId		ui	Holds the id of the quest selected in the quest log	verified	one	ui/questlog#the-selection
 0xbb7484	uint32_t			ui	Holds a dword that Script::SetAbandonQuest, Script::GetAbandonQuestName read and write; not read here	inferred	none	
-0xbb748c	uint32_t			ui	Holds a dword that Script::GetQuestLogTitle reads and writes; not read here	inferred	none	
-0xbb7490	uint32_t			ui	Holds a dword that Script::GetNumQuestLogEntries reads and writes; not read here	inferred	none	
-0xbb7498	uint32_t			ui	Holds a dword its object file's code reads and writes; not read here	inferred	none	
-0xbb749c	uint32_t			ui	Holds a dword its object file's code reads and writes; not read here	inferred	none	
-0xbbb670	uint32_t			ui	Holds a dword its object file's code reads and writes; not read here	inferred	none	
+0xbb7488	uint32_t	s_questWatchCount		ui	Holds the number of watched quests	verified	one	ui/questlog#quest-watches
+0xbb748c	uint32_t	s_questHeaderExpanded		ui	Holds a bit per header, set while the header is expanded	verified	one	ui/questlog#the-collapse-state
+0xbb7490	uint32_t	s_questVisibleRows		ui	Holds the number of rows shown, the row count minus quests under collapsed headers	verified	one	ui/questlog#visible-rows
+0xbb7494	int32_t	s_questClockOffset		ui	Holds the local clock minus the server's at the last sync, 0 until synced	verified	one	ui/questtimers#the-clock
+0xbb7498	uint32_t	s_questTemplatesPending		ui	Holds the number of quest templates asked for and not yet arrived	verified	one	ui/questlog#the-rebuild
+0xbb749c	uint32_t	s_queryTimeDeadline		ui	Holds the local time after which the next time query may be sent, 0 while one is in flight	verified	one	ui/questtimers#the-time-sync
+0xbb74c0	uint8_t[32][524]	s_gossipQuests		ui	Holds the 32 gossip quest rows: id, level, icon and title	verified	one	ui/gossip#the-gossip-message
+0xbbb670	uint32_t	s_gossipTextPending		ui	Holds 1 while the gossip greeting is not available, which refuses option selection	verified	one	ui/gossip#the-greeting
+0xbbb678	char[2048]	s_gossipText		ui	Holds the greeting of the last gossip window shown, never cleared	verified	one	ui/gossip#the-greeting
+0xbbbe90	uint8_t[16][2060]	s_gossipOptions		ui	Holds the 16 gossip option slots: text, server index, coded byte and icon	verified	one	ui/gossip#the-gossip-message
 0xbc3f58	uint64_t	s_trainerWindowGuid		ui	Holds the trainer GUID a trainer list may also open for	inferred	none	objectlayer/inventory#trainers
 0xbc3fa0	uint64_t	s_itemTextGuid		ui	Holds the GUID of the item whose text is open	inferred	none	objectlayer/playermessages#reading-items
 0xbc3fd0	uint32_t			ui	Holds a dword that Script::ItemTextHasNextPage reads and writes; not read here	inferred	none	
-0xbc5f68	uint32_t			ui	Holds a dword that SetAuraDuration reads and writes; not read here	inferred	none	
-0xbc6040	uint32_t			ui	Holds data whose address its object file's code takes; not read here	inferred	none	
-0xbc6378	uint32_t			ui	Holds a dword that Script::GetTrackingTexture, Script::CancelTrackingBuff read and write; not read here	inferred	none	
+0xbc5f68	uint32_t[48]	s_auraExpiry		ui	Holds each aura slot's expiry time in milliseconds, 0 for none	verified	one	ui/auradisplay#the-duration-packet
+0xbc6040	uint8_t[768]	s_buffCache		ui	Holds the 48 sixteen-byte buff records of the active player	verified	one	ui/auradisplay#the-players-buff-cache
+0xbc6378	uint32_t	s_trackingSpell		ui	Holds the spell id of the last tracking aura the cache rebuild met	verified	one	ui/auradisplay#rebuilding-the-cache
 0xbc6390	uint32_t[120]	s_actionItemCounts		ui	Holds each item slot's cached stack count or charges	verified	one	ui/actionbar#item-slot-counts
 0xbc6578	char[260]	s_rangedIconPath		unassigned	Holds the ranged weapon icon path of the ranged helper	verified	one	ui/actionbar#attack-and-ranged-icons
 0xbc6698	char[260]	s_attackIconPath		unassigned	Holds the weapon icon path of the attack helper	verified	one	ui/actionbar#attack-and-ranged-icons
@@ -2305,11 +2414,18 @@ address	type	name	name_from	system	meaning	confidence	proof	finding
 0xbc6d58	char[260]	s_actionIconPath		unassigned	Holds the icon path GetActionTexture formats for an item or macro slot	verified	one	ui/actionbar#action-icon
 0xbc6e5c	uint8_t	s_actionIconInitFlags		unassigned	Holds a byte whose bit 0 marks the icon directory as fetched	verified	one	ui/actionbar#action-icon
 0xbc6e88	uint32_t	s_bonusBarOffset		unassigned	Holds the bonus bar offset of the player's form; 0 at load and with no form record	verified	one	ui/actionuse#bonus-bar-offset
-0xbc6e98	uint8_t			ui	Holds a byte that CGPartyInfo::InitializeGame, Script::GetLookingForGroup read and write; not read here	inferred	none	
+0xbc6e98	char[128]	s_lfgComment		ui	Holds the looking-for-group comment	verified	one	ui/lfg#the-slots-packet
+0xbc6f18	uint32_t[6]	s_lfgTypeCounts		ui	Holds the count of eligible entries of each of the six looking-for-group types	verified	one	ui/lfg#the-type-lists
 0xbc6f48	uint32_t[8]	s_partyMemberGuids		ui	Holds the GUIDs of the four other party members	verified	one	ui/minimapblips#party-and-pet-arrows
-0xbc70a0	uint32_t			ui	Holds a dword that CGPartyInfo::InitializeGame, Script::GetLookingForGroup read and write; not read here	inferred	none	
+0xbc6f90	uint32_t[18]	s_lfgTypeLists		ui	Holds six dynamic arrays of LfgDungeons ids, one per type, 12 bytes each	verified	one	ui/lfg#the-type-lists
+0xbc6fd8	void *[50]	s_lfgResults		ui	Holds the pointers to the 50 result records of 0xc4 bytes	verified	one	ui/lfg#the-results
+0xbc70a0	uint32_t[3]	s_lfgSlots		ui	Holds the three looking-for-group slot words, always 0 after SetLookingForGroup	verified	one	ui/lfg#the-slots-packet
 0xbc70b0	uint8_t[1312]	s_partyMembers		ui	Holds the four party member records of 0x148 bytes each	verified	one	ui/tooltipunit#who-the-builder-describes
-0xbc75fc	uint32_t			unassigned	Holds a dword that Script::SendChatMessage, HandleRaidReadyCheckPacket read and write; not read here	inferred	none	
+0xbc75f8	uint64_t	s_groupLeaderGuid		ui	Holds the GUID of the party or raid leader	verified	one	ui/chatsend#group-and-channel-checks
+0xbc7618	uint32_t	s_lfgResultCount		ui	Holds the number of results in the last looking-for-group list, at most 50	verified	one	ui/lfg#the-results
+0xbc761c	uint32_t	s_lfgResultTotal		ui	Holds the second count of the last looking-for-group list message	verified	one	ui/lfg#the-results
+0xbc7620	uint32_t	s_lfgPendingTitles		ui	Holds the number of quest title queries the result list waits for	verified	one	ui/lfg#the-results
+0xbc7624	int32_t	s_lfgPlayerLevel		ui	Holds the player's level as read by the last type recount	verified	one	ui/lfg#the-type-lists
 0xbc762c	float	s_iconHalfSize		ui	Holds half the landmark icon size in layout units	verified	one	ui/minimapblips#blip-sizes
 0xbc7630	float	s_dotHalfSize		ui	Holds half the object dot size in layout units	verified	one	ui/minimapblips#blip-sizes
 0xbc7658	float			ui	Holds a float that CGMinimapFrame::CGMinimapFrame reads and writes; not read here	inferred	none	
@@ -2363,10 +2479,21 @@ address	type	name	name_from	system	meaning	confidence	proof	finding
 0xbde05c	uint32_t			unassigned	Holds a dword that ClearTradeSkillRecast, Script::GetTradeskillRepeatCount read and write; not read here	inferred	none	
 0xbde060	uint32_t			ui	Holds a dword that Script::GetTradeskillRepeatCount reads and writes; not read here	inferred	none	
 0xbde064	uint32_t			ui	Holds a dword its object file's code reads and writes; not read here	inferred	none	
+0xbde068	char[512]	s_questGreetingText		ui	Holds the quest giver's greeting	verified	one	ui/gossip#quest-greetings
+0xbde288	char[1024]	s_questDetailText		ui	Holds the quest details text	verified	one	ui/gossip#quest-greetings
+0xbde690	uint8_t[32][76]	s_activeQuests		ui	Holds the quest giver's active quests: id, level and title	verified	one	ui/questgiver#the-two-pools
+0xbdf0f8	char[1024]	s_questProgressText		ui	Holds the quest progress text	verified	one	ui/gossip#quest-greetings
+0xbdf500	char[1024]	s_questObjectiveText		ui	Holds the quest objective text, empty when the source is	verified	one	ui/gossip#quest-greetings
+0xbdf900	char[88]	s_questTitleText		ui	Holds the quest title text	verified	one	ui/gossip#quest-greetings
+0xbdf958	char[1024]	s_questRewardText		ui	Holds the quest reward text	verified	one	ui/gossip#quest-greetings
+0xbdfe60	uint8_t[32][76]	s_availableQuests		ui	Holds the quest giver's available quests: id, level, title and one-click flag	verified	one	ui/questgiver#the-two-pools
 0xbe0810	uint64_t	s_questFrameGuid		ui	Holds a GUID whose presence turns a player's shared quest details into a busy answer	inferred	none	objectlayer/quests#details-request-and-reward
 0xbe0818	uint32_t			ui	Holds a dword its object file's code reads and writes; not read here	inferred	none	
 0xbe0824	uint32_t			ui	Holds a dword its object file's code reads and writes; not read here	inferred	none	
 0xbe0828	uint32_t	s_chosenRewardItem		ui	Holds the reward item chosen on the quest frame	inferred	none	objectlayer/quests#quest-completion
+0xbe0834	uint32_t	s_availableQuestCount		ui	Holds the number of rows in the available quest pool	verified	one	ui/questgiver#the-two-pools
+0xbe0838	uint32_t	s_activeQuestCount		ui	Holds the number of rows in the active quest pool	verified	one	ui/questgiver#the-two-pools
+0xbe0840	uint32_t	s_pendingQuestConfirm		ui	Holds the quest id of the last quest confirmation request, never cleared	verified	one	ui/questshare#the-confirmation-request
 0xbe0844	uint32_t			ui	Holds a dword its object file's code reads and writes; not read here	inferred	none	
 0xbe0b80	const char *	s_tokenCursor		ui	Holds the expander's place in the description text	verified	one	ui/spelltokens#the-expander
 0xbe0b84	uint32_t	s_tokenPluralKey		ui	Holds the number the last counted token printed, the key of a plural token	verified	one	ui/spelltokens#the-plural-key
@@ -2440,9 +2567,10 @@ address	type	name	name_from	system	meaning	confidence	proof	finding
 0xbe2c60	void *	s_cursorPictureTexture		ui	Holds the texture handle the payload picture is built from	verified	one	ui/cursor#dragging-picture
 0xbe2c70	char[260]	s_customCursorName		ui	Holds the name of the loaded custom cursor	verified	one	ui/worldcursor#custom-cursors
 0xbe2d80	uint32_t[42][1024]	s_cursorImages		ui	Holds the 32 by 32 image of each cursor mode, slot 41 being the named custom cursor	verified	one	ui/cursor#sending-the-picture
+0xc0cdcc	uint32_t[3]	s_pendingPortraits		ui	Holds the list of GUIDs awaiting portrait events: link offset, end link and head	verified	one	ui/portraits#marking-and-draining
 0xc0ce30	uint32_t			ui	Holds a dword its object file's code reads and writes; not read here	inferred	none	
-0xc0ce7c	uint32_t			ui	Holds a dword its object file's code reads and writes; not read here	inferred	none	
-0xc0cea4	uint32_t			ui	Holds a dword its object file's code reads and writes; not read here	inferred	none	
+0xc0ce60	uint32_t[10]	s_portraitGuidTable		ui	Holds the hash table of baked portraits by GUID: buckets at +0x1c, mask at +0x24	verified	one	ui/portraits#the-caches
+0xc0ce88	uint32_t[10]	s_portraitDisplayTable		ui	Holds the hash table of baked portraits by display id: buckets at +0x1c, mask at +0x24	verified	one	ui/portraits#the-caches
 0xc0cf18	uint32_t	s_colorSkillYellow		ui	Holds the yellow 0xffffff00 of a skill within 25 to 49 of its requirement	verified	one	ui/tooltipitemhead#the-skill-colours
 0xc0cf50	uint32_t	s_colorSkillGray		ui	Holds the gray 0xff808080 of a skill 100 or more above its requirement	verified	one	ui/tooltipitemhead#the-skill-colours
 0xc0cf60	uint32_t	s_tooltipWhite		ui	Holds the white colour 0xffffffff of an ordinary line	verified	one	ui/tooltipcontent#the-colours
@@ -2461,7 +2589,10 @@ address	type	name	name_from	system	meaning	confidence	proof	finding
 0xc0d45c	uint32_t	s_netBytesSent		net	Counts the opcode and body bytes NetClient::Send has sent, over all connections	verified	one	net/wire#sending
 0xc0d468	uint32_t	s_netBytesReceived		net	Counts the bytes dispatched on the main thread, two more per packet than its opcode and body	verified	one	net/dispatch#main-thread-drain
 0xc0d46c	uint32_t	s_netMessagesDispatched		net	Counts the packets the dispatcher has handled	verified	one	net/dispatch#dispatch
-0xc0d5bc	uint32_t			unassigned	Holds a dword that Script::UpdateMapHighlight, Script::GetMapOverlayInfo read and write; not read here	inferred	none	
+0xc0d564	uint32_t[5]	s_worldStateUiStore		dbc	Holds the WorldStateUI.dbc store: records, count, id map, max id and loaded flag	verified	one	ui/battlefield#the-status-message
+0xc0d58c	uint32_t[5]	s_worldMapOverlayStore		dbc	Holds the WorldMapOverlay.dbc store: records, count, id map, max id and loaded flag	verified	one	ui/worldmap#the-overlays
+0xc0d5a0	uint32_t[5]	s_worldMapContinentStore		dbc	Holds the WorldMapContinent.dbc store: records of 0x34 bytes, count, id map, max id and loaded flag	verified	one	ui/worldmap#unit-and-corpse-positions
+0xc0d5b4	uint32_t[5]	s_worldMapAreaStore		dbc	Holds the WorldMapArea.dbc store: records of 32 bytes, count, id map, max id and loaded flag	verified	one	ui/worldmap#the-lists
 0xc0d654	uint32_t[5]	s_transportAnimationStore		dbc	Holds the TransportAnimation.dbc store: records and count	verified	one	objectlayer/transports#the-transports-path
 0xc0d67c	uint32_t[5]	s_terrainTypeStore		terrain	Holds the TerrainType.dbc store: rows, count, the table by id at +0x8 and the id bound at +0xc	verified	one	terrain/footprints#footprint-spawn
 0xc0d6a4	uint32_t[5]	s_taxiPathNodeStore		dbc	Holds the TaxiPathNode.dbc store: records and count	verified	one	objectlayer/transports#the-ship-path
@@ -2479,6 +2610,7 @@ address	type	name	name_from	system	meaning	confidence	proof	finding
 0xc0d7b4	uint32_t	s_spellRadiusMaxId		dbc	Holds the highest SpellRadius.dbc id	verified	one	ui/spelltokens#tokens-that-read-a-record-field
 0xc0d7c4	uint32_t			unassigned	Holds a dword that CGUnit_C::CanStartMeleeAttack, ReportCastFailure, PetSpellFailedHandler read and write; not read here	inferred	none	
 0xc0d7d0	uint32_t[5]	s_spellItemEnchantmentStore		dbc	Holds the SpellItemEnchantment.dbc store	verified	one	objectlayer/items#bound-items
+0xc0d7e4	uint32_t[5]	s_spellIconStore		dbc	Holds the SpellIcon.dbc store: its record table by id at +0x08 and the highest id at +0x0c	verified	one	ui/auradisplay#texture-dispel-type-stacks-and-time
 0xc0d800	uint32_t			unassigned	Holds a dword that Script::GetCraftSpellFocus, Script::GetTradeSkillTools read and write; not read here	inferred	none	
 0xc0d80c	uint32_t[5]	s_spellEffectCameraShakesStore		dbc	Holds the SpellEffectCameraShakes.dbc store	verified	one	objectlayer/gameobjecttypes#display-sounds-and-shakes
 0xc0d820	uint32_t[5]	s_spellDurationStore		dbc	Holds the SpellDuration.dbc store	verified	one	spell/records#record-lookups
@@ -2491,10 +2623,10 @@ address	type	name	name_from	system	meaning	confidence	proof	finding
 0xc0d924	uint32_t[5]	s_skillLineStore		dbc	Holds the SkillLine.dbc store: records, count, id map, max id and loaded flag	verified	one	spell/tables#skill-costs-and-tiers
 0xc0d94c	uint32_t[5]	s_skillLineAbilityStore		dbc	Holds the SkillLineAbility.dbc store: records, count, id map, max id and loaded flag	verified	one	spell/tables#startup-build-of-the-indexes
 0xc0d960	uint32_t[5]	s_skillCostsDataStore		dbc	Holds the SkillCostsData.dbc store: records, count, id map, max id and loaded flag	verified	one	spell/tables#startup-build-of-the-indexes
-0xc0d990	uint32_t			unassigned	Holds a dword that HandleServerMessagePacket reads and writes; not read here	inferred	none	
+0xc0d988	uint32_t[5]	s_serverMessagesStore		dbc	Holds the ServerMessages.dbc store: records, count, id map, max id and loaded flag	verified	one	ui/chatserver#server-message
 0xc0d9a4	uint32_t			unassigned	Holds a dword that PlaySpellSchoolSound reads and writes; not read here	inferred	none	
-0xc0d9cc	uint32_t			unassigned	Holds a dword its object file's code reads and writes; not read here	inferred	none	
-0xc0d9d0	uint32_t			unassigned	Holds a dword its object file's code reads and writes; not read here	inferred	none	
+0xc0d9b0	uint32_t[5]	s_questSortStore		dbc	Holds the QuestSort.dbc store: records, count, id map, max id and loaded flag	verified	one	ui/questlog#the-order-of-the-rows
+0xc0d9c4	uint32_t[5]	s_questInfoStore		dbc	Holds the QuestInfo.dbc store: records, count, id map, max id and loaded flag	verified	one	ui/questtitle#the-tag
 0xc0d9e0	uint32_t			unassigned	Holds a dword that Script::GetPetHappiness reads and writes; not read here	inferred	none	
 0xc0d9e4	uint32_t			unassigned	Holds a dword that Script::GetPetHappiness reads and writes; not read here	inferred	none	
 0xc0d9f4	uint32_t			unassigned	Holds a dword that Script::GetPetLoyalty, Script::GetStablePetInfo read and write; not read here	inferred	none	
@@ -2507,9 +2639,9 @@ address	type	name	name_from	system	meaning	confidence	proof	finding
 0xc0daac	uint32_t	s_mapMaxId		dbc	Holds the highest Map.dbc id	verified	one	ui/tooltipitemhead#area-map-and-conjured-lines
 0xc0dac8	uint32_t[5]	s_lockTypeStore		dbc	Holds the LockType.dbc store	verified	one	objectlayer/gameobjects#cursor
 0xc0dadc	uint32_t[5]	s_lockStore		dbc	Holds the Lock.dbc store	verified	one	objectlayer/gameobjects#locks
-0xc0db40	uint32_t			unassigned	Holds a dword that Script::GetNumLaguages, Script::GetLanguageByIndex, StaticDBLoadAll read and write; not read here	inferred	none	
-0xc0db44	uint32_t			unassigned	Holds a dword that Script::GetNumLaguages, Script::GetLanguageByIndex read and write; not read here	inferred	none	
-0xc0db48	uint32_t			unassigned	Holds a dword that Script::GetDefaultLanguage reads and writes; not read here	inferred	none	
+0xc0db2c	uint32_t[5]	s_lfgDungeonsStore		dbc	Holds the LfgDungeons.dbc store: records, count, id map, max id and loaded flag	verified	one	ui/lfg#the-type-lists
+0xc0db40	uint32_t[5]	s_languagesStore		dbc	Holds the Languages.dbc store: records, count, id map, max id and loaded flag	verified	one	ui/chatlanguage#languagewords-and-languages
+0xc0db54	uint32_t[5]	s_languageWordsStore		dbc	Holds the LanguageWords.dbc store: records, count, id map, max id and loaded flag	verified	one	ui/chatlanguage#languagewords-and-languages
 0xc0db70	uint32_t	s_itemVisualsIdMap		dbc	Holds the ItemVisuals.dbc rows by id	verified	one	charactermodel/equipment#item-models
 0xc0db74	uint32_t	s_itemVisualsMaxId		dbc	Holds the highest ItemVisuals.dbc id	verified	one	charactermodel/equipment#item-models
 0xc0db84	uint32_t	s_itemVisualEffectsIdMap		dbc	Holds the ItemVisualEffects.dbc rows by id	verified	one	charactermodel/equipment#item-models
@@ -2536,6 +2668,8 @@ address	type	name	name_from	system	meaning	confidence	proof	finding
 0xc0dd54	uint32_t	s_factionMaxId		dbc	Holds the highest Faction.dbc id	verified	one	ui/tooltipitemreq#the-reputation-line
 0xc0dd5c	uint8_t[20]	s_factionGroupStore		dbc	Holds the FactionGroup.dbc store: records, count, id index and maximum id	inferred	none	
 0xc0dd78	uint32_t			unassigned	Holds a dword that Script::GetRestState, Script::GetXPExhaustion read and write; not read here	inferred	none	
+0xc0dd98	uint32_t[5]	s_emotesTextStore		dbc	Holds the EmotesText.dbc store: records, count, id map, maximum id and loaded flag	verified	one	ui/chatemote#the-sentence-column
+0xc0ddc0	uint32_t[5]	s_emotesTextDataStore		dbc	Holds the EmotesTextData.dbc store: records, count, id map, maximum id and loaded flag	verified	one	ui/chatemote#the-template-fallback
 0xc0ddd4	uint32_t[5]	s_emotesStore		dbc	Holds the Emotes.dbc store: its record table by id at +0x08 and the id bound at +0x0c	verified	one	objectlayer/interaction#text-emotes
 0xc0dde8	uint32_t[5]	s_durabilityQualityStore		dbc	Holds the DurabilityQuality.dbc store	verified	one	objectlayer/items#repair-cost
 0xc0ddfc	uint32_t[5]	s_durabilityCostsStore		dbc	Holds the DurabilityCosts.dbc store	verified	one	objectlayer/items#repair-cost
@@ -2549,6 +2683,7 @@ address	type	name	name_from	system	meaning	confidence	proof	finding
 0xc0dec4	uint8_t[20]	s_cinematicCameraStore		dbc	Holds the CinematicCamera.dbc store	inferred	none	
 0xc0ded8	uint32_t[5]	s_chrRacesStore		dbc	Holds the ChrRaces.dbc store: records, count, id map by record +0x00, max id and loaded flag	verified	one	spell/tables#startup-build-of-the-indexes
 0xc0deec	uint32_t[5]	s_chrClassesStore		dbc	Holds the ChrClasses.dbc store, loaded by 0x542360	verified	one	spell/records#record-lookups
+0xc0df14	uint32_t[5]	s_chatChannelsStore		dbc	Holds the ChatChannels.dbc store: records, count, id map, max id and loaded flag	verified	one	ui/chatchannels#chatchannels-rows
 0xc0df28	uint32_t	s_charFacialHairRows		dbc	Holds the CharacterFacialHairStyles.dbc rows, 0x28 bytes each	verified	one	charactermodel/customization#facial-hair
 0xc0df2c	uint32_t	s_charFacialHairCount		dbc	Holds the number of CharacterFacialHairStyles.dbc rows	verified	one	charactermodel/customization#facial-hair
 0xc0df50	uint8_t[20]	s_charStartOutfitStore		dbc	Holds the CharStartOutfit.dbc store: records, count, id index and maximum id	inferred	none	
@@ -2565,8 +2700,7 @@ address	type	name	name_from	system	meaning	confidence	proof	finding
 0xc0e02c	uint32_t[2]	s_areaTriggerRows		dbc	Holds the AreaTrigger rows, 0x28 bytes each sorted by map, and their count	inferred	none	objectlayer/players#area-triggers
 0xc0e048	uint32_t	s_areaIdMap		unassigned	Holds the AreaTable.dbc rows by id	verified	one	ui/spelltokens#tokens-that-compute-a-value
 0xc0e04c	uint32_t	s_areaMaxId		dbc	Holds the highest AreaTable.dbc id	verified	one	ui/spelltokens#tokens-that-compute-a-value
-0xc0e054	uint32_t			unassigned	Holds a dword that StaticDBLoadAll reads and writes; not read here	inferred	none	
-0xc0e058	uint32_t			unassigned	Holds a dword that StaticDBLoadAll reads and writes; not read here	inferred	none	
+0xc0e054	uint32_t[5]	s_areaPoiStore		dbc	Holds the AreaPOI.dbc store: records of 0x74 bytes, count, id map, max id and loaded flag	verified	one	ui/worldmap#the-landmarks
 0xc0e070	void *	s_animationDataRows		dbc	Holds the animation table's rows indexed by id	verified	one	models/animation#animation-id-resolution
 0xc0e074	uint32_t	s_animationDataMaxId		dbc	Holds the highest id of the animation table	verified	one	models/animation#animation-id-resolution
 0xc0e080	uint32_t	s_localeIndex		client	Holds the locale index that picks a localized string column	inferred	none	spell/handlers#channel-start-and-update
@@ -2575,6 +2709,7 @@ address	type	name	name_from	system	meaning	confidence	proof	finding
 0xc0e1b0	uint32_t	s_questCache		dbcache	Holds the quest record cache	inferred	none	objectlayer/quests#quest-completion
 0xc0e1ec	uint32_t	s_guildCache		dbcache	Holds the guild record cache	inferred	none	objectlayer/party#guild-tabards
 0xc0e228	uint32_t	s_nameCache		dbcache	Holds the player name cache	inferred	none	objectlayer/playermessages#resurrection-and-summoning
+0xc0e264	void *	s_npcTextCache		dbcache	Holds the NPC text cache store, npccache.wdb	verified	one	ui/gossip#the-greeting
 0xc0e2a0	void *	s_itemStatsCache		dbcache	Holds the item record cache the loot roll code asks	verified	one	objectlayer/lootroll#starting-a-roll
 0xc0e2dc	uint32_t	s_itemNameCache		ui	Holds the item name cache that item set member names are asked of	verified	one	ui/tooltipitemreq#item-set-lines
 0xc0e318	uint32_t	s_gameObjectCache		dbcache	Holds the game object record cache	inferred	none	objectlayer/quests#quest-updates
@@ -2582,11 +2717,7 @@ address	type	name	name_from	system	meaning	confidence	proof	finding
 0xc0f2b8	uint32_t	s_combineExtensionOn		terrain	Holds 1 when the combine texture environment extension is available	verified	one	terrain/watershade#stage-combine-presets
 0xc0f3e4	uint32_t	s_textureUnitCount		terrain	Holds the count of texture units the device has	verified	one	terrain/watershade#stage-combine-presets
 0xc27d08	char[64]	s_logonAccountName		net	Holds the account name the logon authenticated with	verified	one	net/connection#status-text-and-names
-0xc27d80	uint32_t			net	Holds data whose address SetSelectedCharacterRecord, GetSelectedCharacterRecord take; not read here	inferred	none	
-0xc27d88	uint8_t			net	Holds a byte that GetSelectedCharacterName reads; not read here	inferred	none	
-0xc27e80	uint8_t			net	Holds a byte that GetSelectedCharacterRace reads; not read here	inferred	none	
-0xc27e81	uint8_t			net	Holds a byte that GetSelectedCharacterClass reads; not read here	inferred	none	
-0xc27e82	uint8_t			net	Holds a byte that GetSelectedCharacterSex reads; not read here	inferred	none	
+0xc27d80	SelectedCharacterRecord	s_selectedCharacter		net	Holds the selected character's list entry from the last EnterWorld, empty before it	verified	one	ui/unitplayer#the-selected-character-record
 0xc27e90	uint8_t[32]	s_telemetryRecord		net	Holds the 32-byte record built from telemetry.dat that the logon proof appends	verified	one	net/connection#telemetry-record
 0xc27eb8	uint32_t			net	Holds data whose address ClientConnection::PollStatus takes; not read here	inferred	none	
 0xc27fb8	uint8_t[308]	s_selectedRealm		net	Holds the selected realm's 308-byte record; its address text is at +0x109	verified	one	net/session#connecting
@@ -3021,7 +3152,7 @@ address	type	name	name_from	system	meaning	confidence	proof	finding
 0xce8804	uint32_t			unassigned	Holds a dword its object file's code reads and writes; not read here	inferred	none	
 0xce8820	uint32_t			unassigned	Holds a dword that WorldTextInitialize reads and writes; not read here	inferred	none	
 0xce8828	float			unassigned	Holds the first float of a table its object file's code reads and writes; not read here	inferred	none	
-0xce893c	uint32_t			unassigned	Holds a dword its object file's code reads and writes; not read here	inferred	none	
+0xce8918	uint32_t[15]	s_filterLists		unassigned	Holds five capacity, count, base triples of word lists: server spam, spam, reserved, profanity, profane names	verified	one	ui/chatfilter#the-word-lists
 0xce89a0	uint32_t			unassigned	Holds a dword that ConstructGlowEffect reads and writes; not read here	inferred	none	
 0xce89c0	float			unassigned	Holds a float its object file's code reads and writes; not read here	inferred	none	
 0xce89c4	int32_t			unassigned	Holds an int32_t its object file's code reads and writes; not read here	inferred	none	
@@ -3256,7 +3387,13 @@ address	type	name	name_from	system	meaning	confidence	proof	finding
 0xcf5cd0	float	s_sharedInvTwoPi		collision	Holds 1/2π, 0.15915494, from start-up	verified	one	collision/overview#shared-file-initializers
 0xcf5d00	float	s_movementTwoPi		collision	Holds 2π, written only by the static initializer 0x7c5dd0	verified	one	collision/kinematics#transport-space-transforms
 0xcf5d30	float	s_recordInfinity		unassigned	Holds +∞ from start-up	verified	one	collision/overview#object-files
-0xcf60d0	uint32_t			ui	Holds a dword its object file's code reads and writes; not read here	inferred	none	
+0xcf60c8	uint32_t	s_plateNeutralColor		ui	Holds the yellow ARGB word of a neutral unit's bar	verified	one	ui/nameplates#bar-colour-and-values
+0xcf60d0	uint32_t	s_plateHostileColor		ui	Holds the red ARGB word of a hostile unit's bar and flashing name	verified	one	ui/nameplates#bar-colour-and-values
+0xcf60dc	uint32_t	s_plateFriendColor		ui	Holds the green ARGB word of a friendly non-player unit's bar	verified	one	ui/nameplates#bar-colour-and-values
+0xcf60e8	uint32_t	s_platePlayerColor		ui	Holds the blue ARGB word of a non-hostile player's bar	verified	one	ui/nameplates#bar-colour-and-values
+0xcf60ec	uint32_t[5]	s_difficultyColors		ui	Holds the ARGB words red, orange, yellow, green and gray of the difficulty colour	verified	one	ui/unitlevels#the-difficulty-colour
+0xcf6100	uint8_t	s_difficultyColorsReady		ui	Holds bit 0, set once the five difficulty colours are written	verified	one	ui/unitlevels#the-difficulty-colour
+0xcf6128	uint32_t	s_plateLevelColor		ui	Holds the white ARGB word the level text starts with	verified	one	ui/nameplates#bar-colour-and-values
 0xcf61dc	float	s_skyDrawTenSquared		lighting	Holds 100.0; written at start-up	verified	one	lighting/overview#shared-header-constants
 0xcf76cc	uint32_t	s_contextTableGuard		core	Holds the guard bit of the context table's one-time setup	verified	one	core/loop#static-initializers
 0xcf76e0	uint8_t[24]	s_contextHandleLock		core	Holds the critical section guarding the context handle counter	verified	one	core/scheduler#context-insert

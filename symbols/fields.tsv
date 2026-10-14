@@ -585,6 +585,24 @@ CharacterSelectionDisplay	0x010a	1	uint8_t	m_newCharacter	glue	Holds 1 for a cha
 CharacterSelectionDisplay	0x0110	4	void *	m_component	glue	Holds the built character component, null until the select build makes it; the record destructor zeroes it	verified	one	glue/select#the-roster
 CharacterSelectionDisplay	0x0114	4	void *	m_petModel	glue	Holds the pet's model, null until built; the destructor releases it without clearing	verified	one	glue/select#the-roster
 CharacterSelectionDisplay	0x0118	1	uint8_t	m_rebuildModel	glue	Holds 1 for a new or entered record; the select screen clears it when it builds the model	inferred	none	glue/flow#enter-world
+ChatChannel	0x0000	4	uint32_t	m_number	ui	Holds the slot's 1-based position, 0 while the slot is free	verified	one	ui/chatchannels#joined-channel-slots
+ChatChannel	0x0004	128	char[128]	m_name	ui	Holds the channel's name, the composed zone name for a zone channel	verified	one	ui/chatchannels#joined-channel-slots
+ChatChannel	0x0084	16	uint32_t[4]	m_members	ui	Holds the header of the channel's member list	verified	one	ui/chatchannels#joined-channel-slots
+ChatChannel	0x0094	4	uint32_t	m_channelId	ui	Holds the ChatChannels id, 0 for a custom channel	verified	one	ui/chatchannels#joined-channel-slots
+ChatChannel	0x0098	4	uint32_t	m_instance	ui	Holds the instance number from the join notice, not cleared when the slot is reused	verified	one	ui/chatchannels#joined-channel-slots
+ChatChannel	0x009c	4	uint32_t	m_state	ui	Holds 0 confirmed, 1 waiting, 2 renamed and waiting, 3 suspended	verified	one	ui/chatchannels#confirming-renaming-and-dropping
+ChatMessageGroup	0x0000	4	const char *	m_name	ui	Holds the group's name	verified	one	ui/chatwindows#message-groups-of-a-window
+ChatMessageGroup	0x0004	4	uint32_t	m_defaultOn	ui	Holds 1 when window 2 shows the group at start-up	verified	one	ui/chatwindows#window-start-up-state
+ChatMessageGroup	0x0008	4	uint32_t	m_addedVersion	ui	Holds the settings file version that added the group	verified	one	ui/chatwindows#settings-file-backfill
+ChatWindow	0x0000	32	char[32]	m_name	ui	Holds the window's name, empty until set	verified	one	ui/chatwindows#window-records
+ChatWindow	0x0020	68	uint8_t[68]	m_groupFlags	ui	Holds one flag byte per message group, set when the window shows the group	verified	one	ui/chatwindows#window-records
+ChatWindow	0x0064	16	uint32_t[4]	m_channelNames	ui	Holds the header of the array of channel names, its count at +0x68 and slots at +0x6c	verified	one	ui/chatwindows#window-records
+ChatWindow	0x0074	16	uint32_t[4]	m_channelIds	ui	Holds the header of the array of channel ids, its count at +0x78 and slots at +0x7c	verified	one	ui/chatwindows#window-records
+ChatWindow	0x0084	4	int32_t	m_fontSize	ui	Holds the font size set by SetChatWindowSize, 0 until set	verified	one	ui/chatwindows#setting-colour-alpha-and-size
+ChatWindow	0x0088	4	uint32_t	m_color	ui	Holds the background colour as bytes blue, green, red, alpha	verified	one	ui/chatwindows#setting-colour-alpha-and-size
+ChatWindow	0x008c	4	int32_t	m_locked	ui	Holds the locked flag, 1 at start-up	verified	one	ui/chatwindows#locked-docked-shown-and-name
+ChatWindow	0x0090	4	int32_t	m_docked	ui	Holds the dock position, an integer the interface chooses	verified	one	ui/chatwindows#locked-docked-shown-and-name
+ChatWindow	0x0094	4	int32_t	m_shown	ui	Holds the shown flag	verified	one	ui/chatwindows#locked-docked-shown-and-name
 ClientConnection	0x0004	64	char[64]	m_account	net	Holds the account name copied from the logon object when it authenticates	verified	one	net/session#session-key
 ClientConnection	0x0044	4	uint32_t	m_loginServerId	net	Holds the dword from the logon link that the auth session packet sends	verified	one	net/session#session-challenge
 ClientConnection	0x0048	40	uint8_t[40]	m_sessionKey	net	Holds the 40-byte session key that arms the header cipher	verified	one	net/session#session-key
@@ -687,6 +705,18 @@ FriendSlot	0x0008	8	uint64_t	m_guid	net	Holds the friend guid, zero for an empty
 FriendSlot	0x0010	4	uint32_t	m_level	net	Holds the friend level	verified	one	net/friends#friend-list-object
 FriendSlot	0x0014	4	uint32_t	m_class	net	Holds the friend class id	verified	one	net/friends#friend-list-object
 FriendSlot	0x0018	4	uint32_t	m_area	net	Holds the friend area id	verified	one	net/friends#friend-list-object
+GuildMemberInfo	0x0000	8	uint64_t	m_guid	ui	Holds the member's GUID	verified	one	ui/guild#the-member-record
+GuildMemberInfo	0x0008	48	char[48]	m_name	ui	Holds the member's name	verified	one	ui/guild#the-member-record
+GuildMemberInfo	0x0038	4	int32_t	m_level	ui	Holds the level, widened from a byte	verified	one	ui/guild#the-member-record
+GuildMemberInfo	0x003c	4	int32_t	m_classId	ui	Holds the ChrClasses id, widened from a byte	verified	one	ui/guild#the-member-record
+GuildMemberInfo	0x0040	4	int32_t	m_zoneId	ui	Holds the AreaTable id	verified	one	ui/guild#the-member-record
+GuildMemberInfo	0x0044	4	uint32_t	m_rankId	ui	Holds the 0-based rank id, 0 for the guild master	verified	one	ui/guild#the-member-record
+GuildMemberInfo	0x0048	4	uint32_t	m_online	ui	Holds 1 when the presence byte is nonzero	verified	one	ui/guild#the-member-record
+GuildMemberInfo	0x004c	1	uint8_t	m_presence	ui	Holds the wire presence byte, bit 0x2 away and bit 0x4 do-not-disturb	verified	one	ui/guild#the-member-record
+GuildMemberInfo	0x004d	1	uint8_t	m_notesUnmasked	ui	Holds 1 while the notes have not been run through the profanity masker	verified	one	ui/guild#the-member-record
+GuildMemberInfo	0x004e	128	char[128]	m_publicNote	ui	Holds the public note	verified	one	ui/guild#the-member-record
+GuildMemberInfo	0x00ce	128	char[128]	m_officerNote	ui	Holds the officer note	verified	one	ui/guild#the-member-record
+GuildMemberInfo	0x0150	4	float	m_lastOnlineDays	ui	Holds the days since the member was last online, 0 for an online member	verified	one	ui/guild#the-member-record
 ITEMCOOLDOWNHASHNODE	0x0000	4	uint32_t	m_hashVal	spell	Holds the key whose low bits pick the slot	verified	one	spell/cooldowns#item-cooldown-table-internals
 ITEMCOOLDOWNHASHNODE	0x0004	8	void *[2]	m_linkToSlot	spell	Holds the node's link in its slot list	verified	one	spell/cooldowns#item-cooldown-table
 ITEMCOOLDOWNHASHNODE	0x000c	8	void *[2]	m_linkToFull	spell	Holds the node's link in the table's node list	verified	one	spell/cooldowns#item-cooldown-table
@@ -1014,6 +1044,11 @@ SPELLHISTORY	0x0020	4	uint32_t	m_categoryTime	spell	Holds the category recovery'
 SPELLHISTORY	0x0024	1	uint8_t	m_onHold	spell	Holds 1 while the record waits for the server to start it	verified	one	spell/cooldowns#history-record-layout
 SPELLHISTORY	0x0028	4	int32_t	m_gcdCategory	spell	Holds the global-cooldown category the record blocks	verified	one	spell/cooldowns#history-record-layout
 SPELLHISTORY	0x002c	4	uint32_t	m_gcdTime	spell	Holds the global cooldown's length in milliseconds	verified	one	spell/cooldowns#history-record-layout
+SelectedCharacterRecord	0x0008	56	char[56]	m_name	ui	Holds the character's name, empty before the first copy	verified	one	ui/unitplayer#the-selected-character-record
+SelectedCharacterRecord	0x0100	1	uint8_t	m_race	ui	Holds the ChrRaces id	verified	one	ui/unitplayer#the-selected-character-record
+SelectedCharacterRecord	0x0101	1	uint8_t	m_class	ui	Holds the ChrClasses id	verified	one	ui/unitplayer#the-selected-character-record
+SelectedCharacterRecord	0x0102	1	uint8_t	m_sex	ui	Holds the sex byte that indexes the UnitSex table	verified	one	ui/unitplayer#the-selected-character-record
+SelectedCharacterRecord	0x0108	1	uint8_t	m_level	ui	Holds the level byte that no function reads	verified	one	ui/unitplayer#the-selected-character-record
 Shard	0x0000	8	void *[2]	m_link	spell	Holds the shard's link in its emitter's shard list	verified	one	spell/visuals#shard-model-start-and-end
 Shard	0x0008	12	float[3]	m_position	spell	Holds the shard position the second trace writes	verified	one	spell/visuals#shard-placement
 Shard	0x0014	4	void *	m_model	spell	Holds the shard's model	verified	one	spell/visuals#shard-model-start-and-end

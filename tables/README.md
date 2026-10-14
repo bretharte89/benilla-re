@@ -90,6 +90,43 @@ sites, 149 of them `SignalEvent2`).
 An event with no row here may still be fired: the unit-field events reach the dispatcher through
 a wrapper, `0x515e50`, which is the `?` row at `0x515e7a`.
 
+## chat_types.tsv
+
+The 94 chat types, in the order the client indexes them (94 rows). A line of chat carries a type
+byte; the type picks the colour and the event.
+
+| column | meaning |
+|---|---|
+| `index` | The type byte, `0` to `93`. |
+| `name` | The type's name, without the `CHAT_MSG_` prefix. |
+| `rgb` | The default colour, six lowercase hex digits. |
+| `event_id` | The event id fired for a line of this type. |
+| `event` | The event's name in `events.tsv`; empty where the id has no name. |
+
+## chat_groups.tsv
+
+The 68 message groups a chat window can show (68 rows). A window keeps one flag byte per group.
+
+| column | meaning |
+|---|---|
+| `index` | The group's position, `0` to `67`, which is the flag byte's position. |
+| `name` | The group's name. |
+| `default_on` | `1` when the group is on in the second chat window of a new character. |
+| `added_in` | The settings-file version that added the group: `0`, `1` or `2`. |
+
+## channel_notices.tsv
+
+The 32 notices of the channel notify message, opcode `0x99` (32 rows). The message is a u8 notice,
+the channel name and the notice's own fields.
+
+| column | meaning |
+|---|---|
+| `notice` | The notice byte, `0` to `31`; a larger byte shows an empty system line. |
+| `arm` | The code that handles it. |
+| `token` | The text that becomes the event's first argument; `a|b` where the arm picks one by the channel's state. Empty for none. |
+| `chat_type` | The chat type of the line: `CHANNEL_JOIN`, `CHANNEL_LEAVE`, `CHANNEL_NOTICE` or `CHANNEL_NOTICE_USER`. Empty where the arm shows no line. |
+| `reads` | The fields the arm reads after the channel name, in order: `guid`, `u8`, `u32`, `cstring`. |
+
 ## cvars.tsv
 
 Every `CVar::Register 0x63db90` call (214 rows).
@@ -152,3 +189,29 @@ contract; in brief:
 | `kinds` | The kinds of the returned values, one alternative per path: `(number,string?)`. `string?` is a string or nil. |
 | `kinds_conf` | `agree` (independently cross-checked at every return), `unverified` or `unknown`. |
 | `notes` | `stack-leak`, `variadic`, `name-not-unique`, `delegated-push`, `iteration-cap`, `cfg-truncated`, `indirect-branch`; `;`-separated. |
+
+## unit_gates.tsv
+
+How each of the 83 unit functions checks its arguments (83 rows). `../tools/tables/unit_gates.py`
+opens with the contract. A function without a check takes a missing or nil argument without an
+error.
+
+| column | meaning |
+|---|---|
+| `name` | The Lua name, in table order. |
+| `fn` | The C function. |
+| `checked` | The checked arguments, `,`-separated: `1:string` for `lua_isstring` (a number passes) and `1:number` for `lua_isnumber`, by Lua stack index. Empty for none. The table does not tell a probe from a check: `GetPVPRankInfo`'s `2:string` is a probe (`0x51a97c`, `0x51a998`) whose result is tested, and it never raises. |
+| `usage` | Every `Usage:` string the function pushes for its error, `\|`-separated. Empty for none. |
+
+## tutorial_triggers.tsv
+
+Every place the client fires or acknowledges a tutorial (58 rows). `../tools/tables/tutorial_triggers.py`
+opens with the contract. A tutorial has a number from 0 to 49; the interface sees it plus one.
+
+| column | meaning |
+|---|---|
+| `site` | The call or tail jump. |
+| `fn` | The function that holds it. |
+| `verb` | `fire` for `0x4b5390` (set the fire-once bit and signal `TUTORIAL_TRIGGER`), `ack` for `0x4b54c0` (set both bits and tell the server). |
+| `tutorials` | The numbers that reach the site, `\|`-separated; `?` where the walk cannot name one (a table read or a parameter). |
+| `delay_ms` | For `fire`, the delay that reaches the site: 0 fires now; empty for `ack`. |
