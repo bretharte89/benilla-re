@@ -1,5 +1,5 @@
 address	size	name	name_from	system	class	signature	meaning	confidence	proof	finding	test
-0x401000	10			unassigned			Runs its object file code that calls 0x645010; not read here	inferred	none		
+0x401000	10	ProcessEntry		unassigned			Calls 0x645010, then jumps to the C runtime start-up 0x4098c0	verified	one	core/threads#process-entry	
 0x401010	5			client			Runs its object file code not read here	inferred	none		
 0x401020	11			client			Runs its object file code not read here	inferred	none		
 0x401030	27			client			Runs its object file code that calls SMemFree; not read here	inferred	none		
@@ -66,7 +66,7 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x4020f0	1			client	unreached		Runs Client.cpp code not read here	inferred	none		
 0x402100	1			client	unreached		Runs Client.cpp code not read here	inferred	none		
 0x402110	1			client	unreached		Runs Client.cpp code not read here	inferred	none		
-0x402120	222	ClientMain		client			Runs the client: creates the time manager, initializes, runs the event loop through 0x41f5c0 and shuts down	inferred	none	core/loop#startup-and-shutdown	
+0x402120	222	ClientMain		client			Runs the application: start-up calls, the time manager, init, the event loop and teardown	verified	one	core/threads#application-body	
 0x402200	15			client			Runs Client.cpp code not read here	inferred	none		
 0x402210	161			client			Runs Client.cpp code that calls 0x648c20, 0x648be0, 0x419c20 and 5 more; not read here	inferred	none		
 0x4022c0	12			client			Runs Client.cpp code not read here	inferred	none		
@@ -154,7 +154,7 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x404460	19			unassigned			Runs its object file code not read here	inferred	none		
 0x404480	5			unassigned			Runs its object file code not read here	inferred	none		
 0x404490	19			unassigned			Runs its object file code not read here	inferred	none		
-0x4044b0	49	__ehvec_dtor		crt	boundary		Calls a destructor on each element of an array, last first	inferred	none	camera#unprojection	
+0x4044b0	49	__ehvec_dtor		crt	boundary		Calls a destructor on each element of an array, last first	verified	one	core/scheduler#context-destruction	
 0x4044f0	5			unassigned			Runs its object file code not read here	inferred	none		
 0x404500	19			unassigned			Runs its object file code not read here	inferred	none		
 0x404520	5			unassigned			Runs its object file code not read here	inferred	none		
@@ -584,7 +584,7 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x40a1e6	146	__fpclass	idb	crt	boundary		Runs its object file code that calls __sptype; not read here	inferred	none		
 0x40a280	47	__alloca_probe	idb	crt	boundary		Allocates eax bytes on the stack, touching each page	inferred	none	spell/go#spell-go-packet	net::srp6_client_session, net::srp6_interleave
 0x40a2b0	39	__ftol	idb	crt	boundary		Converts st0 to a 64-bit integer by truncation and returns its low dword	verified	one	camera#angle-properties	glue::char_customize_color_difftest, glue::glue_init_viewport_difftest, sound::channel_volume_mix, sound::ramp_step, sound::volume_to_byte, spell::spellvisual_timeline_difftest
-0x40a2d7	9	__purecall		crt			Ends the process with runtime error 25, a pure virtual call	inferred	none		
+0x40a2d7	9	__purecall		crt			Ends the process with runtime error 25, a pure virtual call	verified	one	core/scheduler#context-vtables	
 0x40a2e0	45	__cinit	idb	crt	boundary	void __cdecl (void)	Runs the C and C++ static initializer tables through __initterm	verified	one	random#static-initializers	
 0x40a30d	17	_exit	idb	crt	boundary		Runs its object file code that calls _doexit; not read here	inferred	none		
 0x40a31e	17	__exit	idb	crt	boundary		Runs its object file code that calls _doexit; not read here	inferred	none		
@@ -1669,16 +1669,16 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x41d870	77			base	unreached		Runs its object file code not read here	inferred	none		
 0x41d8c0	264			base	unreached		Runs its object file code that calls 0x41d870, 0x41c6e0, SMemReAlloc and 3 more; not read here	inferred	none		
 0x41d9d0	264			base	unreached		Runs its object file code that calls 0x41d190, 0x41ca00, SMemReAlloc and 3 more; not read here	inferred	none		
-0x41dae0	19			base			Runs its object file code that calls 0x436d60; not read here	inferred	none		
-0x41db00	11			base			Runs its object file code not read here	inferred	none		
+0x41dae0	19	CreateThreadPropSlot		base			Allocates the TLS slot of the thread properties and stores null in it	verified	one	core/threads#thread-properties	
+0x41db00	11	FreeThreadPropSlot		base			Frees the TLS slot of the thread properties	verified	one	core/threads#thread-properties	
 0x41db10	5			base			Runs its object file code not read here	inferred	none		
 0x41db20	11			base			Runs its object file code not read here	inferred	none		
-0x41db30	17			base			Runs Prop.cpp code that calls SMemAlloc; not read here	inferred	none		
-0x41db50	13	SetThreadPropContext		base			Stores a value in the calling thread's property slot through 0x436db0	verified	one	core/loop#one-tick	
-0x41db60	11	PropGetSelectedContext	idb	base			Runs its object file code not read here	inferred	none		
-0x41db70	20			base			Runs its object file code that calls SMemFree; not read here	inferred	none		
-0x41db90	27	PropGet	idb	base			Returns an entry of the calling thread's property array, read through TlsGetValue	inferred	none	core/loop#one-tick	
-0x41dbb0	27	SetThreadProp		base			Stores a value in an entry of the calling thread's property array	verified	one	core/loop#one-tick	
+0x41db30	17	AllocThreadPropArray		base			Allocates a property array of 0x4c bytes, 19 dwords	verified	one	core/threads#thread-properties	
+0x41db50	13	SetThreadPropContext		base			Stores a property array pointer in the calling thread's slot, null clearing it	verified	one	core/threads#thread-properties	
+0x41db60	11	PropGetSelectedContext	idb	base			Returns the property array pointer in the calling thread's slot	verified	one	core/threads#thread-properties	
+0x41db70	20	FreeThreadPropArray		base			Frees a property array when it is not null	verified	one	core/threads#thread-properties	
+0x41db90	27	PropGet	idb	base			Returns element i of the calling thread's property array, 0 without an array	verified	one	core/threads#thread-properties	
+0x41dbb0	27	SetThreadProp		base			Stores element i of the calling thread's property array when there is one	verified	one	core/threads#thread-properties	
 0x41dbd0	5			base			Runs its object file code not read here	inferred	none		
 0x41dbe0	15			base			Runs its object file code not read here	inferred	none		
 0x41dbf0	5			base			Runs its object file code not read here	inferred	none		
@@ -1783,11 +1783,11 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x4207f0	15	InitEventTwoPi		core	primitive	void __cdecl (void)	Stores π + π as a float in the object file's 2π global	verified	one	core/loop#static-initializers	
 0x420800	5	InitEventInvTwoPiThunk		core	orchestration	void __cdecl (void)	Jumps to 0x420810; a static initializer	verified	one	core/loop#static-initializers	
 0x420810	19	InitEventInvTwoPi		core	primitive	void __cdecl (void)	Stores 1 / 2π as a float in the object file's 1/2π global	verified	one	core/loop#static-initializers	
-0x420830	24	GetBucketListHead		core	orchestration		Returns a node's link, or the bucket's end link for a null node	inferred	none	core/loop#slots-and-threads	
+0x420830	24	GetElementLinkAt4		core	orchestration		Returns the link at +4 of an element, or the sentinel link for 0	verified	one	core/scheduler#intrusive-lists	
 0x420850	95	InitContextTable		core	orchestration	void __cdecl (void)	Builds the context table lock and its eight buckets once, under the guard bit 0xcf76cc	verified	one	core/loop#static-initializers	
 0x4208b0	12	RegisterDestroyContextTable		core	orchestration	void __cdecl (void)	Registers 0x4208c0 with _atexit	verified	one	core/loop#static-initializers	
 0x4208c0	190	DestroyContextTable		core	orchestration	void __cdecl (void)	Unlinks every context table entry and destroys the bucket and table locks once	verified	one	core/loop#static-initializers	
-0x420980	41	GetContextTableLink		core	orchestration		Returns the link a table node's link points at, or the end link marked by bit 0	inferred	none	core/loop#slots-and-threads	
+0x420980	41	GetContextTableLink		core	orchestration		Returns the link of the element after a link, the sentinel at the end	verified	one	core/scheduler#intrusive-lists	
 0x4209b0	5	InitSchedInfinityThunk		core	orchestration	void __cdecl (void)	Jumps to 0x4209c0; a static initializer	verified	one	core/loop#static-initializers	
 0x4209c0	11	InitSchedInfinity		core	orchestration	void __cdecl (void)	Copies +inf into the object file's infinity global	verified	one	core/loop#static-initializers	
 0x4209d0	10	StaticInitSlotLock		core	orchestration	void __cdecl (void)	Calls 0x4209e0 and registers 0x4209f0 with _atexit; a static initializer	verified	one	core/loop#static-initializers	
@@ -1817,7 +1817,7 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x420f70	113	ContextUpdateFrameTime		core	primitive	void __fastcall (EvtContext *context)	Dispatches category 5 with {(now - [+0x40]) · 0.001f, now} and stores now in +0x40	verified	two	core/loop#one-tick	core::dt_seconds_matches_binary
 0x420ff0	54	ContextTick		core	orchestration	void __fastcall (EvtContext *context)	Dispatches category 6 with a null payload unless the run state is 1	verified	two	core/loop#one-tick	
 0x421030	67	ContextAfterFrame		core	orchestration	void __fastcall (EvtContext *context)	Clears flag 4 and dispatches category 0x11 when it was set, unless the run state is 1	verified	two	core/loop#one-tick	
-0x421080	336	AcquireSlot		core	orchestration	uint32_t __cdecl (void)	Returns the least-used slot index, creating its slot record when empty, and counts a user	inferred	none	core/loop#slots-and-threads	
+0x421080	336	AcquireSlot		core	orchestration	uint32_t __cdecl (void)	Returns the slot index a loop thread serves, building a slot when the entry is empty	verified	one	core/scheduler#slot-acquire-and-release	
 0x4211d0	404	ReleaseSlot		core	orchestration	void __fastcall (uint32_t slot)	Drops a slot user; at zero frees the slot and tears down each context left in it	verified	two	core/loop#the-loop	
 0x421370	185	RemoveContextLoad		core	orchestration	void __fastcall (uint32_t slot, EvtContext *context)	Takes a context's cost off its slot's load and recomputes the slot's average	verified	two	core/loop#start-and-stop	
 0x421430	303	PopDueContext		core	orchestration	EvtContext *__fastcall (uint32_t slot)	Removes and returns the root of a slot's heap, the context due soonest, or null	verified	two	core/loop#the-loop	core::heap_pop_min_matches_binary
@@ -1828,7 +1828,7 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x4219d0	597	InitScheduler		core	orchestration	void __fastcall (uint32_t threads, uint32_t polling)	Builds the slots for a power-of-two thread count, creates slot 0 and starts the extra loop threads	verified	two	core/loop#startup-and-shutdown	
 0x421c30	122	DeleteSlotArray		core	unreached		Destroys an array of slot locks and frees it	inferred	none	core/loop#unreached-functions	
 0x421cb0	580	DestroyScheduler		core	orchestration	void __cdecl (void)	Stops the loop threads and frees the slots, their locks and the thread array	verified	two	core/loop#startup-and-shutdown	
-0x421f00	50	PollUntilSignaled		core	orchestration		Pumps through 0x43f050 every 100 ms until its event is set; a polling-mode thread entry	inferred	none	core/loop#slots-and-threads	
+0x421f00	50	PollUntilSignaled		core	orchestration		Calls 0x43f050 with 100 until the event it is given is signaled; a polling-mode helper thread entry	verified	one	core/scheduler#polling-mode	
 0x421f40	240	RemoveHeapNodeAt		core	orchestration	void __thiscall (void *heap, uint32_t index)	Removes the node at an index from a heap and sifts the last node into its place	verified	one	core/loop#scheduler-heap	
 0x422030	90	StopScheduler		core	host	void __cdecl (void)	Sets the shutdown event 0x883f24 and, unless polling, every slot's wake event	verified	two	core/loop#start-and-stop	
 0x422090	516	EvtContext::EvtContext		core	orchestration		Allocates and builds a context, registers its start and stop handlers at 1000.0 and schedules it	verified	two	core/loop#contexts	
@@ -1837,51 +1837,51 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x422500	60	SchedulerWorkerThreadProc		core	unreached		Registers a worker thread and runs 0x422540	inferred	none	core/loop#unreached-functions	
 0x422540	464	SchedulerWorkerLoop		core	unreached		Runs the frame loop's body for a worker thread's slot	inferred	none	core/loop#unreached-functions	
 0x422710	16	SchedulerWorkerExit		core	unreached		Releases a worker's slot and its thread record	inferred	none	core/loop#unreached-functions	
-0x422720	290	GrowHeapArrayTo		core	primitive		Grows a heap's pointer array to hold an index, rounding the capacity to its quantum	inferred	none	core/loop#slots-and-threads	
-0x422850	266	ReserveHeapArray		core	primitive		Reserves a heap's pointer array to a count, rounding the capacity to its quantum	inferred	none	core/loop#slots-and-threads	
-0x422960	16	ClearFourDwords		core	orchestration		Zeroes four dwords at ecx and returns ecx	verified	two	core/loop#contexts	
+0x422720	290	GrowHeapArrayTo		core	primitive		Raises a heap array's count to index + 1, growing its capacity to a quantum multiple, zeroing on request	verified	one	core/scheduler#growable-arrays	
+0x422850	266	ReserveHeapArray		core	primitive		Sets a heap array's count, growing its capacity to a quantum multiple only when it must	verified	one	core/scheduler#growable-arrays	
+0x422960	16	ClearFourDwords		core	orchestration		Zeroes four dwords at ecx and returns ecx	verified	two	core/scheduler#growable-arrays	
 0x422970	25	HeapNodeIsNotLater		core	primitive	uint32_t __thiscall (void *node, void *other)	Returns 1 when (int32)(node due - other due) is at most 0, the heap order	verified	one	core/loop#scheduler-heap	core::heap_key_le_matches_binary
-0x422990	28	InitTimerHeap		core	orchestration	void __thiscall (void *heap, uint32_t nodeOffset)	Clears a heap header and stores its node offset	verified	two	core/loop#contexts	
-0x4229b0	16	ClearFourDwordsCopy		core	orchestration		Zeroes four dwords at ecx and returns ecx, as 0x422960 does	verified	two	core/loop#contexts	
-0x4229c0	23	FreeThreadArrayStorage		core	orchestration		Frees an array's storage, tagged .PAVSThread@@	inferred	none	core/loop#slots-and-threads	
-0x4229e0	102	EvtContextLink::DeletingDestructor		core	orchestration		Unlinks a context's table link and frees it when bit 0 of the argument is set	inferred	none	core/loop#slots-and-threads	
-0x422a50	102	EvtContextBase::DeletingDestructor		core	orchestration		Unlinks a context's table link and frees it when bit 0 of the argument is set	inferred	none	core/loop#slots-and-threads	
-0x422ac0	137	DestroySlotRecord		core	orchestration		Detaches a slot's heap nodes, frees its array, closes its event and unlinks it	inferred	none	core/loop#slots-and-threads	
-0x422b50	226	GrowHeapArrayBy		core	primitive		Grows a heap's pointer array by a count, rounding the capacity to its quantum	inferred	none	core/loop#slots-and-threads	
+0x422990	28	InitTimerHeap		core	orchestration	void __thiscall (void *heap, uint32_t nodeOffset)	Zeroes a heap array's four dwords and stores the element-to-node offset as the fifth	verified	two	core/scheduler#growable-arrays	
+0x4229b0	16	ClearFourDwordsCopy		core	orchestration		Zeroes four dwords at ecx and returns ecx	verified	two	core/scheduler#growable-arrays	
+0x4229c0	23	FreeThreadArrayStorage		core	orchestration		Frees the thread array's storage, tagged .PAVSThread@@, when it is not null	verified	one	core/scheduler#growable-arrays	
+0x4229e0	102	EvtContextLink::DeletingDestructor		core	orchestration		Stores 0x801370, unlinks the link at +4, frees this when bit 0 is set and returns it	verified	one	core/scheduler#context-vtables	
+0x422a50	102	EvtContextBase::DeletingDestructor		core	orchestration		Stores 0x801370, unlinks the link at +4, frees this when bit 0 is set and returns it	verified	one	core/scheduler#context-vtables	
+0x422ac0	137	DestroySlotRecord		core	orchestration		Clears a slot heap's node owners, frees its storage, closes its event and unlinks the slot	verified	one	core/scheduler#slot-acquire-and-release	
+0x422b50	226	GrowHeapArrayBy		core	primitive		Raises a heap array's capacity for count + add, rounding on request, and leaves the count	verified	one	core/scheduler#growable-arrays	
 0x422c40	5	InitSchedTwoPiThunk		core	orchestration	void __cdecl (void)	Jumps to 0x422c50; a static initializer	verified	one	core/loop#static-initializers	
 0x422c50	15	InitSchedTwoPi		core	primitive	void __cdecl (void)	Stores π + π as a float in the object file's 2π global	verified	one	core/loop#static-initializers	
 0x422c60	5	InitSchedInvTwoPiThunk		core	orchestration	void __cdecl (void)	Jumps to 0x422c70; a static initializer	verified	one	core/loop#static-initializers	
 0x422c70	19	InitSchedInvTwoPi		core	primitive	void __cdecl (void)	Stores 1 / 2π as a float in the object file's 1/2π global	verified	one	core/loop#static-initializers	
-0x422c90	177	InsertBucketNode		core	orchestration		Links a node into a context table bucket list	inferred	none	core/loop#slots-and-threads	
+0x422c90	177	LinkNode		core	orchestration		Unlinks a node, then links it after a reference link in mode 1, else before it	verified	one	core/scheduler#intrusive-lists	
 0x422d50	33	InitHandlerList		core	orchestration		Makes an empty handler list: link offset 0 and an end link marked by bit 0	verified	two	core/events#handler-records	
-0x422d80	17	GetListEndLink		core	orchestration		Returns a node's link, or the list's end link for a null node	inferred	none	core/loop#slots-and-threads	
-0x422da0	226	GrowThreadArrayBy		core	primitive		Grows the thread array by a count, rounding the capacity to its quantum	inferred	none	core/loop#slots-and-threads	
-0x422e90	226	GrowContextArrayBy		core	primitive		Grows a context pointer array by a count, rounding the capacity to its quantum	inferred	none	core/loop#slots-and-threads	
-0x422f80	16	ClearContextLink		core	orchestration		Clears two dwords, the context's table link	verified	two	core/loop#contexts	
-0x422f90	12	InitEndLink		core	orchestration		Points a list's end link at itself, marked by bit 0	verified	two	core/loop#contexts	
-0x422fa0	12	InitMessageList		core	orchestration		Points a list's end link at itself, marked by bit 0	verified	two	core/loop#contexts	
-0x422fb0	12	InitKeyList		core	orchestration		Points a list's end link at itself, marked by bit 0	verified	two	core/loop#contexts	
-0x422fc0	41	GetSlotListLink		core	orchestration		Returns the link a slot's link points at, or the end link marked by bit 0	inferred	none	core/loop#slots-and-threads	
-0x422ff0	57	GetThreadArrayQuantum		core	primitive		Returns the largest power of two not above a size below 64, else 64, and 1 for 0	inferred	none	core/loop#slots-and-threads	
-0x423030	31	RoundUpToMultiple		core	primitive		Rounds a size up to a multiple of a quantum	inferred	none	core/loop#slots-and-threads	
-0x423050	133	ReallocThreadArray		core	orchestration		Reallocates the thread array to a capacity, copying the elements	inferred	none	core/loop#slots-and-threads	
-0x4230e0	57	GetContextArrayQuantum		core	primitive		Returns the largest power of two not above a size below 64, else 64, and 1 for 0	inferred	none	core/loop#slots-and-threads	
-0x423120	31	RoundUpToMultiple2		core	primitive		Rounds a size up to a multiple of a quantum	inferred	none	core/loop#slots-and-threads	
-0x423140	133	ReallocContextArray		core	orchestration		Reallocates a context pointer array to a capacity, copying the elements	inferred	none	core/loop#slots-and-threads	
+0x422d80	17	GetListEndLink		core	orchestration		Returns its argument, or the sentinel link for 0	verified	one	core/scheduler#intrusive-lists	
+0x422da0	226	GrowThreadArrayBy		core	primitive		Raises the thread array's capacity for count + add, as 0x422b50 does	verified	one	core/scheduler#growable-arrays	
+0x422e90	226	GrowContextArrayBy		core	primitive		Raises the context array's capacity for count + add, as 0x422b50 does	verified	one	core/scheduler#growable-arrays	
+0x422f80	16	ClearContextLink		core	orchestration		Clears a link, two dwords	verified	two	core/scheduler#intrusive-lists	
+0x422f90	12	InitEndLink		core	orchestration		Points a list's sentinel link at itself, marked by bit 0	verified	two	core/scheduler#intrusive-lists	
+0x422fa0	12	InitMessageList		core	orchestration		Points a list's sentinel link at itself, marked by bit 0	verified	two	core/scheduler#intrusive-lists	
+0x422fb0	12	InitKeyList		core	orchestration		Points a list's sentinel link at itself, marked by bit 0	verified	two	core/scheduler#intrusive-lists	
+0x422fc0	41	GetSlotListLink		core	orchestration		Returns the link of the element after a link, the sentinel at the end	verified	one	core/scheduler#intrusive-lists	
+0x422ff0	57	GetThreadArrayQuantum		core	primitive		Returns 64 (stored as the quantum) for sizes of 64 and up, else the highest power of two not above the size	verified	one	core/scheduler#growable-arrays	
+0x423030	31	RoundUpToMultiple		core	primitive		Rounds a size up to a multiple of a quantum	verified	one	core/scheduler#growable-arrays	
+0x423050	133	ReallocThreadArray		core	orchestration		Sets the thread array's capacity exactly, keeping the smaller of capacity and count elements	verified	one	core/scheduler#growable-arrays	
+0x4230e0	57	GetContextArrayQuantum		core	primitive		Returns 64 (stored as the quantum) for sizes of 64 and up, else the highest power of two not above the size	verified	one	core/scheduler#growable-arrays	
+0x423120	31	RoundUpToMultiple2		core	primitive		Rounds a size up to a multiple of a quantum	verified	one	core/scheduler#growable-arrays	
+0x423140	133	ReallocContextArray		core	orchestration		Sets the context array's capacity exactly, keeping the smaller of capacity and count elements	verified	one	core/scheduler#growable-arrays	
 0x4231d0	95	InitContextTableAgain		core	orchestration	void __cdecl (void)	Repeats 0x420850 under the same guard bit, then registers 0x4208c0 with _atexit	verified	one	core/events#static-initializers	
 0x423230	12	RegisterDestroyContextTable2		core	orchestration	void __cdecl (void)	Registers 0x4208c0 with _atexit	verified	one	core/events#static-initializers	
 0x423240	399	EvtContext::DeletingDestructor		core	orchestration		Frees a context's handlers, messages, held keys and timers, then the context when bit 0 is set	verified	two	core/loop#start-and-stop	
-0x4233d0	250	RemoveTimerHeapNode		core	orchestration		Removes a node from the timer heap and sifts the last node into its place	inferred	none	core/loop#slots-and-threads	
-0x4234d0	62	DestroyTimerHeap		core	orchestration		Detaches every timer heap node and frees the heap array	inferred	none	core/loop#slots-and-threads	
+0x4233d0	250	RemoveHeapNode		core	orchestration		Removes a node from the heap that owns it and sifts the last element into its place	verified	one	core/scheduler#context-destruction	
+0x4234d0	62	DestroyTimerHeap		core	orchestration		Clears the owner and index of every timer heap node and frees the heap array	verified	one	core/scheduler#context-destruction	
 0x423510	23	FreeUint32Array		core	orchestration	void __thiscall (void *array)	Frees an array's storage, tagged .I	verified	one	core/events#shared-arrays	
-0x423530	136	ClearHandlerList		core	orchestration		Unlinks every record of a list	inferred	none	core/loop#slots-and-threads	
-0x4235c0	136	ClearMessageList		core	orchestration		Unlinks every message of a list	inferred	none	core/loop#slots-and-threads	
-0x423650	23	FreeTimerArray		core	orchestration		Frees the timer array's storage, tagged .PAUEvtTimer@@	inferred	none	core/loop#slots-and-threads	
-0x423670	91	DeleteHandlerRecord		core	orchestration		Unlinks a handler record and frees it when bit 0 of the argument is set	inferred	none	core/loop#slots-and-threads	
-0x4236d0	101	DeleteMessage		core	orchestration		Unlinks a message and frees it when bit 0 of the argument is set	inferred	none	core/loop#slots-and-threads	
-0x423740	91	DeleteKeyRecord		core	orchestration		Unlinks a held-key record and frees it when bit 0 of the argument is set	inferred	none	core/loop#slots-and-threads	
-0x4237a0	60	UnlinkContextListNode		core	orchestration		Unlinks a node from its list and clears its link	inferred	none	core/loop#slots-and-threads	
-0x4237e0	136	ClearKeyList		core	orchestration		Unlinks every record of the held-key list	inferred	none	core/loop#slots-and-threads	
+0x423530	136	ClearMessageList		core	orchestration		Unlinks every message of a message list	verified	one	core/scheduler#context-destruction	
+0x4235c0	136	ClearKeyList		core	orchestration		Unlinks every record of the held-key list	verified	one	core/scheduler#context-destruction	
+0x423650	23	FreeTimerArray		core	orchestration		Frees the timer array's storage when it is not null	verified	one	core/scheduler#context-destruction	
+0x423670	91	DeleteHandlerRecord		core	orchestration		Unlinks a handler record and frees it when bit 0 of the argument is set	verified	one	core/scheduler#context-destruction	
+0x4236d0	101	DeleteMessage		core	orchestration		Unlinks a message and frees it when bit 0 of the argument is set	verified	one	core/scheduler#context-destruction	
+0x423740	91	DeleteKeyRecord		core	orchestration		Unlinks a held-key record and frees it when bit 0 of the argument is set	verified	one	core/scheduler#context-destruction	
+0x4237a0	60	UnlinkContextListNode		core	orchestration		Unlinks a link from its list and clears it	verified	one	core/scheduler#intrusive-lists	
+0x4237e0	136	ClearHandlerList		core	orchestration		Unlinks every record of a handler list	verified	one	core/scheduler#context-destruction	
 0x423870	5	InitQueueInfinityThunk		core	orchestration	void __cdecl (void)	Jumps to 0x423880; a static initializer	verified	one	core/events#static-initializers	
 0x423880	11	InitQueueInfinity		core	orchestration	void __cdecl (void)	Copies +inf into the object file's infinity global	verified	one	core/events#static-initializers	
 0x423890	10	StaticInitCursorRect		core	orchestration	void __cdecl (void)	Calls 0x4238a0 and registers 0x4238d0 with _atexit; a static initializer	verified	one	core/events#static-initializers	
@@ -2154,11 +2154,11 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x429d00	11			os			Runs its object file code not read here	inferred	none		
 0x429d10	16	OsGetCpuCapabilities		os			Returns the processor capability word through 0x429b90	verified	one	core/time#multi-core-gate	
 0x429d20	46	OsGetProcessorCount		os			Returns the number of processors	inferred	none	models/cache#feature-mask	
-0x429d50	8	OsSleep	idb	os			Sleeps for a number of milliseconds	inferred	none	core/input#the-pump	
-0x429d60	6	OsGetIdleSleepEnabled		os			Returns the flag that lets the pump sleep while the window is inactive	inferred	none	core/input#the-pump	
-0x429d70	7			os	unreached		Runs its object file code not read here	inferred	none		
-0x429d80	6	OsGetIdleSleepTime		os			Returns the time the pump sleeps while the window is inactive	inferred	none	core/input#the-pump	
-0x429d90	7			os	unreached		Runs its object file code not read here	inferred	none		
+0x429d50	8	OsSleep	idb	os			Sleeps for ecx milliseconds with Sleep	verified	one	core/input#message-filter-and-idle-sleep	
+0x429d60	6	OsGetIdleSleepEnabled		os			Returns the word that lets the pump sleep while the window is inactive; it holds 1	verified	one	core/input#message-filter-and-idle-sleep	
+0x429d70	7	OsSetIdleSleepEnabled		os	unreached		Stores ecx in the word that lets the inactive pump sleep; nothing calls it	verified	one	core/input#message-filter-and-idle-sleep	
+0x429d80	6	OsGetIdleSleepTime		os			Returns the time in milliseconds the inactive pump sleeps; it holds 0	verified	one	core/input#message-filter-and-idle-sleep	
+0x429d90	7	OsSetIdleSleepTime		os	unreached		Stores ecx in the inactive pump sleep time; nothing calls it	verified	one	core/input#message-filter-and-idle-sleep	
 0x429dc8	1			os	unreached		Runs its object file code not read here	inferred	none		
 0x429dd0	309			os	unreached		Runs its object file code not read here	inferred	none		
 0x429f10	38			os	unreached		Runs its object file code that calls 0x429dd0, SStrCopy; not read here	inferred	none		
@@ -2173,7 +2173,7 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x42a180	24			os	unreached		Runs its object file code that calls __clearfp, __control87; not read here	inferred	none		
 0x42a1a0	14			os	unreached		Runs its object file code not read here	inferred	none		
 0x42a1b0	15			os	unreached		Runs its object file code not read here	inferred	none		
-0x42a1c0	337			os			Runs its object file code that calls __alloca_probe; not read here	inferred	none		
+0x42a1c0	337	RestrictProcessAccess		os			Sets the process access list: deny Everyone mask 250, allow the user mask 1050369, protected	verified	one	core/threads#process-access-list	
 0x42a320	86	CheckFunctionPointer		os			Stops the client with Invalid function pointer when an address lies outside the exe .text section	verified	one	ui/luastate#the-c-function-contract	
 0x42a380	133	FindTextSection		os			Stores the start and end of the exe .text section from its section table	verified	one	ui/luastate#the-c-function-contract	
 0x42a410	5			os			Runs its object file code not read here	inferred	none		
@@ -2233,16 +2233,16 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x42b470	124			unassigned	unreached		Runs its object file code that calls SStrCopy, 0x42b3d0, SStr::sub_64A450; not read here	inferred	none		
 0x42b4f0	11			unassigned	unreached		Runs its object file code that calls OsPathGetRootChars; not read here	inferred	none		
 0x42b500	48			unassigned	unreached		Runs its object file code that calls SStrChr2; not read here	inferred	none		
-0x42b530	5	InitTimeManagerInfinityThunk		core	orchestration	void __cdecl (void)	Jumps to 0x42b540; a static initializer	verified	one	core/time#static-initializers	
-0x42b540	11	InitTimeManagerInfinity		core	orchestration	void __cdecl (void)	Copies the constant +inf into a global	verified	one	core/time#static-initializers	
-0x42b550	48			core	unreached		Runs its object file code that calls SStrChr2; not read here	inferred	none		
-0x42b580	118			core	unreached		Runs its object file code that calls 0x42b550, 0x64a420, SStrCopy and 1 more; not read here	inferred	none		
-0x42b600	66			core	unreached		Runs its object file code that calls SStrCopy; not read here	inferred	none		
-0x42b650	31			core	orchestration		Runs its object file code that calls SStrPrintf; not read here	inferred	none		
-0x42b670	5	InitTimeManagerTwoPiThunk		core	orchestration	void __cdecl (void)	Jumps to 0x42b680; a static initializer	verified	one	core/time#static-initializers	
-0x42b680	15	InitTimeManagerTwoPi		core	primitive	void __cdecl (void)	Stores π + π as a float in the object file's 2π global	verified	one	core/time#static-initializers	
-0x42b690	5	InitTimeManagerInvTwoPiThunk		core	orchestration	void __cdecl (void)	Jumps to 0x42b6a0; a static initializer	verified	one	core/time#static-initializers	
-0x42b6a0	19	InitTimeManagerInvTwoPi		core	primitive	void __cdecl (void)	Stores 1 / 2π as a float in the object file's 1/2π global	verified	one	core/time#static-initializers	
+0x42b530	5	InitFileNameInfinityThunk		unassigned	orchestration	void __cdecl (void)	Jumps to 0x42b540; a static initializer	verified	one	core/time#file-name-helpers	
+0x42b540	11	InitFileNameInfinity		unassigned	orchestration	void __cdecl (void)	Copies the constant +inf into a global	verified	one	core/time#file-name-helpers	
+0x42b550	48	HasInvalidFileNameChar		unassigned	unreached		Returns 1 when a string holds a character that a file name may not, else 0	verified	one	core/time#file-name-helpers	
+0x42b580	118	IsValidFileName		unassigned	unreached		Returns 1 when a file name has no such character and no reserved device name before its last dot	verified	one	core/time#file-name-helpers	
+0x42b600	66	GetWindowsFontsDirectory		unassigned	unreached		Writes the Windows directory, a backslash if missing, and fonts\ into a buffer	verified	one	core/time#file-name-helpers	
+0x42b650	31	FormatFontsPath		unassigned	orchestration	void __userpurge (char *name@<ecx>, char *buffer@<edx>, uint32_t size)	Formats Fonts\<file name> into a buffer of a given size	verified	one	core/time#file-name-helpers	
+0x42b670	5	InitFileNameTwoPiThunk		unassigned	orchestration	void __cdecl (void)	Jumps to 0x42b680; a static initializer	verified	one	core/time#file-name-helpers	
+0x42b680	15	InitFileNameTwoPi		unassigned	primitive	void __cdecl (void)	Stores pi + pi as a float in the object file's 2pi global	verified	one	core/time#file-name-helpers	
+0x42b690	5	InitFileNameInvTwoPiThunk		unassigned	orchestration	void __cdecl (void)	Jumps to 0x42b6a0; a static initializer	verified	one	core/time#file-name-helpers	
+0x42b6a0	19	InitFileNameInvTwoPi		unassigned	primitive	void __cdecl (void)	Stores 1 / 2pi as a float in the object file's 1/2pi global	verified	one	core/time#file-name-helpers	
 0x42b6c0	42	CreateTimeManager		core	orchestration	void __cdecl (void)	Allocates and builds the time manager, then calls Sleep(0)	verified	one	core/time#time-manager-lifetime	
 0x42b6f0	91	DestroyTimeManager		core	orchestration	void __cdecl (void)	Signals the calibration thread and waits up to 20 ms for it to free the time manager	verified	one	core/time#time-manager-lifetime	
 0x42b750	22	OsGetClockCounter		core	host	uint64_t __cdecl (void)	Returns the time-stamp counter in mode 1, else GetTickCount	verified	two	core/time#the-millisecond-clock	
@@ -2311,12 +2311,12 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x42dc00	189	GetMouseMessageButton		core	primitive		Writes the button bit of a mouse button message; returns 0 for other messages	verified	two	core/input#window-messages	
 0x42dd00	137	EnqueueMouseButtonRecord		core	host		Queues a button record with the cursor's client position, or the saved one in relative mode	verified	two	core/input#window-messages	
 0x42dd90	114	OnMouseButtonUp		core	host		Removes a button from the mask, releases capture at the last, and queues kind 0xd	verified	two	core/input#window-messages	
-0x42de10	79	OnWindowDragMove		core	orchestration		Moves or sizes the window by the offset of the cursor from the drag start	inferred	none	core/input#window-frame	
-0x42de60	54	MoveWindowBy		core	host		Moves the window by an offset with MoveWindow	inferred	none	core/input#window-frame	
-0x42dea0	183	SizeWindowBy		core	host		Sizes the window by an offset from the dragged edge with MoveWindow	inferred	none	core/input#window-frame	
-0x42df90	104	OnNonClientButtonDown		core	host		Starts a window drag for the caption and border hit tests, capturing the mouse	inferred	none	core/input#window-frame	
-0x42e000	114	OnNonClientDoubleClick		core	host		Ends a window drag on a non-client double click and runs the box under the cursor	inferred	none	core/input#window-frame	
-0x42e0a0	206	OnNonClientButtonUp		core	host		Ends a window drag on a non-client button release and runs the minimize, maximize or close box	inferred	none	core/input#window-frame	
+0x42de10	79	OnFrameMouseMove		core	host		Moves or sizes the window by the cursor offset from the press point while a drag is on	verified	one	core/input#window-frame	
+0x42de60	54	MoveWindowBy		core	host		Moves the window to its press-time rectangle plus an offset, keeping its size	verified	one	core/input#window-frame	
+0x42dea0	183	SizeWindowBy		core	host		Adds an offset to the sides a hit test names, sends WM_SIZING and moves the window to the result	verified	one	core/input#window-frame	
+0x42df90	104	OnNonClientButtonDown		core	host		Records a frame press and, on the caption or an edge, takes focus and captures the mouse	verified	one	core/input#window-frame	
+0x42e000	114	OnNonClientDoubleClick		core	host		Toggles maximized, minimizes or posts quit for a frame double click, by hit test	verified	one	core/input#window-frame	
+0x42e0a0	206	OnNonClientButtonUp		core	host		Applies the last frame drag or acts on a box release when its hit test matches the press	verified	one	core/input#window-frame	
 0x42e1a0	5	InitInputTwoPiThunk		core	orchestration	void __cdecl (void)	Jumps to 0x42e1b0; a static initializer	verified	one	core/input#static-initializers	
 0x42e1b0	15	InitInputTwoPi		core	primitive	void __cdecl (void)	Stores π + π as a float in the object file's 2π global	verified	one	core/input#static-initializers	
 0x42e1c0	5	InitInputInvTwoPiThunk		core	orchestration	void __cdecl (void)	Jumps to 0x42e1d0; a static initializer	verified	one	core/input#static-initializers	
@@ -2338,11 +2338,11 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x42e320	28			os	unreached		Runs its object file code not read here	inferred	none		
 0x42e340	44			os	unreached		Runs its object file code that calls SetWindowMessageHook; not read here	inferred	none		
 0x42e370	34			os	unreached		Runs its object file code that calls SetWindowMessageHook; not read here	inferred	none		
-0x42e3a0	7			os	unreached		Runs its object file code not read here	inferred	none		
+0x42e3a0	7	OsGuiEnableFilter		os	unreached		Stores ecx in the message filter enable word 0x884e9c; nothing calls it	verified	one	core/input#message-filter-and-idle-sleep	
 0x42e3b0	13			os	unreached		Runs its object file code not read here	inferred	none		
 0x42e3c0	13			os	unreached		Runs its object file code not read here	inferred	none		
-0x42e3d0	305	OsGuiFilterMessage		os			Lets accelerators and dialogs consume a message before it is dispatched	inferred	none	core/input#the-pump	
-0x42e510	14			os			Runs its object file code not read here	inferred	none		
+0x42e3d0	305	OsGuiFilterMessage		os	host		Offers a message to accelerator and dialog filters; returns 0 at once while 0x884e9c is 0	verified	one	core/input#message-filter-and-idle-sleep	
+0x42e510	14	GetGuiPointerProp		os			Returns the window property OsGuiPointer of the window in ecx	verified	one	core/input#message-filter-and-idle-sleep	
 0x42e520	64			os	unreached		Runs its object file code that calls 0x42e560, 0x42ff40; not read here	inferred	none		
 0x42e560	25			os	unreached		Runs its object file code not read here	inferred	none		
 0x42e580	7			os	unreached		Runs its object file code not read here	inferred	none		
@@ -2386,7 +2386,7 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x42fcc0	14			os	unreached		Runs its object file code not read here	inferred	none		
 0x42fcd0	138			os	unreached		Runs its object file code that calls SErrSetLastError, 0x42fe90, 0x42fd60 and 1 more; not read here	inferred	none		
 0x42fd60	293			os	unreached		Runs its object file code that calls SMemReAlloc, SMemAlloc, SMemFree; not read here	inferred	none		
-0x42fe90	11			os			Runs its object file code not read here	inferred	none		
+0x42fe90	11	GetWindowParentOf		os			Returns the parent window of the window handle stored at +4 of ecx	verified	one	core/input#message-filter-and-idle-sleep	
 0x42fea0	26			os	unreached		Runs its object file code that calls 0x42fec0; not read here	inferred	none		
 0x42fec0	117			os	unreached		Runs its object file code not read here	inferred	none		
 0x42ff40	35			os	unreached		Runs its object file code not read here	inferred	none		
@@ -2740,7 +2740,7 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x435be0	35			os	unreached		Runs its object file code not read here	inferred	none		
 0x435c10	9			os	unreached		Runs its object file code not read here	inferred	none		
 0x435c20	8			os	unreached		Runs its object file code not read here	inferred	none		
-0x435c30	32	OsGuiGetWindow	idb	os			Runs its object file code not read here	inferred	none		
+0x435c30	32	OsGuiGetWindow	idb	os			Returns the game window for 0, the active window for 1, the foreground window for 2, else 0	verified	one	core/input#message-filter-and-idle-sleep	
 0x435c50	7			os			Runs its object file code not read here	inferred	none		
 0x435c60	59			os	unreached		Runs its object file code not read here	inferred	none		
 0x435ca0	39			os	unreached		Runs its object file code not read here	inferred	none		
@@ -2752,7 +2752,7 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x435ea0	80			os	unreached		Runs its object file code that calls 0x42fb50; not read here	inferred	none		
 0x435ef0	9			os			Runs its object file code not read here	inferred	none		
 0x435f00	246	ShowErrorText		os			Shows a text with a caption to the player	inferred	none		
-0x436010	86			unassigned			Runs its object file code not read here	inferred	none		
+0x436010	86	OsGetModifierDown		unassigned			Returns 1 when the Control (0), Shift (1) or Alt (2) key is down by GetKeyState, else 0	verified	one	core/input#key-messages-and-alt-f4	
 0x436070	22			unassigned	unreached		Runs its object file code that calls 0x42e830; not read here	inferred	none		
 0x436090	88			unassigned	unreached		Runs its object file code not read here	inferred	none		
 0x4360f0	49			unassigned	unreached		Runs its object file code that calls 0x42f3b0; not read here	inferred	none		
@@ -2799,10 +2799,10 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x436c70	57			unassigned	unreached		Runs its object file code not read here	inferred	none		
 0x436cb0	31			unassigned	unreached		Runs its object file code not read here	inferred	none		
 0x436cd0	141			unassigned	unreached		Runs its object file code that calls SMemReAlloc, SMemAlloc, SMemFree; not read here	inferred	none		
-0x436d60	6			unassigned			Runs its object file code not read here	inferred	none		
-0x436d70	8			unassigned			Runs its object file code not read here	inferred	none		
-0x436d80	35	OsTlsGetValue	idb	unassigned			Runs its object file code that calls SErrSetLastError; not read here	inferred	none		
-0x436db0	9	OsTlsSetValue		os			Stores a value in a TLS slot through TlsSetValue	inferred	none	core/loop#one-tick	
+0x436d60	6	OsTlsAlloc		unassigned			Allocates a TLS slot with TlsAlloc	verified	one	core/threads#engine-thread-records	
+0x436d70	8	OsTlsFree		unassigned			Frees a TLS slot with TlsFree	verified	one	core/threads#engine-thread-records	
+0x436d80	35	OsTlsGetValue	idb	unassigned			Returns the TLS value, raising error 0x57 and returning 0 when GetLastError is set	verified	one	core/threads#engine-thread-records	
+0x436db0	9	OsTlsSetValue		os			Stores a value in a TLS slot with TlsSetValue	verified	one	core/threads#engine-thread-records	
 0x436dc0	5			os			Runs its object file code not read here	inferred	none		
 0x436dd0	11			os			Runs its object file code not read here	inferred	none		
 0x436de0	5			os			Runs its object file code not read here	inferred	none		
@@ -2819,16 +2819,16 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x436f70	145			os			Runs its object file code not read here	inferred	none		
 0x437010	17			os	unreached		Runs its object file code that calls 0x437ad0; not read here	inferred	none		
 0x437030	43			os	unreached		Runs its object file code that calls 0x437a00; not read here	inferred	none		
-0x437060	377	RegisterEngineThread		os			Registers the calling thread's record under a name	inferred	none	core/loop#the-loop	
-0x4371e0	237	UnregisterEngineThread		os			Unregisters and frees the calling thread's record	inferred	none	core/loop#the-loop	
+0x437060	377	RegisterEngineThread		os			Registers the calling thread: counts it, makes its record with id, handle and name, and links it	verified	one	core/threads#engine-thread-records	
+0x4371e0	237	UnregisterEngineThread		os			Unregisters the calling thread: clears its slot, closes its handle, unlinks and frees its record	verified	one	core/threads#engine-thread-records	
 0x4372d0	7			os	unreached		Runs OsCall.cpp code not read here	inferred	none		
 0x4372e0	32			os	unreached		Runs OsCall.cpp code that calls OsTlsGetValue; not read here	inferred	none		
-0x437300	235			os			Runs OsCall.cpp code that calls SMemAlloc, SStrCopy, 0x437ce0; not read here	inferred	none		
+0x437300	235	CreateNameObject		os			Builds a name object of 0x45a8 bytes with a copied name and links it at the end of the name list	verified	one	core/threads#context-binding	
 0x4373f0	5			os			Runs its object file code not read here	inferred	none		
 0x437400	11			os			Runs its object file code not read here	inferred	none		
-0x437410	179			os			Runs its object file code that calls 0x437ca0, 0x437d10, SMemFree; not read here	inferred	none		
-0x4374d0	138	BindContextToThread		os			Binds a context's record to the calling thread's record	inferred	none	core/loop#one-tick	
-0x437560	181	UnbindContextFromThread		os			Unbinds a context's record from the calling thread's record	inferred	none	core/loop#one-tick	
+0x437410	179	DestroyNameObject		os			Clears a name object's thread tie and entries, then frees it	verified	one	core/threads#context-binding	
+0x4374d0	138	BindNameObjectToThread		os			Ties a name object and the calling thread's record to each other; returns for a null object	verified	one	core/threads#context-binding	
+0x437560	181	UnbindNameObjectFromThread		os			Clears the tie between a name object and the calling thread's record	verified	one	core/threads#context-binding	
 0x437620	119			os	unreached		Runs its object file code that calls OsTlsGetValue; not read here	inferred	none		
 0x4376a0	42			os	unreached		Runs its object file code that calls OsTlsGetValue; not read here	inferred	none		
 0x4376d0	102			os	unreached		Runs its object file code that calls OsTlsGetValue; not read here	inferred	none		
@@ -3043,7 +3043,7 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x43eff0	50			os	unreached		Runs OsTcp.cpp code not read here	inferred	none		
 0x43f030	5			os			Runs OsTcp.cpp code not read here	inferred	none		
 0x43f040	5			os			Runs OsTcp.cpp code not read here	inferred	none		
-0x43f050	25	PollingWait		os	orchestration		Runs the network pump for a time when it exists, else sleeps for that time	inferred	none	core/loop#the-loop	
+0x43f050	25	PollingWait		os	orchestration		Runs the network object's wait for ecx milliseconds when one exists, else sleeps for that time	verified	one	core/threads#host-calls	
 0x43f070	29			os	unreached		Runs OsTcp.cpp code that calls SErrSetLastError, 0x43cb30; not read here	inferred	none		
 0x43f090	17			os	unreached		Runs OsTcp.cpp code that calls SErrSetLastError; not read here	inferred	none		
 0x43f0b0	19			os	unreached		Runs OsTcp.cpp code that calls SErrSetLastError, 0x43cb60; not read here	inferred	none		
@@ -23233,7 +23233,7 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x644fc0	5			unassigned			Runs its object file code not read here	inferred	none		
 0x644fd0	19			unassigned			Runs its object file code not read here	inferred	none		
 0x644ff0	22			unassigned			Runs its object file code that calls 0x64e8a0, 0x6462b0, 0x64cea0; not read here	inferred	none		
-0x645010	10			unassigned			Runs its object file code that calls 0x65aa20; not read here	inferred	none		
+0x645010	10	StormStartup		unassigned			Starts Storm: its locks through 0x65aa20 and its allocator through 0x646280	verified	one	core/threads#process-entry	
 0x645020	5			storm	boundary		Runs its object file code not read here	inferred	none		
 0x645030	11			storm	boundary		Runs its object file code not read here	inferred	none		
 0x645040	7			storm	boundary		Runs its object file code not read here	inferred	none		
@@ -23271,11 +23271,11 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x6461c0	130			storm	boundary		Runs its object file code that calls 0x6450c0, 0x6452a0; not read here	inferred	none		
 0x646250	20			storm	unreached		Runs its object file code that calls 0x6454d0; not read here	inferred	none		
 0x646270	8			storm	boundary		Runs its object file code not read here	inferred	none		
-0x646280	43			storm	boundary		Runs its object file code that calls 0x667440, 0x6454e0; not read here	inferred	none		
+0x646280	43	SMemInitialize		storm	boundary		Initializes the Storm allocator once, guarded by a flag dword	verified	one	core/threads#process-entry	
 0x6462b0	48			storm	boundary		Runs its object file code that calls 0x667440, 0x6455b0; not read here	inferred	none		
-0x6462e0	61	SMemAlloc	idb	storm	boundary		Allocates memory tagged with a name and line	inferred	none		
+0x6462e0	61	SMemAlloc	idb	storm	boundary		Allocates size bytes tagged with a name and line through the allocator, zero-filled when flag bit 3 is set	verified	one	core/threads#allocator-and-error-calls	
 0x646320	261	SMemReAlloc		storm	boundary		Reallocates tagged memory	inferred	none		
-0x646430	34	SMemFree	idb	storm	boundary		Frees tagged memory	inferred	none		
+0x646430	34	SMemFree	idb	storm	boundary		Frees a block through the allocator and returns 1	verified	one	core/threads#allocator-and-error-calls	
 0x646460	5			storm	unreached		Runs its object file code not read here	inferred	none		
 0x646470	45			storm	boundary		Runs its object file code that calls 0x646270; not read here	inferred	none		
 0x6464a0	56			storm	unreached		Runs its object file code that calls 0x6458a0; not read here	inferred	none		
@@ -23404,13 +23404,13 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x64a500	150			storm	unreached		Runs its object file code that calls _toupper; not read here	inferred	none		
 0x64a5a0	123	SStrCopy	idb	storm	boundary		Copies a string up to a length	inferred	none	collision/mover#initialisation-and-teardown	
 0x64a620	75	SStrDupA	idb	storm	boundary		Runs its object file code that calls SErrSetLastError, SStrLen, SMemAlloc; not read here	inferred	none		
-0x64a670	16			storm	boundary		Runs its object file code that calls 0x64a680; not read here	inferred	none		
-0x64a680	88			storm	boundary		Runs its object file code that calls __CIpow; not read here	inferred	none		
+0x64a670	16	BuildPow10TableOnce		storm	boundary		Runs 0x64a680 once and sets its guard	verified	one	core/threads#string-conversion-table	
+0x64a680	88	BuildPow10Table		storm	boundary		Fills a table of 20 by 10 doubles with k times 10 to the power -(r+1)	verified	one	core/threads#string-conversion-table	
 0x64a6e0	1			storm	boundary		Runs its object file code not read here	inferred	none		
 0x64a6f0	46	SStrLen	idb	storm	boundary	uint32_t __stdcall (const char *text)	Returns the length of a C string	inferred	none		
 0x64a720	49			storm	boundary		Runs its object file code that calls SErrSetLastError; not read here	inferred	none		
 0x64a760	142	SStrPack		storm			Appends a string within a buffer size and terminates it	inferred	none		
-0x64a7f0	43	SStrPrintf	idb	storm			Formats into a buffer of a given size	inferred	none	spell/failures#reason-text-and-pet-variant	
+0x64a7f0	43	SStrPrintf	idb	storm			Formats into a buffer of a given size, raising error 0x57 for a null buffer or format	verified	one	core/threads#allocator-and-error-calls	
 0x64a820	140	ISStrVPrintf	idb	storm	boundary		Runs its object file code that calls vsnoprintf, __vsnprintf, vsoprintf and 1 more; not read here	inferred	none		
 0x64a8b0	43	SStrVPrintf	idb	storm	boundary		Runs its object file code that calls SErrSetLastError, ISStrVPrintf; not read here	inferred	none		
 0x64a8e0	434			storm	unreached		Runs its object file code that calls SErrSetLastError, 0x64a670, __CIpow and 1 more; not read here	inferred	none		
@@ -23439,10 +23439,10 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x64b970	277			storm	unreached		Runs SStr.cpp code that calls 0x64b800, SInterlockedDecrement, SStrLen and 2 more; not read here	inferred	none		
 0x64ba90	266			unassigned			Runs its object file code that calls __alloca_probe, SUniConvertUTF8to16, SMemAlloc and 1 more; not read here	inferred	none		
 0x64bba0	46			unassigned			Runs its object file code that calls SMemFree; not read here	inferred	none		
-0x64bbd0	6			unassigned			Runs its object file code not read here	inferred	none		
+0x64bbd0	6	GetCurrentThreadIdThunk		unassigned			Jumps to the GetCurrentThreadId import	verified	one	core/threads#host-calls	
 0x64bbe0	6	GetCurrentProcessId		unassigned			Jumps to GetCurrentProcessId, imported from KERNEL32.dll	inferred	none		
-0x64bbf0	14			unassigned			Runs its object file code not read here	inferred	none		
-0x64bc00	24			unassigned			Runs its object file code not read here	inferred	none		
+0x64bbf0	14	GetCurrentThreadPriority		unassigned			Returns the priority of the current thread with GetThreadPriority	verified	one	core/threads#host-calls	
+0x64bc00	24	SetCurrentThreadPriority		unassigned			Sets the priority of the current thread with SetThreadPriority	verified	one	core/threads#host-calls	
 0x64bc20	248	StartAddress	idb	storm	boundary		Runs SThread.cpp code that calls SMemFree, 0x64e9b0, 0x64e9c0; not read here	inferred	none		
 0x64bd20	31			storm	boundary		Runs SThread.cpp code that calls 0x64bd40; not read here	inferred	none		
 0x64bd40	577			storm	boundary		Runs SThread.cpp code that calls SStrCopy, 0x64ead0, SMemAlloc; not read here	inferred	none		
@@ -23520,7 +23520,7 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x64e6f0	76			storm	unreached		Runs its object file code that calls 0x64d020, 0x64d070; not read here	inferred	none		
 0x64e740	18			storm	boundary		Runs its object file code that calls 0x64e760; not read here	inferred	none		
 0x64e760	227			storm	boundary		Runs its object file code that calls 0x64c650, SStrPrintf, 0x64d100; not read here	inferred	none		
-0x64e850	22	SErrSetLastError	idb	storm	boundary	void __stdcall (uint32_t code)	Stores an error code and passes it to SetLastError	inferred	none		
+0x64e850	22	SErrSetLastError	idb	storm	boundary	void __stdcall (uint32_t code)	Stores an error code in a global and passes it to SetLastError	verified	one	core/threads#allocator-and-error-calls	
 0x64e870	46			storm	boundary		Runs its object file code that calls 0x64d020, SStrCopy, 0x64d070; not read here	inferred	none		
 0x64e8a0	35			storm	boundary		Runs its object file code that calls 0x64d020, 0x64d070; not read here	inferred	none		
 0x64e8d0	65			storm	boundary		Runs its object file code that calls 0x64d020, SStrCopy, 0x64d070; not read here	inferred	none		
@@ -23756,10 +23756,10 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x6578f0	60			storm	unreached		Runs its object file code not read here	inferred	none		
 0x657930	41			storm	boundary		Runs its object file code not read here	inferred	none		
 0x657960	41	Pause	idb	storm	boundary		Runs its object file code not read here	inferred	none		
-0x657990	14	SCritSect::SCritSect	idb	storm	boundary		Initializes a critical section	inferred	none		
-0x6579a0	8	SCritSect::~SCritSect		storm	boundary		Deletes a critical section	inferred	none		
-0x6579b0	8	SCritSect::Enter	idb	storm	boundary		Runs its object file code not read here	inferred	none		
-0x6579c0	8	SCritSect::Leave	idb	storm	boundary		Leaves a critical section	inferred	none		
+0x657990	14	SCritSect::SCritSect	idb	storm	boundary		Initializes the critical section at ecx and returns it	verified	one	core/threads#host-calls	
+0x6579a0	8	SCritSect::~SCritSect		storm	boundary		Deletes the critical section at ecx	verified	one	core/threads#host-calls	
+0x6579b0	8	SCritSect::Enter	idb	storm	boundary		Enters the critical section at ecx	verified	one	core/threads#host-calls	
+0x6579c0	8	SCritSect::Leave	idb	storm	boundary		Leaves the critical section at ecx	verified	one	core/threads#host-calls	
 0x6579d0	5			storm	unreached		Runs its object file code not read here	inferred	none		
 0x6579e0	229			storm	unreached		Runs its object file code that calls SCritSect::SCritSect; not read here	inferred	none		
 0x657ad0	309			storm	unreached		Runs SLock.cpp code that calls 0x667440, SCritSect::~SCritSect; not read here	inferred	none		
@@ -23783,13 +23783,13 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x6587a0	38			storm	boundary		Runs SLock.cpp code that calls 0x658870, SInterlockedExchange, SRWLock::IFreeEvent; not read here	inferred	none		
 0x6587d0	158	SRWLock::IFreeEvent	idb	storm	boundary		Runs SLock.cpp code that calls SInterlockedIncrement, SInterlockedExchange, Pause; not read here	inferred	none		
 0x658870	32			storm	boundary		Runs SLock.cpp code that calls SInterlockedExchange, SRWLock::IFreeEvent; not read here	inferred	none		
-0x658890	15	CSRWLock::Enter	idb	storm	boundary		Runs SLock.cpp code that calls SRWLock::SURWLockEnter; not read here	inferred	none		
+0x658890	15	CSRWLock::Enter	idb	storm	boundary		Enters the read-write lock at ecx in the mode on the stack	verified	one	core/threads#allocator-and-error-calls	
 0x6588a0	160	SRWLock::SURWLockEnter	idb	storm	boundary		Runs SLock.cpp code that calls SRWLock::IAllocEventOrIncRefCount, SRWLock::SUNNLockEnter and 4 more; not read here	inferred	none		
 0x658940	105	SRWLock::IAllocEventOrIncRefCount	idb	storm	boundary		Runs SLock.cpp code that calls 0x6589b0, SInterlockedCompareExchange, SRWLock::IFreeEvent; not read here	inferred	none		
 0x6589b0	101			storm	boundary		Runs SLock.cpp code that calls SInterlockedDecrement, SInterlockedIncrement and 2 more; not read here	inferred	none		
 0x658a20	186	SRWLock::SUNNLockEnter	idb	storm	boundary		Runs SLock.cpp code that calls SInterlockedExchange, Pause, SRWLock::IAllocEventOrIncRefCount and 4 more; not read here	inferred	none		
 0x658ae0	104	SRWLock::IDecRefCountAndFreeEvent	idb	storm	boundary		Runs SLock.cpp code that calls SInterlockedCompareExchange, SRWLock::IFreeEvent; not read here	inferred	none		
-0x658b50	15	CSRWLock::Leave	idb	storm	boundary		Runs SLock.cpp code that calls SRWLock::SURWLockLeave; not read here	inferred	none		
+0x658b50	15	CSRWLock::Leave	idb	storm	boundary		Leaves the read-write lock at ecx in the mode on the stack	verified	one	core/threads#allocator-and-error-calls	
 0x658b60	52	SRWLock::SURWLockLeave	idb	storm	boundary		Runs SLock.cpp code that calls SRWLock::IDecRefCountAndFreeEvent; not read here	inferred	none		
 0x658ba0	31	SRWLock::SUNNLockLeave	idb	storm	boundary		Runs SLock.cpp code not read here	inferred	none		
 0x658bc0	15			storm	unreached		Runs SLock.cpp code that calls 0x658bd0; not read here	inferred	none		
@@ -23803,18 +23803,18 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x659520	588			storm	unreached		Runs SLock.cpp code that calls 0x667440, CSRWLock::Leave; not read here	inferred	none		
 0x659770	387			storm	boundary		Runs SLock.cpp code that calls 0x667440; not read here	inferred	none		
 0x659900	40			storm	unreached		Runs SLock.cpp code not read here	inferred	none		
-0x659930	9			storm	boundary		Runs SLock.cpp code not read here	inferred	none		
+0x659930	9			storm	boundary		Stores 0 at ecx, an empty handle	verified	one	core/threads#host-calls	
 0x659940	22			storm	unreached		Runs SLock.cpp code that calls 0x659900; not read here	inferred	none		
-0x659960	5	SHandleCloseThunk		storm	boundary		Jumps to 0x6599a0	inferred	none		
+0x659960	5	SHandleCloseThunk		storm	boundary		Jumps to 0x6599a0, which closes the handle at ecx and zeroes it	verified	one	core/threads#host-calls	
 0x659970	29			storm	unreached		Runs SLock.cpp code that calls SHandleClose, 0x659900; not read here	inferred	none		
 0x659990	10			storm	boundary		Runs SLock.cpp code not read here	inferred	none		
 0x6599a0	24	SHandleClose		storm	boundary		Closes the handle at ecx and clears it	inferred	none		
-0x6599c0	20	SEventWait		storm	boundary		Waits on the handle at ecx with WaitForSingleObject and a timeout	verified	one	core/loop#the-loop	
+0x6599c0	20	SEventWait		storm	boundary		Waits on the handle at ecx for the stack timeout with WaitForSingleObject	verified	one	core/threads#host-calls	
 0x6599e0	35			storm	unreached		Runs SLock.cpp code not read here	inferred	none		
 0x659a10	96			storm	boundary		Runs SLock.cpp code not read here	inferred	none		
-0x659a70	38			storm	boundary		Runs SLock.cpp code that calls 0x659930; not read here	inferred	none		
-0x659aa0	10	SEvent::Set	idb	storm	boundary		Sets the event at ecx	inferred	none		
-0x659ab0	10			storm	boundary		Runs SLock.cpp code not read here	inferred	none		
+0x659a70	38	SEvent::SEvent		storm	boundary		Creates an event with the manual-reset and initial-state flags on the stack and stores it at ecx	verified	one	core/threads#host-calls	
+0x659aa0	10	SEvent::Set	idb	storm	boundary		Sets the event at ecx	verified	one	core/threads#host-calls	
+0x659ab0	10	SEvent::Reset		storm	boundary		Resets the event at ecx	verified	one	core/threads#host-calls	
 0x659ac0	39	SThread::Create	idb	storm	boundary		Runs SLock.cpp code that calls 0x64bd20; not read here	inferred	none		
 0x659af0	38			storm	boundary		Runs SLock.cpp code that calls 0x659930; not read here	inferred	none		
 0x659b20	22			storm	boundary		Runs SLock.cpp code not read here	inferred	none		
@@ -23854,7 +23854,7 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x65a970	48	SLogFlush	idb	storm	boundary		Runs its object file code that calls LockLog, FlushLog, UnlockLog; not read here	inferred	none		
 0x65a9a0	78			storm	boundary		Runs its object file code that calls FlushLog; not read here	inferred	none		
 0x65a9f0	47			storm	unreached		Runs its object file code that calls SStrCopy; not read here	inferred	none		
-0x65aa20	62			storm	boundary		Runs its object file code not read here	inferred	none		
+0x65aa20	62	InitStormLocks		storm	boundary		Initializes five critical sections once, guarded by a flag dword	verified	one	core/threads#process-entry	
 0x65aa60	6			storm	unreached		Runs its object file code not read here	inferred	none		
 0x65aa70	138			storm	unreached		Runs its object file code that calls LockLog, PrepareLog, OutputTime and 5 more; not read here	inferred	none		
 0x65ab00	5			storm	boundary		Runs its object file code not read here	inferred	none		
@@ -23867,11 +23867,11 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x65ace0	22	SLogWrite	idb	storm	boundary	void __cdecl (HSLOG log, const char *format, ...)	Writes a formatted line to a log, handing its variadic arguments to 0x65ac20 as a list	verified	one	ui/framexml#building-the-game-interface	
 0x65ad00	9			storm	unreached		Runs its object file code not read here	inferred	none		
 0x65ad10	25			storm	boundary		Runs its object file code not read here	inferred	none		
-0x65ad30	11	SInterlockedIncrement	idb	storm	boundary	int32_t __stdcall (int32_t *value)	Increments a dword atomically and returns the new value	inferred	none		
-0x65ad40	11	SInterlockedDecrement	idb	storm	boundary		Decrements a dword atomically and returns the result	inferred	none		
+0x65ad30	11	SInterlockedIncrement	idb	storm	boundary	int32_t __fastcall (int32_t *value)	Adds 1 to the dword at ecx atomically and returns the new value	verified	one	core/threads#host-calls	
+0x65ad40	11	SInterlockedDecrement	idb	storm	boundary	int32_t __fastcall (int32_t *value)	Subtracts 1 from the dword at ecx atomically and returns the new value	verified	one	core/threads#host-calls	
 0x65ad50	7			storm	boundary		Runs its object file code not read here	inferred	none		
 0x65ad60	9			storm	unreached		Runs its object file code not read here	inferred	none		
-0x65ad70	6	SInterlockedExchange	idb	storm	boundary		Runs its object file code not read here	inferred	none		
+0x65ad70	6	SInterlockedExchange	idb	storm	boundary	int32_t __fastcall (int32_t *value, int32_t newValue)	Exchanges the dword at ecx with edx atomically and returns the old value	verified	one	core/threads#host-calls	
 0x65ad80	11	SInterlockedCompareExchange	idb	storm	boundary		Runs its object file code not read here	inferred	none		
 0x65ad90	32			storm	unreached		Runs its object file code not read here	inferred	none		
 0x65adb0	32			storm	unreached		Runs its object file code not read here	inferred	none		

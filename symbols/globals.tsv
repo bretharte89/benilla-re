@@ -12,6 +12,13 @@ address	type	name	name_from	system	meaning	confidence	proof	finding
 0x42dafc	uint8_t[138]	s_virtualKeyIndex		core	Holds the case index of the virtual key translation for keys 8 to 0x91	verified	one	core/input#key-codes
 0x42dce0	void *[4]	s_mouseButtonCases		core	Holds the case addresses of the mouse button mapping 0x42dc00 for messages 0x204 to 0x20c	verified	one	core/input#buttons-and-capture
 0x42dcf0	uint8_t[9]	s_mouseButtonIndex		core	Holds the case index of 0x42dc00 for messages 0x204 to 0x20c: right 4, middle 2, X 8 or 0x10	verified	one	core/input#buttons-and-capture
+0x42df58	void *[3]	s_frameSideCases		core	Holds the case addresses of the left and right side changes of the frame size 0x42dea0	verified	one	core/input#window-frame
+0x42df64	uint8_t[8]	s_frameSideIndex		core	Holds the case index of 0x42dea0's side change for hit tests 10 to 17	verified	one	core/input#window-frame
+0x42df6c	void *[6]	s_frameEdgeCases		core	Holds the case addresses of the top and bottom changes of the frame size for hit tests 12 to 17	verified	one	core/input#window-frame
+0x42e074	void *[4]	s_frameDoubleClickCases		core	Holds the case addresses of the frame double click 0x42e000	verified	one	core/input#window-frame
+0x42e084	uint8_t[19]	s_frameDoubleClickIndex		core	Holds the case index of 0x42e000 for hit tests 2 to 20	verified	one	core/input#window-frame
+0x42e170	void *[6]	s_frameReleaseCases		core	Holds the case addresses of the frame release 0x42e0a0	verified	one	core/input#window-frame
+0x42e188	uint8_t[19]	s_frameReleaseIndex		core	Holds the case index of 0x42e0a0 for hit tests 2 to 20	verified	one	core/input#window-frame
 0x464e98	void *[7]	s_watcherFreeJumpTable		objectlayer	Holds the cases of 0x464c40 for type ids 1 to 7, each walking its sections' watcher lists	verified	one	objectlayer/manager#releasing-an-object
 0x465314	void *[6]	s_updateNotifyJumpTable		objectlayer	Holds the notify pass's six cases for block types 0 to 5	verified	one	objectlayer/update#block-types
 0x4656b4	void *[8]	s_sectionOffsetJumpTable		objectlayer	Holds the cases of 0x465690, one per section, returning each section's byte offset	verified	one	objectlayer/fields#field-counts-and-sections
@@ -310,6 +317,9 @@ address	type	name	name_from	system	meaning	confidence	proof	finding
 0x801360	float	s_millisecondsToSeconds		core	Holds 0.001f (0x3a83126f), the frame time and timer factor	verified	one	core/loop#frame-time
 0x801364	void *[1]	EvtContext::vftable		core	Holds the context vtable: the deleting destructor 0x423240	verified	one	core/loop#start-and-stop
 0x801368	void *[1]	s_heapNodeVtable		core	Holds the heap node vtable: the comparator 0x422970	verified	one	core/loop#scheduler-heap
+0x80136c	void *[1]	s_contextBaseVtable		core	Holds the vtable of a context under construction: the deleting destructor 0x4229e0	verified	one	core/scheduler#context-vtables
+0x801370	void *[1]	s_contextRootVtable		core	Holds the vtable a context ends its destruction with: the deleting destructor 0x422a50	verified	one	core/scheduler#context-vtables
+0x801374	void *[1]	s_pureVirtualVtable		core	Holds a vtable of the pure virtual stub 0x40a2d7, stored in heap nodes being removed	verified	one	core/scheduler#context-vtables
 0x8013b0	void *[7]	s_inputObserverVtable		core	Holds the input observer vtable, which only the unreached 0x425430 stores	verified	one	core/events#observer-classes
 0x8013cc	void *[2]	s_inputEventVtableA		core	Holds an interface input event vtable the interface code stores	inferred	none	core/events#observer-classes
 0x8013f4	void *[2]	s_inputEventVtableF		core	Holds an interface input event vtable the interface code stores	inferred	none	core/events#observer-classes
@@ -978,10 +988,12 @@ address	type	name	name_from	system	meaning	confidence	proof	finding
 0x832a44	float	s_screenScaleX		screencoord	Holds K1 = a/sqrt(a² + 1) for the display aspect a; 0.8 in the file	verified	one	input#click-versus-drag
 0x832a48	float	s_screenScaleY		screencoord	Holds K2 = 1/sqrt(a² + 1) for the display aspect a; 0.6 in the file	verified	one	input#click-versus-drag
 0x832a4c	float	s_screenAspectScaled		screencoord	Holds the aspect times 0.75 rounded to float, stored by 0x41ad10; 1.0 in the file	verified	one	glue/script#cursor-and-screen-size
+0x832cc0	int32_t	s_schedulerCallGuard		core	Holds -1 plus the number of scheduler calls in flight	verified	one	core/scheduler#load-accounting
 0x832dac	char[17]	s_evtKeyDownTag		core	Holds the EvtKeyDown type tag, the allocation tag of held-key records	verified	one	core/events#held-keys-and-repeats
 0x832de4	char[17]	s_evtHandlerTag		core	Holds the EvtHandler type tag, the allocation tag of handler records	verified	one	core/events#handler-records
 0x832e00	char[3]	s_uint32ArrayTag		core	Holds .I, the allocation tag of the shared dword arrays	verified	one	core/events#shared-arrays
 0x832f2c	char[51]	s_evtTimerSourcePath		core	Holds the source path of EvtTimer.cpp, the timer allocation tag	verified	one	core/events#timers
+0x832f70	uint32_t	s_idleSleepEnabled		os	Holds 1, the word that lets the pump sleep while the window is inactive	verified	one	core/input#message-filter-and-idle-sleep
 0x833124	char[29]	s_invalidFunctionPointer		os	Holds Invalid function pointer: %p	verified	one	ui/luastate#the-c-function-contract
 0x833184	const char[2]	s_backslash		unassigned	Holds the string "\\"	verified	one	sound/entries#file-paths
 0x833188	char[3]	s_dotDot		unassigned	Holds two dots, the name of a parent folder	verified	one	ui/framexml#loading-one-file
@@ -1846,14 +1858,16 @@ address	type	name	name_from	system	meaning	confidence	proof	finding
 0x882be0	uint32_t	s_loadingScreen		loadingscreen	Holds the loading screen object, or null	inferred	none	
 0x882e04	uint32_t			loadingscreen	Holds a dword that EndLoadingScreen reads and writes; not read here	inferred	none	
 0x882e10	uint32_t			loadingscreen	Holds a dword that SetLoadingScreenTip, BeginLoadingScreen, EndLoadingScreen read and write; not read here	inferred	none	
+0x883e68	uint32_t	s_threadPropSlot		base	Holds the TLS slot of the thread property arrays	verified	one	core/threads#thread-properties
 0x883ec0	int32_t	s_engineThreadPriority		core	Holds the thread priority saved at scheduler start, restored each loop iteration	verified	one	core/loop#the-loop
 0x883ec4	void *	s_startEvent		core	Holds the start gate event the loop waits on before running	verified	one	core/loop#the-loop
-0x883ecc	uint32_t[4]	s_schedulerThreads		core	Holds the array of extra loop threads: capacity, count, storage, quantum	inferred	none	core/loop#static-initializers
+0x883ecc	uint32_t[4]	s_schedulerThreads		core	Holds the array of extra loop threads: capacity, count, storage, quantum	verified	one	core/scheduler#growable-arrays
 0x883ee8	void *[2]	s_slotListEnd		core	Holds the slot list's end link	verified	one	core/loop#static-initializers
 0x883ef0	uint32_t	s_interactiveContexts		core	Holds the count of live interactive contexts	verified	one	core/loop#contexts
 0x883ef4	uint8_t[24]	s_slotLock		core	Holds the critical section guarding the slots	verified	one	core/loop#shutdown-event
 0x883f0c	uint32_t	s_schedulerPolling		core	Holds the polling flag; 0 in this build	verified	one	core/loop#startup-and-shutdown
 0x883f10	uint32_t	s_slotCount		core	Holds the number of scheduler slots, a power of two	verified	one	core/loop#startup-and-shutdown
+0x883f14	void *	s_slotLocks		core	Holds the array of one critical section per slot, its count stored before it	verified	one	core/scheduler#slot-acquire-and-release
 0x883f18	void **	s_slots		core	Holds the slot record pointer of each slot	verified	one	core/loop#shutdown-event
 0x883f20	uint32_t	s_mainSlot		core	Holds the slot the main thread's loop serves	verified	one	core/loop#startup-and-shutdown
 0x883f24	void *	s_shutdownEvent		core	Holds the shutdown event; the loop leaves when it is set	verified	one	core/loop#the-loop
@@ -1874,6 +1888,7 @@ address	type	name	name_from	system	meaning	confidence	proof	finding
 0x884060	uint64_t	s_maxCpuTicksPerSecond		core	Holds the largest counter rate the calibration has stored	verified	one	core/time#processor-frequency
 0x884800	uint32_t	s_textSectionStart		os	Holds the start address of the exe .text section, 0 until 0x42a380 runs	verified	one	ui/luastate#the-c-function-contract
 0x884c00	uint32_t	s_textSectionEnd		os	Holds the end address of the exe .text section, 0 until 0x42a380 runs	verified	one	ui/luastate#the-c-function-contract
+0x884c08	uint32_t	s_idleSleepTime		os	Holds 0, the milliseconds the inactive pump sleeps	verified	one	core/input#message-filter-and-idle-sleep
 0x884c70	uint64_t	s_cpuMaxHz		core	Holds the processor's maximum frequency in hertz from CallNtPowerInformation	verified	one	core/time#processor-frequency
 0x884c78	void *	s_timeManager		core	Holds the time manager while it lives	verified	one	core/time#time-manager-lifetime
 0x884c80	uint32_t	s_clockMode		core	Holds the clock counter: 0 GetTickCount, 1 the time-stamp counter	verified	one	core/time#the-millisecond-clock
@@ -1882,6 +1897,7 @@ address	type	name	name_from	system	meaning	confidence	proof	finding
 0x884cb4	uint32_t	s_mouseSpeed		core	Holds the Windows mouse speed applied while the window is active	verified	one	core/input#mouse-speed-and-num-lock
 0x884cc0	uint32_t[80]	s_inputRing		core	Holds the 16 input records of five dwords: kind, three values, time	verified	one	core/input#the-ring
 0x884e08	uint16_t	s_savedNumLock		core	Holds GetAsyncKeyState(VK_NUMLOCK) at startup	verified	one	core/input#mouse-speed-and-num-lock
+0x884e0c	int32_t[4]	s_frameRect		core	Holds the window rectangle at the frame press: left, top, right, bottom	verified	one	core/input#window-frame
 0x884e1c	uint32_t	s_capturedButtons		core	Holds the buttons held while the window captures the mouse	verified	one	core/input#buttons-and-capture
 0x884e20	int32_t[4]	s_clientRect		core	Holds the cached client rectangle: left, top, right, bottom	verified	one	core/input#cursor-coordinates
 0x884e30	uint32_t	s_releasingCapture		core	Holds 1 while the client releases capture itself	verified	one	core/input#buttons-and-capture
@@ -1891,10 +1907,18 @@ address	type	name	name_from	system	meaning	confidence	proof	finding
 0x884e40	uint32_t	s_pendingSizeCheck		core	Holds the size message's lParam until the pump checks the client size	verified	one	core/input#the-pump
 0x884e44	int32_t[2]	s_lastCursorPoint		core	Holds the cursor's last client position	verified	one	core/input#mouse-modes
 0x884e50	uint32_t	s_inputRingWrite		core	Holds the ring's write index	verified	one	core/input#the-ring
+0x884e54	int32_t[2]	s_framePressPoint		core	Holds the cursor point of the frame press	verified	one	core/input#window-frame
 0x884e5c	uint32_t	s_relativeMouse		core	Holds 1 in relative mouse mode	verified	one	core/input#mouse-modes
-0x884e60	uint32_t	s_dragHitTest		core	Holds the hit test of the frame drag in progress	inferred	none	core/input#window-frame
-0x884e64	uint32_t	s_dragging		core	Holds 1 while the frame is dragged	inferred	none	core/input#window-frame
+0x884e60	uint32_t	s_dragHitTest		core	Holds the hit test of the frame drag in progress	verified	one	core/input#window-frame
+0x884e64	uint32_t	s_dragging		core	Holds 1 while the frame is dragged	verified	one	core/input#window-frame
+0x884e68	uint32_t	s_frameReleaseDone		core	Holds 1 after a frame double click until the next release is skipped	verified	one	core/input#window-frame
 0x884e6c	void *	s_windowMessageHook		core	Holds the hook the window procedure passes other messages to	verified	one	core/input#window-messages
+0x884e9c	uint32_t	s_guiFilterEnabled		os	Holds 0, the word that enables the message filter 0x42e3d0	verified	one	core/input#message-filter-and-idle-sleep
+0x884ecc	void *	s_threadLock		os	Holds the thread list's critical section, created on first use	verified	one	core/threads#engine-thread-records
+0x884ef0	uint32_t	s_threadRecordSlot		os	Holds the TLS slot of the thread records	verified	one	core/threads#engine-thread-records
+0x884ef8	void *	s_threadRecords		os	Holds the list's last link (sentinel previous) of the registered thread records	verified	one	core/threads#engine-thread-records
+0x884f00	uint32_t	s_threadRecordCount		os	Holds the number of registered thread records	verified	one	core/threads#engine-thread-records
+0x884f0c	void *	s_nameObjects		os	Holds the list's last link (sentinel previous) of the name objects	verified	one	core/threads#context-binding
 0x888888	uint32_t			unassigned	Holds a dword no instruction names directly; not read here	inferred	none	
 0x90582c	uint32_t			gx	Holds a dword that TextureCreate reads and writes; not read here	inferred	none	
 0xb05d68	float	s_randomInfinity		random	Holds +inf, set at startup; nothing reads it	verified	one	random#static-initializers
@@ -2728,7 +2752,8 @@ address	type	name	name_from	system	meaning	confidence	proof	finding
 0xc4eb9e	uint8_t			console	Holds a byte its object file's code reads and writes; not read here	inferred	none	
 0xc4eba1	uint8_t			console	Holds a byte its object file's code reads and writes; not read here	inferred	none	
 0xc52418	uint8_t			storm	Holds a byte that SFile::GetBasePath reads; not read here	inferred	none	
-0xc52560	double			storm	Holds the first double of a table that SStrToFloat reads; not read here	inferred	none	
+0xc52560	double[200]	s_pow10Table		storm	Holds k times 10 to the power -(r+1) at row r, column k, for the string-to-double conversion	verified	one	core/threads#string-conversion-table
+0xc52ba0	uint32_t	s_pow10TableBuilt		storm	Holds 1 once the power table is built	verified	one	core/threads#string-conversion-table
 0xc53f10	uint32_t	s_formatterMode		unassigned	Holds 1 when the client's own formatter runs, set by the start-up option 10	verified	one	ui/tooltipcontent#localized-lines
 0xc5a470	uint32_t	s_worldMode		terrain	Holds the world mode read from an option object at start-up	inferred	none	
 0xc5a474	uint32_t	s_batchCount		terrain	Holds the count of batch headers in use	verified	one	terrain/collide#triangle-batches
@@ -3234,7 +3259,10 @@ address	type	name	name_from	system	meaning	confidence	proof	finding
 0xcf60d0	uint32_t			ui	Holds a dword its object file's code reads and writes; not read here	inferred	none	
 0xcf61dc	float	s_skyDrawTenSquared		lighting	Holds 100.0; written at start-up	verified	one	lighting/overview#shared-header-constants
 0xcf76cc	uint32_t	s_contextTableGuard		core	Holds the guard bit of the context table's one-time setup	verified	one	core/loop#static-initializers
+0xcf76e0	uint8_t[24]	s_contextHandleLock		core	Holds the critical section guarding the context handle counter	verified	one	core/scheduler#context-insert
 0xcf76f8	uint32_t	s_nextContextHandle		core	Holds the last context handle given out	verified	one	core/loop#contexts
+0xcf76fc	uint32_t	s_contextHandlesWrapped		core	Holds 1 once the context handle counter has wrapped to 0	verified	one	core/scheduler#context-insert
 0xcf7700	uint8_t[96]	s_contextTableLocks		core	Holds the read-write locks of the context table's eight buckets	verified	one	core/loop#contexts
+0xcf7760	uint8_t[96]	s_contextTableBuckets		core	Holds the eight bucket lists of the context table, 12 bytes each	verified	one	core/scheduler#context-insert
 0xcfa128	uint8_t	s_skillLineRecAllocatorBuilt		spell	Holds bit 0 once the ability node pool is built; default 0, written by 0x6e0830	verified	one	spell/tables#ability-node-pool
 0xcfa140	uint32_t[5]	s_skillLineRecAllocator		spell	Holds the ability node pool: element size, per block, in use, block list, free list	verified	one	spell/tables#ability-node-pool

@@ -82,7 +82,7 @@ Test: none
 `WAIT_OBJECT_0` (`0x420c6f`, `0x420c76`). The sleep is `due − now` from `0x421430`'s context,
 0 when negative (`0x420c97`, `jns`), −1 (infinite) with no context, on the event `0x421560`
 returns (`0x420cc8`). Only a result of `0x102`, `WAIT_TIMEOUT`, runs the tick (`0x420cf8`). With
-`0x883f0c` set, the loop would pump through `0x43f050` and force `0x102`; `WinMain` passes 0.
+`0x883f0c` set, the loop would pump through `0x43f050` and force `0x102`; the application init `0x402350` passes 0.
 The run-state test at `0x420d7e` sends a state-1 context to `0x421370` and `0x420e60`.
 
 ## One tick
@@ -108,7 +108,7 @@ client gets 0x11 every tick. The current context is set by `0x41db50(+0x208)` an
 +0x0c)` (`0x420cd3` to `0x420ce3`), which `0x41db90(0)` reads back, and cleared by `0x41db50(0)` at
 `0x420dec`. The calls of `0x4374d0` (`0x420cee`) and `0x437560` (`0x420de5`) pass `+0x20c`, which is
 0 here: the constructor fills it only when bit 0 of its third argument is set (`0x4220b6`), and
-`WinMain` passes 0 (`0x402812`), so both return at once.
+the application init `0x402350` passes 0 (`0x402812`), so both return at once.
 
 ## Next due time
 
@@ -215,24 +215,6 @@ stops when the moving element compares not later than the child (`0x421506`). `0
 element and re-inserts it after a key change, `0x421f40` removes at an index, `0x428ee0` inserts,
 and `0x421840` refreshes a node's owner and index. The tests run `0x422970`, `0x421430` and
 `0x421860` whole.
-
-## Slots and threads
-
-The scheduler's other machinery serves more than one thread or slot, which this build never
-has: slot creation and release, load accounting and migration, thread records and teardown. Its
-growable arrays round their capacity up to a multiple of a quantum: the largest power of two not
-above the size for sizes below 64, else 64, and 1 for size 0.
-
-Addresses: `0x421080`, `0x4211d0`, `0x421370`, `0x421570`, `0x422720`, `0x422850`, `0x422b50`, `0x422da0`, `0x422e90`, `0x422ff0`, `0x423030`, `0x423050`, `0x4230e0`, `0x423120`, `0x423140`, `0x422ac0`, `0x4229c0`, `0x4229e0`, `0x422a50`, `0x422c90`, `0x422d80`, `0x422fc0`, `0x4233d0`, `0x4234d0`, `0x420830`, `0x420980`, `0x421f00`, `0x423530`, `0x4235c0`, `0x423650`, `0x423670`, `0x4236d0`, `0x423740`, `0x4237a0`, `0x4237e0`
-Confidence: inferred
-Proof: none
-Test: none
-
-`0x421f00`, a thread entry that pumps until its event is set, is started only when polling. The
-context destructor clears its lists through the helpers listed. The quantum loop is `x & (x − 1)`
-repeated until zero, keeping the last nonzero value (`0x422ff3` to `0x423010`): the highest set bit.
-The rest was read only for its calls and stores; the derivations of the multi-slot paths are not
-kept.
 
 ## Static initializers
 

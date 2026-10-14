@@ -628,6 +628,7 @@ EvtContext	0x0000	4	void **	__vfptr	core	Holds the vtable 0x801364	verified	one	
 EvtContext	0x0004	8	void *[2]	m_tableLink	core	Holds the context's link in its context table bucket	verified	one	core/loop#contexts
 EvtContext	0x000c	4	uint32_t	m_handle	core	Holds the context's handle, its key in the context table	verified	one	core/loop#contexts
 EvtContext	0x0010	24	uint8_t[24]	m_lock	core	Holds the critical section guarding the run state, messages and timers	verified	one	core/loop#one-tick
+EvtContext	0x0028	4	uint32_t	m_reserved	core	Holds 0 from the constructor; the event library reads it nowhere	verified	one	core/scheduler#context-fields
 EvtContext	0x002c	4	uint32_t	m_runState	core	Holds 0 running, 1 closing, 2 torn down	verified	two	core/loop#start-and-stop
 EvtContext	0x0030	12	void *[3]	m_heapNode	core	Holds the heap node: vtable 0x801368, owning heap and index	verified	one	core/loop#scheduler-heap
 EvtContext	0x003c	4	uint32_t	m_dueTime	core	Holds the clock time the context is next due, the heap key	verified	two	core/loop#next-due-time
@@ -645,11 +646,34 @@ EvtContext	0x01c8	12	uint32_t[3]	m_heldKeys	core	Holds the held-key list head	ve
 EvtContext	0x01d4	16	uint32_t[4]	m_timerTable	core	Holds the array of timer records by id	verified	one	core/events#timers
 EvtContext	0x01e4	16	uint32_t[4]	m_freeTimerIds	core	Holds the array of timer ids free for reuse	verified	one	core/events#timers
 EvtContext	0x01f4	20	uint32_t[5]	m_timerHeap	core	Holds the heap of timers ordered by due time	verified	one	core/events#timers
+EvtContext	0x0208	4	void *	m_threadProps	core	Holds the property array the calling thread carries while the context runs	verified	one	core/scheduler#context-fields
+EvtContext	0x020c	4	void *	m_nameObject	core	Holds the name object, null unless the constructor was told to build one	verified	one	core/scheduler#context-fields
+EvtContext	0x0210	4	uint32_t	m_flagBit	core	Holds bit 1 of the constructor's third argument	verified	one	core/scheduler#context-fields
 EvtHandler	0x0000	8	void *[2]	m_link	core	Holds the record's link in its category list	verified	two	core/events#handler-records
 EvtHandler	0x0008	4	void *	m_handler	core	Holds the function, called as fastcall(payload, argument)	verified	two	core/events#handler-records
 EvtHandler	0x000c	4	void *	m_argument	core	Holds the argument passed in edx	verified	two	core/events#handler-records
 EvtHandler	0x0010	4	float	m_priority	core	Holds the priority; higher runs first	verified	two	core/events#handler-order
 EvtHandler	0x0014	4	uint32_t	m_skip	core	Holds nonzero for a record the dispatch and registration pass over	verified	two	core/events#handler-order
+EvtKeyDown	0x0000	8	void *[2]	m_link	core	Holds the record's link in the held-key list	verified	one	core/events#held-keys-and-repeats
+EvtKeyDown	0x0008	4	uint32_t	m_key	core	Holds the key code	verified	one	core/events#held-keys-and-repeats
+EvtThread	0x0000	8	void *[2]	m_link	core	Holds the slot's link in the slot list	verified	one	core/scheduler#slot-acquire-and-release
+EvtThread	0x0008	4	uint32_t	m_index	core	Holds the slot's index in the slot table	verified	one	core/scheduler#slot-acquire-and-release
+EvtThread	0x000c	4	uint32_t	m_threads	core	Holds the number of loop threads serving the slot	verified	one	core/scheduler#slot-acquire-and-release
+EvtThread	0x0010	4	uint32_t	m_load	core	Holds the sum of the costs of the slot's contexts	verified	one	core/scheduler#load-accounting
+EvtThread	0x0014	4	uint32_t	m_meanLoad	core	Holds the load divided by the context count, 0 when empty	verified	one	core/scheduler#load-accounting
+EvtThread	0x0018	4	uint32_t	m_contexts	core	Holds the number of contexts the slot holds	verified	one	core/scheduler#load-accounting
+EvtThread	0x001c	4	uint32_t	m_credit	core	Holds how many contexts the slot may hand to a lighter slot	verified	one	core/scheduler#load-accounting
+EvtThread	0x0020	4	void *	m_event	core	Holds the auto-reset event that wakes the slot's loop thread	verified	one	core/scheduler#slot-acquire-and-release
+EvtThread	0x0024	20	uint32_t[5]	m_heap	core	Holds the min-heap of contexts: capacity, count, storage, quantum, element offset 0x30	verified	one	core/scheduler#slot-acquire-and-release
+EvtTimer	0x0000	4	uint32_t	m_id	core	Holds the timer id, its index in the timer table	verified	one	core/events#timers
+EvtTimer	0x0004	12	void *[3]	m_heapNode	core	Holds the heap node: vtable 0x801368, owning heap and index	verified	one	core/events#timers
+EvtTimer	0x0010	4	uint32_t	m_dueTime	core	Holds the clock time the timer fires, the heap key	verified	one	core/events#timers
+EvtTimer	0x0014	4	float	m_delaySeconds	core	Holds the delay times 0.001f, passed to the function	verified	one	core/events#timers
+EvtTimer	0x0018	4	void *	m_function	core	Holds the function called as fastcall(&{delay, now}, argument)	verified	one	core/events#timers
+EvtTimer	0x001c	4	void *	m_argument	core	Holds the argument passed to the function in edx	verified	one	core/events#timers
+EvtTimer	0x0020	4	void *	m_functionEx	core	Holds the second form of function, called with two stack arguments	verified	one	core/events#timers
+EvtTimer	0x0028	8	uint32_t[2]	m_exStackArguments	core	Holds the two stack arguments of the second form	verified	one	core/events#timers
+EvtTimer	0x0030	4	void *	m_exArgument	core	Holds the edx argument of the second form	verified	one	core/events#timers
 FriendList	0x0000	1600	FriendSlot[50]	m_friends	net	Holds the 50 friend slots	verified	one	net/friends#friend-list-object
 FriendList	0x0640	4	uint32_t	m_pendingFriendNames	net	Holds the number of friend names not yet in the name cache	verified	one	net/friends#friend-list-object
 FriendList	0x0648	8	uint64_t	m_selectedFriend	net	Holds the guid of the selected friend	verified	one	net/friends#friend-list-object
@@ -922,6 +946,11 @@ ObjectManager	0x00c0	8	uint64_t	m_activePlayerGuid	objectlayer	Holds the active 
 ObjectManager	0x00cc	4	uint32_t	m_mapId	objectlayer	Holds the map id, written by 0x4685a0	verified	one	objectlayer/manager#manager-block
 ObjectManager	0x00d0	4	ClientConnection *	m_client	objectlayer	Holds the client connection the update handlers are registered on, written by 0x4685b0	verified	one	objectlayer/manager#manager-block
 ObjectManager	0x00d4	4	MovementGlobals *	m_movementGlobals	objectlayer	Holds the movement manager, written by 0x468600	verified	one	objectlayer/manager#accessors-and-enumeration
+OsThreadRecord	0x0000	8	void *[2]	m_link	os	Holds the record's link in the record list	verified	one	core/threads#engine-thread-records
+OsThreadRecord	0x0008	4	uint32_t	m_threadId	os	Holds the thread id	verified	one	core/threads#engine-thread-records
+OsThreadRecord	0x000c	4	void *	m_handle	os	Holds a duplicate of the thread handle	verified	one	core/threads#engine-thread-records
+OsThreadRecord	0x0014	4	void *	m_nameObject	os	Holds the name object tied to the thread, or null	verified	one	core/threads#engine-thread-records
+OsThreadRecord	0x181c	128	char[128]	m_name	os	Holds the display text name [id]	verified	one	core/threads#engine-thread-records
 PendingSpellCast	0x0000	8	uint64_t	m_sourceGuid	spell	Holds the casting item's guid, else the caster's	verified	one	spell/pending#pending-cast-fields
 PendingSpellCast	0x0008	8	uint64_t	m_casterGuid	spell	Holds the caster's guid	verified	one	spell/pending#pending-cast-fields
 PendingSpellCast	0x0010	4	int32_t	m_spellId	spell	Holds the spell being cast	verified	one	spell/pending#pending-cast-fields
@@ -1052,6 +1081,16 @@ SphereParticleEmitter	0x0290	20	float[5]	m_shape	models	Holds minimum radius, ma
 SplineParticleEmitter	0x0000	656	CParticleEmitter2	m_base	models	Holds the base emitter	verified	one	models/emission#spline-spawn
 SplineParticleEmitter	0x0290	20	float[5]	m_shape	models	Holds base rate, start and end parameters, spread and offset	verified	one	models/emission#spline-spawn
 SplineParticleEmitter	0x02a4	4	uint32_t	m_spawnAtEnd	models	Holds 1 after the end parameter changes, until the next spawn	verified	one	models/emission#spline-spawn
+TimeManager	0x0000	8	double	m_secondsPerTick	core	Holds the seconds per counter tick, 0.001 at construction	verified	one	core/time#counter-switch
+TimeManager	0x0008	8	double	m_offsetSeconds	core	Holds the offset in seconds, 0 at construction	verified	one	core/time#counter-switch
+TimeManager	0x0010	4	void *	m_thread	core	Holds the calibration thread's handle	verified	one	core/time#time-manager-lifetime
+TimeManager	0x0014	4	void *	m_stopEvent	core	Holds the manual-reset event that stops the calibration thread	verified	one	core/time#time-manager-lifetime
+TimeManager	0x0018	4	uint32_t	m_interval	core	Holds the calibration interval in milliseconds, 250	verified	one	core/time#calibration-thread
+TimeManager	0x001c	4	uint32_t	m_processors	core	Holds the processor count	verified	one	core/time#multi-core-gate
+TimeManager	0x0020	4	uint32_t	m_multiCore	core	Holds the multi-core bit; nonzero stops counter switching	verified	one	core/time#multi-core-gate
+TimeManager	0x0028	1936	uint8_t[1936]	m_samples	core	Holds 121 samples of 16 bytes: counter low and high dwords, GetTickCount, padding	verified	one	core/time#calibration-thread
+TimeManager	0x07b8	4	uint32_t	m_sampleIndex	core	Holds the index of the newest sample	verified	one	core/time#calibration-thread
+TimeManager	0x07c0	32	uint64_t[4]	m_estimates	core	Holds the counter rate estimates over 1, 4, 20 and 120 samples	verified	one	core/time#calibration-thread
 WhoResult	0x0000	48	char[48]	m_name	net	Holds the player name	verified	one	net/friends#who-list-reply
 WhoResult	0x0030	96	char[96]	m_guild	net	Holds the guild name	verified	one	net/friends#who-list-reply
 WhoResult	0x0090	4	uint32_t	m_level	net	Holds the level	verified	one	net/friends#who-list-reply
