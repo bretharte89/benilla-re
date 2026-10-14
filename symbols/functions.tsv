@@ -1570,17 +1570,17 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x41acd0	19			unassigned			Runs its object file code not read here	inferred	none		
 0x41acf0	5			unassigned			Runs its object file code not read here	inferred	none		
 0x41ad00	11			unassigned			Runs its object file code not read here	inferred	none		
-0x41ad10	65	SetScreenAspect		screencoord	primitive	void __stdcall (float aspect)	Stores the aspect a, a·0.75, and the scales K2 = 1/sqrt(a² + 1) and K1 = a·K2 with K2 unrounded	verified	one	input#click-versus-drag	screencoord::sc_41ad10_set_scale
-0x41ad60	7			screencoord	unreached		Runs its object file code not read here	inferred	none		
-0x41ad70	7	GetScaledScreenAspect		screencoord			Returns the float at 0x832a4c, the aspect times 0.75, in st0	verified	one	glue/script#cursor-and-screen-size	
-0x41ad80	37	ScaleScreenDelta		screencoord	primitive	void __fastcall (float *out_x, float *out_y, float x, float y)	Writes K1·x and K2·y to whichever outputs are not null	verified	one	input#click-versus-drag	screencoord::sc_41ad80_scale_xy
-0x41adb0	47			screencoord	unreached		Runs its object file code not read here	inferred	none		
-0x41ade0	37	UnscaleScreenXY		screencoord	primitive	void __fastcall (float *out_x, float *out_y, float x, float y)	Writes x over 0x832a44 and y over 0x832a48 to whichever outputs are not null	verified	one	ui/modelview#viewport-and-clamp	
-0x41ae10	47			screencoord	unreached		Runs its object file code not read here	inferred	none		
-0x41ae40	16	DivideByScreenScaleX		screencoord			Returns a float argument divided by the float at 0x832a44, in st0	verified	one	glue/script#cursor-and-screen-size	screencoord::sc_41ae40_unscale_x
-0x41ae50	16			screencoord			Runs its object file code not read here	inferred	none		
-0x41ae60	16	MultiplyByScreenScaleX		screencoord			Returns the float at 0x832a44 times a float argument, in st0	verified	one	glue/script#cursor-and-screen-size	screencoord::sc_41ae60_scale_x
-0x41ae70	16	NDCToDDCHeight		screencoord			Returns the float at 0x832a48 times a float argument, in st0	verified	one	ui/modelview#root-transform	screencoord::sc_41ae70_scale_y
+0x41ad10	65	SetScreenAspect		screencoord	primitive	void __stdcall (float aspect)	Stores the aspect a, a·0.75, and the scales K2 = 1/sqrt(a² + 1) and K1 = a·K2 with K2 unrounded	verified	one	screencoord#screen-scale-state	screencoord::sc_41ad10_set_scale
+0x41ad60	7	GetStoredScreenAspect		screencoord	unreached	float __cdecl (void)	Returns the aspect stored at 0x832a40 in st0	verified	one	screencoord#unreached-code	
+0x41ad70	7	GetScaledScreenAspect		screencoord	orchestration	float __cdecl (void)	Returns the float at 0x832a4c, the aspect times 0.75, in st0	verified	one	screencoord#screen-scale-state	
+0x41ad80	37	ScaleScreenDelta		screencoord	primitive	void __fastcall (float *out_x, float *out_y, float x, float y)	Writes K1·x and K2·y to whichever outputs are not null	verified	one	screencoord#scaling-and-unscaling	screencoord::sc_41ad80_scale_xy
+0x41adb0	47	ScaleScreenRect		screencoord	unreached	void __fastcall (const float *in, float *out)	Writes a rectangle of four floats scaled by 0x832a44 for x and 0x832a48 for y	verified	one	screencoord#unreached-code	
+0x41ade0	37	UnscaleScreenXY		screencoord	primitive	void __fastcall (float *out_x, float *out_y, float x, float y)	Writes x over 0x832a44 and y over 0x832a48 to whichever outputs are not null	verified	one	screencoord#scaling-and-unscaling	screencoord::sc_41ade0_unscale_xy
+0x41ae10	47	UnscaleScreenRect		screencoord	unreached	void __fastcall (const float *in, float *out)	Writes a rectangle of four floats divided by 0x832a44 for x and 0x832a48 for y	verified	one	screencoord#unreached-code	
+0x41ae40	16	DivideByScreenScaleX		screencoord	primitive	float __stdcall (float x)	Returns a float argument divided by the float at 0x832a44, in st0	verified	one	screencoord#scaling-and-unscaling	screencoord::sc_41ae40_unscale_x
+0x41ae50	16	DivideByScreenScaleY		screencoord	primitive	float __stdcall (float y)	Returns a float argument divided by the float at 0x832a48, in st0	verified	one	screencoord#scaling-and-unscaling	screencoord::sc_41ae50_unscale_y
+0x41ae60	16	MultiplyByScreenScaleX		screencoord	primitive	float __stdcall (float x)	Returns the float at 0x832a44 times a float argument, in st0	verified	one	screencoord#scaling-and-unscaling	screencoord::sc_41ae60_scale_x
+0x41ae70	16	NDCToDDCHeight		screencoord	primitive	float __stdcall (float y)	Returns the float at 0x832a48 times a float argument, in st0	verified	one	screencoord#scaling-and-unscaling	screencoord::sc_41ae70_scale_y
 0x41ae80	5			unassigned			Runs its object file code not read here	inferred	none		
 0x41ae90	15			unassigned			Runs its object file code not read here	inferred	none		
 0x41aea0	5			unassigned			Runs its object file code not read here	inferred	none		
@@ -3706,81 +3706,81 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x4531b0	5	InitRandomInvTwoPiThunk		random	orchestration	void __cdecl (void)	Jumps to 0x4531c0; a static initializer	verified	one	random#static-initializers	
 0x4531c0	19	InitRandomInvTwoPi		random	primitive	void __cdecl (void)	Stores 1 / [0xb05d70] as a float in 0xb05d6c	verified	one	random#static-initializers	
 0x4531e0	211	NTempest::CRandom::uint32	idb	random	primitive	uint32_t __fastcall (NTempest::CRndSeed *seed)	Advances a state: steps its four lanes, adds the XOR of four rotated table dwords to the accumulator, returns it	verified	two	random#state-advance	random::crandom_uint32_advance, random::prng_difftest, gx::lightning_segment_subdivide_difftest, models::burst_velocity_difftest, models::emit_shape_plane_difftest, models::emit_shape_sphere_difftest, models::emit_shape_spline_difftest, random::seeded_sequence_difftest
-0x4532c0	5			unassigned			Runs its object file code not read here	inferred	none		
-0x4532d0	11			unassigned			Runs its object file code not read here	inferred	none		
-0x4532e0	25			unassigned			Runs its object file code not read here	inferred	none		
-0x453300	46			unassigned			Runs its object file code not read here	inferred	none		spline::knot_sum_nm1_diff
-0x453330	45			unassigned	unreached		Runs its object file code that calls 0x4532e0; not read here	inferred	none		
-0x453360	33	SetSplinePath		spline		void __thiscall (void *path, uint32_t a, uint32_t b)	Calls the path object's vtable slot +0x1c with its two arguments, then a second path function	verified	one	collision/commands#spline-commands	
-0x453390	142	EvaluateSplinePoint		spline			Writes the curve point at u	inferred	none	collision/kinematics#spline-follower	models::emit_shape_spline_difftest
-0x453420	96	EvaluateSplineTangent		spline		void __thiscall (void *spline, float u, float *out, uint32_t mode)	Writes the curve tangent at u clamped into [0, 1]	inferred	none	models/emission#spline-spawn	
-0x453480	74	EvaluateSplineFrame		spline			Clamps u to [0, 1] and has the curve fill a frame at u through its vtable slot 0x18	inferred	none	collision/kinematics#spline-follower	
-0x4534d0	24			spline	unreached		Runs its object file code not read here	inferred	none		
-0x4534f0	114			spline			Runs its object file code that calls SMemReAlloc; not read here	inferred	none		
-0x453570	5			spline			Runs its object file code not read here	inferred	none		
-0x453580	145	EvaluateCubicPoint		spline	primitive		Sums four control points weighted by the basis polynomials at t	verified	one	ui/taxiroute#flight-curve	
-0x453620	32	EvaluateBasisPolynomial		spline	primitive		Evaluates a polynomial of given degree at t by Horner's rule	verified	one	ui/taxiroute#flight-curve	
-0x453640	131			spline			Runs its object file code that calls 0x453620; not read here	inferred	none		spline::eval_point_quad_diff
-0x4536d0	131			spline	unreached		Runs its object file code that calls 0x453620; not read here	inferred	none		
-0x453760	209			spline			Runs its object file code that calls 0x453580; not read here	inferred	none		spline::arc_length_diff
-0x453840	124			spline			Runs its object file code not read here	inferred	none		spline::seg_locate_diff
-0x4538c0	84			spline			Runs its object file code not read here	inferred	none		spline::fixed_quantize_diff
-0x453920	33			spline			Runs its object file code not read here	inferred	none		spline::knot_sum_n_diff
-0x453950	10			spline			Runs its object file code that calls 0x453960; not read here	inferred	none		
-0x453960	161			spline			Runs its object file code not read here	inferred	none		
-0x453a10	12			spline			Runs its object file code that calls _atexit; not read here	inferred	none		
-0x453a20	1			spline			Runs its object file code not read here	inferred	none		
-0x453a30	35			spline			Runs its object file code that calls 0x4538c0; not read here	inferred	none		
-0x453a60	40			spline			Runs its object file code that calls 0x453840; not read here	inferred	none		
-0x453a90	52			spline			Runs its object file code that calls 0x453a30, 0x453e30; not read here	inferred	none		
-0x453ad0	52			spline			Runs its object file code that calls 0x453a60, 0x453e30; not read here	inferred	none		
-0x453b10	52			spline			Runs its object file code that calls 0x453a30, 0x453cd0; not read here	inferred	none		
-0x453b50	52			spline			Runs its object file code that calls 0x453a60, 0x453cd0; not read here	inferred	none		
-0x453b90	306			spline			Runs its object file code that calls 0x453a60, 0x453e30, 0x453cd0; not read here	inferred	none		spline::frenet_frame_diff
-0x453cd0	333			spline			Runs its object file code that calls _atexit, 0x453640; not read here	inferred	none		
-0x453e20	1			spline			Runs its object file code not read here	inferred	none		
-0x453e30	32			spline			Runs its object file code that calls 0x453580; not read here	inferred	none		
-0x453e50	24			spline			Runs its object file code that calls 0x453760; not read here	inferred	none		
-0x453e70	17			spline			Runs its object file code that calls 0x453920; not read here	inferred	none		
-0x453e90	66			spline			Runs its object file code that calls 0x453e50; not read here	inferred	none		
-0x453ee0	168			spline			Runs its object file code that calls 0x4548a0, 0x4534f0; not read here	inferred	none		
-0x453f90	10			spline			Runs its object file code that calls 0x453fa0; not read here	inferred	none		
-0x453fa0	161			spline			Runs its object file code not read here	inferred	none		
-0x454050	12			spline			Runs its object file code that calls _atexit; not read here	inferred	none		
-0x454060	1			spline			Runs its object file code not read here	inferred	none		
-0x454070	10			spline			Runs its object file code that calls 0x454080; not read here	inferred	none		
-0x454080	121			spline			Runs its object file code not read here	inferred	none		
-0x454100	12			spline			Runs its object file code that calls _atexit; not read here	inferred	none		
-0x454110	1			spline			Runs its object file code not read here	inferred	none		
-0x454120	10			spline			Runs its object file code that calls 0x454130; not read here	inferred	none		
-0x454130	81			spline			Runs its object file code not read here	inferred	none		
-0x454190	12			spline			Runs its object file code that calls _atexit; not read here	inferred	none		
-0x4541a0	1			spline			Runs its object file code not read here	inferred	none		
-0x4541b0	147	EvaluateCurvePosition		spline	primitive		Returns the point of a segment at t, linear for mode 0 and cubic otherwise	verified	one	ui/taxiroute#flight-curve	
-0x454250	163			spline			Runs its object file code that calls 0x453640; not read here	inferred	none		
-0x454300	29			spline	unreached		Runs its object file code that calls 0x4536d0; not read here	inferred	none		
-0x454320	94			spline			Runs its object file code that calls 0x453760; not read here	inferred	none		spline::seg_length_diff
-0x454380	36			spline			Runs its object file code that calls 0x453840; not read here	inferred	none		
-0x4543b0	31			spline			Runs its object file code that calls 0x4538c0; not read here	inferred	none		
-0x4543d0	13			spline			Runs its object file code that calls 0x453920; not read here	inferred	none		
-0x4543e0	56			spline			Runs its object file code that calls 0x454320; not read here	inferred	none		
-0x454420	52			spline			Runs its object file code that calls 0x454380, 0x4541b0; not read here	inferred	none		
-0x454460	52			spline			Runs its object file code that calls 0x4543b0, 0x4541b0; not read here	inferred	none		
-0x4544a0	108			spline			Runs its object file code that calls 0x454380, 0x454250; not read here	inferred	none		
-0x454510	108			spline			Runs its object file code that calls 0x4543b0, 0x454250; not read here	inferred	none		
-0x454580	488			spline			Runs its object file code that calls 0x454380, 0x4541b0, SetVector3 and 4 more; not read here	inferred	none		spline::frame_builder_linear_diff, spline::frame_builder_spline_diff
-0x454770	175			spline			Runs its object file code that calls 0x4548a0, 0x4534f0; not read here	inferred	none		
-0x454820	127			spline			Runs its object file code that calls 0x454380; not read here	inferred	none		
-0x4548a0	133			spline			Runs its object file code that calls SMemReAlloc, SMemAlloc, SMemFree; not read here	inferred	none		
-0x454930	5			spline			Runs its object file code not read here	inferred	none		
-0x454940	15			spline			Runs its object file code not read here	inferred	none		
-0x454950	5			spline			Runs its object file code not read here	inferred	none		
-0x454960	19			spline			Runs its object file code not read here	inferred	none		
-0x454980	20	Vector2LengthSquared		spline		float __thiscall (const float *v)	Returns x·x + y·y of a 2D vector	verified	one	collision/walking#horizontal-push-out-from-a-wall	spline::vec2_len2_diff
-0x4549a0	26	SetVector3		spline	orchestration	float * __thiscall (float *this, float x, float y, float z)	Stores three floats	verified	one	camera#unprojection	gx::lightning_segment_subdivide_difftest, gx::lightningrender_strip_difftest, models::aabsp_segment_clip_difftest, models::aabsp_segment_split_difftest, models::burst_velocity_difftest, models::camera_facing_basis_difftest, models::cmapobj_seg_hit_difftest, models::emit_shape_plane_difftest, models::emit_shape_sphere_difftest, models::emit_shape_spline_difftest, models::mliq_ray_normalize_difftest, models::portal_seg_normalize_difftest, models::ribbon_frame_build_difftest, models::ribbon_segment_emit_difftest, models::wmo_bounding_sphere_difftest
-0x4549c0	38	DivideVector3		spline		float * __thiscall (float *this, float divisor)	Multiplies a 3D vector by the reciprocal of a divisor	verified	one	models/lights#dominant-light	models::camera_facing_basis_difftest, spline::vec_div_scalar_diff
-0x4549f0	31	Vector3LengthSquared		spline		float __thiscall (const float *v)	Returns x·x + y·y + z·z of a 3D vector	verified	one	collision/walking#horizontal-push-out-from-a-wall	animation::m2_animate_difftest, gx::lightning_segment_subdivide_difftest, gx::lightningrender_strip_difftest, models::billboard_tangent_frame_difftest, models::bspdispatch_normalize_difftest, models::burst_velocity_difftest, models::camera_facing_basis_difftest, models::emit_shape_plane_difftest, models::emit_shape_spline_difftest, models::prologue_length_difftest, models::render_normalize_difftest, models::ribbon_frame_build_difftest, models::seg_normalize_difftest, models::shadow_normalize_axes_difftest, spline::vec3_len2_diff
-0x454a10	117			unassigned			Runs its object file code not read here	inferred	none		spline::isqrt_diff
+0x4532c0	5	InitSplineInfinityThunk		spline	orchestration		Jumps to 0x4532d0; a static initializer	verified	one	spline#object-file-and-initializers	
+0x4532d0	11	InitSplineInfinity		spline	orchestration		Copies +inf into a global nothing reads	verified	one	spline#object-file-and-initializers	
+0x4532e0	25	RefreshSplineLength		spline	orchestration	void __thiscall (void *curve)	Rebuilds the segment lengths and stores the total at +4 when the curve has more than 3 points	verified	one	spline#dispatch-and-clamps	
+0x453300	46	SumSegmentLengthsMinusOne		spline	primitive	float __thiscall (void *curve, uint32_t k)	Returns the sum of the first k - 1 stored segment lengths	verified	one	spline#arc-length-and-parameter	spline::knot_sum_nm1_diff
+0x453330	45	SetSplineControlPoint		spline	unreached	void __thiscall (void *curve, uint32_t i, const float *v)	Stores a vector over control point i and refreshes the length	verified	one	spline#control-point-storage	
+0x453360	33	SetSplinePath		spline	orchestration	void __thiscall (void *curve, const float *points, uint32_t count)	Sets the control points through vtable slot 7, then refreshes the length	verified	one	spline#dispatch-and-clamps	
+0x453390	142	EvaluateSplinePoint		spline	orchestration	void __thiscall (void *curve, float t, float *out, uint32_t mode)	Writes the first or last control point at the ends, else the point from slot 2 or 3	verified	one	spline#dispatch-and-clamps	
+0x453420	96	EvaluateSplineTangent		spline	orchestration	void __thiscall (void *curve, float t, float *out, uint32_t mode)	Clamps t into [0, 1] and has slot 4 or 5 write the tangent	verified	one	spline#dispatch-and-clamps	
+0x453480	74	EvaluateSplineFrame		spline	orchestration	void __thiscall (void *curve, float t, float *frame, uint32_t mode)	Clamps t into [0, 1] and, for mode 1, has slot 6 write the frame	verified	one	spline#dispatch-and-clamps	
+0x4534d0	24	ExtractSplinePoints		spline	unreached	void __thiscall (void *curve, float t, float *out, uint32_t max)	Forwards its three arguments to vtable slot 8	verified	one	spline#unreached-code	
+0x4534f0	114	SetSplineControlPoints		spline	host	void __thiscall (void *curve, const float *points, uint32_t n)	Resizes the control point array to n points and copies them in	verified	one	spline#control-point-storage	
+0x453570	5	ExtractNoSplinePoints		spline	orchestration	uint32_t __thiscall (void *curve, float t, float *out, uint32_t max)	Returns 0 without extracting; slot 8 of the base and Bezier curves	verified	one	spline#curve-objects	
+0x453580	145	EvaluateCubicPoint		spline	primitive	void __thiscall (void *curve, uint32_t seg, float t, const float *table, float *out)	Writes the sum of four control points weighted by a cubic basis at t	verified	one	spline#point-and-derivative-kernels	spline::eval_point_cubic_diff
+0x453620	32	EvaluateBasisPolynomial		spline	primitive	double __fastcall (uint32_t degree, const float *row, float t)	Returns the Horner polynomial of a coefficient row at t	verified	one	spline#point-and-derivative-kernels	spline::basis_weight_diff
+0x453640	131	EvaluateQuadraticPoint		spline	primitive	void __thiscall (void *curve, uint32_t seg, float t, const float *table, float *out)	Writes the sum of four control points weighted by a quadratic basis at t	verified	one	spline#point-and-derivative-kernels	spline::eval_point_quad_diff
+0x4536d0	131	EvaluateLinearPoint		spline	unreached	void __thiscall (void *curve, uint32_t seg, float t, const float *table, float *out)	Writes the sum of four control points weighted by a linear basis at t	verified	one	spline#unreached-code	
+0x453760	209	SplineSegmentArcLength		spline	primitive	double __thiscall (void *curve, uint32_t seg, const float *table)	Returns the length of a segment as 20 chords	verified	one	spline#arc-length-and-parameter	spline::arc_length_diff
+0x453840	124	LocateSplineSegmentByLength		spline	primitive	void __thiscall (void *curve, float t, const float *table, uint32_t n, uint32_t *index, float *frac)	Finds the segment and local parameter of t along the stored lengths	verified	one	spline#arc-length-and-parameter	spline::seg_locate_diff
+0x4538c0	84	LocateSplineSegmentUniform		spline	primitive	void __stdcall (float t, uint32_t n, uint32_t *index, float *frac)	Splits [0, 1] into n equal parts and returns the part and local parameter of t	verified	one	spline#arc-length-and-parameter	spline::fixed_quantize_diff
+0x453920	33	SumSegmentLengths		spline	primitive	float __thiscall (void *curve, uint32_t k)	Returns the sum of the first k stored segment lengths	verified	one	spline#arc-length-and-parameter	spline::knot_sum_n_diff
+0x453950	10	InitBezierBasisThunk		spline	orchestration		Calls 0x453960 and 0x453a10; a static initializer	verified	one	spline#basis-tables	
+0x453960	161	InitBezierBasis		spline	orchestration		Stores the Bezier basis into 0xb05e58	verified	one	spline#basis-tables	
+0x453a10	12	RegisterBezierBasisExit		spline	orchestration		Registers the empty exit stub 0x453a20 with _atexit	verified	one	spline#basis-tables	
+0x453a20	1	BezierBasisExit		spline	orchestration		Returns; the exit stub of the Bezier basis	verified	one	spline#basis-tables	
+0x453a30	35	LocateBezierUniform		spline	primitive	void __thiscall (void *curve, float t, uint32_t *index, float *frac)	Locates t among the floor(count / 3) Bezier segments uniformly	verified	one	spline#bezier-segments	
+0x453a60	40	LocateBezierByLength		spline	primitive	void __thiscall (void *curve, float t, uint32_t *index, float *frac)	Locates t among the floor(count / 3) Bezier segments by stored length	verified	one	spline#bezier-segments	
+0x453a90	52	BezierPointUniform		spline	orchestration	void __thiscall (void *curve, float t, float *out)	Writes the Bezier point at a uniform parameter; slot 3	verified	one	spline#bezier-segments	
+0x453ad0	52	BezierPointByLength		spline	orchestration	void __thiscall (void *curve, float t, float *out)	Writes the Bezier point at an arc-length parameter; slot 2	verified	one	spline#bezier-segments	
+0x453b10	52	BezierTangentUniform		spline	orchestration	void __thiscall (void *curve, float t, float *out)	Writes the Bezier tangent at a uniform parameter; slot 5	verified	one	spline#bezier-segments	
+0x453b50	52	BezierTangentByLength		spline	orchestration	void __thiscall (void *curve, float t, float *out)	Writes the Bezier tangent at an arc-length parameter; slot 4	verified	one	spline#bezier-segments	
+0x453b90	306	BezierFrame		spline	primitive	void __thiscall (void *curve, float t, float *frame)	Writes the point, tangent, normal and binormal at an arc-length parameter; slot 6	verified	one	spline#frames	spline::frenet_frame_diff
+0x453cd0	333	EvaluateBezierDerivative		spline	primitive	void __thiscall (void *curve, uint32_t seg, float f, float *out)	Writes the derivative of a Bezier segment, filling its basis on first use	verified	one	spline#bezier-segments	
+0x453e20	1	BezierDerivativeBasisExit		spline	orchestration		Returns; the exit stub of the Bezier derivative basis	verified	one	spline#bezier-segments	
+0x453e30	32	EvaluateBezierPoint		spline	primitive	void __thiscall (void *curve, uint32_t seg, float f, float *out)	Writes the point of Bezier segment seg at f	verified	one	spline#bezier-segments	
+0x453e50	24	BezierSegmentLength		spline	primitive	double __thiscall (void *curve, uint32_t seg)	Returns the arc length of Bezier segment seg	verified	one	spline#bezier-segments	
+0x453e70	17	BezierTotalLength		spline	primitive	float __thiscall (void *curve)	Returns the sum of the stored Bezier segment lengths; slot 0	verified	one	spline#bezier-segments	
+0x453e90	66	RebuildBezierLengths		spline	primitive	void __thiscall (void *curve)	Stores the arc length of each Bezier segment; slot 1	verified	one	spline#bezier-segments	
+0x453ee0	168	SetBezierControlPoints		spline	primitive	void __thiscall (void *curve, const float *points, uint32_t n)	Grows the length list to floor(n / 3) and stores 3 * floor(n / 3) + 1 points; slot 7	verified	one	spline#control-point-storage	
+0x453f90	10	InitCatmullRomBasisThunk		spline	orchestration		Calls 0x453fa0 and 0x454050; a static initializer	verified	one	spline#basis-tables	
+0x453fa0	161	InitCatmullRomBasis		spline	orchestration		Stores the Catmull-Rom basis into 0xb05e10	verified	one	spline#basis-tables	
+0x454050	12	RegisterCatmullRomBasisExit		spline	orchestration		Registers the empty exit stub 0x454060 with _atexit	verified	one	spline#basis-tables	
+0x454060	1	CatmullRomBasisExit		spline	orchestration		Returns; the exit stub of the Catmull-Rom basis	verified	one	spline#basis-tables	
+0x454070	10	InitCatmullRomDerivativeBasisThunk		spline	orchestration		Calls 0x454080 and 0x454100; a static initializer	verified	one	spline#basis-tables	
+0x454080	121	InitCatmullRomDerivativeBasis		spline	orchestration		Stores the Catmull-Rom derivative basis into 0xb05dd8	verified	one	spline#basis-tables	
+0x454100	12	RegisterCatmullRomDerivativeBasisExit		spline	orchestration		Registers the empty exit stub 0x454110 with _atexit	verified	one	spline#basis-tables	
+0x454110	1	CatmullRomDerivativeBasisExit		spline	orchestration		Returns; the exit stub of the Catmull-Rom derivative basis	verified	one	spline#basis-tables	
+0x454120	10	InitCatmullRomSecondDerivativeBasisThunk		spline	orchestration		Calls 0x454130 and 0x454190; a static initializer	verified	one	spline#basis-tables	
+0x454130	81	InitCatmullRomSecondDerivativeBasis		spline	orchestration		Stores the Catmull-Rom second derivative basis into 0xb05db4	verified	one	spline#basis-tables	
+0x454190	12	RegisterCatmullRomSecondDerivativeBasisExit		spline	orchestration		Registers the empty exit stub 0x4541a0 with _atexit	verified	one	spline#basis-tables	
+0x4541a0	1	CatmullRomSecondDerivativeBasisExit		spline	orchestration		Returns; the exit stub of the Catmull-Rom second derivative basis	verified	one	spline#basis-tables	
+0x4541b0	147	EvaluateCurvePosition		spline	primitive	void __thiscall (void *curve, uint32_t seg, float f, float *out)	Writes the point of Catmull-Rom segment seg at f: the chord in mode 0, else the cubic	verified	one	spline#catmull-rom-segments	spline::linear_pos_diff
+0x454250	163	EvaluateCatmullRomDerivative		spline	primitive	void __thiscall (void *curve, uint32_t seg, float f, float *out)	Writes the derivative of Catmull-Rom segment seg at f	verified	one	spline#catmull-rom-segments	
+0x454300	29	EvaluateCatmullRomSecondDerivative		spline	unreached	void __thiscall (void *curve, uint32_t seg, float f, float *out)	Writes the second derivative of Catmull-Rom segment seg at f	verified	one	spline#unreached-code	
+0x454320	94	CatmullRomSegmentLength		spline	primitive	double __thiscall (void *curve, uint32_t seg)	Returns the chord length of segment seg in mode 0, else its arc length	verified	one	spline#catmull-rom-segments	spline::seg_length_diff
+0x454380	36	LocateCatmullRomByLength		spline	primitive	void __thiscall (void *curve, float t, uint32_t *index, float *frac)	Locates t among the count - 3 Catmull-Rom segments by stored length	verified	one	spline#catmull-rom-segments	
+0x4543b0	31	LocateCatmullRomUniform		spline	primitive	void __thiscall (void *curve, float t, uint32_t *index, float *frac)	Locates t among the count - 3 Catmull-Rom segments uniformly	verified	one	spline#catmull-rom-segments	
+0x4543d0	13	CatmullRomTotalLength		spline	primitive	float __thiscall (void *curve)	Returns the sum of the stored Catmull-Rom segment lengths; slot 0	verified	one	spline#catmull-rom-segments	
+0x4543e0	56	RebuildCatmullRomLengths		spline	primitive	void __thiscall (void *curve)	Stores the length of each Catmull-Rom segment; slot 1	verified	one	spline#catmull-rom-segments	
+0x454420	52	CatmullRomPointByLength		spline	orchestration	void __thiscall (void *curve, float t, float *out)	Writes the Catmull-Rom point at an arc-length parameter; slot 2	verified	one	spline#catmull-rom-segments	
+0x454460	52	CatmullRomPointUniform		spline	orchestration	void __thiscall (void *curve, float t, float *out)	Writes the Catmull-Rom point at a uniform parameter; slot 3	verified	one	spline#catmull-rom-segments	
+0x4544a0	108	CatmullRomTangentByLength		spline	orchestration	void __thiscall (void *curve, float t, float *out)	Clamps t and writes the Catmull-Rom tangent at an arc-length parameter; slot 4	verified	one	spline#catmull-rom-segments	
+0x454510	108	CatmullRomTangentUniform		spline	orchestration	void __thiscall (void *curve, float t, float *out)	Clamps t and writes the Catmull-Rom tangent at a uniform parameter; slot 5	verified	one	spline#catmull-rom-segments	
+0x454580	488	CatmullRomFrame		spline	primitive	void __thiscall (void *curve, float t, float *frame)	Writes the tangent, normal, binormal and point at an arc-length parameter; slot 6	verified	one	spline#frames	spline::frame_builder_linear_diff, spline::frame_builder_spline_diff
+0x454770	175	SetCatmullRomControlPoints		spline	primitive	void __thiscall (void *curve, const float *points, uint32_t n)	Grows the length list to n - 3 and stores n points; slot 7	verified	one	spline#control-point-storage	
+0x454820	127	ExtractCatmullRomPoints		spline	primitive	uint32_t __thiscall (void *curve, float t, float *out, uint32_t max)	Copies up to max control points from the segment at t on; slot 8	verified	one	spline#control-point-storage	
+0x4548a0	133	ResizeFloatList		spline	host	void __thiscall (void *list, uint32_t cap)	Reallocates a float list to cap entries keeping the first min(cap, count)	verified	one	spline#control-point-storage	
+0x454930	5	InitSplineTwoPiThunk		spline	orchestration		Jumps to 0x454940; a static initializer	verified	one	spline#object-file-and-initializers	
+0x454940	15	InitSplineTwoPi		spline	primitive		Stores the float pi plus pi into a global	verified	one	spline#object-file-and-initializers	
+0x454950	5	InitSplineInvTwoPiThunk		spline	orchestration		Jumps to 0x454960; a static initializer	verified	one	spline#object-file-and-initializers	
+0x454960	19	InitSplineInvTwoPi		spline	primitive		Stores 1 over the 2 pi global as a float	verified	one	spline#object-file-and-initializers	
+0x454980	20	Vector2LengthSquared		spline	primitive	float __thiscall (const float *v)	Returns x*x + y*y of a 2D vector	verified	one	spline#vector-leaves	spline::vec2_len2_diff
+0x4549a0	26	SetVector3		spline	orchestration	float * __thiscall (float *this, float x, float y, float z)	Stores three floats	verified	one	spline#vector-leaves	
+0x4549c0	38	DivideVector3		spline	primitive	float * __thiscall (float *this, float divisor)	Multiplies a 3D vector by the reciprocal of a divisor	verified	one	spline#vector-leaves	spline::vec_div_scalar_diff
+0x4549f0	31	Vector3LengthSquared		spline	primitive	float __thiscall (const float *v)	Returns x*x + y*y + z*z of a 3D vector	verified	one	spline#vector-leaves	animation::m2_animate_difftest, gx::lightning_segment_subdivide_difftest, gx::lightningrender_strip_difftest, models::billboard_tangent_frame_difftest, models::bspdispatch_normalize_difftest, models::burst_velocity_difftest, models::camera_facing_basis_difftest, models::emit_shape_plane_difftest, models::emit_shape_spline_difftest, models::prologue_length_difftest, models::render_normalize_difftest, models::ribbon_frame_build_difftest, models::seg_normalize_difftest, models::shadow_normalize_axes_difftest, spline::vec3_len2_diff
+0x454a10	117	IntegerSquareRoot		spline	primitive	uint32_t __fastcall (uint32_t n)	Returns the floor of the square root of n	verified	one	spline#integer-square-root	spline::isqrt_diff
 0x454a90	5	InitFastmathInfinityThunk		fastmath	orchestration	void __cdecl ()	Jumps to the +inf initializer of the fast maths file	verified	one	fastmath#static-initializers	
 0x454aa0	11	InitFastmathInfinity		fastmath	orchestration	void __cdecl ()	Copies the float +inf into 0xb05e98	verified	one	fastmath#static-initializers	
 0x454ab0	120	FastArctan		fastmath	unreached	float __stdcall (float x, float halfPi)	Returns a polynomial arctangent of x, folding |x| above 1 through the second argument	inferred	none	fastmath#unreached-functions	
@@ -3789,12 +3789,12 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x454c10	104	FastLog2PolyScaled2		fastmath	unreached		Returns the log2 polynomial with table value and coefficients on the stack, times a final argument	inferred	none	fastmath#unreached-functions	
 0x454c80	186	FastLog2		fastmath	unreached	double __stdcall (double x)	Returns log2 x from the exponent, a 64-entry table and a degree-6 polynomial; -inf at or below 1e-307	verified	one	fastmath#software-log2	
 0x454d40	196	FastPow2		fastmath	primitive	double __stdcall (double x)	Returns 2 to the x from a 64-entry table and a degree-5 polynomial, with the exponent set directly	verified	one	fastmath#software-exp2	fastmath::exp2_diff
-0x454e10	131	TestVector3Limit		fastmath	unreached		Compares a double 3-vector with two others and a limit and returns a flag	inferred	none	fastmath#unreached-functions	
+0x454e10	131	RayHitsOriginSphere		fastmath	unreached	bool __stdcall (double ox, double oy, double oz, double dx, double dy, double dz, double r2)	Returns whether a ray meets a sphere centred at the origin	inferred	none	fastmath#unreached-functions	
 0x454ea0	152	QuadraticRootsDouble		fastmath	unreached		Solves a quadratic in doubles and stores both roots	inferred	none	fastmath#unreached-functions	
 0x454f40	140	QuadraticRoots		fastmath	primitive	bool __fastcall (float *t1, float *t2, float a, float b, float c)	Stores the smaller and larger root of a quadratic as floats and returns whether it has two	verified	one	fastmath#quadratic-solver	fastmath::quadratic_roots_difftest
 0x454fd0	652	RefineReciprocalBlocks		fastmath	unreached		Refines a reciprocal per double in blocks of three from the seed 0x7fde61ee	inferred	none	fastmath#unreached-functions	
-0x455260	909	RefineReciprocalSqrtBlocks		fastmath	unreached		Refines a reciprocal square root per double in blocks of three from the seed 0x5fe732f7	inferred	none	fastmath#unreached-functions	
-0x4555f0	884	RefineReciprocalSqrtBlocks2		fastmath	unreached		Refines a reciprocal square root per double in blocks of three from the seed 0x5fe732f7	inferred	none	fastmath#unreached-functions	
+0x455260	909	BatchSqrt		fastmath	unreached	void __fastcall (double *values /*ecx*/, int count /*edx*/)	Replaces each double by its square root in blocks of three	inferred	none	fastmath#unreached-functions	
+0x4555f0	884	BatchRsqrt		fastmath	unreached	void __fastcall (double *values /*ecx*/, int count /*edx*/)	Replaces each double by its reciprocal square root in blocks of three	inferred	none	fastmath#unreached-functions	
 0x455970	216	CatmullRomDouble		fastmath	unreached		Interpolates a double table by a Catmull-Rom cubic at a parameter clamped to 0 to 1	inferred	none	fastmath#unreached-functions	
 0x455a50	217	CatmullRomFloat		fastmath	unreached		Interpolates a float table by a Catmull-Rom cubic at a parameter clamped to 0 to 1	inferred	none	fastmath#unreached-functions	
 0x455b30	40	AngleWrap		fastmath	primitive	double __stdcall (float angle)	Returns the angle's remainder modulo 2 pi, plus 2 pi when negative	verified	one	fastmath#angle-wrap	fastmath::angle_wrap_diff
@@ -3802,65 +3802,65 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x455b70	15	InitFastmathTwoPi		fastmath	primitive	void __cdecl ()	Stores pi plus pi, as a float, in 0xb05ea0	verified	one	fastmath#static-initializers	
 0x455b80	5	InitFastmathInvTwoPiThunk		fastmath	orchestration	void __cdecl ()	Jumps to the 1/(2π) initializer of the fast maths file	verified	one	fastmath#static-initializers	
 0x455b90	19	InitFastmathInvTwoPi		fastmath	primitive	void __cdecl ()	Stores 1 divided by 0xb05ea0 in 0xb05e9c	verified	one	fastmath#static-initializers	
-0x455bb0	70			unassigned	unreached		Runs its object file code that calls 0x456420; not read here	inferred	none		
-0x455c00	5			unassigned			Runs its object file code not read here	inferred	none		
-0x455c10	11			unassigned			Runs its object file code not read here	inferred	none		
-0x455c20	64			unassigned	unreached		Runs its object file code that calls 0x456420; not read here	inferred	none		
-0x455c60	12			unassigned	unreached		Runs its object file code not read here	inferred	none		
-0x455c70	7	MulHigh32		cmath	primitive	uint32_t __fastcall (uint32_t a, uint32_t b)	Returns the high dword of the 64-bit product a·b	inferred	none		
-0x455c80	15			unassigned	unreached		Runs its object file code that calls MulHigh32; not read here	inferred	none		
-0x455c90	12			unassigned	unreached		Runs its object file code not read here	inferred	none		
-0x455ca0	30			unassigned	unreached		Runs its object file code not read here	inferred	none		
-0x455cc0	30			unassigned	unreached		Runs its object file code not read here	inferred	none		
-0x455ce0	32			unassigned	unreached		Runs its object file code not read here	inferred	none		
-0x455d00	32			unassigned	unreached		Runs its object file code not read here	inferred	none		
-0x455d20	22			unassigned	unreached		Runs its object file code not read here	inferred	none		
-0x455d40	44			unassigned	unreached		Runs its object file code not read here	inferred	none		
-0x455d70	22			unassigned	unreached		Runs its object file code not read here	inferred	none		
-0x455d90	66			unassigned	unreached		Runs its object file code not read here	inferred	none		
-0x455de0	19			unassigned	unreached		Runs its object file code that calls 0x455c90; not read here	inferred	none		
-0x455e00	40			unassigned	unreached		Runs its object file code not read here	inferred	none		
-0x455e30	62			unassigned	unreached		Runs its object file code that calls 0x455d40; not read here	inferred	none		
-0x455e70	40			unassigned	unreached		Runs its object file code not read here	inferred	none		
-0x455ea0	64			unassigned	unreached		Runs its object file code that calls 0x455d90; not read here	inferred	none		
-0x455ee0	29			unassigned	unreached		Runs its object file code that calls 0x455cc0; not read here	inferred	none		
-0x455f00	76			unassigned	unreached		Runs its object file code not read here	inferred	none		
-0x455f50	393			unassigned	unreached		Runs its object file code not read here	inferred	none		
-0x4560e0	76			unassigned	unreached		Runs its object file code not read here	inferred	none		
-0x456130	216			unassigned	unreached		Runs its object file code not read here	inferred	none		
-0x456210	49			unassigned	unreached		Runs its object file code that calls 0x455d00; not read here	inferred	none		
-0x456250	37			unassigned	unreached		Runs its object file code not read here	inferred	none		
-0x456280	37			unassigned			Runs its object file code not read here	inferred	none		spline::normalize2_f32_diff
-0x4562b0	62			unassigned	unreached		Runs its object file code not read here	inferred	none		
-0x4562f0	62			unassigned	unreached		Runs its object file code not read here	inferred	none		
+0x455bb0	70	SmoothWaveShifted		unassigned	unreached	float __stdcall (float x, float y)	Returns a smooth zigzag between -1 and 1 of the phase x times y minus one half	verified	one	cmath/scalars#shaping-functions	
+0x455c00	5	InitScalarInfinityThunk		cmath	orchestration		Jumps to 0x455c10; a static initializer	verified	one	cmath/scalars#header-initializers	
+0x455c10	11	InitScalarInfinity		cmath	orchestration		Copies +inf into a global nothing reads	verified	one	cmath/scalars#header-initializers	
+0x455c20	64	SmoothWave		cmath	unreached	float __stdcall (float x, float y)	Returns a smooth zigzag between -1 and 1 of the phase x times y	verified	one	cmath/scalars#shaping-functions	
+0x455c60	12	MulHighSigned		cmath	unreached	int32_t __fastcall (int32_t a, int32_t b)	Returns the high dword of the signed 64-bit product a times b	verified	one	cmath/scalars#division-by-constants	
+0x455c70	7	MulHigh32		cmath	primitive	uint32_t __fastcall (uint32_t a, uint32_t b)	Returns the high dword of the 64-bit product a·b	verified	one	cmath/overview#high-product	
+0x455c80	15	DivideBy3		cmath	unreached	uint32_t __fastcall (uint32_t n)	Returns n divided by 3 through a multiply by 0xaaaaaaab	verified	one	cmath/scalars#division-by-constants	
+0x455c90	12	DivideBy3Signed		cmath	unreached	int32_t __fastcall (int32_t n)	Returns the high dword of n times 0x55555556, n divided by 3 rounded down	verified	one	cmath/scalars#division-by-constants	
+0x455ca0	30	DivideBy5		cmath	unreached	uint32_t __fastcall (uint32_t n)	Returns n divided by 5 through shifts and adds, exact for small n	verified	one	cmath/scalars#division-by-constants	
+0x455cc0	30	DivideBy5Signed		cmath	unreached	int32_t __fastcall (int32_t n)	Returns n divided by 5 rounded up through shifts and adds, exact for small n	verified	one	cmath/scalars#division-by-constants	
+0x455ce0	32	DivideBy9		cmath	unreached	uint32_t __fastcall (uint32_t n)	Returns n divided by 9 through shifts and adds, exact for small n	verified	one	cmath/scalars#division-by-constants	
+0x455d00	32	DivideBy9Signed		cmath	unreached	int32_t __fastcall (int32_t n)	Returns n divided by 9 rounded up through shifts and adds, exact for small n	verified	one	cmath/scalars#division-by-constants	
+0x455d20	22	MinInt3		cmath	unreached	int32_t __fastcall (int32_t a, int32_t b, int32_t c)	Returns the least of 3 integers	verified	one	cmath/scalars#order-statistics	
+0x455d40	44	MedianInt3		cmath	unreached	int32_t __fastcall (int32_t a, int32_t b, int32_t c)	Returns the median of 3 integers	verified	one	cmath/scalars#order-statistics	
+0x455d70	22	MaxInt3		cmath	unreached	int32_t __fastcall (int32_t a, int32_t b, int32_t c)	Returns the greatest of 3 integers	verified	one	cmath/scalars#order-statistics	
+0x455d90	66	RangeInt3		cmath	unreached	int32_t __fastcall (int32_t a, int32_t b, int32_t c)	Returns the greatest less the least of 3 integers	verified	one	cmath/scalars#order-statistics	
+0x455de0	19	MeanInt3		cmath	unreached	int32_t __fastcall (int32_t a, int32_t b, int32_t c)	Returns the sum of 3 integers divided by 3	verified	one	cmath/scalars#order-statistics	
+0x455e00	40	MinInt5		cmath	unreached	int32_t __fastcall (int32_t a, int32_t b, int32_t c, int32_t d, int32_t e)	Returns the least of 5 integers	verified	one	cmath/scalars#order-statistics	
+0x455e30	62	MedianInt5		cmath	unreached	int32_t __fastcall (int32_t a, int32_t b, int32_t c, int32_t d, int32_t e)	Returns the median of 5 integers	verified	one	cmath/scalars#order-statistics	
+0x455e70	40	MaxInt5		cmath	unreached	int32_t __fastcall (int32_t a, int32_t b, int32_t c, int32_t d, int32_t e)	Returns the greatest of 5 integers	verified	one	cmath/scalars#order-statistics	
+0x455ea0	64	RangeInt5		cmath	unreached	int32_t __fastcall (int32_t a, int32_t b, int32_t c, int32_t d, int32_t e)	Returns the greatest less the least of 5 integers	verified	one	cmath/scalars#order-statistics	
+0x455ee0	29	MeanInt5		cmath	unreached	int32_t __fastcall (int32_t a, int32_t b, int32_t c, int32_t d, int32_t e)	Returns the sum of 5 integers divided by 5	verified	one	cmath/scalars#order-statistics	
+0x455f00	76	MinInt9		cmath	unreached	int32_t __fastcall (int32_t a, int32_t b, int32_t c, int32_t d, int32_t e, int32_t f, int32_t g, int32_t h, int32_t i)	Returns the least of 9 integers	verified	one	cmath/scalars#order-statistics	
+0x455f50	393	MedianInt9		cmath	unreached	int32_t __fastcall (int32_t a, int32_t b, int32_t c, int32_t d, int32_t e, int32_t f, int32_t g, int32_t h, int32_t i)	Returns the median of 9 integers	verified	one	cmath/scalars#order-statistics	
+0x4560e0	76	MaxInt9		cmath	unreached	int32_t __fastcall (int32_t a, int32_t b, int32_t c, int32_t d, int32_t e, int32_t f, int32_t g, int32_t h, int32_t i)	Returns the greatest of 9 integers	verified	one	cmath/scalars#order-statistics	
+0x456130	216	RangeInt9		cmath	unreached	int32_t __fastcall (int32_t a, int32_t b, int32_t c, int32_t d, int32_t e, int32_t f, int32_t g, int32_t h, int32_t i)	Returns the greatest less the least of 9 integers	verified	one	cmath/scalars#order-statistics	
+0x456210	49	MeanInt9		cmath	unreached	int32_t __fastcall (int32_t a, int32_t b, int32_t c, int32_t d, int32_t e, int32_t f, int32_t g, int32_t h, int32_t i)	Returns the sum of 9 integers divided by 9	verified	one	cmath/scalars#order-statistics	
+0x456250	37	NormalizeTwoDoubles		cmath	unreached	void __fastcall (double *x, double *y)	Scales two doubles in place by 1 over the length of the pair	verified	one	cmath/scalars#normalizing-vectors	
+0x456280	37	NormalizeTwoFloats		cmath	primitive	void __fastcall (float *x, float *y)	Scales two floats in place by 1 over the length of the pair	verified	one	cmath/scalars#normalizing-vectors	spline::normalize2_f32_diff
+0x4562b0	62	NormalizeThreeDoubles		cmath	unreached	void __fastcall (double *x, double *y, double *z)	Scales three doubles in place by 1 over the length of the triple	verified	one	cmath/scalars#normalizing-vectors	
+0x4562f0	62	NormalizeThreeFloats		cmath	unreached	void __fastcall (float *x, float *y, float *z)	Scales three floats in place by 1 over the length of the triple	verified	one	cmath/scalars#normalizing-vectors	
 0x456330	25	RsqrtEstimate		cmath	primitive		Returns the float whose bits are ecx less half the argument's bits, a reciprocal square root estimate	verified	one	lighting/clouds#cloud-colours	cmath::fast_inv_sqrt_seed_difftest
-0x456350	25			unassigned	unreached		Runs its object file code not read here	inferred	none		
-0x456370	16			unassigned	unreached		Runs its object file code not read here	inferred	none		
-0x456380	18			unassigned	unreached		Runs its object file code not read here	inferred	none		
-0x4563a0	16			unassigned	unreached		Runs its object file code not read here	inferred	none		
-0x4563b0	16			unassigned	unreached		Runs its object file code not read here	inferred	none		
-0x4563c0	7			unassigned	unreached		Runs its object file code not read here	inferred	none		
-0x4563d0	9			unassigned	unreached		Runs its object file code not read here	inferred	none		
-0x4563e0	57			unassigned	unreached		Runs its object file code that calls __ftol; not read here	inferred	none		
-0x456420	71			unassigned	unreached		Runs its object file code that calls __ftol; not read here	inferred	none		
-0x456470	67			unassigned	unreached		Runs its object file code that calls __ftol; not read here	inferred	none		
-0x4564c0	78			unassigned	unreached		Runs its object file code that calls __ftol; not read here	inferred	none		
-0x456510	36			unassigned	unreached		Runs its object file code not read here	inferred	none		
-0x456540	36			unassigned	unreached		Runs its object file code that calls 0x456510; not read here	inferred	none		
-0x456570	67			unassigned	unreached		Runs its object file code not read here	inferred	none		
-0x4565c0	81			unassigned	unreached		Runs its object file code not read here	inferred	none		
-0x456620	18			unassigned	unreached		Runs its object file code that calls __CIpow; not read here	inferred	none		
-0x456640	29			unassigned	unreached		Runs its object file code that calls 0x456620; not read here	inferred	none		
-0x456660	51			unassigned	unreached		Runs its object file code that calls FastLog2, __CIpow; not read here	inferred	none		
-0x4566a0	88			unassigned	unreached		Runs its object file code that calls 0x456660; not read here	inferred	none		
-0x456700	25			unassigned	unreached		Runs its object file code not read here	inferred	none		
-0x456720	22			unassigned	unreached		Runs its object file code not read here	inferred	none		
-0x456740	25			unassigned	unreached		Runs its object file code not read here	inferred	none		
-0x456760	22			unassigned	unreached		Runs its object file code not read here	inferred	none		
-0x456780	5			unassigned			Runs its object file code not read here	inferred	none		
-0x456790	15			unassigned			Runs its object file code not read here	inferred	none		
-0x4567a0	5			unassigned			Runs its object file code not read here	inferred	none		
-0x4567b0	19			unassigned			Runs its object file code not read here	inferred	none		
+0x456350	25	RsqrtEstimateDouble		cmath	unreached	double __fastcall (uint32_t magic, double x)	Returns the double whose high dword is the magic less half of the argument's	verified	one	cmath/scalars#reciprocal-and-root-estimates	
+0x456370	16	RsqrtEstimateInPlace		cmath	unreached	float __fastcall (float *x, uint32_t magic)	Stores into the float the bits of the magic less half of its own and returns it	verified	one	cmath/scalars#reciprocal-and-root-estimates	
+0x456380	18	RsqrtEstimateInPlaceDouble		cmath	unreached	double __fastcall (double *x, uint32_t magic)	Stores into the double a high dword of the magic less half of its own and returns it	verified	one	cmath/scalars#reciprocal-and-root-estimates	
+0x4563a0	16	ReciprocalEstimate		cmath	unreached	float __fastcall (uint32_t magic, float x)	Returns the float whose bits are the magic less the argument's bits	verified	one	cmath/scalars#reciprocal-and-root-estimates	
+0x4563b0	16	ReciprocalEstimateDouble		cmath	unreached	double __fastcall (uint32_t magic, double x)	Returns the double whose high dword is the magic less the argument's	verified	one	cmath/scalars#reciprocal-and-root-estimates	
+0x4563c0	7	ReciprocalEstimateInPlace		cmath	unreached	float __fastcall (float *x, uint32_t magic)	Stores into the float the bits of the magic less its own and returns it	verified	one	cmath/scalars#reciprocal-and-root-estimates	
+0x4563d0	9	ReciprocalEstimateInPlaceDouble		cmath	unreached	double __fastcall (double *x, uint32_t magic)	Stores into the double a high dword of the magic less its own and returns it	verified	one	cmath/scalars#reciprocal-and-root-estimates	
+0x4563e0	57	SplitFloorDoubleToInt		cmath	unreached	void __fastcall (double *fraction, int32_t *whole, double x)	Stores the fraction of a double and its whole part, one lower for negatives, as an integer	verified	one	cmath/scalars#splitting-a-float	
+0x456420	71	SplitFloorFloatToInt		cmath	unreached	void __fastcall (float *fraction, int32_t *whole, float x)	Stores the fraction of a float and its whole part, one lower for negatives, as an integer	verified	one	cmath/scalars#splitting-a-float	
+0x456470	67	SplitFloorDouble		cmath	unreached	void __fastcall (double *fraction, double *whole, double x)	Stores the fraction of a double and its whole part, one lower for negatives, as a double	verified	one	cmath/scalars#splitting-a-float	
+0x4564c0	78	SplitFloorFloat		cmath	unreached	void __fastcall (float *fraction, float *whole, float x)	Stores the fraction of a float and its whole part, one lower for negatives, as a float	verified	one	cmath/scalars#splitting-a-float	
+0x456510	36	StepGreaterEqual		cmath	unreached	float __stdcall (float a, float b)	Returns 1.0 when a is at least b and 0.0 otherwise	verified	one	cmath/scalars#shaping-functions	
+0x456540	36	Pulse		cmath	unreached	float __stdcall (float x, float lo, float hi)	Returns 1.0 for x in [lo, hi) and 0.0 otherwise	verified	one	cmath/scalars#shaping-functions	
+0x456570	67	LinearStep		cmath	unreached	float __stdcall (float x, float lo, float hi)	Returns x between lo and hi as a fraction clamped into [0, 1]	verified	one	cmath/scalars#shaping-functions	
+0x4565c0	81	SmoothStep		cmath	unreached	float __stdcall (float x, float lo, float hi)	Returns the smooth step of x between lo and hi	verified	one	cmath/scalars#shaping-functions	
+0x456620	18	Power		cmath	unreached	float __stdcall (float a, float b)	Returns a to the power b through the C runtime	verified	one	cmath/scalars#shaping-functions	
+0x456640	29	Root		cmath	unreached	float __stdcall (float a, float b)	Returns a to the power 1 over b through the C runtime	verified	one	cmath/scalars#shaping-functions	
+0x456660	51	Bias		cmath	unreached	float __stdcall (float x, float b)	Returns x to the power minus log2 of b, using the fast logarithm	verified	one	cmath/scalars#shaping-functions	
+0x4566a0	88	Gain		cmath	unreached	double __stdcall (float x, float g)	Returns the gain curve of x built from the bias of 1 minus g	verified	one	cmath/scalars#shaping-functions	
+0x456700	25	SincProductDouble		cmath	unreached	double __stdcall (double x, double y)	Returns sin(pi x y) over pi x y in doubles	verified	one	cmath/scalars#shaping-functions	
+0x456720	22	SincDouble		cmath	unreached	double __stdcall (double x)	Returns sin(pi x) over pi x in doubles	verified	one	cmath/scalars#shaping-functions	
+0x456740	25	SincProductFloat		cmath	unreached	double __stdcall (float x, float y)	Returns sin(pi x y) over pi x y from floats	verified	one	cmath/scalars#shaping-functions	
+0x456760	22	SincFloat		cmath	unreached	double __stdcall (float x)	Returns sin(pi x) over pi x from a float	verified	one	cmath/scalars#shaping-functions	
+0x456780	5	InitScalarTwoPiThunk		cmath	orchestration		Jumps to 0x456790; a static initializer	verified	one	cmath/scalars#header-initializers	
+0x456790	15	InitScalarTwoPi		cmath	primitive		Stores the float pi plus pi into a global	verified	one	cmath/scalars#header-initializers	
+0x4567a0	5	InitScalarInvTwoPiThunk		cmath	orchestration		Jumps to 0x4567b0; a static initializer	verified	one	cmath/scalars#header-initializers	
+0x4567b0	19	InitScalarInvTwoPi		cmath	primitive		Stores 1 over the 2 pi global as a float	verified	one	cmath/scalars#header-initializers	
 0x4567d0	5	InitDbcInfinityThunkStartupStrings		dbc	orchestration	void __cdecl ()	Jumps to the +inf initializer of the Startup_Strings record file	inferred	none		
 0x4567e0	11	InitDbcInfinityStartupStrings		dbc	orchestration	void __cdecl ()	Copies the float +inf into a word of the data section	inferred	none		
 0x4567f0	6	StartupStringsGetFileName		dbc	orchestration	const char * __cdecl ()	Returns the path of the Startup_Strings table file	inferred	none		
@@ -18406,42 +18406,42 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x5c3c60	33			unassigned			Runs its object file code not read here	inferred	none		
 0x5c3c90	12			unassigned			Runs its object file code not read here	inferred	none		
 0x5c3ca0	25			unassigned			Runs its object file code not read here	inferred	none		
-0x5c3cc0	207	BuildPerspectiveMatrix		gxumath	primitive	void __thiscall (float *matrix, float fov, float aspect, float near, float far)	Builds a perspective matrix; the half-angle is fov / (2·sqrt(aspect² + 1)); error 0x57 on bad input	verified	one	camera#view-and-projection	gxumath::perspective_difftest
-0x5c3d90	188	BuildOrthoMatrix		gxumath	primitive		Builds an orthographic projection matrix	inferred	none	camera#orthographic-setup	gxumath::ortho_difftest
-0x5c3e50	31			gxumath	unreached		Runs its object file code that calls BuildOrthoMatrix; not read here	inferred	none		
-0x5c3e70	648	BuildLookAtMatrix		gxumath	primitive		Builds a view matrix from an eye, a target and an up vector	inferred	none	camera#view-and-projection	gxumath::lookat_v1_difftest
-0x5c4100	648			gxumath	unreached		Runs its object file code that calls SetVector3, SErrSetLastError, TranslateMatrix; not read here	inferred	none		
-0x5c4390	5			gxumath			Runs its object file code not read here	inferred	none		
-0x5c43a0	11			gxumath			Runs its object file code not read here	inferred	none		
-0x5c43b0	1404	BuildFrustumCorners		gxumath	primitive		Writes the eight world corners of the frustum of two matrices, clip-space z = -1 first	inferred	none	camera#unprojection	gxumath::frustum_corners_difftest
-0x5c4930	820			gxumath	unreached		Runs its object file code that calls 0x5c6540, 0x5c65c0, 0x5c6620 and 3 more; not read here	inferred	none		
-0x5c4c70	246			gxumath	unreached		Runs its object file code that calls BuildFrustumCorners; not read here	inferred	none		
-0x5c4d70	433			gxumath	unreached		Runs its object file code that calls GxCapsWindowSize, 0x58b060, 0x58b0c0; not read here	inferred	none		
-0x5c4f30	701			gxumath			Runs its object file code that calls GxCapsWindowSize, 0x58b060, 0x58b0c0 and 3 more; not read here	inferred	none		gxumath::unproject_difftest
-0x5c51f0	339			gxumath	unreached		Runs its object file code that calls SErrSetLastError; not read here	inferred	none		
-0x5c5350	119			gxumath			Runs its object file code that calls _atexit; not read here	inferred	none		
-0x5c53d0	1			gxumath			Runs its object file code not read here	inferred	none		
-0x5c53e0	265			gxumath	unreached		Runs its object file code that calls SErrSetLastError; not read here	inferred	none		
-0x5c54f0	104			gxumath	unreached		Runs its object file code not read here	inferred	none		
-0x5c5560	574			gxumath	unreached		Runs its object file code that calls Vector3LengthSquared, SErrSetLastError, SetVector3; not read here	inferred	none		
-0x5c57a0	1071			gxumath	unreached		Runs its object file code that calls SErrSetLastError, _atexit, 0x596ff0 and 2 more; not read here	inferred	none		
-0x5c5bd0	25			gxumath	unreached		Runs its object file code that calls SMemFree; not read here	inferred	none		
-0x5c5bf0	570			gxumath	unreached		Runs its object file code that calls SErrSetLastError, 0x5c5560; not read here	inferred	none		
-0x5c5e30	170			gxumath	unreached		Runs its object file code that calls TransformVector4; not read here	inferred	none		
-0x5c5ee0	1257			gxumath	unreached		Runs its object file code that calls GxCapsGet, 0x5c4d70, 0x5c63d0 and 4 more; not read here	inferred	none		
-0x5c63d0	154			gxumath	unreached		Runs its object file code that calls 0x5c6470, 0x5c64b0; not read here	inferred	none		
-0x5c6470	50			gxumath	unreached		Runs its object file code that calls floor, ceil; not read here	inferred	none		
-0x5c64b0	50			gxumath	unreached		Runs its object file code that calls floor, ceil; not read here	inferred	none		
-0x5c64f0	5			gxumath			Runs its object file code not read here	inferred	none		
-0x5c6500	15			gxumath			Runs its object file code not read here	inferred	none		
-0x5c6510	5			gxumath			Runs its object file code not read here	inferred	none		
-0x5c6520	19			gxumath			Runs its object file code not read here	inferred	none		
-0x5c6540	32			gxumath			Runs its object file code not read here	inferred	none		gxumath::vec_helpers_difftest
-0x5c6560	43			gxumath	unreached		Runs its object file code not read here	inferred	none		
-0x5c6590	40			gxumath	unreached		Runs its object file code not read here	inferred	none		
-0x5c65c0	45			gxumath	unreached		Runs its object file code not read here	inferred	none		
-0x5c65f0	33			gxumath	unreached		Runs its object file code not read here	inferred	none		
-0x5c6620	33			gxumath	unreached		Runs its object file code not read here	inferred	none		
+0x5c3cc0	207	BuildPerspectiveMatrix		gxumath	primitive	void __thiscall (float fov, float aspect, float near, float far)	Builds a perspective matrix; the half-angle is fov / (2·sqrt(aspect² + 1)); error 0x57 on bad input	verified	one	gxumath#perspective-matrix	gxumath::perspective_difftest
+0x5c3d90	188	BuildOrthoMatrix		gxumath	primitive	void __thiscall (float l, float r, float b, float t, float n, float f)	Writes the orthographic matrix of the left, right, bottom, top, near and far planes	verified	one	gxumath#orthographic-matrix	gxumath::ortho_difftest
+0x5c3e50	31	BuildOrthoMatrixFromFloats		gxumath	unreached	void __fastcall (const float *planes, float *out)	Calls 0x5c3d90 with six floats loaded from the structure at ecx and the output in edx	verified	one	gxumath#orthographic-matrix	
+0x5c3e70	648	BuildLookAtMatrix		gxumath	primitive	void __fastcall (const float *eye, const float *target, const float *up, float *out)	Writes the view matrix of an eye, a target and an up vector; error 0x57 for a short view or up vector	verified	one	gxumath#look-at-matrices	gxumath::lookat_v1_difftest
+0x5c4100	648	BuildMirroredLookAtMatrix		gxumath	unreached	void __fastcall (const float *eye, const float *target, const float *up, float *out)	Writes the view matrix of 0x5c3e70 with its first row negated	verified	one	gxumath#look-at-matrices	
+0x5c4390	5	InitGxuInfinityThunk		gxumath	orchestration		Jumps to 0x5c43a0; a static initializer	verified	one	gxumath#object-file-and-initializers	
+0x5c43a0	11	InitGxuInfinity		gxumath	orchestration		Copies +inf into 0xc2b850, the no-hit distance of the ray tests	verified	one	gxumath#object-file-and-initializers	
+0x5c43b0	1404	BuildFrustumCorners		gxumath	primitive	void __fastcall (const float *view, const float *proj, float *corners)	Writes the eight world-space corners of the frustum of a view and a projection matrix	verified	one	gxumath#frustum-corners	gxumath::frustum_corners_difftest
+0x5c4930	820	BuildFrustumPlanes		gxumath	unreached	void __fastcall (const float *m, float *planes)	Writes the six normalized clip-volume planes of a matrix from its columns	verified	one	gxumath#frustum-planes-and-box	
+0x5c4c70	246	FrustumBounds		gxumath	unreached	void __fastcall (const float *view, const float *proj, float *min, float *max)	Writes the minimum and maximum of the eight frustum corners of a view and a projection	verified	one	gxumath#frustum-planes-and-box	
+0x5c4d70	433	ProjectPointsForDecal		gxumath	unreached	void __fastcall (uint32_t count, const float *in, float *out)	Maps points through the device matrix to window fractions scaled by the window rectangle	verified	one	gxumath#viewport-projection-for-decals	
+0x5c4f30	701	ProjectPointsToWindow		gxumath	primitive	uint32_t __fastcall (uint32_t count, const float *in, float *out)	Maps world points to window coordinates through the device matrices; returns 0 where clip w is near 0	verified	one	gxumath#world-points-to-the-screen	gxumath::unproject_difftest
+0x5c51f0	339	ResampleImage		gxumath	unreached	void __fastcall (const void *src, int sfmt, uint32_t sw, uint32_t sh, uint32_t spitch, void *dst, int dfmt, uint32_t dw, uint32_t dh, uint32_t dpitch)	Copies an image to another size by nearest source element, stepping in 16.16 fixed point	verified	one	gxumath#image-resample	
+0x5c5350	119	TexelBufferCallback		gxumath	primitive	void __stdcall (int mode, uint32_t width, ...)	Fills the 256-byte texel buffer with a dword, or returns its pitch and address, for a texture of 8 by 8	verified	one	gxumath#texel-buffer-callback	
+0x5c53d0	1	TexelBufferExit		gxumath	orchestration		Returns at once; the exit handler 0x5c5350 registers	verified	one	gxumath#texel-buffer-callback	
+0x5c53e0	265	IntersectUnitRaySphere		gxumath	unreached	uint32_t __fastcall (const float *origin, const float *dir, const float *center, float radius, float *t)	Tests a unit ray against a sphere and stores the distance along it to the closest approach on a hit	verified	one	gxumath#ray-and-sphere	
+0x5c54f0	104	PointInFrustumPlanes		gxumath	unreached	uint32_t __fastcall (const float *point, const float *planes, float margin)	Returns 1 when a point, less a margin, is on the inner side of all six planes	verified	one	gxumath#frustum-planes-and-box	
+0x5c5560	574	IntersectUnitRayTriangle		gxumath	unreached	uint32_t __fastcall (const float *origin, const float *dir, const float *v0, const float *v1, const float *v2, float *t)	Tests a unit ray against a triangle by Moller-Trumbore and stores the distance on a hit	verified	one	gxumath#ray-and-triangle	
+0x5c57a0	1071	PickSkinnedMesh		gxumath	unreached		Blends bone-weighted vertices, then stores the nearest non-negative triangle hit of a ray and its index	verified	one	gxumath#mesh-ray-picks	
+0x5c5bd0	25	FreePickVertexBuffer		gxumath	unreached	void __cdecl (void)	Frees the skinned pick scratch buffer at 0xc2b970 when it is allocated	verified	one	gxumath#mesh-ray-picks	
+0x5c5bf0	570	PickStaticMesh		gxumath	unreached		Stores the nearest triangle hit of a ray over a vertex array and its index	verified	one	gxumath#mesh-ray-picks	
+0x5c5e30	170	ClipOutcode		gxumath	unreached	uint32_t __fastcall (const float *m, const float *point)	Returns six sign bits of the point transformed by a matrix against its w	verified	one	gxumath#clip-outcode	
+0x5c5ee0	1257	BuildDecalTexCoords		gxumath	unreached	void __fastcall (const float *points, float *uv, uint32_t resX, uint32_t resY)	Replaces four texel coordinate pairs with the decal coordinates of a quadrilateral of world points	verified	one	gxumath#decal-texture-coordinates	
+0x5c63d0	154	SnapDecalPoint		gxumath	unreached	void __fastcall (const uint32_t *caps, const float *in, float *out)	Writes a point rounded by the decal grid function when the capability words select it	verified	one	gxumath#decal-grid-rounding	
+0x5c6470	50	RoundToGridCeil		gxumath	unreached	double __stdcall (float x)	Returns ceil(floor(16x + 0.5)/16) of a float	verified	one	gxumath#decal-grid-rounding	
+0x5c64b0	50	RoundToGridCeilAlt		gxumath	unreached	double __stdcall (float x)	Returns ceil(floor(16x + 0.5)/16) of a float, the same code as 0x5c6470	verified	one	gxumath#decal-grid-rounding	
+0x5c64f0	5	InitGxuTwoPiThunk		gxumath	orchestration		Jumps to 0x5c6500; a static initializer	verified	one	gxumath#object-file-and-initializers	
+0x5c6500	15	InitGxuTwoPi		gxumath	primitive		Stores π + π as a float in 0xc2b964	verified	one	gxumath#object-file-and-initializers	
+0x5c6510	5	InitGxuInvTwoPiThunk		gxumath	orchestration		Jumps to 0x5c6520; a static initializer	verified	one	gxumath#object-file-and-initializers	
+0x5c6520	19	InitGxuInvTwoPi		gxumath	primitive		Stores 1 / [0xc2b964] as a float in 0xc2b858, which nothing reads	verified	one	gxumath#object-file-and-initializers	
+0x5c6540	32	SetVector4		gxumath	orchestration	void __thiscall (float x, float y, float z, float w)	Stores four floats at ecx	verified	one	gxumath#vector-helpers	gxumath::vec_helpers_difftest
+0x5c6560	43	ScaleVector4		gxumath	unreached	void __thiscall (float s)	Multiplies four floats at ecx by a float	verified	one	gxumath#vector-helpers	
+0x5c6590	40	NegateVector4		gxumath	unreached	float * __thiscall (float *out)	Stores the four floats at ecx negated through a pointer	verified	one	gxumath#vector-helpers	
+0x5c65c0	45	SubtractVector4		gxumath	unreached	float * __fastcall (float *out, const float *a, const float *b)	Stores the difference of two vectors of four floats	verified	one	gxumath#vector-helpers	
+0x5c65f0	33	CopyMatrixColumn2		gxumath	unreached	float * __thiscall (float *out)	Copies elements 2, 6, 10 and 14 of a matrix, its third column, to the pointer on the stack	verified	one	gxumath#vector-helpers	
+0x5c6620	33	CopyMatrixColumn3		gxumath	unreached	float * __thiscall (float *out)	Copies elements 3, 7, 11 and 15 of a matrix, its fourth column, to the pointer on the stack	verified	one	gxumath#vector-helpers	
 0x5c6650	5	InitFontUtilInfinityThunk		font	orchestration		Jumps to 0x5c6660; a static initializer	verified	one	font/overview#object-files	
 0x5c6660	11	InitFontUtilInfinity		font	orchestration	void __cdecl (void)	Copies +inf into 0xc2b980	verified	one	font/overview#object-files	
 0x5c6670	10	InitFontRegistryThunk		font	orchestration		Calls 0x5c6680 and registers 0x5c66c0 with _atexit; a static initializer	verified	one	font/overview#static-objects	
@@ -28397,119 +28397,119 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x6ca8e0	28			warden			Runs WardenClient.cpp code that calls SMemFree; not read here	inferred	none		
 0x6ca900	91			warden			Runs WardenClient.cpp code that calls SMemFree, SMemAlloc; not read here	inferred	none		
 0x6ca960	112			warden			Runs WardenClient.cpp code that calls SMemFree; not read here	inferred	none		
-0x6ca9d0	85			unassigned			Runs its object file code that calls 0x6cde70, 0x58b2e0; not read here	inferred	none		
-0x6caa30	43			unassigned			Runs its object file code that calls 0x6caa60, SMemFree; not read here	inferred	none		
-0x6caa60	42			unassigned			Runs its object file code that calls GxShaderRelease; not read here	inferred	none		
-0x6caa90	40			unassigned			Runs its object file code that calls SMemFree; not read here	inferred	none		
-0x6caac0	18			unassigned			Runs its object file code that calls 0x58b360; not read here	inferred	none		
-0x6caae0	311			unassigned			Runs its object file code that calls _atexit, 0x6cd3c0, 0x6cd580 and 6 more; not read here	inferred	none		
-0x6cac20	1			unassigned			Runs its object file code not read here	inferred	none		
-0x6cac30	85			unassigned			Runs its object file code that calls 0x6cde70, 0x58b2e0; not read here	inferred	none		
-0x6cac90	43			unassigned			Runs its object file code that calls 0x6cacc0, SMemFree; not read here	inferred	none		
-0x6cacc0	42			unassigned			Runs its object file code that calls GxShaderRelease; not read here	inferred	none		
-0x6cacf0	18			unassigned			Runs its object file code that calls 0x58b360; not read here	inferred	none		
-0x6cad10	550			unassigned			Runs its object file code that calls 0x6cd3c0, 0x6cd580, 0x58a7b0 and 8 more; not read here	inferred	none		
-0x6caf40	85			unassigned			Runs its object file code that calls 0x6cde70, 0x58b2e0; not read here	inferred	none		
-0x6cafa0	43			unassigned			Runs its object file code that calls 0x6cafd0, SMemFree; not read here	inferred	none		
-0x6cafd0	42			unassigned			Runs its object file code that calls GxShaderRelease; not read here	inferred	none		
-0x6cb000	18			unassigned			Runs its object file code that calls 0x58b360; not read here	inferred	none		
-0x6cb020	460			unassigned			Runs its object file code that calls 0x6cd3c0, 0x6cd580, 0x589e80 and 9 more; not read here	inferred	none		ffxeffects::ffx_glow_color_quantize_difftest
-0x6cb1f0	145			unassigned			Runs its object file code that calls 0x6cbcf0, GxCapsGet, 0x58b2e0 and 1 more; not read here	inferred	none		
-0x6cb290	43			unassigned			Runs its object file code that calls 0x6cb2c0, SMemFree; not read here	inferred	none		
-0x6cb2c0	42			unassigned			Runs its object file code that calls GxShaderRelease; not read here	inferred	none		
-0x6cb2f0	18			unassigned			Runs its object file code that calls 0x58b360; not read here	inferred	none		
-0x6cb310	1232			unassigned			Runs its object file code that calls 0x6cd3c0, 0x6cd810, 0x6cd580 and 18 more; not read here	inferred	none		ffxeffects::ffx_glow_pass_render_difftest
-0x6cb7e0	174			unassigned			Runs its object file code that calls 0x6cde70, GxCapsGet, 0x58b2e0 and 1 more; not read here	inferred	none		
-0x6cb890	43			unassigned			Runs its object file code that calls 0x6cb8c0, SMemFree; not read here	inferred	none		
-0x6cb8c0	71			unassigned			Runs its object file code that calls GxShaderRelease; not read here	inferred	none		
-0x6cb910	18			unassigned			Runs its object file code that calls 0x58b360; not read here	inferred	none		
-0x6cb930	302			unassigned			Runs its object file code that calls 0x6cd3c0, 0x6cd580, 0x589e80 and 5 more; not read here	inferred	none		ffxeffects::ffx_death_pass_pack_difftest
-0x6cba60	64			unassigned			Runs its object file code that calls 0x6cde70, 0x58b2b0; not read here	inferred	none		
-0x6cbaa0	43			unassigned			Runs its object file code that calls 0x6cbad0, SMemFree; not read here	inferred	none		
-0x6cbad0	25			unassigned			Runs its object file code that calls GxShaderRelease; not read here	inferred	none		
-0x6cbaf0	14			unassigned			Runs its object file code that calls 0x58b360; not read here	inferred	none		
-0x6cbb00	178			unassigned			Runs its object file code that calls 0x6cd3c0, 0x6cd580, 0x58a3d0 and 5 more; not read here	inferred	none		
-0x6cbbc0	10			unassigned			Runs its object file code that calls 0x6cbbd0; not read here	inferred	none		
-0x6cbbd0	33			unassigned			Runs its object file code not read here	inferred	none		
-0x6cbc00	12			unassigned			Runs its object file code that calls _atexit; not read here	inferred	none		
-0x6cbc10	21			unassigned			Runs its object file code not read here	inferred	none		
-0x6cbc30	10			unassigned			Runs its object file code that calls 0x6cbc40; not read here	inferred	none		
-0x6cbc40	21			unassigned			Runs its object file code not read here	inferred	none		
-0x6cbc60	12			unassigned			Runs its object file code that calls _atexit; not read here	inferred	none		
-0x6cbc70	21			unassigned			Runs its object file code not read here	inferred	none		
-0x6cbc90	10			unassigned			Runs its object file code that calls 0x6cbca0; not read here	inferred	none		
-0x6cbca0	21			unassigned			Runs its object file code not read here	inferred	none		
-0x6cbcc0	12			unassigned			Runs its object file code that calls _atexit; not read here	inferred	none		
-0x6cbcd0	21			unassigned			Runs its object file code not read here	inferred	none		
-0x6cbcf0	261			unassigned			Runs its object file code that calls 0x6cde70, CGxTexFlags::CGxTexFlags, GxCapsGet and 1 more; not read here	inferred	none		
-0x6cbe00	43			unassigned			Runs its object file code that calls 0x6cbe30, SMemFree; not read here	inferred	none		
-0x6cbe30	104			unassigned			Runs its object file code that calls GxTexDestroy; not read here	inferred	none		
-0x6cbea0	645			ffxeffects			Runs FFXEffects.cpp code that calls SMemFree, SMemAlloc, __ftol; not read here	inferred	none		ffxeffects::ffx_glow_wave_lut_difftest
-0x6cc130	879	ConstructGlowEffect		ffxeffects			Constructs the glow full-screen effect	inferred	none		
-0x6cc4a0	43			ffxeffects			Runs FFXEffects.cpp code that calls 0x6cc4d0, SMemFree; not read here	inferred	none		
-0x6cc4d0	129			ffxeffects			Runs FFXEffects.cpp code that calls SMemFree; not read here	inferred	none		
-0x6cc560	62			ffxeffects			Runs FFXEffects.cpp code that calls SMemFree; not read here	inferred	none		
-0x6cc5a0	143			ffxeffects			Runs FFXEffects.cpp code that calls 0x467d00, GetCameraLiquid; not read here	inferred	none		
-0x6cc630	87			ffxeffects			Runs FFXEffects.cpp code that calls 0x467d00, GetCameraLiquid; not read here	inferred	none		
-0x6cc690	551	ConstructDeathEffect		ffxeffects			Constructs the death full-screen effect	inferred	none		
-0x6cc8c0	43			ffxeffects			Runs its object file code that calls 0x6cc8f0, SMemFree; not read here	inferred	none		
-0x6cc8f0	74			ffxeffects			Runs its object file code that calls SMemFree; not read here	inferred	none		
-0x6cc940	226			ffxeffects			Runs its object file code that calls SMemReAlloc, SMemAlloc, SMemFree; not read here	inferred	none		
-0x6cca30	57			ffxeffects			Runs its object file code not read here	inferred	none		
-0x6cca70	31			ffxeffects			Runs its object file code not read here	inferred	none		
-0x6cca90	133			ffxeffects			Runs its object file code that calls SMemReAlloc, SMemAlloc, SMemFree; not read here	inferred	none		
-0x6ccb20	10			ffxeffects			Runs its object file code that calls 0x6ccb30; not read here	inferred	none		
-0x6ccb30	33			ffxeffects			Runs its object file code not read here	inferred	none		
-0x6ccb60	12			ffxeffects			Runs its object file code that calls _atexit; not read here	inferred	none		
-0x6ccb70	21			ffxeffects			Runs its object file code not read here	inferred	none		
-0x6ccb90	10			ffxeffects			Runs its object file code that calls 0x6ccba0; not read here	inferred	none		
-0x6ccba0	40			ffxeffects			Runs its object file code not read here	inferred	none		
-0x6ccbd0	12			ffxeffects			Runs its object file code that calls _atexit; not read here	inferred	none		
-0x6ccbe0	21			ffxeffects			Runs its object file code not read here	inferred	none		
-0x6ccc00	10			ffxeffects			Runs its object file code that calls 0x6ccc10; not read here	inferred	none		
-0x6ccc10	40			ffxeffects			Runs its object file code not read here	inferred	none		
-0x6ccc40	12			ffxeffects			Runs its object file code that calls _atexit; not read here	inferred	none		
-0x6ccc50	21			ffxeffects			Runs its object file code not read here	inferred	none		
-0x6ccc70	10			ffxeffects			Runs its object file code that calls 0x6ccc80; not read here	inferred	none		
-0x6ccc80	40			ffxeffects			Runs its object file code not read here	inferred	none		
-0x6cccb0	12			ffxeffects			Runs its object file code that calls _atexit; not read here	inferred	none		
-0x6cccc0	21			ffxeffects			Runs its object file code not read here	inferred	none		
-0x6ccce0	10			ffxeffects			Runs its object file code that calls 0x6cccf0; not read here	inferred	none		
-0x6cccf0	31			ffxeffects			Runs its object file code not read here	inferred	none		
-0x6ccd10	12			ffxeffects			Runs its object file code that calls _atexit; not read here	inferred	none		
-0x6ccd20	21			ffxeffects			Runs its object file code not read here	inferred	none		
-0x6ccd40	10			ffxeffects			Runs its object file code that calls 0x6ccd50; not read here	inferred	none		
-0x6ccd50	28			ffxeffects			Runs its object file code not read here	inferred	none		
-0x6ccd70	12			ffxeffects			Runs its object file code that calls _atexit; not read here	inferred	none		
-0x6ccd80	21			ffxeffects			Runs its object file code not read here	inferred	none		
-0x6ccda0	5			ffxeffects			Runs its object file code not read here	inferred	none		
-0x6ccdb0	41			ffxeffects			Runs its object file code not read here	inferred	none		
-0x6ccde0	10			ffxeffects			Runs its object file code that calls 0x6ccdf0; not read here	inferred	none		
-0x6ccdf0	161			ffxeffects			Runs its object file code not read here	inferred	none		
-0x6ccea0	12			ffxeffects			Runs its object file code that calls _atexit; not read here	inferred	none		
-0x6cceb0	21			ffxeffects			Runs its object file code not read here	inferred	none		
-0x6cced0	10			ffxeffects			Runs its object file code that calls 0x6ccee0; not read here	inferred	none		
-0x6ccee0	161			ffxeffects			Runs its object file code not read here	inferred	none		
-0x6ccf90	12			ffxeffects			Runs its object file code that calls _atexit; not read here	inferred	none		
-0x6ccfa0	21			ffxeffects			Runs its object file code not read here	inferred	none		
-0x6ccfc0	515	FFXInitialize		ffxeffects			Starts the full-screen effect system and its options	inferred	none		
-0x6cd1d0	441	FFXShutdown		ffxeffects			Shuts the full-screen effect system down	inferred	none		
-0x6cd390	46			ffxeffects			Runs its object file code not read here	inferred	none		
-0x6cd3c0	445			ffxeffects			Runs its object file code that calls GetDeviceProjection, BuildOrthoMatrix and 9 more; not read here	inferred	none		
-0x6cd580	455			ffxeffects			Runs its object file code that calls QueryDevice; not read here	inferred	none		ffxeffects::ffx_fullscreen_quad_difftest
-0x6cd750	188			ffxeffects			Runs its object file code that calls 0x58a140, GxBufLock, GxBufUnlock and 1 more; not read here	inferred	none		ffxeffects::ffx_transform_quad_verts_difftest
-0x6cd810	44			ffxeffects			Runs its object file code that calls 0x58a140, 0x58a0c0; not read here	inferred	none		
-0x6cd840	73			ffxeffects			Runs its object file code that calls 0x589f50, SetDeviceView, SetDeviceProjection and 3 more; not read here	inferred	none		
-0x6cd890	472	BeginCurrentFfx		ffxeffects			Begins the current full-screen effect's pass	inferred	none		
-0x6cda70	149	EndCurrentFfx		ffxeffects			Ends the current full-screen effect's pass	inferred	none		
-0x6cdb10	45			ffxeffects			Runs its object file code that calls GxCapsGet; not read here	inferred	none		
-0x6cdb40	357			ffxeffects			Runs its object file code that calls GxCapsWindowSize, __ftol, 0x6cdb10 and 2 more; not read here	inferred	none		ffxeffects::ffx_compute_rt_dims_difftest
-0x6cdcb0	371			ffxeffects			Runs its object file code that calls GxCapsGet, CGxTexFlags::CGxTexFlags, 0x6cdb10 and 6 more; not read here	inferred	none		
-0x6cde30	42			ffxeffects			Runs its object file code that calls _atoi, ConsoleWrite; not read here	inferred	none		
-0x6cde60	12	SetCurrentFfx		ffxeffects			Makes an effect the current full-screen effect and returns the previous one	inferred	none		
-0x6cde70	88			ffxeffects			Runs FFXEffects code, not read here	inferred	none		
-0x6cded0	79			ffxeffects			Runs FFXEffects code, not read here	inferred	none		
-0x6cdf20	38			ffxeffects			Runs FFXEffects code, not read here	inferred	none		
+0x6ca9d0	85	ConstructBox4Pass		ffxeffects	orchestration		Builds a Box4 downsample pass: the base, its vtable and its program from FFXBox4.bls	verified	one	ffxeffects/objects#pass-and-effect-objects	
+0x6caa30	43	DeleteBox4Pass		ffxeffects	orchestration		Destroys a Box4 downsample pass and frees it when bit 0 of flags is set	verified	one	ffxeffects/objects#pass-and-effect-objects	
+0x6caa60	42	DestroyBox4Pass		ffxeffects	orchestration		Releases the program handles of a Box4 downsample pass and restores the base vtable	verified	one	ffxeffects/objects#pass-and-effect-objects	
+0x6caa90	40	FFX::Pass::DeletingDestructor		ffxeffects	orchestration		Restores the base vtable and frees the pass when bit 0 of flags is set	verified	one	ffxeffects/objects#pass-and-effect-objects	
+0x6caac0	18	Box4PassIsReady		ffxeffects	orchestration		Returns whether the program of a Box4 downsample pass loaded	verified	one	ffxeffects/objects#pass-and-effect-objects	
+0x6caae0	311	RenderBox4Pass		ffxeffects	orchestration		Draws the source into the destination target with four box taps	verified	one	ffxeffects/passes#box-and-gauss-passes	
+0x6cac20	1	Box4TapsExit		ffxeffects	orchestration		Returns; the exit stub the Box4 tap table registers	verified	one	ffxeffects/passes#box-and-gauss-passes	
+0x6cac30	85	ConstructGauss4Pass		ffxeffects	orchestration		Builds a Gauss4 blur pass: the base, its vtable and its program from FFXGauss4.bls	verified	one	ffxeffects/objects#pass-and-effect-objects	
+0x6cac90	43	DeleteGauss4Pass		ffxeffects	orchestration		Destroys a Gauss4 blur pass and frees it when bit 0 of flags is set	verified	one	ffxeffects/objects#pass-and-effect-objects	
+0x6cacc0	42	DestroyGauss4Pass		ffxeffects	orchestration		Releases the program handles of a Gauss4 blur pass and restores the base vtable	verified	one	ffxeffects/objects#pass-and-effect-objects	
+0x6cacf0	18	Gauss4PassIsReady		ffxeffects	orchestration		Returns whether the program of a Gauss4 blur pass loaded	verified	one	ffxeffects/objects#pass-and-effect-objects	
+0x6cad10	550	RenderGauss4Pass		ffxeffects	primitive	void __thiscall (void)	Blurs the source in two draws, horizontal into 0xce8b04 and vertical into the destination	verified	one	ffxeffects/passes#box-and-gauss-passes	
+0x6caf40	85	ConstructGlowPass		ffxeffects	orchestration		Builds a glow combine pass: the base, its vtable and its program from FFXGlow.bls	verified	one	ffxeffects/objects#pass-and-effect-objects	
+0x6cafa0	43	DeleteGlowPass		ffxeffects	orchestration		Destroys a glow combine pass and frees it when bit 0 of flags is set	verified	one	ffxeffects/objects#pass-and-effect-objects	
+0x6cafd0	42	DestroyGlowPass		ffxeffects	orchestration		Releases the program handles of a glow combine pass and restores the base vtable	verified	one	ffxeffects/objects#pass-and-effect-objects	
+0x6cb000	18	GlowPassIsReady		ffxeffects	orchestration		Returns whether the program of a glow combine pass loaded	verified	one	ffxeffects/objects#pass-and-effect-objects	
+0x6cb020	460	RenderGlowPass		ffxeffects	primitive		Draws the glow combine quad with the colour of the glow, drunk and liquid bytes	verified	one	ffxeffects/passes#glow-combine-pass	ffxeffects::ffx_glow_color_quantize_difftest
+0x6cb1f0	145	ConstructGlowWavePass		ffxeffects	orchestration		Builds a glow wave pass: the base, its vtable and its program from FFXGlowWave.bls	verified	one	ffxeffects/objects#pass-and-effect-objects	
+0x6cb290	43	DeleteGlowWavePass		ffxeffects	orchestration		Destroys a glow wave pass and frees it when bit 0 of flags is set	verified	one	ffxeffects/objects#pass-and-effect-objects	
+0x6cb2c0	42	DestroyGlowWavePass		ffxeffects	orchestration		Releases the four program handles of a glow wave pass and destroys its wave map base	verified	one	ffxeffects/objects#pass-and-effect-objects	
+0x6cb2f0	18	GlowWavePassIsReady		ffxeffects	orchestration		Returns whether the program of a glow wave pass loaded	verified	one	ffxeffects/objects#pass-and-effect-objects	
+0x6cb310	1232	RenderGlowWavePass		ffxeffects	primitive		Draws the glow quad with the wave map UV matrix and the screen and blur offset constants	verified	one	ffxeffects/passes#glow-wave-pass	ffxeffects::ffx_glow_pass_render_difftest
+0x6cb7e0	174	ConstructDeathPass		ffxeffects	orchestration		Builds a death tint pass: the base, its vtable and its program from a death program	verified	one	ffxeffects/objects#pass-and-effect-objects	
+0x6cb890	43	DeleteDeathPass		ffxeffects	orchestration		Destroys a death tint pass and frees it when bit 0 of flags is set	verified	one	ffxeffects/objects#pass-and-effect-objects	
+0x6cb8c0	71	DestroyDeathPass		ffxeffects	orchestration		Releases the program handles of a death pass and restores the base vtable	verified	one	ffxeffects/objects#pass-and-effect-objects	
+0x6cb910	18	DeathPassIsReady		ffxeffects	orchestration		Returns whether the program of a death pass loaded	verified	one	ffxeffects/objects#pass-and-effect-objects	
+0x6cb930	302	RenderDeathPass		ffxeffects	primitive		Draws the death quad with the colour of the glow byte and 0x5393a8	verified	one	ffxeffects/passes#death-passes	ffxeffects::ffx_death_pass_pack_difftest
+0x6cba60	64	ConstructDeathCombinerPass		ffxeffects	orchestration		Builds a combiner death pass: the base, its vtable and its program from FFXDeath_nvrc.bls	verified	one	ffxeffects/objects#pass-and-effect-objects	
+0x6cbaa0	43	DeleteDeathCombinerPass		ffxeffects	orchestration		Destroys a combiner death pass and frees it when bit 0 of flags is set	verified	one	ffxeffects/objects#pass-and-effect-objects	
+0x6cbad0	25	DestroyDeathCombinerPass		ffxeffects	orchestration		Releases the program handles of a combiner death pass and restores the base vtable	verified	one	ffxeffects/objects#pass-and-effect-objects	
+0x6cbaf0	14	DeathCombinerPassIsReady		ffxeffects	orchestration		Returns whether the program of a combiner death pass loaded	verified	one	ffxeffects/objects#pass-and-effect-objects	
+0x6cbb00	178	RenderDeathCombinerPass		ffxeffects	orchestration		Draws one source with the constant colour 0xff5393a8 and render state 7	verified	one	ffxeffects/passes#death-passes	
+0x6cbbc0	10	InitWaveMapFieldsThunk		ffxeffects	orchestration		Calls the body and registers its exit stub; a static initializer	verified	one	ffxeffects/overview#static-initializers	
+0x6cbbd0	33	InitWaveMapFields		ffxeffects	orchestration		Zeroes the size and scale fields of the wave map descriptor	verified	one	ffxeffects/overview#static-initializers	
+0x6cbc00	12	RegisterWaveMapFieldsExit		ffxeffects	orchestration		Registers the exit stub with _atexit	verified	one	ffxeffects/overview#static-initializers	
+0x6cbc10	21	ExitWaveMapFields		ffxeffects	orchestration		Sets one flag bit; the exit stub of the static	verified	one	ffxeffects/overview#static-initializers	
+0x6cbc30	10	InitGlowWavePeriodsThunk		ffxeffects	orchestration		Calls the body and registers its exit stub; a static initializer	verified	one	ffxeffects/overview#static-initializers	
+0x6cbc40	21	InitGlowWavePeriods		ffxeffects	orchestration		Sets the glow wave periods 0xce89c4 and 0xce89c8 to 3174 and 2805	verified	one	ffxeffects/overview#static-initializers	
+0x6cbc60	12	RegisterGlowWavePeriodsExit		ffxeffects	orchestration		Registers the exit stub with _atexit	verified	one	ffxeffects/overview#static-initializers	
+0x6cbc70	21	ExitGlowWavePeriods		ffxeffects	orchestration		Sets one flag bit; the exit stub of the static	verified	one	ffxeffects/overview#static-initializers	
+0x6cbc90	10	InitGlowWaveScalesThunk		ffxeffects	orchestration		Calls the body and registers its exit stub; a static initializer	verified	one	ffxeffects/overview#static-initializers	
+0x6cbca0	21	InitGlowWaveScales		ffxeffects	orchestration		Sets the glow wave scales 0xce89bc and 0xce89c0 to 1.0 and 0.88	verified	one	ffxeffects/overview#static-initializers	
+0x6cbcc0	12	RegisterGlowWaveScalesExit		ffxeffects	orchestration		Registers the exit stub with _atexit	verified	one	ffxeffects/overview#static-initializers	
+0x6cbcd0	21	ExitGlowWaveScales		ffxeffects	orchestration		Sets one flag bit; the exit stub of the static	verified	one	ffxeffects/overview#static-initializers	
+0x6cbcf0	261	ConstructWaveMapPass		ffxeffects	orchestration		Builds the wave map base pass and creates the shared 128 by 128 wave map on the first use	verified	one	ffxeffects/passes#wave-map-table	
+0x6cbe00	43	DeleteWaveMapPass		ffxeffects	orchestration		Destroys a wave map base pass and frees it when bit 0 of flags is set	verified	one	ffxeffects/passes#wave-map-table	
+0x6cbe30	104	DestroyWaveMapPass		ffxeffects	orchestration		Drops a use of the wave map and destroys it with the last	verified	one	ffxeffects/passes#wave-map-table	
+0x6cbea0	645	WaveMapTexelCallback		ffxeffects	primitive		Fills, reports or frees the 128 by 128 wave map table by mode 0, 1 or 2	verified	one	ffxeffects/passes#wave-map-table	ffxeffects::ffx_glow_wave_lut_difftest
+0x6cc130	879	ConstructGlowEffect		ffxeffects	orchestration		Builds the glow effect: the ffxGlow CVar, list A of three passes and list B of three	verified	one	ffxeffects/objects#effect-pass-lists	
+0x6cc4a0	43	DeleteGlowEffect		ffxeffects	orchestration		Destroys a glow effect and frees it when bit 0 of flags is set	verified	one	ffxeffects/objects#effect-pass-lists	
+0x6cc4d0	129	DestroyGlowEffect		ffxeffects	orchestration		Deletes the passes of both lists, frees both arrays and restores the base effect vtable	verified	one	ffxeffects/objects#effect-pass-lists	
+0x6cc560	62	DeleteFfxEffect		ffxeffects	orchestration		Frees the pass array of a base effect and the effect when bit 0 of flags is set	verified	one	ffxeffects/objects#effect-pass-lists	
+0x6cc5a0	143	GlowEffectIsReady		ffxeffects	orchestration		Returns the ffxGlow integer ANDed with the readiness of each pass of the list in use	verified	one	ffxeffects/objects#effect-pass-lists	
+0x6cc630	87	RenderGlowEffect		ffxeffects	orchestration		Renders each pass of list B in water or list A otherwise	verified	one	ffxeffects/objects#effect-pass-lists	
+0x6cc690	551	ConstructDeathEffect		ffxeffects	orchestration		Builds the death effect: the ffxDeath CVar and the pass list the capability word picks	verified	one	ffxeffects/objects#effect-pass-lists	
+0x6cc8c0	43	DeleteDeathEffect		ffxeffects	orchestration		Destroys a death effect and frees it when bit 0 of flags is set	verified	one	ffxeffects/objects#effect-pass-lists	
+0x6cc8f0	74	DestroyDeathEffect		ffxeffects	orchestration		Deletes the passes of the list, frees the array and restores the base effect vtable	verified	one	ffxeffects/objects#effect-pass-lists	
+0x6cc940	226	ReservePassList		ffxeffects	primitive		Grows a pass list to hold its count plus an extra count, rounded up to its quantum	verified	one	ffxeffects/objects#pass-list-container	
+0x6cca30	57	PassListQuantum		ffxeffects	primitive		Returns the growth quantum for a size, 0x40 from 0x40 up, else the largest power of 2 below it	verified	one	ffxeffects/objects#pass-list-container	
+0x6cca70	31	AlignUpToQuantum		ffxeffects	primitive		Returns a size rounded up to a multiple of a quantum	verified	one	ffxeffects/objects#pass-list-container	
+0x6cca90	133	SetPassListCapacity		ffxeffects	host		Reallocates a pass list to a capacity and keeps its leading pointers	verified	one	ffxeffects/objects#pass-list-container	
+0x6ccb20	10	InitScreenTargetThunk		ffxeffects	orchestration		Calls the body and registers its exit stub; a static initializer	verified	one	ffxeffects/overview#static-initializers	
+0x6ccb30	33	InitScreenTarget		ffxeffects	orchestration		Zeroes the size and reciprocal fields of the screen target descriptor	verified	one	ffxeffects/overview#static-initializers	
+0x6ccb60	12	RegisterScreenTargetExit		ffxeffects	orchestration		Registers the exit stub with _atexit	verified	one	ffxeffects/overview#static-initializers	
+0x6ccb70	21	ExitScreenTarget		ffxeffects	orchestration		Sets one flag bit; the exit stub of the static	verified	one	ffxeffects/overview#static-initializers	
+0x6ccb90	10	InitFullTargetsThunk		ffxeffects	orchestration		Calls the body and registers its exit stub; a static initializer	verified	one	ffxeffects/overview#static-initializers	
+0x6ccba0	40	InitFullTargets		ffxeffects	orchestration		Zeroes the fields of the full target descriptor and its twin	verified	one	ffxeffects/overview#static-initializers	
+0x6ccbd0	12	RegisterFullTargetsExit		ffxeffects	orchestration		Registers the exit stub with _atexit	verified	one	ffxeffects/overview#static-initializers	
+0x6ccbe0	21	ExitFullTargets		ffxeffects	orchestration		Sets one flag bit; the exit stub of the static	verified	one	ffxeffects/overview#static-initializers	
+0x6ccc00	10	InitHalfTargetsThunk		ffxeffects	orchestration		Calls the body and registers its exit stub; a static initializer	verified	one	ffxeffects/overview#static-initializers	
+0x6ccc10	40	InitHalfTargets		ffxeffects	orchestration		Zeroes the fields of the two half target descriptors	verified	one	ffxeffects/overview#static-initializers	
+0x6ccc40	12	RegisterHalfTargetsExit		ffxeffects	orchestration		Registers the exit stub with _atexit	verified	one	ffxeffects/overview#static-initializers	
+0x6ccc50	21	ExitHalfTargets		ffxeffects	orchestration		Sets one flag bit; the exit stub of the static	verified	one	ffxeffects/overview#static-initializers	
+0x6ccc70	10	InitQuarterTargetsThunk		ffxeffects	orchestration		Calls the body and registers its exit stub; a static initializer	verified	one	ffxeffects/overview#static-initializers	
+0x6ccc80	40	InitQuarterTargets		ffxeffects	orchestration		Zeroes the fields of the two quarter target descriptors	verified	one	ffxeffects/overview#static-initializers	
+0x6cccb0	12	RegisterQuarterTargetsExit		ffxeffects	orchestration		Registers the exit stub with _atexit	verified	one	ffxeffects/overview#static-initializers	
+0x6cccc0	21	ExitQuarterTargets		ffxeffects	orchestration		Sets one flag bit; the exit stub of the static	verified	one	ffxeffects/overview#static-initializers	
+0x6ccce0	10	InitQuadPositionsThunk		ffxeffects	orchestration		Calls the body and registers its exit stub; a static initializer	verified	one	ffxeffects/overview#static-initializers	
+0x6cccf0	31	InitQuadPositions		ffxeffects	orchestration		Zeroes the quad position array 0xce8ab8	verified	one	ffxeffects/overview#static-initializers	
+0x6ccd10	12	RegisterQuadPositionsExit		ffxeffects	orchestration		Registers the exit stub with _atexit	verified	one	ffxeffects/overview#static-initializers	
+0x6ccd20	21	ExitQuadPositions		ffxeffects	orchestration		Sets one flag bit; the exit stub of the static	verified	one	ffxeffects/overview#static-initializers	
+0x6ccd40	10	InitQuadOffsetsThunk		ffxeffects	orchestration		Calls the body and registers its exit stub; a static initializer	verified	one	ffxeffects/overview#static-initializers	
+0x6ccd50	28	InitQuadOffsets		ffxeffects	orchestration		Zeroes the quad UV offset array 0xce8a98	verified	one	ffxeffects/overview#static-initializers	
+0x6ccd70	12	RegisterQuadOffsetsExit		ffxeffects	orchestration		Registers the exit stub with _atexit	verified	one	ffxeffects/overview#static-initializers	
+0x6ccd80	21	ExitQuadOffsets		ffxeffects	orchestration		Sets one flag bit; the exit stub of the static	verified	one	ffxeffects/overview#static-initializers	
+0x6ccda0	5	InitStripDrawDescThunk		ffxeffects	orchestration		Jumps to the body; a static initializer	verified	one	ffxeffects/overview#static-initializers	
+0x6ccdb0	41	InitStripDrawDesc		ffxeffects	orchestration		Sets the strip draw descriptor 0xce8a88 to counts 4 and type 3	verified	one	ffxeffects/overview#static-initializers	
+0x6ccde0	10	InitSavedProjectionThunk		ffxeffects	orchestration		Calls the body and registers its exit stub; a static initializer	verified	one	ffxeffects/overview#static-initializers	
+0x6ccdf0	161	InitSavedProjection		ffxeffects	orchestration		Sets the saved projection 0xce8a48 to the identity matrix	verified	one	ffxeffects/overview#static-initializers	
+0x6ccea0	12	RegisterSavedProjectionExit		ffxeffects	orchestration		Registers the exit stub with _atexit	verified	one	ffxeffects/overview#static-initializers	
+0x6cceb0	21	ExitSavedProjection		ffxeffects	orchestration		Sets one flag bit; the exit stub of the static	verified	one	ffxeffects/overview#static-initializers	
+0x6cced0	10	InitSavedViewThunk		ffxeffects	orchestration		Calls the body and registers its exit stub; a static initializer	verified	one	ffxeffects/overview#static-initializers	
+0x6ccee0	161	InitSavedView		ffxeffects	orchestration		Sets the saved view 0xce8a08 to the identity matrix	verified	one	ffxeffects/overview#static-initializers	
+0x6ccf90	12	RegisterSavedViewExit		ffxeffects	orchestration		Registers the exit stub with _atexit	verified	one	ffxeffects/overview#static-initializers	
+0x6ccfa0	21	ExitSavedView		ffxeffects	orchestration		Sets one flag bit; the exit stub of the static	verified	one	ffxeffects/overview#static-initializers	
+0x6ccfc0	515	FFXInitialize		ffxeffects	orchestration		Registers the ffx and ffxRectangle CVars, clears the targets and sets the rectangle program flag	verified	one	ffxeffects/objects#start-and-shutdown	
+0x6cd1d0	441	FFXShutdown		ffxeffects	orchestration		Destroys the seven target textures and zeroes their descriptors	verified	one	ffxeffects/objects#start-and-shutdown	
+0x6cd390	46	ResetTargetDescriptor		ffxeffects	orchestration		Zeroes a render target descriptor of seven dwords	verified	one	ffxeffects/targets#render-target-allocation	
+0x6cd3c0	445	BeginPassTarget		ffxeffects	primitive		Saves the device matrices, sets an orthographic pass view, binds a target and sets its viewport	verified	one	ffxeffects/targets#pass-target-and-draw-state	
+0x6cd580	455	BuildFullScreenQuad		ffxeffects	primitive		Writes the four positions and four UV offsets of a full-screen quad of a target	verified	one	ffxeffects/targets#full-screen-quad	ffxeffects::ffx_fullscreen_quad_difftest
+0x6cd750	188	BuildQuadVertices		ffxeffects	primitive		Fills a four-vertex buffer with positions, a colour and four UV sets uv times scale plus offset	verified	one	ffxeffects/targets#full-screen-quad	ffxeffects::ffx_transform_quad_verts_difftest
+0x6cd810	44	SetStripIndices		ffxeffects	orchestration		Fills a four-index buffer from the strip order table and passes it to the device	verified	one	ffxeffects/targets#pass-target-and-draw-state	
+0x6cd840	73	EndPassTarget		ffxeffects	orchestration		Restores the saved view and projection, rebinds the screen and sets the whole viewport	verified	one	ffxeffects/targets#pass-target-and-draw-state	
+0x6cd890	472	BeginCurrentFfx		ffxeffects	primitive		Begins the current full-screen effect: resizes the targets, binds the full target and sets the viewport	verified	one	ffxeffects/objects#begin-and-end	
+0x6cda70	149	EndCurrentFfx		ffxeffects	orchestration		Ends the current full-screen effect: unbinds or copies the full target, renders and resets the viewport	verified	one	ffxeffects/objects#begin-and-end	
+0x6cdb10	45	GetTargetMode		ffxeffects	orchestration		Returns 2 when ffxRectangle is set and the device takes rectangle textures, else 0	verified	one	ffxeffects/targets#render-target-sizes	
+0x6cdb40	357	ComputeTargetSizes		ffxeffects	primitive		Sizes the full, half and quarter targets from the window rectangle and stores the screen size	verified	one	ffxeffects/targets#render-target-sizes	ffxeffects::ffx_compute_rt_dims_difftest
+0x6cdcb0	371	AllocateTarget		ffxeffects	primitive		Allocates a target texture of a wanted size, rounded and clamped, and stores its descriptor	verified	one	ffxeffects/targets#render-target-allocation	
+0x6cde30	42	FfxCVarCallback		ffxeffects	orchestration		Prints enabled or disabled for the new value of an effect CVar and returns 1	verified	one	ffxeffects/objects#start-and-shutdown	
+0x6cde60	12	SetCurrentFfx		ffxeffects	orchestration		Makes an effect the current full-screen effect and returns the previous one	verified	one	ffxeffects/objects#start-and-shutdown	
+0x6cde70	88	FFX::Pass::Pass		ffxeffects	orchestration		Builds a base pass: its vtable, the source pointers, the destination, a dword and a flag byte	verified	one	ffxeffects/objects#pass-and-effect-objects	
+0x6cded0	79	EffectIsReady		ffxeffects	orchestration		Returns whether every pass of list A is ready and the effect CVar is nonzero	verified	one	ffxeffects/objects#pass-and-effect-objects	
+0x6cdf20	38	RenderEffect		ffxeffects	orchestration		Renders each pass of list A in order	verified	one	ffxeffects/objects#pass-and-effect-objects	
 0x6cdf50	10	InitDayNightLightState		lighting	orchestration		Runs 0x6cdf60, then registers an exit hook through 0x6ce080; a static initializer	verified	one	lighting/overview#static-objects	
 0x6cdf60	287	InitLightStateFields		lighting	orchestration		Zeroes the light state's clock and camera fields and builds its array of four	verified	one	lighting/overview#static-objects	
 0x6ce080	12	InitDayNightLightStateAtexit		lighting	orchestration		Registers 0x6ce090 with _atexit	verified	one	lighting/overview#static-objects	
@@ -35238,8 +35238,8 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x7ac610	5	InitDefaultFovThunk		camera	orchestration	void __cdecl (void)	Jumps to 0x7ac620; a static initializer	verified	one	camera#object-files-and-initializers	
 0x7ac620	19	InitDefaultFov		camera	primitive	void __cdecl (void)	Stores π·0.5 as a float in 0xcf5738, the default field of view	verified	one	camera#object-files-and-initializers	
 0x7ac640	449	CCamera::SetDeviceTransforms		camera	primitive	void __thiscall (CCamera *this, const float *rect, uint32_t unused)	Sets the device projection from fov, rect aspect, near and far, and the view from target - eye, roll and yaw	verified	one	camera#view-and-projection	camera::camera_view_lookat
-0x7ac810	140	CCamera::ComputeEye		camera	unreached	void __fastcall (const CCamera *camera, float *out)	Writes target - distance·(cos pitch cos yaw, cos pitch sin yaw, sin pitch)	inferred	none	camera#unreached-functions	
-0x7ac8a0	134	CCamera::ComputeTarget		camera	unreached	void __fastcall (const CCamera *camera, float *out)	Writes eye + distance·(cos pitch cos yaw, cos pitch sin yaw, sin pitch)	inferred	none	camera#unreached-functions	
+0x7ac810	140	CCamera::ComputeEye		camera	unreached	void __fastcall (const CCamera *camera, float *out)	Writes target - distance·(cos pitch cos yaw, cos pitch sin yaw, sin pitch)	verified	one	camera#eye-and-target-placement	
+0x7ac8a0	134	CCamera::ComputeTarget		camera	unreached	void __fastcall (const CCamera *camera, float *out)	Writes eye + distance·(cos pitch cos yaw, cos pitch sin yaw, sin pitch)	verified	one	camera#eye-and-target-placement	
 0x7ac930	472	CameraCreate		camera	orchestration	void * __cdecl (void)	Allocates a camera with default properties and returns its handle	verified	one	camera#lifetime	
 0x7acb10	32	CBaseManaged::CBaseManaged		camera	orchestration	CBaseManaged * __thiscall (CBaseManaged *this)	Clears a property's header and sets the base property vtable	verified	one	camera#lifetime	
 0x7acb30	3	CBaseManaged::Evaluate		camera	orchestration	void __thiscall (CBaseManaged *this, uint32_t arg)	Returns; slot 1 of the base property vtable	verified	one	camera#property-updates	
@@ -35652,86 +35652,86 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x7ba8f0	31	CParticleArrayRoundUp		models	unreached		Rounds a count up to a multiple of a quantum; nothing reaches it	inferred	none	models/overview#unreached-code	
 0x7ba910	209	CParticleArrayRealloc		models	unreached		Reallocates a legacy particle array to an exact capacity; nothing reaches it	inferred	none	models/overview#unreached-code	
 0x7ba9f0	171	VectorsEqualFuzzy		models	unreached		Compares two vectors component by component; nothing reaches it	inferred	none	models/overview#object-files	
-0x7baaa0	5			unassigned			Runs its object file code not read here	inferred	none		
-0x7baab0	11			unassigned			Runs its object file code not read here	inferred	none		
-0x7baac0	171			unassigned	unreached		Runs its object file code not read here	inferred	none		
-0x7bab70	146			unassigned	unreached		Runs its object file code not read here	inferred	none		
-0x7bac10	144			unassigned	unreached		Runs its object file code not read here	inferred	none		
-0x7baca0	144			unassigned	unreached		Runs its object file code not read here	inferred	none		
-0x7bad30	146			unassigned	unreached		Runs its object file code not read here	inferred	none		
-0x7badd0	144			unassigned	unreached		Runs its object file code not read here	inferred	none		
-0x7bae60	350			unassigned			Runs its object file code not read here	inferred	none		cmath::affine_mul34
-0x7bafc0	144			unassigned	unreached		Runs its object file code not read here	inferred	none		
-0x7bb050	144			unassigned	unreached		Runs its object file code not read here	inferred	none		
-0x7bb0e0	93			unassigned			Runs its object file code not read here	inferred	none		cmath::transform_point34
-0x7bb140	84			unassigned	unreached		Runs its object file code not read here	inferred	none		
-0x7bb1a0	114			unassigned	unreached		Runs its object file code not read here	inferred	none		
-0x7bb220	111			unassigned	unreached		Runs its object file code not read here	inferred	none		
-0x7bb290	109			unassigned	unreached		Runs its object file code not read here	inferred	none		
-0x7bb300	153			unassigned	unreached		Runs its object file code not read here	inferred	none		
-0x7bb3a0	61			unassigned	unreached		Runs its object file code that calls 0x7bab70; not read here	inferred	none		
-0x7bb3e0	61			unassigned	unreached		Runs its object file code that calls 0x7bad30; not read here	inferred	none		
-0x7bb420	61			unassigned	unreached		Runs its object file code that calls 0x7bae60; not read here	inferred	none		
-0x7bb460	61			unassigned	unreached		Runs its object file code that calls 0x7bafc0; not read here	inferred	none		
-0x7bb4a0	61			unassigned	unreached		Runs its object file code that calls 0x7bb300; not read here	inferred	none		
-0x7bb4e0	240			unassigned	unreached		Runs its object file code that calls 0x5f8d20, 0x7bb990; not read here	inferred	none		
-0x7bb5d0	307			unassigned	unreached		Runs its object file code that calls 0x7bb4e0, 0x5f8d20, 0x7bba50 and 1 more; not read here	inferred	none		
-0x7bb710	329			unassigned	unreached		Runs its object file code that calls 0x5f8d20, 0x7be6d0, 0x7bb9f0 and 1 more; not read here	inferred	none		
-0x7bb860	303			unassigned			Runs its object file code not read here	inferred	none		cmath::axis_angle_mat34
-0x7bb990	90			unassigned			Runs its object file code not read here	inferred	none		cmath::apply_translation3
-0x7bb9f0	82			unassigned	unreached		Runs its object file code not read here	inferred	none		
-0x7bba50	86			unassigned	unreached		Runs its object file code not read here	inferred	none		
-0x7bbab0	74			unassigned			Runs its object file code that calls 0x7bb860, 0x7bae60; not read here	inferred	none		
-0x7bbb00	299			unassigned	unreached		Runs its object file code that calls 0x7bae60; not read here	inferred	none		
-0x7bbc30	5			unassigned			Runs its object file code not read here	inferred	none		
-0x7bbc40	15			unassigned			Runs its object file code not read here	inferred	none		
-0x7bbc50	5			unassigned			Runs its object file code not read here	inferred	none		
-0x7bbc60	19			unassigned			Runs its object file code not read here	inferred	none		
+0x7baaa0	5	InitMatrix34InfinityThunk		unassigned			Jumps to 0x7baab0; a static initializer	verified	one	cmath/matrices#header-initializers	
+0x7baab0	11	InitMatrix34Infinity		unassigned			Copies +inf into a global the file does not read	verified	one	cmath/matrices#header-initializers	
+0x7baac0	171	CompareMatrix34		unassigned	unreached		Compares the 12 entries of two 3×4 matrices	inferred	none	cmath/matrices#unreached-matrix-code	
+0x7bab70	146	AddMatrix34		unassigned	unreached		Stores the entrywise sum of two 3×4 matrices	inferred	none	cmath/matrices#unreached-matrix-code	
+0x7bac10	144	AddMatrix34InPlace		unassigned	unreached		Adds a 3×4 matrix into another	inferred	none	cmath/matrices#unreached-matrix-code	
+0x7baca0	144	AddMatrix34ByValue		unassigned	unreached		Stores the entrywise sum of two 3×4 matrices by value	inferred	none	cmath/matrices#unreached-matrix-code	
+0x7bad30	146	SubtractMatrix34		unassigned	unreached		Stores the entrywise difference of two 3×4 matrices	inferred	none	cmath/matrices#unreached-matrix-code	
+0x7badd0	144	SubtractMatrix34InPlace		unassigned	unreached		Subtracts a 3×4 matrix from another	inferred	none	cmath/matrices#unreached-matrix-code	
+0x7bae60	350	MultiplyMatrix34		unassigned	primitive		Stores the product of two 3×4 rotation-and-translation matrices	verified	one	cmath/matrices#three-by-four-matrices	cmath::affine_mul34
+0x7bafc0	144	ScaleMatrix34		unassigned	unreached		Stores a scalar times each of the 12 entries of a 3×4 matrix	inferred	none	cmath/matrices#unreached-matrix-code	
+0x7bb050	144	ScaleMatrix34InPlace		unassigned	unreached		Multiplies the 12 entries of a 3×4 matrix by a scalar	inferred	none	cmath/matrices#unreached-matrix-code	
+0x7bb0e0	93	TransformPoint34		unassigned	primitive		Stores a point of three through the 3×3 of a 3×4 matrix plus its translation	verified	one	cmath/matrices#three-by-four-matrices	cmath::transform_point34
+0x7bb140	84	TransformVector33		unassigned	unreached		Applies a 3×3 to a vector with nine products	inferred	none	cmath/matrices#unreached-matrix-code	
+0x7bb1a0	114	TransformVector33Add		unassigned	unreached		Applies a 3×4 to a vector with twelve products	inferred	none	cmath/matrices#unreached-matrix-code	
+0x7bb220	111	TransformPoint34Alt		unassigned	unreached		Applies a 3×4 to a point with twelve products and one sum	inferred	none	cmath/matrices#unreached-matrix-code	
+0x7bb290	109	TransformPoint34InPlace		unassigned	unreached		Applies a 3×4 to a point in place	inferred	none	cmath/matrices#unreached-matrix-code	
+0x7bb300	153	DivideMatrix34		unassigned	unreached		Stores each of the 12 entries of a 3×4 matrix divided by a scalar	inferred	none	cmath/matrices#unreached-matrix-code	
+0x7bb3a0	61	AddMatrix34Wrapper		unassigned	unreached		Calls 0x7bab70 and copies the result	inferred	none	cmath/matrices#unreached-matrix-code	
+0x7bb3e0	61	SubtractMatrix34Wrapper		unassigned	unreached		Calls 0x7bad30 and copies the result	inferred	none	cmath/matrices#unreached-matrix-code	
+0x7bb420	61	MultiplyMatrix34Wrapper		unassigned	unreached		Calls 0x7bae60 and copies the result	inferred	none	cmath/matrices#unreached-matrix-code	
+0x7bb460	61	ScaleMatrix34Wrapper		unassigned	unreached		Calls 0x7bafc0 and copies the result	inferred	none	cmath/matrices#unreached-matrix-code	
+0x7bb4a0	61	DivideMatrix34Wrapper		unassigned	unreached		Calls 0x7bb300 and copies the result	inferred	none	cmath/matrices#unreached-matrix-code	
+0x7bb4e0	240	BuildTranslationMatrix34		unassigned	unreached		Builds a 3×4 matrix from a translation through 0x5f8d20 and 0x7bb990	inferred	none	cmath/matrices#unreached-matrix-code	
+0x7bb5d0	307	BuildRotationScaleMatrix34		unassigned	unreached		Builds a 3×4 matrix from a rotation and a translation through 0x7bb4e0	inferred	none	cmath/matrices#unreached-matrix-code	
+0x7bb710	329	BuildScaleMatrix34		unassigned	unreached		Builds a 3×4 matrix from a scale and a translation through 0x7be6d0 and 0x7bb990	inferred	none	cmath/matrices#unreached-matrix-code	
+0x7bb860	303	BuildAxisRotation34		unassigned	primitive		Stores the rotation about an axis by an angle in a 3×4 matrix with zero translation	verified	one	cmath/matrices#axis-and-angle-rotations	cmath::axis_angle_mat34
+0x7bb990	90	ApplyTranslation34		unassigned	primitive		Adds the 3×3 of a 3×4 matrix applied to a vector into its translation	verified	one	cmath/matrices#three-by-four-matrices	cmath::apply_translation3
+0x7bb9f0	82	ScaleMatrix33Rows		unassigned	unreached		Multiplies nine entries of a 3×3 matrix by a scalar	inferred	none	cmath/matrices#unreached-matrix-code	
+0x7bba50	86	ScaleMatrix33RowsAlt		unassigned	unreached		Multiplies nine entries of a 3×3 matrix by a scalar	inferred	none	cmath/matrices#unreached-matrix-code	
+0x7bbab0	74	RotateMatrix34		unassigned	orchestration		Multiplies a 3×4 matrix on the left by the rotation about an axis by an angle	verified	one	cmath/matrices#axis-and-angle-rotations	
+0x7bbb00	299	MultiplyMatrix34ByQuaternion		unassigned	unreached		Multiplies a 3×4 matrix by the rotation of a quaternion through 0x7bae60	inferred	none	cmath/matrices#unreached-matrix-code	
+0x7bbc30	5	InitMatrix34TwoPiThunk		unassigned			Jumps to 0x7bbc40; a static initializer	verified	one	cmath/matrices#header-initializers	
+0x7bbc40	15	InitMatrix34TwoPi		unassigned			Stores π + π as a float in a global	verified	one	cmath/matrices#header-initializers	
+0x7bbc50	5	InitMatrix34InvTwoPiThunk		unassigned			Jumps to 0x7bbc60; a static initializer	verified	one	cmath/matrices#header-initializers	
+0x7bbc60	19	InitMatrix34InvTwoPi		unassigned			Stores 1 over the π + π global as a float	verified	one	cmath/matrices#header-initializers	
 0x7bbc80	183	RgbToHsv		unassigned			Converts a colour's three channels in [0, 1] to hue, saturation and value	verified	one	lighting/daynight#underwater-tint	cmath::rgb_to_hsv_difftest
-0x7bbd40	5			unassigned			Runs its object file code not read here	inferred	none		
-0x7bbd50	11			unassigned			Runs its object file code not read here	inferred	none		
+0x7bbd40	5	InitColourInfinityThunk		unassigned			Jumps to 0x7bbd50; a static initializer	verified	one	cmath/matrices#header-initializers	
+0x7bbd50	11	InitColourInfinity		unassigned			Copies +inf into a global	verified	one	cmath/matrices#header-initializers	
 0x7bbd60	316	HsvToRgb		unassigned			Converts hue, saturation and value back to three channels in [0, 1]	verified	one	lighting/daynight#underwater-tint	cmath::hsv_to_rgb_difftest
 0x7bbec0	95			unassigned	primitive		Packs three unit values into bytes through a 512.0 bias, with 0xff alpha	verified	one	ui/colorselect#reading-the-colour	cmath::color_pack_rgb
 0x7bbf20	68			unassigned	primitive		Unpacks three bytes into unit values times 1/255	verified	one	ui/colorselect#setting-the-colour	cmath::color_unpack_rgb
 0x7bbf70	118			unassigned	unreached		Runs its object file code not read here	inferred	none		
-0x7bbff0	5			unassigned			Runs its object file code not read here	inferred	none		
-0x7bc000	15			unassigned			Runs its object file code not read here	inferred	none		
-0x7bc010	5			unassigned			Runs its object file code not read here	inferred	none		
-0x7bc020	19			unassigned			Runs its object file code not read here	inferred	none		
-0x7bc040	71			unassigned			Runs its object file code not read here	inferred	none		cmath::det3
+0x7bbff0	5	InitColourTwoPiThunk		unassigned			Jumps to 0x7bc000; a static initializer	verified	one	cmath/matrices#header-initializers	
+0x7bc000	15	InitColourTwoPi		unassigned			Stores π + π as a float in a global	verified	one	cmath/matrices#header-initializers	
+0x7bc010	5	InitColourInvTwoPiThunk		unassigned			Jumps to 0x7bc020; a static initializer	verified	one	cmath/matrices#header-initializers	
+0x7bc020	19	InitColourInvTwoPi		unassigned			Stores 1 over the π + π global as a float	verified	one	cmath/matrices#header-initializers	
+0x7bc040	71	Determinant3FromEntries		unassigned	primitive		Leaves the determinant of nine floats on the stack in st0 at 53 bits	verified	one	cmath/matrices#determinants-and-inverses	cmath::det3
 0x7bc090	5			cmath	orchestration		Jumps to 0x7bc0a0, a static initializer of its file	verified	one	cmath/geometry#static-constants	
 0x7bc0a0	11			cmath	orchestration		Stores +infinity at 0xcf5c04, the first constant of its file	verified	one	cmath/geometry#static-constants	
-0x7bc0b0	239			cmath	unreached		Runs its object file code not read here	inferred	none		
-0x7bc1a0	239			cmath	orchestration		Runs its object file code not read here	inferred	none		cmath::mat4_ne
-0x7bc290	206			cmath	primitive		Runs its object file code not read here	inferred	none		cmath::mat4_add
-0x7bc360	204			cmath	unreached		Runs its object file code not read here	inferred	none		
-0x7bc430	204			cmath	unreached		Runs its object file code not read here	inferred	none		
-0x7bc500	206			cmath	unreached		Runs its object file code not read here	inferred	none		
-0x7bc5d0	204			cmath	unreached		Runs its object file code not read here	inferred	none		
+0x7bc0b0	239	CompareMatrix4Equal		cmath	unreached		Compares the 16 entries of two 4×4 matrices	inferred	none	cmath/matrices#unreached-matrix-code	
+0x7bc1a0	239	CompareMatrix4		cmath	orchestration		Returns in al whether any of the 16 entries of two matrices differs under the float compare	verified	one	cmath/matrices#sum-scalar-and-product	cmath::mat4_ne
+0x7bc290	206	AddMatrix4		cmath	primitive		Stores the entrywise sum of two 4×4 matrices	verified	one	cmath/matrices#sum-scalar-and-product	cmath::mat4_add
+0x7bc360	204	AddMatrix4InPlace		cmath	unreached		Adds a 4×4 matrix into another	inferred	none	cmath/matrices#unreached-matrix-code	
+0x7bc430	204	AddMatrix4ByValue		cmath	unreached		Stores the entrywise sum of two 4×4 matrices by value	inferred	none	cmath/matrices#unreached-matrix-code	
+0x7bc500	206	SubtractMatrix4		cmath	unreached		Stores the entrywise difference of two 4×4 matrices	inferred	none	cmath/matrices#unreached-matrix-code	
+0x7bc5d0	204	SubtractMatrix4InPlace		cmath	unreached		Subtracts a 4×4 matrix from another	inferred	none	cmath/matrices#unreached-matrix-code	
 0x7bc6a0	542	MultiplyMatrix4		cmath	primitive	float * __fastcall (float *out, const float *a, const float *b)	Writes the row-major product a·b of two 4×4 matrices to out and returns out	verified	one	models/animation#texture-transforms	animation::m2_animate_difftest, animation::m2_bone_propagate_difftest, cmath::multiply_matrix4_difftest, gx::lightningrender_strip_difftest
-0x7bc8c0	29			cmath	primitive		Runs its object file code not read here	inferred	none		animation::m2_animate_difftest, animation::m2_bone_propagate_difftest, cmath::dot_leaf_difftest, gx::lightningrender_strip_difftest
-0x7bc8e0	204			cmath	primitive		Runs its object file code not read here	inferred	none		cmath::mat4_mul_scalar
-0x7bc9b0	204			cmath	unreached		Runs its object file code not read here	inferred	none		
+0x7bc8c0	29	DotRowColumn0		cmath	primitive		Returns in st0 the dot product of a row of four with the first column of a 4×4 matrix	verified	one	cmath/matrices#sum-scalar-and-product	animation::m2_animate_difftest, animation::m2_bone_propagate_difftest, cmath::dot_leaf_difftest, gx::lightningrender_strip_difftest
+0x7bc8e0	204	ScaleMatrix4Entries		cmath	primitive		Stores a scalar times each of the 16 entries of a 4×4 matrix	verified	one	cmath/matrices#sum-scalar-and-product	cmath::mat4_mul_scalar
+0x7bc9b0	204	ScaleMatrix4InPlace		cmath	unreached		Multiplies the 16 entries of a 4×4 matrix by a scalar	inferred	none	cmath/matrices#unreached-matrix-code	
 0x7bca80	93	TransformPoint		cmath	primitive	float * __fastcall (float *out, const float *v, const float *m)	Writes v times the upper 3×3 of a row-major 4×4 matrix plus its fourth row to out	verified	one	collision/falling#frame-transform	terrain::liquid_hit_flush_difftest, terrain::horizon_insert, gx::lightningrender_strip_difftest, models::m2_light_coord_finalize_difftest, models::particle_quad_expand_difftest, models::particle_quad_expand_rotated_difftest, models::particle_quad_expand_stretched_difftest, models::particle_quad_expand_tiled_difftest, models::particle_quad_expand_tiled_rotated_difftest, cmath::transform_point4
-0x7bcae0	93			cmath	primitive		Runs its object file code not read here	inferred	none		cmath::transform_mat43_vec3_difftest
+0x7bcae0	93	TransformPoint34Rows		cmath	primitive		Returns a vector of three through three rows of four: each row dotted with it plus its fourth entry	verified	one	cmath/matrices#points-and-vectors-through-a-matrix	cmath::transform_mat43_vec3_difftest
 0x7bcb40	140	TransformVector4		cmath	primitive	float * __fastcall (float *out, const float *v, const float *m)	Multiplies a four-component row vector by a 4x4 matrix	inferred	none	models/emission#spawn-space	terrain::portal_screen_rect_difftest, models::particle_quad_expand_stretched_difftest, cmath::transform_vec4
-0x7bcbd0	140			cmath	unreached		Runs its object file code not read here	inferred	none		
+0x7bcbd0	140	TransformVector4Alt		cmath	unreached		Applies a 4×4 to a vector of four with sixteen products	inferred	none	cmath/matrices#unreached-matrix-code	
 0x7bcc60	109	TransformPointInPlace		cmath	primitive	float * __fastcall (float *out, float *v, const float *m)	Replaces v with v times the upper 3×3 of a 4×4 matrix plus its fourth row, and copies it to out	verified	one	collision/falling#frame-transform	models::ribbonbasis_difftest, cmath::transform_point4
-0x7bccd0	213			cmath	unreached		Runs its object file code not read here	inferred	none		
-0x7bcdb0	61			cmath	unreached		Runs its object file code that calls 0x7bc290; not read here	inferred	none		
-0x7bcdf0	61			cmath	unreached		Runs its object file code that calls 0x7bc500; not read here	inferred	none		
-0x7bce30	61			cmath	primitive		Runs its object file code that calls MultiplyMatrix4; not read here	inferred	none		
-0x7bce70	61			cmath	unreached		Runs its object file code that calls 0x7bc8e0; not read here	inferred	none		
-0x7bceb0	61			cmath	unreached		Runs its object file code that calls 0x7bccd0; not read here	inferred	none		
-0x7bcef0	156			cmath	unreached		Runs its object file code not read here	inferred	none		
+0x7bccd0	213	DivideMatrix4		cmath	unreached		Stores each of the 16 entries of a 4×4 matrix divided by a scalar	inferred	none	cmath/matrices#unreached-matrix-code	
+0x7bcdb0	61	AddMatrix4Wrapper		cmath	unreached		Calls 0x7bc290 and copies the result	inferred	none	cmath/matrices#unreached-matrix-code	
+0x7bcdf0	61	SubtractMatrix4Wrapper		cmath	unreached		Calls 0x7bc500 and copies the result	inferred	none	cmath/matrices#unreached-matrix-code	
+0x7bce30	61	MultiplyMatrix4InPlace		cmath	primitive		Sets a 4×4 matrix to its product with another and returns it	verified	one	cmath/matrices#sum-scalar-and-product	
+0x7bce70	61	ScaleMatrix4Wrapper		cmath	unreached		Calls 0x7bc8e0 and copies the result	inferred	none	cmath/matrices#unreached-matrix-code	
+0x7bceb0	61	DivideMatrix4Wrapper		cmath	unreached		Calls 0x7bccd0 and copies the result	inferred	none	cmath/matrices#unreached-matrix-code	
+0x7bcef0	156	TransposeMatrix4		cmath	unreached		Stores the transpose of a 4×4 matrix	inferred	none	cmath/matrices#unreached-matrix-code	
 0x7bcf90	201	Determinant4		cmath	primitive	float __thiscall (const float *m)	Returns the determinant of a 4x4 matrix by cofactors	inferred	none	models/scene#segment-collision	cmath::det4
-0x7bd060	815			cmath	unreached		Runs its object file code that calls 0x7bc040; not read here	inferred	none		
-0x7bd390	815			cmath	primitive		Runs its object file code that calls 0x7bc040; not read here	inferred	none		cmath::adj4t
+0x7bd060	815	AdjugateMatrix4NoTranspose		cmath	unreached		Stores the 4×4 adjugate from the signed 3×3 minors through 0x7bc040	inferred	none	cmath/matrices#unreached-matrix-code	
+0x7bd390	815	AdjugateMatrix4		cmath	primitive		Stores the adjugate of a 4×4 matrix from its signed 3×3 minors	verified	one	cmath/matrices#determinants-and-inverses	cmath::adj4t
 0x7bd6c0	50	InvertMatrix4WithDeterminant		cmath	primitive	float * __thiscall (const float *m, float *out, float det)	Writes the inverse of a 4x4 matrix given its determinant	inferred	none	models/scene#segment-collision	cmath::mat4_inverse_from_det
 0x7bd700	280	InvertRigidMatrix		cmath	primitive	void __thiscall (const float *m, float *out)	Writes the rigid inverse of a 4×4 matrix: its 3×3 transposed, then translated by −t times that	verified	one	collision/contact#facet-gather	cmath::mat4_affine_invert
 0x7bd820	347	InvertAffineMatrix		cmath	primitive		Writes the inverse of a 4×4 matrix, through a fast path when its second argument is within 2^-20 of 1	inferred	none	collision/kinematics#transport-space-transforms	cmath::mat4_affine_invert_uscale
-0x7bd980	372			cmath	unreached		Runs its object file code that calls 0x5f8d20, 0x7be6d0, ScaleMatrixRows and 1 more; not read here	inferred	none		
-0x7bdb00	311			cmath	primitive		Runs its object file code not read here	inferred	none		cmath::axis_angle_mat4_difftest
+0x7bd980	372	BuildScaleMatrix4		cmath	unreached		Builds a 4×4 matrix from a scale and a translation through 0x7be6d0, 0x7bdca0 and 0x7bdc40	inferred	none	cmath/matrices#unreached-matrix-code	
+0x7bdb00	311	BuildAxisRotation4x4		cmath	primitive		Stores the rotation about an axis by an angle in a 4×4 matrix with a unit last row and column	verified	one	cmath/matrices#axis-and-angle-rotations	cmath::axis_angle_mat4_difftest
 0x7bdc40	90	TranslateMatrix		cmath	primitive	void __thiscall (float *matrix, const float *t)	Adds t[0]·row0 + t[1]·row1 + t[2]·row2 to row 3	verified	one	camera#orthographic-setup	animation::m2_animate_difftest, cmath::translate_matrix_difftest
 0x7bdca0	82	ScaleMatrixRows		cmath	primitive	void __thiscall (float *matrix, const float *s)	Multiplies the matrix's first three rows by s[0], s[1], s[2]	verified	one	camera#orthographic-setup	animation::m2_animate_difftest, terrain::liquid_tex_matrix_difftest, cmath::mat34_scale3_rows
 0x7bdd00	86	ScaleMatrix		cmath	primitive	void __thiscall (float *m, float s)	Multiplies the upper-left 3x3 of a 4x4 matrix by a float, each product stored	verified	one	terrain/files#doodad-placements	cmath::mat34_scale3
@@ -35741,38 +35741,38 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x7bdf10	15			cmath	primitive		Stores 2π as π + π in floats, 6.2831855, at 0xcf5c0c	verified	one	cmath/geometry#static-constants	
 0x7bdf20	5			cmath	orchestration		Jumps to 0x7bdf30, a static initializer of its file	verified	one	cmath/geometry#static-constants	
 0x7bdf30	19			cmath	primitive		Stores 1/2π, 0.15915494, from the 2π at 0xcf5c0c, at 0xcf5c08	verified	one	cmath/geometry#static-constants	
-0x7bdf50	104			cmath	orchestration		Runs its object file code not read here	inferred	none		animation::m2_animate_difftest, animation::m2_bone_propagate_difftest, gx::lightningrender_strip_difftest
-0x7bdfc0	247			cmath	primitive		Runs its object file code not read here	inferred	none		cmath::multiply_matrix3_difftest
+0x7bdf50	104	Matrix4FromFloats		cmath	orchestration		Stores sixteen floats from the stack into a 4×4 matrix	verified	one	cmath/matrices#sum-scalar-and-product	animation::m2_animate_difftest, animation::m2_bone_propagate_difftest, gx::lightningrender_strip_difftest
+0x7bdfc0	247	MultiplyMatrix3		cmath	primitive		Stores the product of two 3×3 matrices	verified	one	cmath/matrices#three-by-three-matrices	cmath::multiply_matrix3_difftest
 0x7be0c0	5			cmath	orchestration		Jumps to 0x7be0d0, a static initializer of its file	verified	one	cmath/geometry#static-constants	
 0x7be0d0	11			cmath	orchestration		Stores +infinity at 0xcf5c10, the first constant of its file	verified	one	cmath/geometry#static-constants	
 0x7be0e0	63	Matrix3Determinant		cmath	primitive	float __thiscall (const float *m)	Returns the determinant of a 3x3 matrix	verified	one	collision/airborne#crease-helpers	cmath::det3b
-0x7be120	183			cmath	unreached		Runs its object file code not read here	inferred	none		
+0x7be120	183	Matrix3Cofactors		cmath	unreached		Stores the 3×3 cofactor matrix with eighteen products	inferred	none	cmath/matrices#unreached-matrix-code	
 0x7be1e0	183	Matrix3Adjugate		cmath	primitive	float * __thiscall (const float *m, float *out)	Writes the adjugate of a 3×3 matrix, its cofactors transposed	verified	one	collision/airborne#crease-helpers	cmath::adj3t
 0x7be2a0	121	InvertMatrix3		cmath	primitive	float *__thiscall (const float *m, float *out, float determinant)	Writes a 3x3 matrix's adjugate scaled by 1/determinant	verified	one	collision/airborne#crease-helpers	cmath::inv3
-0x7be320	199			cmath	unreached		Runs its object file code that calls 0x7be610; not read here	inferred	none		
-0x7be3f0	159			cmath	unreached		Runs its object file code that calls 0x7be6d0; not read here	inferred	none		
+0x7be320	199	InvertMatrix3Checked		cmath	unreached		Inverts a 3×3 matrix when its determinant is not near 0	inferred	none	cmath/matrices#unreached-matrix-code	
+0x7be3f0	159	DivideMatrix3Rows		cmath	unreached		Divides the rows of a 3×3 matrix by three scalars	inferred	none	cmath/matrices#unreached-matrix-code	
 0x7be490	282	BuildAxisRotation		cmath	primitive	float * __fastcall (float *out, const float *axis, float angle, uint8_t axisIsUnit)	Builds a rotation matrix about an axis by an angle, normalizing the axis unless told it is unit	verified	one	models/emission#spline-spawn	models::particle_quad_expand_tiled_rotated_difftest, cmath::axis_angle_mat3
-0x7be5b0	87			cmath	unreached		Runs its object file code not read here	inferred	none		
-0x7be610	86			cmath	unreached		Runs its object file code not read here	inferred	none		
-0x7be670	86			cmath	primitive		Runs its object file code not read here	inferred	none		cmath::mat3_scale_rows3
-0x7be6d0	82			cmath	primitive		Runs its object file code not read here	inferred	none		cmath::mat3_scale_rows
-0x7be730	57			cmath	orchestration		Runs its object file code that calls BuildAxisRotation, 0x7bdfc0; not read here	inferred	none		
-0x7be770	225			cmath	unreached		Runs its object file code that calls 0x7bdfc0; not read here	inferred	none		
-0x7be860	47			cmath	unreached		Runs its object file code not read here	inferred	none		
-0x7be890	41			cmath	unreached		Runs its object file code not read here	inferred	none		
-0x7be8c0	41			cmath	unreached		Runs its object file code not read here	inferred	none		
-0x7be8f0	50			cmath	unreached		Runs its object file code that calls 0x7be5b0, 0x7bdfc0; not read here	inferred	none		
-0x7be930	162			cmath	unreached		Runs its object file code that calls __CIasin; not read here	inferred	none		
-0x7be9e0	160			cmath	unreached		Runs its object file code that calls __CIasin; not read here	inferred	none		
-0x7bea80	159			cmath	unreached		Runs its object file code that calls __CIasin; not read here	inferred	none		
-0x7beb20	162			cmath	unreached		Runs its object file code that calls __CIasin; not read here	inferred	none		
-0x7bebd0	161			cmath	unreached		Runs its object file code that calls __CIasin; not read here	inferred	none		
-0x7bec80	164			cmath	unreached		Runs its object file code that calls __CIasin; not read here	inferred	none		
-0x7bed30	374			cmath	unreached		Runs its object file code that calls 0x7bdfc0, 0x5f8d20; not read here	inferred	none		
-0x7beeb0	374			cmath	unreached		Runs its object file code that calls 0x7bdfc0, 0x5f8d20; not read here	inferred	none		
-0x7bf030	374			cmath	unreached		Runs its object file code that calls 0x7bdfc0, 0x5f8d20; not read here	inferred	none		
-0x7bf1b0	374			cmath	unreached		Runs its object file code that calls 0x7bdfc0, 0x5f8d20; not read here	inferred	none		
-0x7bf330	374			cmath	unreached		Runs its object file code that calls 0x7bdfc0, 0x5f8d20; not read here	inferred	none		
+0x7be5b0	87	BuildZRotation3		cmath	unreached		Stores the rotation about the z axis by an angle through fsincos	inferred	none	cmath/matrices#unreached-matrix-code	
+0x7be610	86	ScaleMatrix3Uniform		cmath	unreached		Multiplies the nine entries of a 3×3 matrix by a scalar	inferred	none	cmath/matrices#unreached-matrix-code	
+0x7be670	86	ScaleMatrix3Rows3		cmath	primitive		Multiplies the rows of a 3×3 matrix by three scalars on the stack	verified	one	cmath/matrices#three-by-three-matrices	cmath::mat3_scale_rows3
+0x7be6d0	82	ScaleMatrix3Rows		cmath	primitive		Multiplies the rows of a 3×3 matrix by the three floats at a pointer	verified	one	cmath/matrices#three-by-three-matrices	cmath::mat3_scale_rows
+0x7be730	57	RotateMatrix3		cmath	orchestration		Multiplies a 3×3 matrix on the left by the rotation about an axis by an angle	verified	one	cmath/matrices#axis-and-angle-rotations	
+0x7be770	225	RotateMatrix3ByQuaternion		cmath	unreached		Multiplies a 3×3 matrix on the left by the rotation of a quaternion	inferred	none	cmath/matrices#unreached-matrix-code	
+0x7be860	47	TransformVector2		cmath	unreached		Applies two rows to a vector with four products	inferred	none	cmath/matrices#unreached-matrix-code	
+0x7be890	41	ScaleVector4Alt		cmath	unreached		Multiplies four floats by a scalar	inferred	none	cmath/matrices#unreached-matrix-code	
+0x7be8c0	41	ScaleVector4Alt2		cmath	unreached		Multiplies four floats by a scalar	inferred	none	cmath/matrices#unreached-matrix-code	
+0x7be8f0	50	RotateMatrix3Z		cmath	unreached		Builds a z rotation and multiplies a 3×3 matrix by it	inferred	none	cmath/matrices#unreached-matrix-code	
+0x7be930	162	ExtractEulerAngles0		cmath	unreached		Extracts three Euler angles from a 3×3 rotation by fpatan and the C runtime asin	inferred	none	cmath/matrices#unreached-matrix-code	
+0x7be9e0	160	ExtractEulerAngles1		cmath	unreached		Extracts three Euler angles from a 3×3 rotation by fpatan and the C runtime asin	inferred	none	cmath/matrices#unreached-matrix-code	
+0x7bea80	159	ExtractEulerAngles2		cmath	unreached		Extracts three Euler angles from a 3×3 rotation by fpatan and the C runtime asin	inferred	none	cmath/matrices#unreached-matrix-code	
+0x7beb20	162	ExtractEulerAngles3		cmath	unreached		Extracts three Euler angles from a 3×3 rotation by fpatan and the C runtime asin	inferred	none	cmath/matrices#unreached-matrix-code	
+0x7bebd0	161	ExtractEulerAngles4		cmath	unreached		Extracts three Euler angles from a 3×3 rotation by fpatan and the C runtime asin	inferred	none	cmath/matrices#unreached-matrix-code	
+0x7bec80	164	ExtractEulerAngles5		cmath	unreached		Extracts three Euler angles from a 3×3 rotation by fpatan and the C runtime asin	inferred	none	cmath/matrices#unreached-matrix-code	
+0x7bed30	374	BuildEulerBasis0		cmath	unreached		Builds a 3×3 basis from three angles by three fsincos and two products	inferred	none	cmath/matrices#unreached-matrix-code	
+0x7beeb0	374	BuildEulerBasis1		cmath	unreached		Builds a 3×3 basis from three angles by three fsincos and two products	inferred	none	cmath/matrices#unreached-matrix-code	
+0x7bf030	374	BuildEulerBasis2		cmath	unreached		Builds a 3×3 basis from three angles by three fsincos and two products	inferred	none	cmath/matrices#unreached-matrix-code	
+0x7bf1b0	374	BuildEulerBasis3		cmath	unreached		Builds a 3×3 basis from three angles by three fsincos and two products	inferred	none	cmath/matrices#unreached-matrix-code	
+0x7bf330	374	BuildEulerBasis4		cmath	unreached		Builds a 3×3 basis from three angles by three fsincos and two products	inferred	none	cmath/matrices#unreached-matrix-code	
 0x7bf4b0	374	BuildYawPitchRollBasis		cmath	primitive	void __thiscall (float *dest, float yaw, float pitch, float roll)	Builds the transpose of Rz(yaw), Ry(pitch), Rx(roll) multiplied in that order	verified	one	uicamera/view#pitch-units-and-sign	cmath::euler_to_mat3_f
 0x7bf630	5			cmath	orchestration		Jumps to 0x7bf640, a static initializer of its file	verified	one	cmath/geometry#static-constants	
 0x7bf640	15			cmath	primitive		Stores 2π as π + π in floats, 6.2831855, at 0xcf5c18	verified	one	cmath/geometry#static-constants	
@@ -35781,15 +35781,15 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x7bf680	81	DominantAxis		cmath	primitive	uint32_t __thiscall (const float *v)	Returns the index of a vector's largest component by magnitude, a tie going to the later axis	verified	one	cmath/geometry#dominant-axis-and-bounds	cmath::dominant_axis_difftest, terrain::portal_screen_rect_difftest, models::aabsp_nearest_dist_difftest, models::wmo_mocv_barycentric_color_difftest
 0x7bf6e0	5			cmath	orchestration		Jumps to 0x7bf6f0, a static initializer of its file	verified	one	cmath/geometry#static-constants	
 0x7bf6f0	11			cmath	orchestration		Stores +infinity at 0xcf5c1c, the first constant of its file	verified	one	cmath/geometry#static-constants	
-0x7bf700	92			cmath	primitive		Runs its object file code not read here	inferred	none		cmath::minor_axis_difftest
+0x7bf700	92	MinorAxis		cmath	primitive		Returns the index of the component of a vector with the least magnitude	verified	one	cmath/matrices#axis-index-and-planes	cmath::minor_axis_difftest
 0x7bf760	5			cmath	orchestration		Jumps to 0x7bf770, a static initializer of its file	verified	one	cmath/geometry#static-constants	
 0x7bf770	15			cmath	primitive		Stores 2π as π + π in floats, 6.2831855, at 0xcf5c24	verified	one	cmath/geometry#static-constants	
 0x7bf780	5			cmath	orchestration		Jumps to 0x7bf790, a static initializer of its file	verified	one	cmath/geometry#static-constants	
 0x7bf790	19			cmath	primitive		Stores 1/2π, 0.15915494, from the 2π at 0xcf5c24, at 0xcf5c20	verified	one	cmath/geometry#static-constants	
-0x7bf7b0	135			cmath	primitive		Runs its object file code not read here	inferred	none		cmath::scalar_bcast_struct13
+0x7bf7b0	135	FillPlaneRecordWithScalar		cmath	primitive		Stores the plane record (0, 0, 1, -s) with a scalar in every point coordinate	verified	one	cmath/matrices#axis-index-and-planes	cmath::scalar_bcast_struct13
 0x7bf840	5			cmath	orchestration		Jumps to 0x7bf850, a static initializer of its file	verified	one	cmath/geometry#static-constants	
 0x7bf850	11			cmath	orchestration		Stores +infinity at 0xcf5c28, the first constant of its file	verified	one	cmath/geometry#static-constants	
-0x7bf860	278			cmath	primitive		Runs its object file code not read here	inferred	none		cmath::plane_from_3pts
+0x7bf860	278	BuildPlaneFromPoints		cmath	primitive		Stores the unit normal and distance of the plane through three points, then the points	verified	one	cmath/matrices#axis-index-and-planes	cmath::plane_from_3pts
 0x7bf980	5			cmath	orchestration		Jumps to 0x7bf990, a static initializer of its file	verified	one	cmath/geometry#static-constants	
 0x7bf990	15			cmath	primitive		Stores 2π as π + π in floats, 6.2831855, at 0xcf5c30	verified	one	cmath/geometry#static-constants	
 0x7bf9a0	5			cmath	orchestration		Jumps to 0x7bf9b0, a static initializer of its file	verified	one	cmath/geometry#static-constants	

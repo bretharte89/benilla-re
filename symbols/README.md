@@ -36,16 +36,12 @@ these, a system with a doc, a library, or `unassigned`; the check holds the tabl
   async loads, the violence level, the guild emblem, HTTP fetches
 - `console`: `ConsoleClient.cpp`, the console screen and its output
 - `cvar`: `ConsoleVar.cpp`, the CVar registry and the config file, and the world's options file
-- `ffxeffects`: `FFXEffects.cpp`, the full-screen glow and death effects
-- `gxumath`: the Gxu matrix builders: perspective, orthographic, look-at and frustum corners
 - `loadingscreen`: `LoadingScreen.cpp`
 - `minimap`: `Minimap.cpp` in `Game\GameClient`
 - `objectalloc`: `ObjectAlloc.cpp`, the object heaps
 - `os`: the engine's Windows layer outside `core`'s time and window files: CPU and system queries,
   file calls, `OsIME.cpp` and the IME initializer file after it, `OsGui.cpp`, `OsCall.cpp` (engine
   threads), `OsTcp.cpp`, `OsURLDownload.cpp`, `OsClipboard.cpp` and `OsISoundCache.cpp`
-- `screencoord`: the screen aspect and scale helpers
-- `spline`: the movement spline file
 - `warden`: `WardenClient.cpp`, the client of the server's Warden modules
 
 ## Names
