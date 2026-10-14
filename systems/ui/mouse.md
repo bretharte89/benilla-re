@@ -100,6 +100,88 @@ the cancel `0x765640`. `0x766485` runs the hook only if `+0x80` is null. `0x7664
 the slot 0x6c call and `0x7664bb` the blind clear after the test of `+0x18` at `0x7664a7`. Entering mouselook also
 sends a release to a pressed frame, through `0x764dc0`.
 
+## A press is consumed
+
+A press or release that has a target is consumed: the top's handler overwrites what the frame's
+button slot returned with a constant, so no handler, mask or state can decline it and no frame beneath is
+offered the event. The handlers pass the event on only when there is no target, so only handlers after the top see a press with none; the world frame is itself a hovered target. A mouse-enabled frame with no script, a button whose click mask
+misses the pressed button and a disabled button all swallow the click. The base pair answers 0 and reads no
+ancestor; a button answers 1 for a press it was in a state to notice.
+
+Addresses: `0x7662c0`, `0x76637f`, `0x76638c`, `0x7663f4`, `0x7663f7`, `0x76640c`, `0x766420`, `0x766498`, `0x7664a4`, `0x7664cd`, `0x76bf70`, `0x76c011`, `0x76c040`, `0x779210`, `0x77926e`, `0x7792b7`, `0x7792d0`, `0x764dc0`, `0x764e98`, `0x764ba0`, `0x764cad`, `0x764cb8`
+Confidence: verified
+Proof: one
+Test: none
+
+`0x7663f4` makes the press dispatch and `0x7663f7` loads 1 into `eax` before anything reads the answer; the
+handler returns `eax == 0`, which is 0. A target of none (`0x76638c`) jumps to `0x76640c`, which returns 1 for the local that
+is still 0. The release is the same shape: `0x7664a4` is followed by `eax = 1` and the answer 0, and
+no target jumps to `0x7664cd` and returns 1. `0x76bf70` returns 0 on every path (`0x76c011`). `0x779210` returns
+`ebx`, which `0x77926e` sets to 1 before the lane test: a button registered for up clicks only (the default) returns 1 for
+a left press, takes the pushed state and fires no click, and `0x7792d0` returns 1 whenever the state is pushed. A frame
+that leaves the mouse list is cleared as the pressed and hovered frame with null, never with a frame beneath it
+(`0x764cad`, `0x764cb8`). When the hover moves away from a frame that holds the press, `0x764dc0` sends that same frame a
+synthetic release with the cursor zeroed (`0x764e98`), which only returns the button to normal, and clears the press.
+
+## Who overrides the mouse slots
+
+Twenty-seven vtables hold `SetParent` `0x76ab10` at slot 5, and each is the primary table of a frame class that a
+constructor stores. Their three mouse slots divide as follows; the probe's six overrides each call the base.
+
+| slot | implementations |
+|---|---|
+| 0x3c | `0x76b320` in 21; `0x482aa0` world frame, `0x4eb0c0` minimap, `0x77a860` edit box, `0x789ba0` slider, `0x78bd80` color select, `0x7cba30` nameplate |
+| 0x68 | `0x76bf70` in 18; `0x779210` in 5 (button classes); `0x77b800` edit box, `0x789ca0` slider, `0x78bf10` color select, `0x483c40` world frame |
+| 0x6c | `0x76c040` in 18; `0x7792d0` in 5; `0x77b890`, `0x789cd0`, `0x78bf90`, `0x483cb0` |
+
+Addresses: `0x76ab10`, `0x76b320`, `0x482aa0`, `0x4eb0c0`, `0x77a860`, `0x789ba0`, `0x78bd80`, `0x7cba30`, `0x76bf70`, `0x779210`, `0x77b800`, `0x789ca0`, `0x78bf10`, `0x483c40`, `0x76c040`, `0x7792d0`, `0x77b890`, `0x789cd0`, `0x78bf90`, `0x483cb0`, `0x76b388`, `0x7661ca`
+Confidence: verified
+Proof: one
+Test: none
+
+The vtables are found by the dword `0x76ab10` at offset 0x14: 27 hits in `.rdata`, each at the table's slot 5.
+The five button tables are `0x8045c0`, `0x81c7f8`, `0x81cb80`, `0x81d5b0` and `0x81de50`. The edit box places the
+caret, the slider and color select set a sub-region flag, call their own probe and chain to the base, and the
+world frame's pair runs the binding for the button. The probe is more than a predicate: past the drag threshold it
+sets the drag flag and calls the drag-start slot (`0x76b388`), and the hover pick also calls it for the pressed
+frame before the sweep (`0x7661ca`), discarding the answer, so a drag begins whatever the pointer is over.
+
+## Ties between frames of a level
+
+Of two frames in one stratum and level, the one entered first is probed first and wins the point: the
+sweep goes through a list from its first entry, and a new entry goes after all entries of an equal level.
+A frame whose level or stratum changes is taken out and entered again, so it falls behind equals. A show
+enters the frame before its children, and a level change relinks the frame before it re-levels its children in the same
+stratum. A child sits above its parent only because it takes the parent's level plus one when it is attached
+(`strata`).
+
+Addresses: `0x7660d0`, `0x7661df`, `0x7661f2`, `0x764aa0`, `0x764b2d`, `0x764b30`, `0x76a4f0`, `0x76a523`, `0x76a54c`, `0x76a558`, `0x76a582`, `0x76ae10`, `0x76ae85`, `0x76aed5`, `0x764920`, `0x764780`
+Confidence: verified
+Proof: one
+Test: none
+
+`0x764b30` is `ja`, taken only for a new level above the incumbent's, so equal levels keep scanning
+(`0x764b32`). The sweep stops once a winner exists (`0x7661df`) and reads the array from index 0 (`0x7661f2`).
+`0x76a4f0` removes with `0x764920` (`0x76a523`), stores the level, enters with `0x764780` (`0x76a54c`) and recurses over
+`+0x300` for children whose stratum at `+0xc0` equals the frame's (`0x76a582`). `0x76ae10` enters the frame at `0x76ae85`
+and calls each child's show at `0x76aed5`.
+
+## Starting a drag
+
+A frame drags only for the buttons it registered. A press of a registered button arms the frame with the button and the press point; the next
+pointer probe of the frame starts the drag once the squared distance of the cursor from that point is at least the squared threshold (a NaN distance never starts it), and calls `OnDragStart` with
+the name of the lowest-numbered button held at that moment: `LeftButton`, `MiddleButton`, `RightButton`, `Button4` or `Button5`, else `UNKNOWN`. The drag starts once per press.
+
+Addresses: `0x76bf70`, `0x76bf7d`, `0x76bf82`, `0x76bf8c`, `0x76bf99`, `0x76bfa5`, `0x76b320`, `0x76b34c`, `0x76b368`, `0x76b37e`, `0x76b388`, `0x76c1e0`, `0x76c1e6`, `0x76c1f6`, `0x76c206`, `0x76c21e`, `0x76c22c`, `0x76c233`, `0x76c23a`, `0x76c241`, `0x76c248`, `0x76c24f`, `0x76c25c`, `0xcf0c14`
+Confidence: verified
+Proof: one
+Test: none
+
+`0x76bf70` ANDs the event's button (`+0x14`) with the drag mask at `+0xfc` (`0x76bf7d`); on a match it stores 1 at `+0x100`, 0 at `+0x104`, the button at `+0x108` and the press point at `+0x10c`
+and `+0x110` (`0x76bf82` to `0x76bfab`). `0x76b320` acts when `+0x100` is set and `+0x104` is not (`0x76b34c`): it compares the squared distance from the press point with `s_dragThresholdSq`
+(`0x76b368`) and, unless it is smaller (`fcomp`, `test ah,1` at `0x76b372` skips on C0 alone, so an equal distance starts the drag and an unordered one skips), stores 1 at `+0x104` (`0x76b37e`) and calls slot 0x74 (`0x76b388`). `0x76c1e0` finds the lowest set bit of the held-buttons word at `+0x18` of the event
+(`0x76c1ef` to `0x76c204`), and, if the script at `+0x168` exists, names a bit of 1, 2, 4, 8 or 0x10 through the jump table (`0x76c21e` to `0x76c248`) and calls the script with the name (`0x76c25c`).
+
 ## The wheel
 
 A wheel turn goes to the first frame, from stratum 8 down, whose wheel mask bit is set, whose hit test holds at the

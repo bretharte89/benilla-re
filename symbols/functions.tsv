@@ -395,8 +395,8 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x406800	248	CreateLoadingScreen		loadingscreen			Creates the loading screen object	inferred	none		
 0x406900	28	DrawLoadingBar		loadingscreen	primitive		Computes the loading bar, draws its quads and calls the device virtual at 0x68 with 3	verified	one	ui/worldenter#handlers-and-frames-during-the-load	
 0x406920	188			loadingscreen			Runs its object file code not read here	inferred	none		loadingscreen::progress_fraction_difftest
-0x4069e0	111			loadingscreen			Runs its object file code that calls EventRegisterEx; not read here	inferred	none		
-0x406a50	3			loadingscreen			Runs its object file code not read here	inferred	none		
+0x4069e0	111			loadingscreen	orchestration		Registers the loading screen's veto 0x406a50 on input categories 1, 8, 0xa, 0xb and 0xc	verified	one	ui/loadinginput#what-the-veto-starves	
+0x406a50	3			loadingscreen	primitive		Answers 0 (xor eax,eax; ret), the loading screen's veto of an input event	verified	one	ui/loadinginput#what-the-veto-starves	
 0x406a60	611			loadingscreen			Runs its object file code that calls 0x58b060, 0x58af60, 0x58a970 and 9 more; not read here	inferred	none		loadingscreen::aspect_fit_ortho_difftest
 0x406cd0	20			loadingscreen			Runs its object file code that calls 0x406f20, 0x406cf0; not read here	inferred	none		
 0x406cf0	304			loadingscreen			Runs its object file code that calls 0x406e20, _atexit, 0x58a2a0 and 5 more; not read here	inferred	none		
@@ -6490,8 +6490,8 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x4818f0	12	GetActiveCamera		ui	orchestration	void * __cdecl (void)	Returns the camera object whose +0x88 holds the GUID it follows	inferred	none	collision/world#camera-notices	
 0x481900	31			ui	orchestration		Runs WorldFrame.cpp code not read here	inferred	none		
 0x481920	51			ui	unreached		Runs WorldFrame.cpp code not read here	inferred	none		
-0x481960	915	CGWorldFrame::CGWorldFrame	idb	ui	primitive		Runs WorldFrame.cpp code that calls CSimpleFrame::CSimpleFrame, SetVector3, SplatVector3 and 19 more; not read here	inferred	none		
-0x481d00	43			ui	orchestration		Runs WorldFrame.cpp code that calls 0x481d30, SMemFree; not read here	inferred	none		
+0x481960	915	CGWorldFrame::CGWorldFrame	idb	ui	primitive		Runs WorldFrame.cpp code that calls CSimpleFrame::CSimpleFrame, SetVector3, SplatVector3 and 19 more; not read here	inferred	none	ui/worldframe#class-and-place	
+0x481d00	43			ui	orchestration		Runs WorldFrame.cpp code that calls 0x481d30, SMemFree; not read here	inferred	none	ui/worldframe#overrides	
 0x481d30	431			ui	primitive		Runs WorldFrame.cpp code that calls EventSetMouseMode, HandleClose, 0x509450 and 7 more; not read here	inferred	none		
 0x481ee0	16			ui	orchestration		Runs WorldFrame.cpp code not read here	inferred	none		
 0x481ef0	16			ui	unreached		Runs WorldFrame.cpp code not read here	inferred	none		
@@ -6508,19 +6508,19 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x482c10	132	ApplySelfFade		ui	primitive		Sets the own-model flag from the fade alpha when the camera follows the active player and sets the model alpha	verified	one	ui/worldpick#the-local-player-as-a-target	
 0x482ca0	42	ResetPickLists		ui	orchestration		Empties both pick lists and ticks every unit and game object	verified	one	ui/worldpick#the-candidate-list	
 0x482cd0	107	TickWorldObject		ui	primitive		Ticks a unit or a game object of the object manager's enumeration	verified	one	ui/worldpick#the-candidate-list	
-0x482d40	45			ui	orchestration		Runs WorldFrame.cpp code that calls SimpleFrameRegisterLayer, RegisterLayerCallback; not read here	inferred	none		
-0x482d70	292			ui	orchestration		Runs WorldFrame.cpp code that calls GetDeviceProjection, GetDeviceView, 0x482ea0 and 4 more; not read here	inferred	none		
+0x482d40	45	CGWorldFrame::EmitLayer		ui	orchestration	void __thiscall (void *batch, int layer)	Emits the frame's regions and, for layer 0, registers the world render callback	verified	one	ui/worldframe#drawing-the-world	
+0x482d70	292	CGWorldFrame::RenderCallback		ui	orchestration	void __thiscall ()	Pushes identity matrices, runs the world driver, scene render and combat text, and pops them	verified	one	ui/worldframe#drawing-the-world	
 0x482ea0	1184	CGWorldFrame::OnRender		ui	orchestration	void __thiscall (CGWorldFrame *this)	Applies the idle law at the head of the world frame's render callback, then runs its per-frame work	verified	one	ui/idle#the-idle-law	
 0x483340	235			ui	primitive		Resolves a GUID to a game object, asks its collision candidacy by class, and returns its model and box	verified	one	terrain/entities#entity-gather	
 0x483430	32			ui	primitive		Runs its object file code not read here	inferred	none		
 0x483450	1			ui	orchestration		Runs its object file code not read here	inferred	none		
 0x483460	839	RenderWorldFrame		ui	primitive		Renders the world; calls 0x6ecb20 and then 0x6eca20	inferred	none	spell/visuals#frame-update	
 0x4837b0	442			ui	primitive		Draws the area decal at the picked position, or tints the placement model	verified	one	ui/groundreticle#the-area-decal	
-0x483970	410			ui	orchestration		Runs its object file code that calls CSimpleFrame::OnFrameSizeChanged, MultiplyByScreenScaleX and 2 more; not read here	inferred	none		
+0x483970	410	CGWorldFrame::OnFrameSizeChanged		ui	orchestration		Runs the base callback, stores the clamped rectangle and its 0 to 1 form for the projection	verified	one	ui/worldframe#projecting-a-world-point	
 0x483b10	94	CGWorldFrame::OnLeave		ui	primitive	void __thiscall (CGWorldFrame *this, uint32_t flag)	Leaves the world frame: clears the mouseover, shows the base cursor, resets the reticle	verified	one	ui/mouseover#leaving-the-world-frame	
 0x483b70	94	CGWorldFrame::OnKeyDown		ui	orchestration	uint32_t __thiscall (CGWorldFrame *this, void *keyEvent)	Builds the chord of a key press into its latch slot and runs its binding	verified	one	ui/keybindings#key-press-and-release	
 0x483bd0	112	CGWorldFrame::OnKeyUp		ui	orchestration	uint32_t __thiscall (CGWorldFrame *this, void *keyEvent)	Replays the chord latched at the key press as a release and clears the slot	verified	one	ui/keybindings#key-press-and-release	
-0x483c40	104	CGWorldFrame::OnMouseDown		ui	orchestration	uint32_t __thiscall (CGWorldFrame *this, void *mouseEvent)	Runs the binding of a mouse button press unless a frame or mouse look takes it	verified	one	ui/keybindings#key-press-and-release	
+0x483c40	104	CGWorldFrame::OnMouseDown		ui	orchestration	uint32_t __thiscall (CGWorldFrame *this, void *mouseEvent)	Runs the base press handler and the targeting hook, which both always answer 0, then the binding of the button press	verified	one	ui/keybindings#key-press-and-release	
 0x483cb0	104	CGWorldFrame::OnMouseUp		ui	orchestration	uint32_t __thiscall (CGWorldFrame *this, void *mouseEvent)	Runs the binding of a mouse button release built from the modifiers held now	verified	one	ui/keybindings#key-press-and-release	
 0x483d20	121	CGWorldFrame::OnMouseWheel		ui	orchestration	uint32_t __thiscall (CGWorldFrame *this, void *wheelEvent)	Runs the binding of a wheel notch as a press and a release	verified	one	ui/keybindings#key-press-and-release	
 0x483da0	45			ui	unreached		Runs its object file code not read here	inferred	none		
@@ -6530,7 +6530,7 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x483e40	40			ui	unreached		Runs its object file code not read here	inferred	none		
 0x483e70	14	CGWorldFrame::EndMouselook		ui	primitive	void __thiscall (CGWorldFrame *this)	Clears the mouselook bit and shows the nameplates	verified	one	ui/mouseover#mouselook	
 0x483e80	90	CGWorldFrame::BeginMouselook		ui	primitive	void __thiscall (CGWorldFrame *this)	Sets the mouselook bit, hides the nameplates and clears the mouseover	verified	one	ui/mouseover#mouselook	
-0x483ee0	476			ui	primitive		Runs its object file code that calls TransformVector4, ScaleScreenDelta; not read here	inferred	none		
+0x483ee0	476	CGWorldFrame::ProjectPoint		ui	primitive	bool __thiscall (float *worldPoint, float *screenPoint)	Projects a world point into the frame's layout space and answers whether it is inside	verified	one	ui/worldframe#projecting-a-world-point	
 0x4840c0	8			ui	primitive		Runs its object file code not read here	inferred	none		
 0x4840d0	74			ui	primitive		Runs its object file code that calls HandleClose2; not read here	inferred	none		
 0x484120	49			ui	unreached		Runs its object file code that calls HandleClose2, 0x484160; not read here	inferred	none		
@@ -6587,7 +6587,7 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x484720	19			ui	primitive		Runs its object file code not read here	inferred	none		
 0x484740	5			ui	orchestration		Runs its object file code not read here	inferred	none		
 0x484750	19			ui	primitive		Runs its object file code not read here	inferred	none		
-0x484770	8			ui	primitive		Runs its object file code not read here	inferred	none		
+0x484770	8			ui	primitive		Subtracts 0x24 from this and jumps to the destructor, the layout part thunk	verified	one	ui/worldframe#overrides	
 0x484780	37	CSimpleFrame::IsA		ui	orchestration	bool __thiscall (uint32_t typeId)	Returns whether a type id is the Frame or Region id	verified	one	ui/taxiframe#frame-identity	
 0x4847b0	67	CSimpleFrame::IsObjectType		ui	orchestration	bool __thiscall (const char *name)	Returns whether a name is Frame or Region, ignoring case	verified	one	ui/taxiframe#frame-identity	
 0x484800	6	CSimpleFrame::GetObjectType		ui	orchestration	const char *__thiscall ()	Returns the name Frame	verified	one	ui/taxiframe#frame-identity	
@@ -6775,7 +6775,7 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x48bfd0	249	Script::SetScreenResolution	idb	ui	primitive		Implements the Lua function SetScreenResolution	inferred	none		
 0x48c0d0	355	Script::GetRefreshRates	idb	ui	primitive		Implements the Lua function GetRefreshRates	inferred	none		
 0x48c240	33			ui	orchestration		Runs GameUI.cpp code not read here	inferred	none		
-0x48c270	232	Script::SetupFullscreenScale	idb	ui	primitive		Implements the Lua function SetupFullscreenScale	inferred	none		
+0x48c270	232	Script::SetupFullscreenScale	idb	ui	primitive		Sets a frame's scale to the smaller of the scaled aspect and 1.0, raising a Lua error for a bad argument	verified	one	ui/uiscale#the-fullscreen-frame-scale	
 0x48c360	125	Script::GetMultisampleFormats	idb	ui	primitive		Implements the Lua function GetMultisampleFormats	inferred	none		
 0x48c3e0	406			ui	primitive		Runs GameUI.cpp code that calls CVar::Lookup, SStrCmpI, CmdLineGetBool and 4 more; not read here	inferred	none		
 0x48c580	185	Script::GetCurrentMultisampleFormat	idb	ui	primitive		Implements the Lua function GetCurrentMultisampleFormat	inferred	none		
@@ -6874,7 +6874,7 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x48df30	8	Script::CancelAreaSpiritHeal	idb	ui	orchestration		Cancels the spirit healer resurrection aura	verified	one	ui/popups#the-area-spirit-healer	
 0x48df40	71	Script::GetMouseFocus	idb	ui	orchestration		Implements the Lua function GetMouseFocus	inferred	none		
 0x48df90	24	Script::GetRealmName	idb	ui	orchestration		Implements the Lua function GetRealmName	inferred	none		
-0x48dfb0	186	Script::GetItemQualityColor	idb	ui	primitive		Implements the Lua function GetItemQualityColor	inferred	none		
+0x48dfb0	186	Script::GetItemQualityColor	idb	ui	primitive		Returns the red, green and blue of a quality as fractions and its colour escape string	verified	one	ui/tooltipcontent#reading-a-quality-colour	
 0x48e070	726	Script::GetItemInfo	idb	ui	primitive		Implements the Lua function GetItemInfo	inferred	none		
 0x48e350	50			ui	orchestration		Returns the count of the sorted add-on names	verified	one	ui/addons#the-in-game-add-on-functions	
 0x48e390	412			ui	primitive		Returns an add-on's name, title, notes, enabled, loadable, reason and security	verified	one	ui/addons#the-in-game-add-on-functions	
@@ -6915,8 +6915,8 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x48fbf0	1496	CGGameUI::Initialize	idb	ui	primitive		Builds the game interface: Lua state, functions, events, signature check, FrameXML, add-ons and saved variables	verified	one	ui/framexml#building-the-game-interface	
 0x4901e0	98	GetConfiguredAspect		ui	primitive	float __cdecl ()	Returns the gxResolution width over height when widescreen is on, else 4/3	verified	one	ui/uiscale#the-automatic-scale	
 0x490250	302	CGGameUI::RegisterScriptFunctions		ui	primitive		Registers the frame types, the game C functions of 0x83de68 and 53 files of functions as globals	verified	one	ui/luastate#the-c-function-contract	
-0x490380	596			ui	primitive		Runs GameUI.cpp code that calls 0x42a670, __alloca_probe, 0x42a520 and 6 more; not read here	inferred	none		
-0x4905e0	316			ui	primitive		Runs GameUI.cpp code that calls CSimpleFrame::SetFrameLevel, CLayoutFrame::ClearAllPointsThunk and 5 more; not read here	inferred	none		
+0x490380	596	LayoutCacheRead		ui	primitive	void __fastcall (void *unused, HANDLE file, void *unused2)	Parses the layout cache file into records and applies each to its frame	verified	one	ui/layoutcache#reading-a-record	
+0x4905e0	316	LayoutCacheApply		ui	primitive	void __thiscall (int level, int x, int y, int w, int h)	Sets a frame's level, then its one top left anchor to the root and its size, as its flags allow	verified	one	ui/layoutcache#applying-a-record	
 0x490720	77			ui	orchestration		Runs GameUI.cpp code that calls SStrToFloat, ConsolePrintf; not read here	inferred	none		
 0x490770	115	UiScaleChanged		ui	primitive	uint8_t __thiscall (const char *value, void *userdata)	Applies a new uiScale text to UIParent when useUiScale is on, capped for narrow windows	verified	one	ui/uiscale#applying-a-scale	
 0x4907f0	203	UseUiScaleChanged		ui	primitive	uint8_t __thiscall (const char *value, void *userdata)	Applies the uiScale value when useUiScale turns on, else the automatic scale	verified	one	ui/uiscale#applying-a-scale	
@@ -6924,8 +6924,8 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x490a80	321	LeaveWorldUI		ui	primitive		Clears the world latch, runs 36 interface cleanups and fires PLAYER_LEAVING_WORLD	verified	one	ui/worldenter#leaving-the-world	
 0x490bd0	270	CGGameUI::Shutdown		ui	primitive		Leaves the world, signals PLAYER_LOGOUT, writes the saved variables and destroys the interface	verified	one	ui/addons#saved-variables-written	
 0x490ce0	301			ui	primitive		Runs GameUI.cpp code that calls 0x4f5970, UnloadFrameScriptFunctions, 0x5368c0 and 51 more; not read here	inferred	none		
-0x490e10	75			ui	orchestration		Runs GameUI.cpp code that calls 0x490e60; not read here	inferred	none		
-0x490e60	799			ui	primitive		Runs GameUI.cpp code that calls CLayoutFrame::GetRect, CLayoutFrame::Resize, SStrPrintf and 5 more; not read here	inferred	none		
+0x490e10	75	LayoutCacheWrite		ui	orchestration	void __fastcall (void *unused, HANDLE file, CSimpleTop *top)	Writes a record for every frame of the top's list that passes the saved-frame test	verified	one	ui/layoutcache#which-frames-are-saved	
+0x490e60	799	LayoutCacheWriteFrame		ui	primitive	void __thiscall (HANDLE file)	Writes one frame's name, level, position and size lines when it is named, user placed and movable or resizable	verified	one	ui/layoutcache#which-frames-are-saved	
 0x491180	505	CGGameUI::ShutdownGame	idb	ui	primitive		Runs GameUI.cpp code that calls 0x490bd0, 0x524b70, 0x4edb70 and 37 more; not read here	inferred	none		
 0x491380	22	CGGameUI::Reload	idb	ui	orchestration	void __fastcall ()	Sets the reload byte 0xb4b3f4 when the protected-action gate allows tag 10	verified	one	ui/bindings#reloading-the-interface	
 0x4913a0	16			ui	orchestration		Runs GameUI.cpp code not read here	inferred	none		
@@ -6972,7 +6972,7 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x492e70	21	PublishMouseoverRecord		ui	orchestration	void __thiscall (uint32_t *record)	Passes the four dwords of a record to the world mouseover publisher	verified	one	ui/hover#world-hover-and-its-tooltip	
 0x492e90	218			ui	primitive		Runs GameUI.cpp code that calls 0x494550, 0x4901e0, CGGameUI::Reload and 2 more; not read here	inferred	none		
 0x492f70	223	ApplyAutoUiScale		ui	primitive	void __fastcall (uint32_t width, uint32_t height, uint32_t force)	Sets UIParent to 768 over the height, capped for narrow windows and at least 0.9	verified	one	ui/uiscale#the-automatic-scale	
-0x493050	19			ui	orchestration		Runs GameUI.cpp code that calls GetInputControl, 0x514490; not read here	inferred	none		
+0x493050	19	OnWindowActivation		ui	orchestration		Releases the held movement directions on a deactivation and answers 1	verified	one	ui/keyscripts#deactivating-the-window	
 0x493070	28	EnterWorldMouselook		ui	orchestration	void __cdecl (void)	Begins the world frame's mouselook and makes it the hovered frame	verified	one	ui/mouseover#mouselook	
 0x493090	27	LeaveWorldMouselook		ui	orchestration	void __cdecl (void)	Ends the world frame's mouselook and asks for a hover pick	verified	one	ui/mouseover#mouselook	
 0x4930b0	29			ui	orchestration		Runs GameUI.cpp code not read here	inferred	none		
@@ -7036,8 +7036,8 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x495a30	70	CreateLootButton		ui	orchestration	void *__fastcall (CSimpleFrame *parent)	Allocates a LootButton, a button of 0x4e0 bytes with one slot dword, and installs its vtables	verified	one	ui/loot#the-row-widget	
 0x495a80	34			ui	orchestration		Locks or releases a button's highlight, then refreshes its label font	verified	one	ui/button#button-state-from-lua	
 0x495ab0	53			ui	orchestration		Runs GameUI.cpp code not read here	inferred	none		
-0x495af0	110			ui	orchestration		Runs GameUI.cpp code that calls SStrCmpI; not read here	inferred	none		
-0x495b60	6			ui	orchestration		Runs GameUI.cpp code not read here	inferred	none		
+0x495af0	110	LootButtonIsTypeName		ui	orchestration	bool __thiscall (const char *name)	Answers whether a name is LootButton or one of its bases, ignoring case	verified	one	ui/widgettype#type-chains	
+0x495b60	6	LootButtonGetTypeName		ui	orchestration	const char * __thiscall ()	Returns the type name LootButton	verified	one	ui/widgettype#type-chains	
 0x495b70	43			ui	orchestration		Runs GameUI.cpp code that calls 0x778850, SMemFree; not read here	inferred	none		
 0x495ba0	40	CGTaxiRouteFrame::Create	idb	ui	orchestration	void *__fastcall (void *parent)	Allocates 0x314 bytes and constructs a route frame under the parent	verified	one	ui/taxiframe#class-and-size	
 0x495bd0	40	CGCharacterModelBase::Create	idb	ui	orchestration		Runs GameUI.cpp code that calls SMemAlloc, CGCharacterModelBase::CGCharacterModelBase; not read here	inferred	none		
@@ -7431,7 +7431,7 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x4a5ca0	18			ui	orchestration		Runs its object file code not read here	inferred	none		
 0x4a5cc0	12			ui	orchestration		Runs its object file code that calls _atexit; not read here	inferred	none		
 0x4a5cd0	47			ui	primitive		Runs its object file code that calls SMemFree; not read here	inferred	none		
-0x4a5d00	1668	BuildMapLists		ui	orchestration		Builds the continent records, their sorted zone ids and the orphan area ids from WorldMapArea	verified	one	ui/worldmap#the-lists	
+0x4a5d00	1668	BuildMapLists		ui	orchestration		Builds the continent records, their sorted zone ids and the orphan area ids from WorldMapArea	verified	one	ui/geometry#the-continent-record	
 0x4a6390	154	CompareZoneNames		ui	primitive		Compares two WorldMapArea ids by the name of their area	verified	one	ui/worldmap#the-lists	
 0x4a6430	37			ui	orchestration		Runs its object file code that calls ClntObjMgrGetActivePlayer, ClntObjMgrSetObjectMirrorHandler; not read here	inferred	none		
 0x4a6460	36			ui	orchestration		Runs its object file code that calls 0x4a67a0; not read here	inferred	none		
@@ -7447,9 +7447,9 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x4a6e80	15			ui	primitive		Runs its object file code not read here	inferred	none		
 0x4a6e90	5			ui	orchestration		Runs its object file code not read here	inferred	none		
 0x4a6ea0	19			ui	primitive		Runs its object file code not read here	inferred	none		
-0x4a6ec0	567			ui	primitive		Runs its object file code that calls __ftol; not read here	inferred	none		
-0x4a7100	418			ui	unreached		Runs its object file code not read here	inferred	none		
-0x4a72b0	104			ui	primitive		Runs its object file code that calls 0x4a7320; not read here	inferred	none		
+0x4a6ec0	567	AreaIdAtMapPoint		ui	primitive		Answers the WorldMapArea id of the grid cell under a point of the displayed map, or 0	verified	one	ui/geometry#the-cell-of-a-point	
+0x4a7100	418	MapPointToWorld		ui	unreached		Turns a point of the displayed map into a world position and map id	verified	one	ui/geometry#click-to-world	
+0x4a72b0	104	WorldToMapPoint		ui	primitive		Puts a world position on the world view as a horizontal result and one minus a vertical one	verified	one	ui/geometry#world-to-map	
 0x4a7320	64	FindWorldMapContinent		ui	primitive		Returns the WorldMapContinent row for a map id, or 0	verified	one	ui/worldmap#unit-and-corpse-positions	
 0x4a7360	478	ProjectWorldPosition		ui	primitive		Normalises a world position to the displayed map for a map id	verified	one	ui/worldmap#unit-and-corpse-positions	
 0x4a7540	212	DrillMap		ui	primitive		Selects the continent or zone whose rectangle holds the cursor	verified	one	ui/worldmap#hover-and-click	
@@ -9431,8 +9431,8 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x4d2ca0	1			ui	orchestration		Runs its object file code not read here	inferred	none		
 0x4d2cb0	531			ui	primitive		Rebuilds the interface's skill list from the player's skills	inferred	none	objectlayer/playerfields#skill-changes	
 0x4d2ed0	295			ui	primitive		Runs its object file code that calls _qsort; not read here	inferred	none		
-0x4d3000	98			ui	orchestration		Runs its object file code not read here	inferred	none		
-0x4d3070	332			ui	primitive		Runs its object file code that calls SStrCmpI; not read here	inferred	none		
+0x4d3000	98	CompareSkillGroups		ui	orchestration		Orders skill group records by the order key of their category, equal keys answering 1	verified	one	ui/listorder#skill-groups	
+0x4d3070	332	CompareSkillRows		ui	primitive		Orders skill rows by present flag, group position, skill id 0, flag and skill name	verified	one	ui/listorder#skill-rows	
 0x4d31c0	66			ui	primitive		Runs its object file code not read here	inferred	none		
 0x4d3210	85			ui	primitive		Runs its object file code not read here	inferred	none		
 0x4d3270	83			ui	primitive		Runs its object file code not read here	inferred	none		
@@ -10602,7 +10602,7 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x4eaa30	86	ProjectBlip		ui	primitive	void __thiscall (float player_a, float player_b, float radius, float entity_a, float entity_b, float width, float scale)	Writes a blip's disc position from its offset to the player over the zoom radius, with no rotation	verified	one	ui/minimapblips#the-north-up-disc	
 0x4eaa90	629	ClassifyObjectDot		ui	primitive	uint32_t __fastcall (void *list, uint32_t guid_lo, uint32_t guid_hi)	Classifies an object into a dot cell, or skips it, and appends its dot	verified	one	ui/minimapblips#object-dots	
 0x4ead10	119			ui	primitive		Runs MinimapFrame.cpp code not read here	inferred	none		
-0x4ead90	113			ui	primitive		Runs MinimapFrame.cpp code not read here	inferred	none		
+0x4ead90	113			ui	primitive		Writes twice each of four floats minus a table pair; outputs 0 and 3 round to float before doubling	verified	one	ui/minimap#two-small-helpers	
 0x4eae10	229			ui	orchestration		Runs MinimapFrame.cpp code that calls GetTextureDeviceObject, 0x589e80, GxRsSet and 3 more; not read here	inferred	none		
 0x4eaf00	319			ui	primitive		Runs MinimapFrame.cpp code that calls 0x4eb910; not read here	inferred	none		
 0x4eb040	123			ui	orchestration		Runs MinimapFrame.cpp code that calls CSimpleFrame::OnFrameUpdate, CM2Model::IsLoaded and 4 more; not read here	inferred	none		
@@ -10631,14 +10631,14 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x4edb70	68	ReleaseMinimapTextures		ui	host	void __cdecl ()	Releases the three texture handles and zeroes them	verified	one	ui/minimap#minimap-textures	
 0x4edbc0	1085	CGMinimapFrame::CGMinimapFrame	idb	ui	primitive		Runs MinimapFrame.cpp code that calls CSimpleFrame::CSimpleFrame, CSimpleFrame::EnableEvent and 5 more; not read here	inferred	none	ui/minimapblips#blip-sizes	
 0x4ee000	45			ui	orchestration		Runs its object file code not read here	inferred	none		
-0x4ee030	89			ui	orchestration		Runs its object file code that calls SStrCmpI; not read here	inferred	none		
-0x4ee090	6			ui	orchestration		Runs its object file code not read here	inferred	none		
+0x4ee030	89	MinimapIsTypeName		ui	orchestration	bool __thiscall (const char *name)	Answers whether a name is Minimap or one of its bases, ignoring case	verified	one	ui/widgettype#type-chains	
+0x4ee090	6	MinimapGetTypeName		ui	orchestration	const char * __thiscall ()	Returns the type name Minimap	verified	one	ui/widgettype#type-chains	
 0x4ee0a0	43			ui	orchestration		Runs its object file code that calls 0x4ee0d0, SMemFree; not read here	inferred	none		
 0x4ee0d0	36			ui	orchestration		Runs its object file code not read here	inferred	none		
 0x4ee100	104			ui	primitive		Runs its object file code not read here	inferred	none		
-0x4ee170	230			ui	primitive		Runs its object file code that calls CreateModelFromPath, SimpleModelGetScene and 3 more; not read here	inferred	none		
-0x4ee260	77			ui	orchestration		Runs its object file code that calls CM2Model::IsLoaded, 0x4ee100; not read here	inferred	none		
-0x4ee2b0	126			ui	orchestration		Runs its object file code that calls CSimpleFrame::PostLoadXML, 0x6f2cf0, 0x4ee170 and 1 more; not read here	inferred	none		
+0x4ee170	230	CGMinimapFrame::LoadArrowModel		ui	primitive		Creates a model from a file and sets it on the eight arrow children, or answers 0 when it does not load	verified	one	ui/minimap#the-engine-children	
+0x4ee260	77	CGMinimapFrame::LoadPlayerModel		ui	orchestration		Sets a model file on the player arrow child	verified	one	ui/minimap#the-engine-children	
+0x4ee2b0	126	CGMinimapFrame::PostLoadXML		ui	orchestration		Reads the arrow and player model attributes with their defaults and loads both	verified	one	ui/minimap#the-engine-children	
 0x4ee330	364	MinimapApplyPing		ui	primitive	void __fastcall (void *guid, float *point)	Stores a world point as the ping and signals MINIMAP_PING with the pinger's token and the offset over the zoom diameter	verified	one	ui/minimap#the-ping	
 0x4ee4a0	411	Minimap::SetMaskTexture	idb	ui	primitive		Implements the Minimap method SetMaskTexture, its pair in the table 0x84c538	verified	one	ui/minimap#lua-methods	
 0x4ee640	411	Minimap::SetIconTexture	idb	ui	primitive		Implements the Minimap method SetIconTexture, its pair in the table 0x84c538	verified	one	ui/minimap#lua-methods	
@@ -10658,7 +10658,7 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x4ef310	10			ui	orchestration		Runs its object file code not read here	inferred	none		
 0x4ef320	60			ui	orchestration		Pushes a method from the Minimap hash, else through the Frame lookup	verified	one	ui/minimap#lua-methods	
 0x4ef360	1			ui	orchestration		Runs its object file code not read here	inferred	none		
-0x4ef370	32			ui	orchestration		Runs its object file code not read here	inferred	none		
+0x4ef370	32			ui	orchestration		Stores its four float arguments in order at the object in ecx and returns it	verified	one	ui/minimap#two-small-helpers	
 0x4ef390	39			ui	primitive		Runs its object file code not read here	inferred	none		
 0x4ef3c0	38			ui	orchestration		Runs its object file code that calls SMemFree; not read here	inferred	none		
 0x4ef3f0	10			ui	orchestration		Runs its object file code that calls 0x4ef400; not read here	inferred	none		
@@ -11434,8 +11434,8 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x4fc9e0	54			ui	primitive		Runs its object file code not read here	inferred	none		
 0x4fca20	1884			ui	primitive		Rebuilds the trade skill window's list; not read here	inferred	none	objectlayer/playercombat#learning-a-spell	
 0x4fd180	510			ui	primitive		Runs its object file code that calls _qsort; not read here	inferred	none		
-0x4fd380	442			ui	primitive		Runs its object file code that calls SStrCmpI; not read here	inferred	none		
-0x4fd540	265			ui	primitive		Runs its object file code that calls SStrCmpI; not read here	inferred	none		
+0x4fd380	442	CompareTradeSkillRows		ui	primitive		Orders trade skill rows by listed flag, header position, header row, two keys and spell name	verified	one	ui/listorder#trade-skill-rows	
+0x4fd540	265	CompareTradeSkillHeaders		ui	primitive		Orders trade skill headers by their first key and then by the name of their skill record	verified	one	ui/listorder#trade-skill-headers	
 0x4fd650	75			ui	primitive		Runs its object file code not read here	inferred	none		
 0x4fd6a0	98			ui	primitive		Runs its object file code not read here	inferred	none		
 0x4fd710	26			ui	orchestration		Runs its object file code that calls 0x4fd180; not read here	inferred	none		
@@ -11645,8 +11645,8 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x502770	11			ui	orchestration		Runs its object file code not read here	inferred	none		
 0x502780	35	CGTabardModelFrame::CGTabardModelFrame	idb	ui	orchestration		Constructs a TabardModel frame: runs the base constructor, then stores the TabardModel tables	verified	one	ui/playermodel#pane-classes	
 0x5027b0	61			ui	orchestration		Runs its object file code not read here	inferred	none		
-0x5027f0	132			ui	orchestration		Runs its object file code that calls SStrCmpI; not read here	inferred	none		
-0x502880	6			ui	orchestration		Runs its object file code not read here	inferred	none		
+0x5027f0	132	TabardModelIsTypeName		ui	orchestration	bool __thiscall (const char *name)	Answers whether a name is TabardModel or one of its bases, ignoring case	verified	one	ui/widgettype#type-chains	
+0x502880	6	TabardModelGetTypeName		ui	orchestration	const char * __thiscall ()	Returns the type name TabardModel	verified	one	ui/widgettype#type-chains	
 0x502890	43			ui	orchestration		Runs its object file code that calls 0x5028c0, SMemFree; not read here	inferred	none		
 0x5028c0	18			ui	orchestration		Runs its object file code not read here	inferred	none		
 0x5028e0	285	TabardModel::SeedFromGuild		ui	primitive	void __stdcall (void *player)	Sets the five design values from the player's guild record, or at random, and repaints	verified	one	ui/tabard#starting-values	
@@ -11728,8 +11728,8 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x5041c0	11			ui	orchestration		Runs its object file code not read here	inferred	none		
 0x5041d0	45	CGDressUpModelFrame::CGDressUpModelFrame	idb	ui	orchestration		Constructs a DressUpModel frame: runs the base constructor, zeroes +0x3f8, stores the DressUpModel tables	verified	one	ui/playermodel#pane-classes	
 0x504200	61			ui	orchestration		Runs its object file code not read here	inferred	none		
-0x504240	132			ui	orchestration		Runs its object file code that calls SStrCmpI; not read here	inferred	none		
-0x5042d0	6			ui	orchestration		Runs its object file code not read here	inferred	none		
+0x504240	132	DressUpModelIsTypeName		ui	orchestration	bool __thiscall (const char *name)	Answers whether a name is DressUpModel or one of its bases, ignoring case	verified	one	ui/widgettype#type-chains	
+0x5042d0	6	DressUpModelGetTypeName		ui	orchestration	const char * __thiscall ()	Returns the type name DressUpModel	verified	one	ui/widgettype#type-chains	
 0x5042e0	43			ui	orchestration		Runs its object file code that calls 0x504310, SMemFree; not read here	inferred	none		
 0x504310	49			ui	orchestration		Runs its object file code that calls DeleteCharacterComponent; not read here	inferred	none		
 0x504350	274	DressUpModel::SetModelInstance		ui	primitive	void __thiscall (CM2Model *model)	Takes the copied model, clones the unit's character component and records the unit's held item lanes	verified	one	ui/dressup#pane-setup	
@@ -11811,8 +11811,8 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x505660	19			ui	primitive		Runs its object file code not read here	inferred	none		
 0x505680	249	CGCharacterModelBase::CGCharacterModelBase	idb	ui	orchestration		Constructs the model frame base: zeroes the pane fields, stores the PlayerModel tables, enables a directional light	verified	one	ui/playermodel#pane-classes	
 0x505780	53			ui	orchestration		Runs its object file code not read here	inferred	none		
-0x5057c0	110			ui	orchestration		Runs its object file code that calls SStrCmpI; not read here	inferred	none		
-0x505830	6			ui	orchestration		Runs its object file code not read here	inferred	none		
+0x5057c0	110	PlayerModelIsTypeName		ui	orchestration	bool __thiscall (const char *name)	Answers whether a name is PlayerModel or one of its bases, ignoring case	verified	one	ui/widgettype#type-chains	
+0x505830	6	PlayerModelGetTypeName		ui	orchestration	const char * __thiscall ()	Returns the type name PlayerModel	verified	one	ui/widgettype#type-chains	
 0x505840	43			ui	orchestration		Runs its object file code that calls 0x505870, SMemFree; not read here	inferred	none		
 0x505870	18			ui	orchestration		Runs its object file code not read here	inferred	none		
 0x505890	266	CharacterModelBaseChooseCamera		ui	orchestration	void __thiscall ()	Installs a frozen copy of camera 1, or a fixed camera aimed at the bounding box centre	verified	one	ui/modelview#the-character-pane-camera	
@@ -11972,88 +11972,88 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x508560	286	ExpandWorldStateText		ui	primitive		Replaces each percent digits w token with the world state value as decimal text	verified	one	ui/worldstate#the-text-expander	
 0x508680	982	DrunkTransformText		ui	primitive		Writes the text a drunk player sends from the source, a strength and a capacity	inferred	none	ui/chatsend#text-steps	
 0x508ad0	24			ui	orchestration		Runs its object file code not read here	inferred	none		
-0x508af0	5			ui	orchestration		Runs its object file code not read here	inferred	none		
-0x508b00	15			ui	primitive		Runs its object file code not read here	inferred	none		
-0x508b10	5			ui	orchestration		Runs its object file code not read here	inferred	none		
-0x508b20	19			ui	primitive		Runs its object file code not read here	inferred	none		
-0x508b40	10			ui	orchestration		Runs its object file code that calls 0x508b50; not read here	inferred	none		
-0x508b50	22			ui	primitive		Runs its object file code not read here	inferred	none		
-0x508b70	12			ui	orchestration		Runs its object file code that calls _atexit; not read here	inferred	none		
-0x508b80	14			ui	primitive		Runs its object file code not read here	inferred	none		
-0x508b90	5			ui	orchestration		Runs its object file code not read here	inferred	none		
-0x508ba0	19			ui	primitive		Runs its object file code not read here	inferred	none		
-0x508bc0	5			ui	orchestration		Runs its object file code not read here	inferred	none		
-0x508bd0	19			ui	primitive		Runs its object file code not read here	inferred	none		
-0x508bf0	5			ui	orchestration		Runs its object file code not read here	inferred	none		
-0x508c00	19			ui	primitive		Runs its object file code not read here	inferred	none		
-0x508c20	5			ui	orchestration		Runs its object file code not read here	inferred	none		
-0x508c30	19			ui	primitive		Runs its object file code not read here	inferred	none		
-0x508c50	5			ui	orchestration		Runs its object file code not read here	inferred	none		
-0x508c60	19			ui	primitive		Runs its object file code not read here	inferred	none		
-0x508c80	5			ui	orchestration		Runs its object file code not read here	inferred	none		
-0x508c90	19			ui	primitive		Runs its object file code not read here	inferred	none		
-0x508cb0	5			ui	orchestration		Runs its object file code not read here	inferred	none		
-0x508cc0	19			ui	primitive		Runs its object file code not read here	inferred	none		
-0x508ce0	5			ui	orchestration		Runs its object file code not read here	inferred	none		
-0x508cf0	19			ui	primitive		Runs its object file code not read here	inferred	none		
-0x508d10	5			ui	orchestration		Runs its object file code not read here	inferred	none		
-0x508d20	19			ui	primitive		Runs its object file code not read here	inferred	none		
-0x508d40	5			ui	orchestration		Runs its object file code not read here	inferred	none		
-0x508d50	19			ui	primitive		Runs its object file code not read here	inferred	none		
-0x508d70	5			ui	orchestration		Runs its object file code not read here	inferred	none		
-0x508d80	19			ui	primitive		Runs its object file code not read here	inferred	none		
-0x508da0	5			ui	orchestration		Runs its object file code not read here	inferred	none		
-0x508db0	19			ui	primitive		Runs its object file code not read here	inferred	none		
-0x508dd0	5			ui	orchestration		Runs its object file code not read here	inferred	none		
-0x508de0	19			ui	primitive		Runs its object file code not read here	inferred	none		
-0x508e00	5			ui	orchestration		Runs its object file code not read here	inferred	none		
-0x508e10	11			ui	orchestration		Runs its object file code not read here	inferred	none		
-0x508e20	5			ui	orchestration		Runs its object file code not read here	inferred	none		
-0x508e30	19			ui	primitive		Runs its object file code not read here	inferred	none		
-0x508e50	5			ui	orchestration		Runs its object file code not read here	inferred	none		
-0x508e60	19			ui	primitive		Runs its object file code not read here	inferred	none		
-0x508e80	5			ui	orchestration		Runs its object file code not read here	inferred	none		
-0x508e90	19			ui	primitive		Runs its object file code not read here	inferred	none		
-0x508eb0	5			ui	orchestration		Runs its object file code not read here	inferred	none		
-0x508ec0	19			ui	primitive		Runs its object file code not read here	inferred	none		
-0x508ee0	5			ui	orchestration		Runs its object file code not read here	inferred	none		
-0x508ef0	19			ui	primitive		Runs its object file code not read here	inferred	none		
-0x508f10	5			ui	orchestration		Runs its object file code not read here	inferred	none		
-0x508f20	19			ui	primitive		Runs its object file code not read here	inferred	none		
-0x508f40	5			ui	orchestration		Runs its object file code not read here	inferred	none		
-0x508f50	11			ui	orchestration		Runs its object file code not read here	inferred	none		
-0x508f60	10			ui	orchestration		Runs its object file code that calls 0x508f70; not read here	inferred	none		
-0x508f70	34			ui	primitive		Runs its object file code not read here	inferred	none		
-0x508fa0	12			ui	orchestration		Runs its object file code that calls _atexit; not read here	inferred	none		
-0x508fb0	47			ui	primitive		Runs its object file code that calls SMemFree; not read here	inferred	none		
-0x508fe0	10			ui	orchestration		Runs its object file code that calls 0x508ff0; not read here	inferred	none		
-0x508ff0	34			ui	primitive		Runs its object file code not read here	inferred	none		
-0x509020	12			ui	orchestration		Runs its object file code that calls _atexit; not read here	inferred	none		
-0x509030	145			ui	primitive		Runs its object file code not read here	inferred	none		
-0x5090d0	10			ui	orchestration		Runs its object file code that calls 0x5090e0; not read here	inferred	none		
-0x5090e0	34			ui	primitive		Runs its object file code not read here	inferred	none		
-0x509110	12			ui	orchestration		Runs its object file code that calls _atexit; not read here	inferred	none		
-0x509120	145			ui	primitive		Runs its object file code not read here	inferred	none		
-0x5091c0	81			ui	primitive		Runs its object file code that calls 0x509220; not read here	inferred	none		
-0x509220	197			ui	primitive		Runs its object file code not read here	inferred	none		
-0x509300	81			ui	primitive		Runs its object file code that calls 0x509220; not read here	inferred	none		
-0x509360	81			ui	primitive		Runs its object file code that calls 0x509220; not read here	inferred	none		
-0x5093c0	81			ui	primitive		Runs its object file code that calls 0x509220; not read here	inferred	none		
-0x509420	36			ui	orchestration		Runs its object file code that calls CVar::Register; not read here	inferred	none		
-0x509450	141			ui	primitive		Runs its object file code that calls 0x50a0b0, SMemFree, 0x50a120; not read here	inferred	none		
-0x5094e0	29	SmartScreenRectClearAllGrids	idb	ui	primitive		Runs its object file code not read here	inferred	none		
-0x509500	26			ui	primitive		Runs its object file code not read here	inferred	none		
-0x509520	313			ui	primitive		Runs its object file code that calls MultiplyByScreenScaleX, NDCToDDCHeight, 0x509e20 and 2 more; not read here	inferred	none		
-0x509660	191			ui	primitive		Runs its object file code that calls 0x50a160; not read here	inferred	none		
-0x509720	120			ui	primitive		Runs its object file code that calls 0x5097a0; not read here	inferred	none		
-0x5097a0	710			ui	primitive		Runs its object file code that calls 0x509bf0, 0x509d80, 0x509b00 and 3 more; not read here	inferred	none		
-0x509a70	136			ui	primitive		Runs its object file code that calls SErrSetLastError; not read here	inferred	none		
-0x509b00	230			ui	primitive		Runs its object file code that calls 0x50a0f0, SMemAlloc, 0x50a120; not read here	inferred	none		
-0x509bf0	388			ui	primitive		Runs its object file code that calls MultiplyByScreenScaleX, NDCToDDCHeight; not read here	inferred	none		
-0x509d80	73			ui	primitive		Runs its object file code not read here	inferred	none		
-0x509dd0	72			ui	primitive		Runs its object file code that calls MultiplyByScreenScaleX, NDCToDDCHeight, __ftol; not read here	inferred	none		
-0x509e20	154			ui	primitive		Runs its object file code that calls MultiplyByScreenScaleX, NDCToDDCHeight; not read here	inferred	none		
-0x509ec0	401			ui	primitive		Runs its object file code that calls MultiplyByScreenScaleX, NDCToDDCHeight, 0x509e20 and 4 more; not read here	inferred	none		
+0x508af0	5			ui	orchestration		Jumps to the body of a static initializer of the placement object file	verified	one	ui/smartrect#static-initializers	
+0x508b00	15			ui	primitive		Stores twice the float at 0x8086d4, 2π, in 0xbe0b68	verified	one	ui/smartrect#static-initializers	
+0x508b10	5			ui	orchestration		Jumps to the body of a static initializer of the placement object file	verified	one	ui/smartrect#static-initializers	
+0x508b20	19			ui	primitive		Stores 1.0 over the float at 0xbe0b68 in 0xbe0b38	verified	one	ui/smartrect#static-initializers	
+0x508b40	10			ui	orchestration		Calls the use counter and jumps to the exit registration	verified	one	ui/smartrect#static-initializers	
+0x508b50	22			ui	primitive		Counts a use of the object file's static data and jumps to an empty function on the first	verified	one	ui/smartrect#static-initializers	
+0x508b70	12			ui	orchestration		Registers the use count-down 0x508b80 with _atexit	verified	one	ui/smartrect#static-initializers	
+0x508b80	14			ui	primitive		Counts a use down and jumps to an empty function on the last	verified	one	ui/smartrect#static-initializers	
+0x508b90	5			ui	orchestration		Jumps to the body of a static initializer of the placement object file	verified	one	ui/smartrect#static-initializers	
+0x508ba0	19			ui	primitive		Squares a tuning constant into a global of the placement file that nothing reads	verified	one	ui/smartrect#static-initializers	
+0x508bc0	5			ui	orchestration		Jumps to the body of a static initializer of the placement object file	verified	one	ui/smartrect#static-initializers	
+0x508bd0	19			ui	primitive		Squares a tuning constant into a global of the placement file that nothing reads	verified	one	ui/smartrect#static-initializers	
+0x508bf0	5			ui	orchestration		Jumps to the body of a static initializer of the placement object file	verified	one	ui/smartrect#static-initializers	
+0x508c00	19			ui	primitive		Squares a tuning constant into a global of the placement file that nothing reads	verified	one	ui/smartrect#static-initializers	
+0x508c20	5			ui	orchestration		Jumps to the body of a static initializer of the placement object file	verified	one	ui/smartrect#static-initializers	
+0x508c30	19			ui	primitive		Squares a tuning constant into a global of the placement file that nothing reads	verified	one	ui/smartrect#static-initializers	
+0x508c50	5			ui	orchestration		Jumps to the body of a static initializer of the placement object file	verified	one	ui/smartrect#static-initializers	
+0x508c60	19			ui	primitive		Squares a tuning constant into a global of the placement file that nothing reads	verified	one	ui/smartrect#static-initializers	
+0x508c80	5			ui	orchestration		Jumps to the body of a static initializer of the placement object file	verified	one	ui/smartrect#static-initializers	
+0x508c90	19			ui	primitive		Squares a tuning constant into a global of the placement file that nothing reads	verified	one	ui/smartrect#static-initializers	
+0x508cb0	5			ui	orchestration		Jumps to the body of a static initializer of the placement object file	verified	one	ui/smartrect#static-initializers	
+0x508cc0	19			ui	primitive		Squares a tuning constant into a global of the placement file that nothing reads	verified	one	ui/smartrect#static-initializers	
+0x508ce0	5			ui	orchestration		Jumps to the body of a static initializer of the placement object file	verified	one	ui/smartrect#static-initializers	
+0x508cf0	19			ui	primitive		Squares a tuning constant into a global of the placement file that nothing reads	verified	one	ui/smartrect#static-initializers	
+0x508d10	5			ui	orchestration		Jumps to the body of a static initializer of the placement object file	verified	one	ui/smartrect#static-initializers	
+0x508d20	19			ui	primitive		Squares a tuning constant into a global of the placement file that nothing reads	verified	one	ui/smartrect#static-initializers	
+0x508d40	5			ui	orchestration		Jumps to the body of a static initializer of the placement object file	verified	one	ui/smartrect#static-initializers	
+0x508d50	19			ui	primitive		Squares a tuning constant into a global of the placement file that nothing reads	verified	one	ui/smartrect#static-initializers	
+0x508d70	5			ui	orchestration		Jumps to the body of a static initializer of the placement object file	verified	one	ui/smartrect#static-initializers	
+0x508d80	19			ui	primitive		Squares a tuning constant into a global of the placement file that nothing reads	verified	one	ui/smartrect#static-initializers	
+0x508da0	5			ui	orchestration		Jumps to the body of a static initializer of the placement object file	verified	one	ui/smartrect#static-initializers	
+0x508db0	19			ui	primitive		Squares a tuning constant into a global of the placement file that nothing reads	verified	one	ui/smartrect#static-initializers	
+0x508dd0	5			ui	orchestration		Jumps to the body of a static initializer of the placement object file	verified	one	ui/smartrect#static-initializers	
+0x508de0	19			ui	primitive		Squares a tuning constant into a global of the placement file that nothing reads	verified	one	ui/smartrect#static-initializers	
+0x508e00	5			ui	orchestration		Jumps to the body of a static initializer of the placement object file	verified	one	ui/smartrect#static-initializers	
+0x508e10	11			ui	orchestration		Stores the float 5.0 in 0xbe0b40	verified	one	ui/smartrect#static-initializers	
+0x508e20	5			ui	orchestration		Jumps to the body of a static initializer of the placement object file	verified	one	ui/smartrect#static-initializers	
+0x508e30	19			ui	primitive		Squares a tuning constant into a global of the placement file that nothing reads	verified	one	ui/smartrect#static-initializers	
+0x508e50	5			ui	orchestration		Jumps to the body of a static initializer of the placement object file	verified	one	ui/smartrect#static-initializers	
+0x508e60	19			ui	primitive		Squares a tuning constant into a global of the placement file that nothing reads	verified	one	ui/smartrect#static-initializers	
+0x508e80	5			ui	orchestration		Jumps to the body of a static initializer of the placement object file	verified	one	ui/smartrect#static-initializers	
+0x508e90	19			ui	primitive		Squares a tuning constant into a global of the placement file that nothing reads	verified	one	ui/smartrect#static-initializers	
+0x508eb0	5			ui	orchestration		Jumps to the body of a static initializer of the placement object file	verified	one	ui/smartrect#static-initializers	
+0x508ec0	19			ui	primitive		Squares a tuning constant into a global of the placement file that nothing reads	verified	one	ui/smartrect#static-initializers	
+0x508ee0	5			ui	orchestration		Jumps to the body of a static initializer of the placement object file	verified	one	ui/smartrect#static-initializers	
+0x508ef0	19			ui	primitive		Squares a tuning constant into a global of the placement file that nothing reads	verified	one	ui/smartrect#static-initializers	
+0x508f10	5			ui	orchestration		Jumps to the body of a static initializer of the placement object file	verified	one	ui/smartrect#static-initializers	
+0x508f20	19			ui	primitive		Stores 0.5 over the float at 0x80871c in 0xbe0b24	verified	one	ui/smartrect#static-initializers	
+0x508f40	5			ui	orchestration		Jumps to the body of a static initializer of the placement object file	verified	one	ui/smartrect#static-initializers	
+0x508f50	11			ui	orchestration		Copies the float +inf at 0x808748 to 0xbe0bbc	verified	one	ui/smartrect#static-initializers	
+0x508f60	10			ui	orchestration		Calls the claim list zeroing and jumps to its exit registration	verified	one	ui/smartrect#static-initializers	
+0x508f70	34			ui	primitive		Zeroes the first two claim lists	verified	one	ui/smartrect#static-initializers	
+0x508fa0	12			ui	orchestration		Registers the claim list teardown 0x508fb0 with _atexit	verified	one	ui/smartrect#static-initializers	
+0x508fb0	47			ui	primitive		Frees the arrays of the first two claim lists	verified	one	ui/smartrect#static-initializers	
+0x508fe0	10			ui	orchestration		Calls the worklist initializer and jumps to its exit registration	verified	one	ui/smartrect#static-initializers	
+0x508ff0	34			ui	primitive		Makes the placement worklist empty with a zero context	verified	one	ui/smartrect#static-initializers	
+0x509020	12			ui	orchestration		Registers the worklist teardown 0x509030 with _atexit	verified	one	ui/smartrect#static-initializers	
+0x509030	145			ui	primitive		Moves the worklist nodes onto the pool and frees the pool at exit	verified	one	ui/smartrect#static-initializers	
+0x5090d0	10			ui	orchestration		Calls the node pool initializer and jumps to its exit registration	verified	one	ui/smartrect#static-initializers	
+0x5090e0	34			ui	primitive		Makes the placement node pool empty	verified	one	ui/smartrect#static-initializers	
+0x509110	12			ui	orchestration		Registers the node pool teardown 0x509120 with _atexit	verified	one	ui/smartrect#static-initializers	
+0x509120	145			ui	primitive		Moves the pooled nodes onto the worklist and frees them at exit	verified	one	ui/smartrect#static-initializers	
+0x5091c0	81	PushRectUp		ui	primitive	RECT * __fastcall (RECT *out, int list, RECT rect)	Moves the rectangle up until it rests on the first claimed rectangle it overlaps	verified	one	ui/smartrect#pushes-and-the-overlap-test	
+0x509220	197	FindOverlapDepth		ui	primitive	bool __fastcall (int list, RECT *rect, int direction, float *depth)	Finds the first claimed rectangle that strictly overlaps and stores the depth to push in a direction	verified	one	ui/smartrect#pushes-and-the-overlap-test	
+0x509300	81	PushRectLeft		ui	primitive	RECT * __fastcall (RECT *out, int list, RECT rect)	Moves the rectangle left until it rests against the first claimed rectangle it overlaps	verified	one	ui/smartrect#pushes-and-the-overlap-test	
+0x509360	81	PushRectRight		ui	primitive	RECT * __fastcall (RECT *out, int list, RECT rect)	Moves the rectangle right until it rests against the first claimed rectangle it overlaps	verified	one	ui/smartrect#pushes-and-the-overlap-test	
+0x5093c0	81	PushRectDown		ui	primitive	RECT * __fastcall (RECT *out, int list, RECT rect)	Moves the rectangle down until it rests under the first claimed rectangle it overlaps	verified	one	ui/smartrect#pushes-and-the-overlap-test	
+0x509420	36	RegisterShowSmartRects		ui	orchestration		Registers the showsmartrects CVar, whose handle nothing reads	verified	one	ui/smartrect#per-frame-order	
+0x509450	141	SmartRectTeardown		ui	orchestration		Frees the claim worklist, the node pool and the arrays of claim lists 0 and 1; one caller, 0x481d7d	verified	one	ui/smartrect#freeing-the-lists	
+0x5094e0	29	SmartScreenRectClearAllGrids	idb	ui	primitive		Zeroes the counts of claim lists 0 and 1	verified	one	ui/smartrect#claim-lists	
+0x509500	26	ResetClaimList		ui	primitive	void __fastcall (int list)	Zeroes the count of a claim list of id 0 to 2, keeping its array	verified	one	ui/smartrect#claim-lists	
+0x509520	313	SeatCombatText		ui	primitive	void __fastcall (int list, RECT *rect)	Moves a combat text rectangle off the claimed ones, clamps it on screen and claims it	verified	one	ui/smartrect#the-combat-text-seat	
+0x509660	191	ClaimRect		ui	primitive	void __fastcall (int list, RECT *rect)	Appends a rectangle to a claim list, growing its array in steps	verified	one	ui/smartrect#claim-lists	
+0x509720	120	ResolveRectPlacement		ui	primitive	void __fastcall (float *center, int list, RECT *rect, bool *changed)	Runs the placement search and answers the changed flag, the centre x and the top y	verified	one	ui/smartrect#the-nameplate-seat	
+0x5097a0	710	SearchRectPlacement		ui	primitive	RECT * __fastcall (RECT *out, int list, RECT *rect)	Searches breadth first for the nearest free place for a rectangle, or answers it unchanged	verified	one	ui/smartrect#the-placement-search	
+0x509a70	136	RecycleWorklist		ui	primitive		Moves every worklist node onto the free pool	verified	one	ui/smartrect#the-placement-search	
+0x509b00	230	NewPlacementNode		ui	primitive		Takes a node from the pool or allocates 0x1c bytes, links it at the worklist head with strategy -1	verified	one	ui/smartrect#the-placement-search	
+0x509bf0	388	ClassifyScreenEdges		ui	primitive	int __fastcall (RECT *out, int mode, RECT rect)	Flags the screen edges a rectangle crosses and, in clamp mode, moves it back inside	verified	one	ui/smartrect#pushes-by-region	
+0x509d80	73	PickPushRegion		ui	primitive	int __fastcall (int flags)	Maps the four edge flags to the region 0 to 8 that picks the order of pushes	verified	one	ui/smartrect#pushes-by-region	
+0x509dd0	72	PlacementTryLimit		ui	primitive	int __fastcall (RECT *rect)	Returns how many candidates to try, the screen tiled by rectangles of this size	verified	one	ui/smartrect#the-placement-search	
+0x509e20	154	NormalizeRectOnScreen		ui	primitive	void __fastcall (RECT *rect)	Moves a rectangle onto the screen keeping its size: top, bottom, left, right clamps, the last on an axis winning	verified	one	ui/smartrect#normalising-a-rectangle	
+0x509ec0	401	SeatNameplate		ui	primitive	void __fastcall (int list, CSimpleFrame *plate, CLayoutFrame *root, float *point, int center)	Moves a nameplate's rectangle off the claimed ones, clamps and claims it, and anchors the plate there	verified	one	ui/smartrect#the-nameplate-seat	
 0x50a060	5			unassigned			Runs its object file code not read here	inferred	none		
 0x50a070	15			unassigned			Runs its object file code not read here	inferred	none		
 0x50a080	5			unassigned			Runs its object file code not read here	inferred	none		
@@ -13174,8 +13174,8 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x529230	1			ui	orchestration		Runs its object file code not read here	inferred	none		
 0x529240	357	CGTooltip::CGTooltip	idb	ui	orchestration		Constructs a tooltip object: its frame base, line arrays and virtual table	verified	one	ui/tooltipitem#fields-kept-for-a-rebuild	
 0x5293b0	45			ui	orchestration		Runs its object file code not read here	inferred	none		
-0x5293e0	89			ui	orchestration		Runs its object file code that calls SStrCmpI; not read here	inferred	none		
-0x529440	6			ui	orchestration		Runs its object file code not read here	inferred	none		
+0x5293e0	89	GameTooltipIsTypeName		ui	orchestration	bool __thiscall (const char *name)	Answers whether a name is GameTooltip or one of its bases, ignoring case	verified	one	ui/widgettype#type-chains	
+0x529440	6	GameTooltipGetTypeName		ui	orchestration	const char * __thiscall ()	Returns the type name GameTooltip	verified	one	ui/widgettype#type-chains	
 0x529450	43			ui	orchestration		Runs its object file code that calls 0x529480, SMemFree; not read here	inferred	none		
 0x529480	215			ui	primitive		Runs its object file code that calls 0x467d00, ClntObjMgrClearObjectMirrorHandler and 2 more; not read here	inferred	none		
 0x529560	98	CGTooltip::OnUnitHealthChanged		ui	orchestration	uint32_t __cdecl (uint32_t guidLow, uint32_t guidHigh, uint32_t length, void *statusBar)	Sets the tooltip health bar's range and value from the unit and returns 1	verified	one	ui/tooltipunit#the-health-bar	
@@ -29511,20 +29511,20 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x6eea60	19			ui	primitive		Runs its object file code not read here	inferred	none		
 0x6eea80	5			ui	orchestration		Runs its object file code not read here	inferred	none		
 0x6eea90	19			ui	primitive		Runs its object file code not read here	inferred	none		
-0x6eeab0	109	Create_SimpleButton	idb	ui	orchestration		Allocates and constructs a Button under a parent	verified	one	ui/framexml#frame-types	
+0x6eeab0	109	Create_SimpleButton	idb	ui	orchestration		Allocates a Button object and constructs it, answering it or 0	verified	one	ui/framexml#the-frame-factories	
 0x6eeb20	1			ui	orchestration		Runs FrameXML.cpp code not read here	inferred	none		
-0x6eeb30	109	Create_SimpleCheckButton	idb	ui	orchestration		Runs FrameXML.cpp code that calls SMemAlloc, CSimpleCheckbox::CSimpleCheckbox; not read here	inferred	none		
-0x6eeba0	109	Create_SimpleEditBox	idb	ui	orchestration		Runs FrameXML.cpp code that calls SMemAlloc, CSimpleEditBox::CSimpleEditBox; not read here	inferred	none		
-0x6eec10	109	Create_SimpleFrame	idb	ui	orchestration		Allocates and constructs a Frame under a parent	verified	one	ui/framexml#frame-types	
-0x6eec80	109	Create_SimpleMessageFrame	idb	ui	orchestration		Runs FrameXML.cpp code that calls SMemAlloc, CSimpleMessageFrame::CSimpleMessageFrame; not read here	inferred	none		
-0x6eecf0	109	Create_SimpleModel	idb	ui	orchestration		Runs FrameXML.cpp code that calls SMemAlloc, CSimpleModel::CSimpleModel; not read here	inferred	none		
-0x6eed60	109	Create_SimpleScrollFrame	idb	ui	orchestration		Runs FrameXML.cpp code that calls SMemAlloc, CSimpleScrollFrame::CSimpleScrollFrame; not read here	inferred	none		
-0x6eedd0	111	Create_SimpleScrollingMessageFrame	idb	ui	orchestration		Runs FrameXML.cpp code that calls SMemAlloc, 0x787670; not read here	inferred	none		
-0x6eee40	109	Create_SimpleSlider	idb	ui	orchestration		Runs FrameXML.cpp code that calls SMemAlloc, CSimpleSlider::CSimpleSlider; not read here	inferred	none		
-0x6eeeb0	109	Create_SimpleHTML	idb	ui	orchestration		Runs FrameXML.cpp code that calls SMemAlloc, CSimpleHTML::CSimpleHTML; not read here	inferred	none		
-0x6eef20	109	Create_SimpleStatusBar	idb	ui	orchestration		Runs FrameXML.cpp code that calls SMemAlloc, CSimpleStatusBar::CSimpleStatusBar; not read here	inferred	none		
-0x6eef90	109	Create_SimpleColorSelect	idb	ui	orchestration		Runs FrameXML.cpp code that calls SMemAlloc, CSimpleColorSelect::CSimpleColorSelect; not read here	inferred	none		
-0x6ef000	109	Create_SimpleMovieFrame	idb	ui	orchestration		Allocates and constructs a MovieFrame under a parent	verified	one	ui/framexml#frame-types	
+0x6eeb30	109	Create_SimpleCheckButton	idb	ui	orchestration		Allocates a CheckButton object and constructs it, answering it or 0	verified	one	ui/framexml#the-frame-factories	
+0x6eeba0	109	Create_SimpleEditBox	idb	ui	orchestration		Allocates a EditBox object and constructs it, answering it or 0	verified	one	ui/framexml#the-frame-factories	
+0x6eec10	109	Create_SimpleFrame	idb	ui	orchestration		Allocates a Frame object and constructs it, answering it or 0	verified	one	ui/framexml#the-frame-factories	
+0x6eec80	109	Create_SimpleMessageFrame	idb	ui	orchestration		Allocates a MessageFrame object and constructs it, answering it or 0	verified	one	ui/framexml#the-frame-factories	
+0x6eecf0	109	Create_SimpleModel	idb	ui	orchestration		Allocates a Model object and constructs it, answering it or 0	verified	one	ui/framexml#the-frame-factories	
+0x6eed60	109	Create_SimpleScrollFrame	idb	ui	orchestration		Allocates a ScrollFrame object and constructs it, answering it or 0	verified	one	ui/framexml#the-frame-factories	
+0x6eedd0	111	Create_SimpleScrollingMessageFrame	idb	ui	orchestration		Allocates a ScrollingMessageFrame object and constructs it, answering it or 0	verified	one	ui/framexml#the-frame-factories	
+0x6eee40	109	Create_SimpleSlider	idb	ui	orchestration		Allocates a Slider object and constructs it, answering it or 0	verified	one	ui/framexml#the-frame-factories	
+0x6eeeb0	109	Create_SimpleHTML	idb	ui	orchestration		Allocates a SimpleHTML object and constructs it, answering it or 0	verified	one	ui/framexml#the-frame-factories	
+0x6eef20	109	Create_SimpleStatusBar	idb	ui	orchestration		Allocates a StatusBar object and constructs it, answering it or 0	verified	one	ui/framexml#the-frame-factories	
+0x6eef90	109	Create_SimpleColorSelect	idb	ui	orchestration		Allocates a ColorSelect object and constructs it, answering it or 0	verified	one	ui/framexml#the-frame-factories	
+0x6ef000	109	Create_SimpleMovieFrame	idb	ui	orchestration		Allocates a MovieFrame object and constructs it, answering it or 0	verified	one	ui/framexml#the-frame-factories	
 0x6ef070	227	FrameXML::RegisterDefault	idb	ui	orchestration		Registers the 13 FrameXML frame types, Button to MovieFrame	verified	one	ui/framexml#frame-types	
 0x6ef160	37			ui	orchestration		Runs its object file code not read here	inferred	none		
 0x6ef190	180			ui	primitive		Runs its object file code not read here	inferred	none		
@@ -29597,8 +29597,8 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x6f1820	31	GetFrameStrataName		ui	primitive		Returns the name of a stratum index from 0x8119f8, or UNKNOWN	verified	one	ui/strata#strata-and-their-names	
 0x6f1840	69	ParseAnchorPoint		ui	primitive		Finds an anchor point name in 0x811a38, ignoring case, and writes its index	verified	one	ui/anchors#point-slots-and-point-names	
 0x6f1890	31	GetAnchorPointName		ui	primitive		Returns the name of an anchor point index from 0x811a38, or UNKNOWN	verified	one	ui/anchors#point-slots-and-point-names	
-0x6f18b0	69			ui	primitive		Runs its object file code that calls SStrCmpI; not read here	inferred	none		
-0x6f1900	31			ui	primitive		Runs its object file code not read here	inferred	none		
+0x6f18b0	69	DrawLayerNameToId		ui	primitive	bool __fastcall (const char *name, int *id)	Looks a draw layer name up ignoring case and stores its index 0 to 4	verified	one	ui/draworder#regions-within-a-frame	
+0x6f1900	31	DrawLayerIdToName		ui	primitive	const char * __fastcall (int id)	Returns the name of a draw layer index, or UNKNOWN	verified	one	ui/draworder#regions-within-a-frame	
 0x6f1920	69			ui	primitive		Looks a blend mode name up, ignoring case, in the five value and name pairs at 0x811aa8	verified	one	ui/button#checked-textures	
 0x6f1970	31			ui	primitive		Runs its object file code not read here	inferred	none		
 0x6f1990	69			ui	orchestration		Maps a justify name, ignoring case, to its bit	verified	one	ui/fontstring#justify	
@@ -29611,13 +29611,13 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x6f1ad0	85			ui	primitive		Runs its object file code that calls SStrPack; not read here	inferred	none		
 0x6f1b30	130	ParseXMLBool		ui	primitive	int __fastcall (const char *text)	Reads a flag: 1 to 9, t, T, y, Y, on or enabled is true, anything else false	verified	one	ui/addons#toc-directives	
 0x6f1c10	213	GetScriptFlagArg		ui	primitive	bool __stdcall (lua_State *L, int index, bool defaultValue)	Reads a script argument as a flag: nil 0, boolean itself, number truncated, string by first letter or keyword	verified	one	ui/actionuse#reading-a-script-flag	
-0x6f1d60	328			ui	primitive		Runs its object file code that calls 0x6f2cf0, SStrToFloat, GetScaledScreenAspect and 2 more; not read here	inferred	none		
+0x6f1d60	328	ParseLengthElement		ui	primitive		Reads a length from val, an AbsValue or a RelValue, converting all but the last	verified	one	ui/backdrop#the-xml-element	
 0x6f1eb0	486	XmlReadDimension		ui	primitive	uint32_t __fastcall (XmlNode *node, float *x, float *y, void *report)	Reads x and y from a node's attributes or its AbsDimension child, in layout units	verified	one	ui/modelview#model-unit-to-pixel	
-0x6f20a0	806			ui	primitive		Runs its object file code that calls 0x6f2cf0, SStrToFloat, GetScaledScreenAspect and 2 more; not read here	inferred	none		
-0x6f23d0	601			ui	primitive		Runs its object file code that calls 0x6f2cf0, SStrToFloat, __ftol; not read here	inferred	none		
-0x6f2630	182			ui	orchestration		Runs its object file code that calls 0x6f2cf0, 0x6f1a20, SStrCmpI and 1 more; not read here	inferred	none		
-0x6f26f0	143			ui	orchestration		Runs its object file code that calls GetBlockPoolData, 0x76fc40, 0x76fdf0 and 1 more; not read here	inferred	none		
-0x6f2780	143			ui	orchestration		Runs its object file code that calls GetBlockPoolData, 0x770d30, 0x770f10 and 1 more; not read here	inferred	none		
+0x6f20a0	806	ParseInsetsElement		ui	primitive		Reads four insets from attributes or an AbsInset or RelInset child	verified	one	ui/backdrop#the-xml-element	
+0x6f23d0	601	ParseColorElement		ui	primitive		Reads r, g, b and a clamped to 0 to 1 and packs them as alpha, red, green, blue	verified	one	ui/backdrop#the-xml-element	
+0x6f2630	182	ParseGradientElement		ui	orchestration		Reads a gradient orientation and its minimum and maximum colours	verified	one	ui/texture#a-gradient-element	
+0x6f26f0	143	FrameXML::AddTextureElement		ui	orchestration	CSimpleTexture * __thiscall (void *parentFrame, XmlNode *node, CStatus *status)	Builds a texture region from its XML node, loads it and gives it the implicit anchor	verified	one	ui/regions#where-it-applies	
+0x6f2780	143	FrameXML::AddFontStringElement		ui	orchestration	CSimpleFontString * __thiscall (void *parentFrame, XmlNode *node, CStatus *status)	Builds a font string region from its XML node, loads it and gives it the implicit anchor	verified	one	ui/regions#where-it-applies	
 0x6f2810	5			ui	orchestration		Runs its object file code not read here	inferred	none		
 0x6f2820	15			ui	primitive		Runs its object file code not read here	inferred	none		
 0x6f2830	5			ui	orchestration		Runs its object file code not read here	inferred	none		
@@ -33190,9 +33190,9 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x766420	208	CSimpleTop::OnMouseUp		ui	orchestration		Handles category 0xe: ends a move or size, or releases the pressed frame	verified	one	ui/input#the-handlers	
 0x7664f0	195	CSimpleTop::OnMouseWheel		ui	orchestration		Handles category 0x10: offers the wheel to hit frames of the wheel lists from stratum 8 down	verified	one	ui/input#the-handlers	
 0x7665c0	134	CSimpleTop::OnWindowSize		ui	orchestration		Handles category 0x1c: refreshes the fonts and every frame's regions, then the host's size callback	inferred	none	ui/input#the-handlers	
-0x766650	68	CSimpleTop::OnActivationChange		ui	orchestration		Handles category 2, the window's activation change: calls a window-code function, then the host's callback at +0x1134	inferred	none	ui/input#the-handlers	
-0x7666a0	162	PixelAlignX		ui	primitive		Rounds a horizontal size to a whole number of screen pixels	inferred	none		
-0x766750	162	PixelAlignY		ui	primitive		Rounds a vertical size to a whole number of screen pixels	inferred	none		
+0x766650	68	CSimpleTop::OnActivationChange		ui	orchestration		Handles category 2, the window's activation change: calls a window-code function, then the host's callback at +0x1134	verified	one	ui/keyscripts#deactivating-the-window	
+0x7666a0	162	PixelAlignX		ui	primitive		Rounds a horizontal length up to a whole number of device pixels	verified	one	ui/regions#pixel-alignment	
+0x766750	162	PixelAlignY		ui	primitive		Rounds a vertical length up to a whole number of device pixels	verified	one	ui/regions#pixel-alignment	
 0x766800	5	TopInitTwoPiThunk		ui	orchestration		Jumps to 0x766810; a static initializer	verified	one	ui/README#static-initializers	
 0x766810	15	TopInitTwoPi		ui	primitive		Stores 3.1415927 + 3.1415927 as a float in a global	verified	one	ui/README#static-initializers	
 0x766820	5	TopInitInvTwoPiThunk		ui	orchestration		Jumps to 0x766830; a static initializer	verified	one	ui/README#static-initializers	
@@ -33308,25 +33308,25 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x76a060	104	CSimpleFrame::LoadXMLChildren		ui	orchestration		Creates the Frames children of a node, its template first, with the frame as parent	verified	one	ui/framexml#child-frames-and-names	
 0x76a0d0	544	CSimpleFrame::GetScriptByName		ui	orchestration		Returns the script slot of a handler name, OnEvent included, or 0	verified	one	ui/frames#script-slots-by-name	
 0x76a2f0	206	CSimpleFrame::PostLoadXML		ui	orchestration		Ends the load: undefers layout, loads children, runs OnLoad, then OnShow when visible	verified	one	ui/visibility#show-and-hide-scripts	
-0x76a3c0	54	CSimpleFrame::SetFrameFlag		ui	orchestration		Sets or clears bits of the frame flags +0xb4	inferred	none	ui/frames#frame-fields	
+0x76a3c0	54	CSimpleFrame::SetFrameFlag		ui	primitive	void __thiscall (uint32_t mask, bool value)	Sets or clears the bits of mask in the frame flags +0xb4	verified	one	ui/layoutcache#which-frames-are-saved	
 0x76a400	111	CSimpleFrame::SetDrawsItself		ui	orchestration		Sets the draw-itself bits of a frame and its descendants, marking its own layers dirty	verified	one	ui/visibility#parent-change	
 0x76a470	126	CSimpleFrame::SetFrameStrata		ui	orchestration		Moves a frame and its children to a stratum	verified	one	ui/visibility#parent-change	
 0x76a4f0	182	CSimpleFrame::SetFrameLevel		ui	orchestration		Moves a frame to a level of at least 0, children of its stratum following when asked	verified	one	ui/methods#what-the-frame-methods-call	
 0x76a5b0	15	CSimpleFrame::Raise		ui	orchestration		Asks the top to raise the frame with the overlap check	verified	one	ui/input#mouse-buttons	
 0x76a5c0	13	CSimpleFrame::Lower		ui	orchestration		Asks the top to lower the frame, which does nothing	verified	one	ui/methods#what-the-frame-methods-call	
-0x76a5d0	90	CSimpleFrame::SetBackdrop		ui	orchestration		Replaces the frame's backdrop object	inferred	none		
+0x76a5d0	90	CSimpleFrame::SetBackdrop		ui	orchestration		Replaces the frame's backdrop object	verified	one	ui/backdrop#the-object	
 0x76a630	34	CSimpleFrame::ResizeByFactor		ui	unreached		Passes a size factor and point to 0x768550; nothing reaches it	verified	one	ui/README#unreached-functions	
 0x76a660	34	CSimpleFrame::ApplyDragDelta		ui	orchestration		Passes a cursor difference and point to 0x768710 on the frame's layout part	verified	one	ui/resizebounds#the-drag	
 0x76a690	128	CSimpleFrame::SetAlpha		ui	orchestration		Stores the alpha byte and, on a change, refreshes the regions and gives every child the same byte	verified	one	ui/visibility#alpha	
-0x76a710	27	CSimpleFrame::EnableDrawLayer		ui	orchestration		Switches a draw layer on and marks it dirty	inferred	none		
-0x76a730	27	CSimpleFrame::DisableDrawLayer		ui	orchestration		Switches a draw layer off and marks it dirty	inferred	none		
-0x76a750	154	CSimpleFrame::AddRegion		ui	orchestration		Adds a region node to the frame's region list	inferred	none	ui/frames#frame-fields	
-0x76a7f0	104	CSimpleFrame::RemoveRegion		ui	orchestration		Frees the region node of a region	inferred	none	ui/frames#frame-fields	
-0x76a860	173	CSimpleFrame::AddRegionToLayer		ui	orchestration		Gives a region the frame's scale and adds it to a draw layer's list, marking the layer dirty	inferred	none	ui/frames#frame-fields	
+0x76a710	27	CSimpleFrame::EnableDrawLayer		ui	orchestration		Switches a draw layer on and marks it dirty	verified	one	ui/framestate#draw-layers	
+0x76a730	27	CSimpleFrame::DisableDrawLayer		ui	orchestration		Switches a draw layer off and marks it dirty	verified	one	ui/framestate#draw-layers	
+0x76a750	154	CSimpleFrame::AddRegion		ui	orchestration		Appends a region node at the tail of the frame's region list	verified	one	ui/frames#child-and-region-lists	
+0x76a7f0	104	CSimpleFrame::RemoveRegion		ui	orchestration		Frees the region node of a region	verified	one	ui/frames#what-the-region-list-holds	
+0x76a860	173	CSimpleFrame::AddRegionToLayer		ui	orchestration		Gives a region the frame's scale and links it at the head of a draw layer's list, marking the layer dirty	verified	one	ui/draworder#regions-within-a-frame	
 0x76a910	113	CSimpleFrame::RemoveRegionFromLayer		ui	orchestration		Removes a region from a draw layer's list, marking the layer dirty	inferred	none	ui/frames#frame-fields	
-0x76a990	63	CSimpleFrame::NotifyLayerChanged		ui	orchestration		Marks a draw layer dirty in the frame's own mask or its level node	verified	one	ui/strata#dirty-marks	
+0x76a990	63	CSimpleFrame::NotifyLayerChanged		ui	orchestration		Marks a draw layer dirty in the frame's own mask or its level node	verified	one	ui/framestate#draw-layers	
 0x76a9d0	78	CSimpleFrame::NotifyAllLayersChanged		ui	unreached		Marks all five draw layers dirty; nothing reaches it	verified	one	ui/README#unreached-functions	
-0x76aa20	142	CSimpleFrame::AddChild		ui	orchestration		Adds a child frame node to the frame's children	verified	one	ui/visibility#parent-change	
+0x76aa20	142	CSimpleFrame::AddChild		ui	orchestration		Adds a child frame node to the frame's children	verified	one	ui/frames#child-and-region-lists	
 0x76aab0	96	CSimpleFrame::RemoveChild		ui	orchestration		Frees the child node of a frame	verified	one	ui/visibility#parent-change	
 0x76ab10	249	CSimpleFrame::SetParent		ui	orchestration		Moves a frame under a new parent, taking its stratum, level plus one and scale	verified	one	ui/visibility#parent-change	
 0x76ac10	62	SetFrameScale		ui	primitive		Stores the frame's own scale and recomputes the effective scale	verified	one	ui/visibility#scale	
@@ -33348,17 +33348,17 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x76b2f0	5	FrameInitDragThresholdThunk		ui	orchestration		Jumps to 0x76b300; a static initializer	verified	one	ui/README#static-initializers	
 0x76b300	19	FrameInitDragThreshold		ui	primitive		Stores 0.01 squared in 0xcf0c14, the squared drag-start distance	verified	one	ui/README#static-initializers	
 0x76b320	125	CSimpleFrame::OnMouseMove		ui	primitive		Starts a drag past the threshold and answers the hit test; slot 0x3c	verified	one	ui/mouse#what-the-pointer-is-tested-against	
-0x76b3a0	79	SimpleFrameRegisterLayer		ui	orchestration		Adds the regions of one enabled draw layer to a batch	inferred	none		
-0x76b3f0	306	CSimpleFrame::OnFrameRender		ui	orchestration		Rebuilds and draws a self-drawing frame's own batches, then its children	inferred	none		
+0x76b3a0	79	CSimpleFrame::EmitLayer		ui	orchestration		Walks the regions of one enabled draw layer from the last link and calls each one to emit into a batch	verified	one	ui/draworder#regions-within-a-frame	
+0x76b3f0	306	CSimpleFrame::OnFrameRender		ui	orchestration		Rebuilds a self-drawing frame's own five batches, submits them and draws its children that do not hold 0x4000	verified	one	ui/draworder#frames-that-draw-themselves	
 0x76b530	25	CSimpleFrame::MarkLayerDirty		ui	orchestration		Sets a bit of the frame's own dirty-layer mask +0x1f8	verified	one	ui/visibility#parent-change	
 0x76b550	42	CSimpleFrame::RefreshRegions		ui	orchestration		Calls slot 0x24 of each region	inferred	none		
 0x76b580	212	CSimpleFrame::OnFrameSizeChanged		ui	primitive		Lays out dependents, computes the hit rectangle and runs the size callback on a size change	verified	one	ui/input#hit-test	
 0x76b660	54	CSimpleFrame::OnSizeChanged		ui	orchestration		Runs the OnSizeChanged script with the width and height	inferred	none		
 0x76b6a0	76	CSimpleFrame::OnEnter		ui	orchestration		Shows the +0xa4 frame, switches layer 4 on and runs OnEnter	verified	one	ui/hover#entering-and-leaving	
 0x76b6f0	109	CSimpleFrame::OnLeave		ui	orchestration		Hides the +0xa4 frame, switches layer 4 off, may end a drag and runs OnLeave	verified	one	ui/hover#entering-and-leaving	
-0x76b760	97	CSimpleFrame::OnChar		ui	orchestration		Runs OnChar with the character as text when visible	inferred	none		
-0x76b7d0	615	CSimpleFrame::OnKeyDown		ui	orchestration		Runs OnKeyDown with the key's name when visible	inferred	none		
-0x76bba0	605	CSimpleFrame::OnKeyUp		ui	orchestration		Runs OnKeyUp with the key's name when visible	inferred	none		
+0x76b760	97	CSimpleFrame::OnChar		ui	orchestration		Runs OnChar with the character as UTF-8 text when visible and the script is set	verified	one	ui/keyscripts#the-test-a-frame-makes	
+0x76b7d0	615	CSimpleFrame::OnKeyDown		ui	orchestration		Takes a key down when visible and OnKeyDown or OnKeyUp is set, running OnKeyDown with the key name	verified	one	ui/keyscripts#the-test-a-frame-makes	
+0x76bba0	605	CSimpleFrame::OnKeyUp		ui	orchestration		Takes a key up when visible and OnKeyUp is set, running it with the key name	verified	one	ui/keyscripts#the-test-a-frame-makes	
 0x76bf70	167	CSimpleFrame::OnMouseDown		ui	orchestration		Arms a drag for a registered button and runs OnMouseDown with the button name	inferred	none	ui/README#starts-the-listing-hides	
 0x76c040	194	CSimpleFrame::OnMouseUp		ui	orchestration		Ends a drag with the drag-stop and receive slots, else runs OnMouseUp with the button name	verified	one	ui/button#mouse-presses-and-clicks	
 0x76c130	5	FrameInitTwoPiThunk		ui	orchestration		Jumps to 0x76c140; a static initializer	verified	one	ui/README#static-initializers	
@@ -33366,7 +33366,7 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x76c150	5	FrameInitInvTwoPiThunk		ui	orchestration		Jumps to 0x76c160; a static initializer	verified	one	ui/README#static-initializers	
 0x76c160	19	FrameInitInvTwoPi		ui	primitive		Stores 1 divided by a global set just before as a float in a global	verified	one	ui/README#static-initializers	
 0x76c180	81	CSimpleFrame::OnMouseWheel		ui	orchestration		Runs OnMouseWheel with 1 or -1 when visible	verified	one	ui/mouse#the-wheel	
-0x76c1e0	138	CSimpleFrame::OnDragStart		ui	orchestration		Runs OnDragStart with the name of the lowest held button	inferred	none		
+0x76c1e0	138	CSimpleFrame::OnDragStart		ui	orchestration		Runs OnDragStart with the name of the lowest held button	verified	one	ui/mouse#starting-a-drag	
 0x76c2a0	25	CSimpleFrame::OnDragStop		ui	orchestration		Runs the OnDragStop script	inferred	none		
 0x76c2c0	25	CSimpleFrame::OnReceiveDrag		ui	orchestration		Runs the OnReceiveDrag script	inferred	none		
 0x76c2e0	57	CSimpleFrame::SetHighlightLocked		ui	orchestration		Stores +0xf8 and switches layer 4 on, or off unless hovered	inferred	none	ui/frames#frame-fields	
@@ -33388,11 +33388,11 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x76c4f0	50	CScriptRegion::CScriptRegion		ui	orchestration		Builds the script object and layout parts and stores the region vtables	verified	one	ui/frames#vtables-and-the-two-parts	
 0x76c530	43	CScriptRegion::DeletingDestructor		ui	orchestration		Destroys a region and frees it when bit 0 of the argument is set	verified	one	ui/frames#destruction	
 0x76c560	67	CScriptRegion::~CScriptRegion		ui	orchestration		Releases the region's table and name and destroys its layout and script parts	verified	one	ui/frames#destruction	
-0x76c5b0	153	CScriptRegion::ExpandName		ui	orchestration		Writes a name with a leading $parent replaced by the nearest named ancestor's name	verified	one	ui/frames#names-and-lookup-by-name	
+0x76c5b0	153	CScriptRegion::ExpandName		ui	orchestration		Writes a name with a leading $parent replaced by the nearest named ancestor's name	verified	one	ui/widgettype#finding-a-widget-by-name	
 0x76c650	132	CScriptRegion::SetName		ui	orchestration		Stores the expanded name and makes it a Lua global for the region's table when unset	verified	one	ui/frames#names-and-lookup-by-name	
 0x76c6e0	20	CScriptRegion::GetLayoutParent		ui	orchestration		Returns the parent's layout part, or 0	inferred	none	ui/frames#vtables-and-the-two-parts	
-0x76c700	94	CScriptRegion::GetLayoutFrameByName		ui	orchestration		Finds a region by a name with $parent expanded against the frame, returning its layout part	verified	one	ui/framexml#child-frames-and-names	
-0x76c760	124	FindFrameOfType		ui	orchestration		Returns the object a global of a name holds when it is a table passing a type test	verified	one	ui/frames#names-and-lookup-by-name	
+0x76c700	94	CScriptRegion::GetLayoutFrameByName		ui	orchestration		Finds a region by a name with $parent expanded against the frame, returning its layout part	verified	one	ui/widgettype#finding-a-widget-by-name	
+0x76c760	124	FindFrameOfType		ui	orchestration		Returns the object a global of a name holds when it is a table passing a type test	verified	one	ui/widgettype#finding-a-widget-by-name	
 0x76c7e0	5	RegionInitInfinityThunk		ui	orchestration		Jumps to 0x76c7f0; a static initializer	verified	one	ui/README#static-initializers	
 0x76c7f0	11	RegionInitInfinity		ui	orchestration		Copies +inf into a global of the file	verified	one	ui/README#static-initializers	
 0x76c800	5	RegionInitTwoPiThunk		ui	orchestration		Jumps to 0x76c810; a static initializer	verified	one	ui/README#static-initializers	
@@ -33494,33 +33494,33 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x76fab0	31			ui	orchestration		Runs its object file code not read here	inferred	none		
 0x76fad0	12			ui	orchestration		Runs its object file code that calls _atexit; not read here	inferred	none		
 0x76fae0	21			ui	primitive		Runs its object file code not read here	inferred	none		
-0x76fb00	317			ui	host		Draws a batch's quads, then its strings, then its callbacks	verified	one	ui/model#where-the-scene-draws	
-0x76fc40	193			ui	primitive		Runs its object file code that calls 0x77f640, 0x770410; not read here	inferred	none		
+0x76fb00	317	DrawBatch		ui	host		Draws a batch: its sorted quads, then its text sub-batch, then its render callbacks	verified	one	ui/draworder#what-a-batch-drains	
+0x76fc40	193	CSimpleTexture::CSimpleTexture		ui	primitive		Builds a texture of a frame and layer with no image, the BLEND mode and the unit coordinates	verified	one	ui/texture#draw-layer-and-blend-mode	
 0x76fd10	43			ui	orchestration		Runs its object file code that calls 0x76fd40, CDataAllocator::PutData; not read here	inferred	none		
 0x76fd40	59			ui	primitive		Runs its object file code that calls HandleClose, UnlockScriptObject; not read here	inferred	none		
 0x76fd80	5			ui	orchestration		Runs its object file code not read here	inferred	none		
 0x76fd90	11			ui	orchestration		Runs its object file code not read here	inferred	none		
-0x76fda0	40			ui	primitive		Runs its object file code that calls 0x58b2b0; not read here	inferred	none		
+0x76fda0	40	LoadUiPixelShaders		ui	primitive		Loads the interface pixel shaders from a name list into the two-slot table	verified	one	ui/texture#desaturating	
 0x76fdd0	32			ui	primitive		Runs its object file code that calls GxShaderRelease; not read here	inferred	none		
 0x76fdf0	41			ui	orchestration		Runs its object file code that calls 0x6f2cf0, CScriptRegion::SetName; not read here	inferred	none		
 0x76fe20	913	CSimpleTexture::LoadXML		ui	primitive		Loads a texture's layout node, template and hidden, then coordinates, colour, gradient, file and blend	verified	one	ui/xmltypes#regions-and-fonts	
-0x7701c0	54			ui	primitive		Runs its object file code that calls CLayoutFrame::SetAllPoints; not read here	inferred	none		
-0x770200	245			ui	primitive		Runs its object file code that calls 0x44ac70, CGxTexFlags::CGxTexFlags, TextureCreate and 5 more; not read here	inferred	none		
-0x770300	91			ui	orchestration		Runs its object file code that calls CompareHandles, AddHandleRef, HandleClose and 1 more; not read here	inferred	none		
-0x770360	58			ui	orchestration		Runs its object file code that calls 0x44a9c0, HandleClose, 0x77fdf0; not read here	inferred	none		
-0x7703a0	74			ui	orchestration		Runs its object file code that calls 0x44b410, SStrCopy, SStr::sub_64A450; not read here	inferred	none		
-0x7703f0	29			ui	orchestration		Runs its object file code that calls 0x77fdf0; not read here	inferred	none		
-0x770410	165			ui	orchestration		Sets a texture's four corner coordinates from a rectangle	verified	one	ui/slider#a-status-bars-fill	
+0x7701c0	54	CSimpleTexture::AnchorToParent		ui	primitive	void __thiscall (void *node, void *status)	Pins a parented texture with no anchor point to its parent with SetAllPoints	verified	one	ui/regions#the-implicit-anchor	
+0x770200	245	CSimpleTexture::SetTexture		ui	primitive		Loads a texture file with wrap, filter and shader index, or answers 1 for the file already held	verified	one	ui/texture#settexture	
+0x770300	91	CSimpleTexture::SetImage		ui	orchestration		Replaces the image handle with a referenced one, closes the old and marks the texture dirty	verified	one	ui/texture#two-colour-stores	
+0x770360	58	CSimpleTexture::SetSolidColour		ui	orchestration		Replaces the image with the shared 8 by 8 solid image of a colour	verified	one	ui/texture#a-colour-without-a-file	
+0x7703a0	74	CSimpleTexture::GetFileName		ui	orchestration		Copies the image name cut at its last dot	verified	one	ui/texture#reading-the-image-and-the-coordinates	
+0x7703f0	29	CSimpleTexture::SetBlendMode		ui	orchestration		Stores the blend mode and marks the texture dirty	verified	one	ui/texture#the-quad-record	
+0x770410	165	CSimpleTexture::SetTexCoordRect		ui	orchestration		Sets the four corners of the coordinates from a rectangle	verified	one	ui/texture#reading-the-image-and-the-coordinates	
 0x7704c0	166	StoreTextureCorners		ui	orchestration		Stores eight floats as the four corners and relays out a rect-modifying texture	verified	one	ui/taxiframe#route-line-textures	
 0x770570	64			ui	primitive		Runs its object file code not read here	inferred	none		
-0x7705b0	106			ui	orchestration		Runs its object file code not read here	inferred	none		
-0x770620	36			ui	orchestration		Runs its object file code that calls 0x58b360; not read here	inferred	none		
-0x770650	29			ui	orchestration		Runs its object file code that calls 0x77fdf0; not read here	inferred	none		
-0x770670	98			ui	orchestration		Runs its object file code that calls CLayoutFrame::OnFrameSizeChanged, 0x770570, 0x7705b0; not read here	inferred	none		
-0x7706e0	26			ui	orchestration		Runs its object file code that calls 0x772fd0; not read here	inferred	none		
-0x770700	24			ui	orchestration		Runs its object file code that calls GetTextureDeviceObject; not read here	inferred	none		
-0x770720	98			ui	primitive		Runs its object file code that calls CLayoutFrame::GetWidth, 0x44b3b0, GetScaledScreenAspect and 1 more; not read here	inferred	none		
-0x770790	99			ui	primitive		Runs its object file code that calls CLayoutFrame::GetHeight, 0x44b3b0, GetScaledScreenAspect and 1 more; not read here	inferred	none		
+0x7705b0	106	CSimpleTexture::SetVertices		ui	primitive	void __thiscall (float *rect)	Writes the four vertex positions (left top), (left bottom), (right top), (right bottom) with z zero	verified	one	ui/regions#a-region-that-does-not-resolve	
+0x770620	36	GetUiPixelShader		ui	orchestration		Answers the interface pixel shader at an index when it is usable, else 0	verified	one	ui/texture#desaturating	
+0x770650	29	CSimpleTexture::SetPixelShader		ui	orchestration		Stores the pixel-shader slot and marks the texture dirty	verified	one	ui/texture#desaturating	
+0x770670	98	CSimpleTexture::OnFrameSizeChanged		ui	orchestration	void __thiscall (float *oldRect)	Lays out dependents, applies the texture coordinate rule to the rectangle and writes the four vertices	verified	one	ui/regions#a-region-that-does-not-resolve	
+0x7706e0	26	CSimpleTexture::Emit		ui	orchestration	void __thiscall (void *batch)	Appends the texture to a layer batch when it has an image	verified	one	ui/regions#a-region-that-does-not-resolve	
+0x770700	24	CSimpleTexture::GetDeviceTexture		ui	orchestration		Answers the device texture of the image handle, or 0	verified	one	ui/texture#the-quad-record	
+0x770720	98	CSimpleTexture::GetWidth		ui	primitive	float __thiscall ()	Returns the authored width, or the image's width in texels in layout units when it is 0.0	verified	one	ui/regions#a-textures-size	
+0x770790	99	CSimpleTexture::GetHeight		ui	primitive	float __thiscall ()	Returns the authored height, or the image's height in texels in layout units when it is 0.0	verified	one	ui/regions#a-textures-size	
 0x770800	265			ui	orchestration		Applies a font's changed font, justify, colour, shadow and spacing to a FontString under its masks	verified	one	ui/fontstring#following-a-font	
 0x770910	434			ui	primitive		Runs its object file code that calls 0x41e4c0, SStrCmpI, TextBlockGenerateFont and 2 more; not read here	inferred	none		
 0x770ad0	396			ui	primitive		Runs its object file code that calls 0x41e4c0, SStrCmpI, TextBlockGenerateFont and 2 more; not read here	inferred	none		
@@ -33530,7 +33530,7 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x770e50	177			ui	primitive		Runs CSimpleRender.cpp code that calls SMemFree, 0x7714f0, UnlockScriptObject and 1 more; not read here	inferred	none		
 0x770f10	41			ui	orchestration		Runs CSimpleRender.cpp code that calls 0x6f2cf0, CScriptRegion::SetName; not read here	inferred	none		
 0x770f40	1329	CSimpleFontString::LoadXML		ui	primitive		Loads a font string's layout node, template, hidden, text, limits, font, justification, colour and shadow	verified	one	ui/xmltypes#regions-and-fonts	
-0x771480	110			ui	orchestration		Anchors an unanchored, parented FontString to its parent by its own horizontal justify	verified	one	ui/button#label-elements-from-xml	
+0x771480	110	CSimpleFontString::AnchorToParent		ui	orchestration	void __thiscall (void *node, void *status)	Pins a parented font string with no anchor point to its parent by its horizontal justification	verified	one	ui/regions#the-implicit-anchor	
 0x7714f0	266			ui	primitive		Runs CSimpleRender.cpp code that calls 0x772790, SStrCmpI, 0x772810 and 3 more; not read here	inferred	none		
 0x771600	121	CSimpleFontString::SetTextHeight		ui	orchestration		Sets a different text height and clears the one-to-one size bit	verified	one	ui/fontstring#size-and-fitting	
 0x771680	102			ui	orchestration		Runs CSimpleRender.cpp code that calls SMemAlloc, SMemFree; not read here	inferred	none		
@@ -33562,9 +33562,9 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x772830	34			ui	orchestration		Runs its object file code that calls CLayoutFrame::SetWidth; not read here	inferred	none		
 0x772860	34			ui	orchestration		Runs its object file code that calls CLayoutFrame::SetHeight; not read here	inferred	none		
 0x772890	149			ui	primitive		Returns the unwrapped text width in layout units, measuring and caching it when none is cached	verified	one	ui/tooltipcontent#sizing-the-tooltip	
-0x772930	113			ui	primitive		Runs its object file code that calls CLayoutFrame::GetWidth, 0x772890, GetScaledScreenAspect and 1 more; not read here	inferred	none		
+0x772930	113	CSimpleFontString::GetWidth		ui	primitive	float __thiscall ()	Returns the authored or measured text width, at least one interface unit	verified	one	ui/regions#a-font-strings-size	
 0x7729b0	170			ui	primitive		Returns the text height in layout units, measuring and caching it when none is cached	verified	one	ui/tooltipcontent#the-spacer-line	
-0x772a60	113			ui	primitive		Returns the larger of the text height and one device pixel	verified	one	ui/tooltipcontent#the-spacer-line	
+0x772a60	113	CSimpleFontString::GetHeight		ui	primitive	float __thiscall ()	Returns the authored or measured text height, at least one interface unit	verified	one	ui/regions#a-font-strings-size	
 0x772ae0	119	MeasureRunWidth		ui	primitive	float __thiscall (const char *text, int32_t bytes)	Measures the width of a byte range of the label's text, escapes giving none	verified	one	ui/editboxmarkup#how-the-box-draws-and-measures	
 0x772b60	87			ui	primitive		Splits the text into wrapped pieces for a width and a piece count	verified	one	ui/tooltipcontent#sizing-the-tooltip	
 0x772bc0	101			ui	primitive		Runs its object file code that calls SStrLen, 0x7727b0, 0x44d860; not read here	inferred	none		
@@ -33572,17 +33572,17 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x772ca0	122			ui	primitive		Runs its object file code that calls CLayoutFrame::SetLayoutScale, 0x772790, SStrCopy and 3 more; not read here	inferred	none		
 0x772d20	24			ui	orchestration		Runs its object file code that calls CLayoutFrame::Resize; not read here	inferred	none		
 0x772d40	191			ui	primitive		Runs its object file code that calls CLayoutFrame::OnFrameSizeChanged, 0x44d600, 0x772e00 and 2 more; not read here	inferred	none		
-0x772e00	72			ui	orchestration		Runs its object file code not read here	inferred	none		
-0x772e50	41			ui	orchestration		Runs its object file code that calls 0x773080; not read here	inferred	none		
+0x772e00	72	RectWhollyOffScreen		ui	primitive	bool __thiscall (float *rect)	Answers 1 for a rectangle with its top or right below 0 or its bottom or left above 1.0	verified	one	ui/regions#a-region-that-does-not-resolve	
+0x772e50	41	CSimpleFontString::Emit		ui	orchestration		Appends the font string to a layer batch when it has a font and text	verified	one	ui/draworder#what-a-batch-drains	
 0x772e80	55			ui	primitive		Runs its object file code not read here	inferred	none		
 0x772ec0	43			ui	orchestration		Runs its object file code that calls 0x772ef0, SMemFree; not read here	inferred	none		
 0x772ef0	213			ui	primitive		Runs its object file code that calls 0x7731d0, 0x773370, SMemFree; not read here	inferred	none		
-0x772fd0	164			ui	primitive		Runs its object file code that calls 0x770700, 0x773280; not read here	inferred	none		
-0x773080	130			ui	primitive		Runs its object file code that calls CLayoutFrame::GetRect, 0x772e00, 0x44d360 and 2 more; not read here	inferred	none		
-0x773110	142	RegisterLayerCallback		ui	primitive		Adds a draw callback and its argument to a layer's list	inferred	none		
-0x7731a0	29			ui	orchestration		Runs its object file code that calls _qsort; not read here	inferred	none		
-0x7731c0	15			ui	primitive		Runs its object file code not read here	inferred	none		
-0x7731d0	104			ui	orchestration		Runs its object file code that calls 0x5c1f70, 0x773240, 0x773370 and 1 more; not read here	inferred	none		
+0x772fd0	164	CSimpleTexture::AppendQuad		ui	primitive	void __thiscall (void *batch)	Appends a 0x1c-byte quad record of the texture's image, vertices, texcoords, blend, colours and shader	verified	one	ui/regions#a-region-that-does-not-resolve	
+0x773080	130	CSimpleFontString::AppendToBatch		ui	orchestration	void __thiscall (void *batch)	Appends the text to a batch when its rectangle is valid and not wholly off screen	verified	one	ui/regions#a-region-that-does-not-resolve	
+0x773110	142	BatchAddCallback		ui	primitive		Adds a draw callback and its context to a batch, drained after the quads and the text	verified	one	ui/draworder#what-a-batch-drains	
+0x7731a0	29	BatchSortQuads		ui	orchestration		Sorts the quad records of a batch by texture handle with qsort	verified	one	ui/draworder#layer-batches	
+0x7731c0	15	CompareQuadHandles		ui	primitive	int __cdecl (int *a, int *b)	Returns the first dword of one quad record minus that of the other, the texture handles	verified	one	ui/draworder#layer-batches	
+0x7731d0	104	BatchBegin		ui	orchestration		Empties a batch: zeroes the quad count, frees the text sub-batch and releases the callback list	verified	one	ui/draworder#layer-batches	
 0x773240	60			ui	primitive		Runs its object file code not read here	inferred	none		
 0x773280	231			ui	primitive		Runs its object file code that calls SMemReAlloc, SMemAlloc, SMemFree; not read here	inferred	none		
 0x773370	41			ui	primitive		Runs its object file code not read here	inferred	none		
@@ -33592,14 +33592,14 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x7733d0	30			ui	orchestration		Runs its object file code that calls 0x77fd10; not read here	inferred	none		
 0x7733f0	1			ui	orchestration		Runs its object file code not read here	inferred	none		
 0x773400	37			ui	orchestration		Runs its object file code not read here	inferred	none		
-0x773430	67			ui	orchestration		Runs its object file code that calls SStrCmpI; not read here	inferred	none		
-0x773480	6			ui	orchestration		Runs its object file code not read here	inferred	none		
+0x773430	67	TextureIsTypeName		ui	orchestration	bool __thiscall (const char *name)	Answers whether a name is Texture or one of its bases, ignoring case	verified	one	ui/widgettype#type-chains	
+0x773480	6	TextureGetTypeName		ui	orchestration	const char * __thiscall ()	Returns the type name Texture	verified	one	ui/widgettype#type-chains	
 0x773490	110			ui	primitive		Runs its object file code that calls 0x770c60, SMemFree; not read here	inferred	none		
 0x773500	39			ui	orchestration		Runs its object file code that calls 0x7724a0; not read here	inferred	none		
 0x773530	26			ui	primitive		Runs its object file code that calls 0x770800; not read here	inferred	none		
 0x773550	37			ui	orchestration		Runs its object file code not read here	inferred	none		
-0x773580	67			ui	orchestration		Runs its object file code that calls SStrCmpI; not read here	inferred	none		
-0x7735d0	6			ui	orchestration		Runs its object file code not read here	inferred	none		
+0x773580	67	FontStringIsTypeName		ui	orchestration	bool __thiscall (const char *name)	Answers whether a name is FontString or one of its bases, ignoring case	verified	one	ui/widgettype#type-chains	
+0x7735d0	6	FontStringGetTypeName		ui	orchestration	const char * __thiscall ()	Returns the type name FontString	verified	one	ui/widgettype#type-chains	
 0x7735e0	5			ui	orchestration		Runs its object file code not read here	inferred	none		
 0x7735f0	19			ui	primitive		Runs its object file code not read here	inferred	none		
 0x773610	5			ui	orchestration		Runs its object file code not read here	inferred	none		
@@ -33612,10 +33612,10 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x773910	272	Frame::CreateTitleRegion	idb	ui	orchestration		Implements the Frame method CreateTitleRegion, its pair in the table 0x878ec0	inferred	none		
 0x773a20	520	Frame::CreateTexture	idb	ui	orchestration		Creates a texture of the frame with a name, layer and template, the template only from a string	verified	one	ui/script#creating-a-frame-from-lua	
 0x773c30	558	Frame::CreateFontString	idb	ui	orchestration		Creates a font string of the frame, inheriting a font object or else a template named by a string	verified	one	ui/script#creating-a-frame-from-lua	
-0x773e60	242	Frame::GetNumRegions	idb	ui	orchestration		Implements the Frame method GetNumRegions, its pair in the table 0x878ec0	inferred	none		
-0x773f60	288	Frame::GetRegions	idb	ui	orchestration		Implements the Frame method GetRegions, its pair in the table 0x878ec0	inferred	none		
-0x774080	242	Frame::GetNumChildren	idb	ui	orchestration		Implements the Frame method GetNumChildren, its pair in the table 0x878ec0	inferred	none		
-0x774180	288	Frame::GetChildren	idb	ui	orchestration		Implements the Frame method GetChildren, its pair in the table 0x878ec0	inferred	none		
+0x773e60	242	Frame::GetNumRegions	idb	ui	orchestration		Implements the Frame method GetNumRegions, its pair in the table 0x878ec0	verified	one	ui/frames#reading-the-lists-from-lua	
+0x773f60	288	Frame::GetRegions	idb	ui	orchestration		Implements the Frame method GetRegions, its pair in the table 0x878ec0	verified	one	ui/frames#reading-the-lists-from-lua	
+0x774080	242	Frame::GetNumChildren	idb	ui	orchestration		Implements the Frame method GetNumChildren, its pair in the table 0x878ec0	verified	one	ui/frames#reading-the-lists-from-lua	
+0x774180	288	Frame::GetChildren	idb	ui	orchestration		Implements the Frame method GetChildren, its pair in the table 0x878ec0	verified	one	ui/frames#reading-the-lists-from-lua	
 0x7742a0	188	Frame::GetFrameStrata	idb	ui	orchestration		Implements the Frame method GetFrameStrata, its pair in the table 0x878ec0	inferred	none		
 0x774360	310	Frame::SetFrameStrata	idb	ui	orchestration		Implements the Frame method SetFrameStrata, its pair in the table 0x878ec0	verified	one	ui/methods#what-the-frame-methods-call	
 0x7744a0	187	Frame::GetFrameLevel	idb	ui	orchestration		Implements the Frame method GetFrameLevel, its pair in the table 0x878ec0	inferred	none		
@@ -33636,8 +33636,8 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x775340	241	Frame::SetID	idb	ui	orchestration		Implements the Frame method SetID, its pair in the table 0x878ec0	inferred	none		
 0x775440	163	Frame::SetToplevel	idb	ui	orchestration		Implements the Frame method SetToplevel, its pair in the table 0x878ec0	inferred	none		
 0x7754f0	177	Frame::IsToplevel	idb	ui	orchestration		Implements the Frame method IsToplevel, its pair in the table 0x878ec0	inferred	none		
-0x7755b0	202	Frame::EnableDrawLayer	idb	ui	orchestration		Implements the Frame method EnableDrawLayer, its pair in the table 0x878ec0	inferred	none		
-0x775680	202	Frame::DisableDrawLayer	idb	ui	orchestration		Implements the Frame method DisableDrawLayer, its pair in the table 0x878ec0	inferred	none		
+0x7755b0	202	Frame::EnableDrawLayer	idb	ui	orchestration		Implements the Frame method EnableDrawLayer, its pair in the table 0x878ec0	verified	one	ui/framestate#draw-layers	
+0x775680	202	Frame::DisableDrawLayer	idb	ui	orchestration		Implements the Frame method DisableDrawLayer, its pair in the table 0x878ec0	verified	one	ui/framestate#draw-layers	
 0x775750	183	Frame::Show	idb	ui	orchestration		Implements the Frame method Show, its pair in the table 0x878ec0	verified	one	ui/visibility#showing-a-frame	
 0x775810	183	Frame::Hide	idb	ui	orchestration		Implements the Frame method Hide, its pair in the table 0x878ec0	verified	one	ui/visibility#hiding-a-frame	
 0x7758d0	178	Frame::IsVisible	idb	ui	orchestration		Implements the Frame method IsVisible, its pair in the table 0x878ec0	inferred	none		
@@ -33655,7 +33655,7 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x776590	166	Frame::SetResizable	idb	ui	orchestration		Implements the Frame method SetResizable, its pair in the table 0x878ec0	inferred	none		
 0x776640	179	Frame::IsResizable	idb	ui	orchestration		Implements the Frame method IsResizable, its pair in the table 0x878ec0	inferred	none		
 0x776700	303	Frame::StartMoving	idb	ui	orchestration		Implements the Frame method StartMoving, its pair in the table 0x878ec0	inferred	none		
-0x776830	350	Frame::StartSizing	idb	ui	orchestration		Implements the Frame method StartSizing, its pair in the table 0x878ec0	verified	one	ui/resizebounds#the-drag	
+0x776830	350	Frame::StartSizing	idb	ui	orchestration		Implements the Frame method StartSizing, its pair in the table 0x878ec0	verified	one	ui/framestate#starting-a-size	
 0x776990	184	Frame::StopMovingOrSizing	idb	ui	orchestration		Implements the Frame method StopMovingOrSizing, its pair in the table 0x878ec0	inferred	none		
 0x776a50	240	Frame::SetUserPlaced	idb	ui	orchestration		Implements the Frame method SetUserPlaced, its pair in the table 0x878ec0	inferred	none		
 0x776b40	179	Frame::IsUserPlaced	idb	ui	orchestration		Implements the Frame method IsUserPlaced, its pair in the table 0x878ec0	inferred	none		
@@ -33668,12 +33668,12 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x777130	182	Frame::IsMouseEnabled	idb	ui	orchestration		Implements the Frame method IsMouseEnabled, its pair in the table 0x878ec0	verified	one	ui/mouse#switching-input-kinds	
 0x7771f0	181	Frame::EnableMouseWheel	idb	ui	orchestration		Implements the Frame method EnableMouseWheel, its pair in the table 0x878ec0	verified	one	ui/methods#what-the-frame-methods-call	
 0x7772b0	182	Frame::IsMouseWheelEnabled	idb	ui	orchestration		Implements the Frame method IsMouseWheelEnabled, its pair in the table 0x878ec0	verified	one	ui/mouse#switching-input-kinds	
-0x777370	870	Frame::GetBackdrop	idb	ui	orchestration		Implements the Frame method GetBackdrop, its pair in the table 0x878ec0	inferred	none		
-0x7776e0	1243	Frame::SetBackdrop	idb	ui	orchestration		Implements the Frame method SetBackdrop, its pair in the table 0x878ec0	inferred	none		
-0x777bc0	358	Frame::GetBackdropColor	idb	ui	orchestration		Implements the Frame method GetBackdropColor, its pair in the table 0x878ec0	inferred	none		
-0x777d30	545	Frame::SetBackdropColor	idb	ui	orchestration		Implements the Frame method SetBackdropColor, its pair in the table 0x878ec0	inferred	none		
-0x777f60	358	Frame::GetBackdropBorderColor	idb	ui	orchestration		Implements the Frame method GetBackdropBorderColor, its pair in the table 0x878ec0	inferred	none		
-0x7780d0	545	Frame::SetBackdropBorderColor	idb	ui	orchestration		Implements the Frame method SetBackdropBorderColor, its pair in the table 0x878ec0	inferred	none		
+0x777370	870	Frame::GetBackdrop	idb	ui	orchestration		Implements the Frame method GetBackdrop, its pair in the table 0x878ec0	verified	one	ui/backdrop#reading-a-backdrop-back	
+0x7776e0	1243	Frame::SetBackdrop	idb	ui	orchestration		Implements the Frame method SetBackdrop, its pair in the table 0x878ec0	verified	one	ui/backdrop#setbackdrop-from-a-script	
+0x777bc0	358	Frame::GetBackdropColor	idb	ui	orchestration		Implements the Frame method GetBackdropColor, its pair in the table 0x878ec0	verified	one	ui/backdrop#reading-a-backdrop-back	
+0x777d30	545	Frame::SetBackdropColor	idb	ui	orchestration		Implements the Frame method SetBackdropColor, its pair in the table 0x878ec0	verified	one	ui/backdrop#the-two-colours	
+0x777f60	358	Frame::GetBackdropBorderColor	idb	ui	orchestration		Implements the Frame method GetBackdropBorderColor, its pair in the table 0x878ec0	verified	one	ui/backdrop#reading-a-backdrop-back	
+0x7780d0	545	Frame::SetBackdropBorderColor	idb	ui	orchestration		Implements the Frame method SetBackdropBorderColor, its pair in the table 0x878ec0	verified	one	ui/backdrop#the-two-colours	
 0x778300	10	InitFrameMethodHashThunk		ui	orchestration		Builds the Frame method hash table, then registers its exit handler; a static initializer	verified	one	ui/README#static-initializers	
 0x778310	190	InitFrameMethodHash		ui	orchestration		Builds the empty Frame method hash table at 0xcf4d38	verified	one	ui/README#static-initializers	
 0x7783d0	12	RegisterDestroyFrameMethodHash		ui	orchestration		Registers 0x7783e0 with _atexit	verified	one	ui/README#static-initializers	
@@ -33693,8 +33693,8 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x778690	11			ui	orchestration		Runs its object file code not read here	inferred	none		
 0x7786a0	222	CSimpleButton::CSimpleButton	idb	ui	orchestration		Constructs a Button frame and stores its two vtables	verified	one	ui/xmltypes#handler-names-by-type	
 0x778780	45	CSimpleButton::IsA		ui	orchestration		Answers 1 for the Button, Frame and Region type ids	verified	one	ui/button#construction-and-the-type	
-0x7787b0	89			ui	orchestration		Runs its object file code that calls SStrCmpI; not read here	inferred	none		
-0x778810	6			ui	orchestration		Runs its object file code not read here	inferred	none		
+0x7787b0	89	ButtonIsTypeName		ui	orchestration	bool __thiscall (const char *name)	Answers whether a name is Button or one of its bases, ignoring case	verified	one	ui/widgettype#type-chains	
+0x778810	6	ButtonGetTypeName		ui	orchestration	const char * __thiscall ()	Returns the type name Button	verified	one	ui/widgettype#type-chains	
 0x778820	43			ui	orchestration		Runs its object file code that calls 0x778850, SMemFree; not read here	inferred	none		
 0x778850	105			ui	primitive		Runs its object file code that calls 0x778fd0, FrameScriptReleaseScript, 0x783b20; not read here	inferred	none		
 0x7788c0	901	CSimpleButton::LoadXML		ui	primitive		Loads a Button's frame node, then its state textures, fonts, colours, texts and text attribute	verified	one	ui/xmltypes#elements-and-attributes-by-type	
@@ -33743,8 +33743,8 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x7799a0	11			ui	orchestration		Runs its object file code not read here	inferred	none		
 0x7799b0	865	CSimpleEditBox::CSimpleEditBox	idb	ui	primitive		Constructs an EditBox frame, its two vtables and its default flags	verified	one	ui/xmltypes#editbox-flags	
 0x779d20	45			ui	orchestration		Runs CSimpleEditBox.cpp code not read here	inferred	none		
-0x779d50	89			ui	orchestration		Runs CSimpleEditBox.cpp code that calls SStrCmpI; not read here	inferred	none		
-0x779db0	6			ui	orchestration		Runs CSimpleEditBox.cpp code not read here	inferred	none		
+0x779d50	89	EditBoxIsTypeName		ui	orchestration	bool __thiscall (const char *name)	Answers whether a name is EditBox or one of its bases, ignoring case	verified	one	ui/widgettype#type-chains	
+0x779db0	6	EditBoxGetTypeName		ui	orchestration	const char * __thiscall ()	Returns the type name EditBox	verified	one	ui/widgettype#type-chains	
 0x779dc0	43			ui	orchestration		Runs CSimpleEditBox.cpp code that calls 0x779df0, SMemFree; not read here	inferred	none		
 0x779df0	439			ui	primitive		Runs CSimpleEditBox.cpp code that calls 0x77e410, 0x77cd90, SMemFree and 1 more; not read here	inferred	none		
 0x779fb0	863	CSimpleEditBox::LoadXML		ui	primitive		Loads an EditBox's frame node, then its font, limits, flags, history and text elements	verified	one	ui/xmltypes#elements-and-attributes-by-type	
@@ -33770,10 +33770,10 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x77ac60	164	CSimpleEditBox::GetCompositionSpan		ui	primitive	void __thiscall (void)	Computes the composition span with non-atomic link steps	verified	one	ui/editboxmarkup#where-a-step-is-atomic	
 0x77ad10	568			ui	primitive		Runs CSimpleEditBox.cpp code that calls 0x42c500, SMemFree, 0x77a9f0 and 7 more; not read here	inferred	none		
 0x77af50	100			ui	orchestration		Switches the input method and runs OnEditFocusGained or OnEditFocusLost, then marks the cursor	verified	one	ui/editbox#keyboard-focus	
-0x77afc0	384			ui	primitive		Runs CSimpleEditBox.cpp code that calls 0x77e3d0, 0x42c310, sgetu8 and 8 more; not read here	inferred	none		
+0x77afc0	384	CSimpleEditBox::OnInputLanguage		ui	primitive		Handles the input method event of a box that holds or takes the focus, inserting its text	inferred	none	ui/keyscripts#the-edit-box-in-the-walk	
 0x77b160	1340	CSimpleEditBox::OnKeyDown		ui	orchestration		Takes a key for the focused box and runs its editing, scripts and history	verified	one	ui/editbox#which-box-takes-a-key	
 0x77b730	64			ui	orchestration		Runs CSimpleEditBox.cpp code not read here	inferred	none		
-0x77b770	75			ui	orchestration		Runs CSimpleEditBox.cpp code that calls 0x77e3d0; not read here	inferred	none		
+0x77b770	75	CSimpleEditBox::OnKeyRepeat		ui	orchestration		Forwards a key repeat to the box's own key down when it holds or takes the focus	verified	one	ui/keyscripts#the-edit-box-in-the-walk	
 0x77b7c0	55			ui	orchestration		Runs CSimpleEditBox.cpp code that calls 0x77e3d0; not read here	inferred	none		
 0x77b800	143	CSimpleEditBox::OnMouseDown		ui	orchestration		Places the cursor at a press and focuses the box	verified	one	ui/editbox#which-box-takes-a-key	
 0x77b890	45			ui	orchestration		Runs CSimpleEditBox.cpp code that calls CSimpleFrame::OnMouseUp; not read here	inferred	none		
@@ -33846,8 +33846,8 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x77e4a0	4			ui	orchestration		Runs its object file code not read here	inferred	none		
 0x77e4b0	47			ui	orchestration		Runs its object file code that calls 0x770910; not read here	inferred	none		
 0x77e4e0	23			ui	orchestration		Runs its object file code not read here	inferred	none		
-0x77e500	32			ui	primitive		Runs its object file code that calls SStrCmpI; not read here	inferred	none		
-0x77e520	6			ui	orchestration		Runs its object file code not read here	inferred	none		
+0x77e500	32	FontIsTypeName		ui	primitive	bool __thiscall (const char *name)	Answers whether a name is Font or one of its bases, ignoring case	verified	one	ui/widgettype#type-chains	
+0x77e520	6	FontGetTypeName		ui	orchestration	const char * __thiscall ()	Returns the type name Font	verified	one	ui/widgettype#type-chains	
 0x77e530	24			ui	orchestration		Runs its object file code that calls 0x784180; not read here	inferred	none		
 0x77e550	43			ui	orchestration		Runs its object file code that calls 0x783b20, SMemFree; not read here	inferred	none		
 0x77e580	5			ui	orchestration		Runs its object file code not read here	inferred	none		
@@ -33855,16 +33855,16 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x77e5b0	5			ui	orchestration		Runs its object file code not read here	inferred	none		
 0x77e5c0	19			ui	primitive		Runs its object file code not read here	inferred	none		
 0x77e5e0	8			ui	primitive		Runs its object file code not read here	inferred	none		
-0x77e5f0	153			ui	orchestration		Runs its object file code that calls 0x41e3a0, 0x77f570; not read here	inferred	none		
+0x77e5f0	153	CSimpleBackdrop::CSimpleBackdrop		ui	orchestration		Builds a backdrop object with no textures, an edge size of 0.025 and opaque white colours	verified	one	ui/backdrop#the-object	
 0x77e690	43			ui	orchestration		Runs its object file code that calls 0x41e330, SMemFree; not read here	inferred	none		
-0x77e6c0	484			ui	orchestration		Runs its object file code that calls 0x6f2cf0, 0x6f1b30, 0x41e3a0 and 6 more; not read here	inferred	none		
+0x77e6c0	484	CSimpleBackdrop::LoadXML		ui	orchestration		Reads the attributes and children of a Backdrop element into the object	verified	one	ui/backdrop#the-xml-element	
 0x77e8b0	5			ui	orchestration		Runs its object file code not read here	inferred	none		
 0x77e8c0	11			ui	orchestration		Runs its object file code not read here	inferred	none		
-0x77e8d0	2025			ui	primitive		Runs its object file code that calls SErrSetLastError, 0x41e4b0, GetBlockPoolData and 5 more; not read here	inferred	none		
-0x77f0c0	833			ui	primitive		Runs its object file code that calls SErrSetLastError, 0x41e4b0, 0x7704c0 and 2 more; not read here	inferred	none		
-0x77f410	45	CSimpleBackdrop::SetColor		ui	orchestration	void __thiscall (const uint32_t *colour)	Stores a colour in the backdrop object and repaints it	verified	one	ui/tooltipobject#the-game-object-tooltip	
-0x77f440	143			ui	orchestration		Runs its object file code that calls 0x77f750; not read here	inferred	none		
-0x77f4d0	151			ui	orchestration		Runs its object file code not read here	inferred	none		
+0x77e8d0	2025	CSimpleBackdrop::CreatePieces		ui	primitive		Creates and anchors the background and edge textures of a frame	verified	one	ui/backdrop#the-pieces-and-their-anchors	
+0x77f0c0	833	CSimpleBackdrop::SetTexCoords		ui	primitive		Sets the background and edge texture coordinates for a rectangle and applies both colours	verified	one	ui/backdrop#the-edge-file	
+0x77f410	45	CSimpleBackdrop::SetColor		ui	orchestration	void __thiscall (const uint32_t *colour)	Stores the background colour in the backdrop object and repaints it	verified	one	ui/backdrop#the-two-colours	
+0x77f440	143	CSimpleBackdrop::SetBorderColor		ui	orchestration		Stores the border colour and repaints the eight edge textures	verified	one	ui/backdrop#the-two-colours	
+0x77f4d0	151	CSimpleBackdrop::ReleasePieces		ui	orchestration		Releases the nine piece textures and clears their pointers	verified	one	ui/backdrop#the-object	
 0x77f570	21			ui	primitive		Runs its object file code not read here	inferred	none		
 0x77f590	5			ui	orchestration		Runs its object file code not read here	inferred	none		
 0x77f5a0	15			ui	primitive		Runs its object file code not read here	inferred	none		
@@ -33877,16 +33877,16 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x77f640	122			ui	orchestration		Runs its object file code that calls CScriptRegion::CScriptRegion, 0x77fd10; not read here	inferred	none		
 0x77f6c0	43			ui	orchestration		Runs its object file code that calls 0x77f6f0, SMemFree; not read here	inferred	none		
 0x77f6f0	85			ui	orchestration		Runs its object file code that calls 0x77fd10, SMemFree; not read here	inferred	none		
-0x77f750	355			ui	primitive		Sets a FontString colour from a colour pointer, skipping a colour it already holds	verified	one	ui/tooltipcontent#the-line-arrays	
-0x77f8c0	77			ui	orchestration		Runs its object file code not read here	inferred	none		
-0x77f910	387			ui	primitive		Runs its object file code that calls 0x667300, 0x526930, 0x5ce1c0; not read here	inferred	none		
+0x77f750	355	CScriptRegion::SetVertexColor		ui	primitive		Sets a region's vertex colour, skipping a repeat and an opaque white when none is set	verified	one	ui/texture#setting-a-vertex-colour	
+0x77f8c0	77	CScriptRegion::GetVertexColor		ui	orchestration		Copies the vertex colour, or opaque white when it holds no entry	verified	one	ui/texture#two-colour-stores	
+0x77f910	387	CScriptRegion::SetGradient		ui	primitive		Sets the four corner colours of a region from a minimum, a maximum and an orientation	verified	one	ui/texture#gradients	
 0x77faa0	5			ui	orchestration		Runs its object file code not read here	inferred	none		
 0x77fab0	11			ui	orchestration		Runs its object file code not read here	inferred	none		
-0x77fac0	405			ui	primitive		Runs its object file code that calls 0x667300, 0x526930, 0x5ce1c0 and 1 more; not read here	inferred	none		
-0x77fc60	70			ui	orchestration		Runs its object file code that calls CLayoutFrame::SetDeferResize, CSimpleFrame::RemoveRegionFromLayer; not read here	inferred	none		
-0x77fcb0	90			ui	orchestration		Runs its object file code that calls CLayoutFrame::SetDeferResize, CSimpleFrame::AddRegionToLayer; not read here	inferred	none		
-0x77fd10	218			ui	primitive		Runs its object file code that calls CLayoutFrame::SetDeferResize, 0x77fc60 and 2 more; not read here	inferred	none		
-0x77fdf0	29			ui	orchestration		Runs its object file code that calls CSimpleFrame::NotifyLayerChanged; not read here	inferred	none		
+0x77fac0	405	CScriptRegion::UpdateFrameAlpha		ui	primitive		Folds the owning frame's alpha into the vertex colour array	verified	one	ui/texture#the-frames-alpha-in-the-colour	
+0x77fc60	70	CScriptRegion::Unregister		ui	orchestration		Takes a registered region out of its parent's draw layer list and defers its layout	verified	one	ui/visibility#walking-a-show-or-hide	
+0x77fcb0	90	CScriptRegion::Register		ui	orchestration		Links a shown, unregistered region into its visible parent's draw layer list	verified	one	ui/visibility#walking-a-show-or-hide	
+0x77fd10	218	CScriptRegion::SetRegionParent		ui	primitive		Moves a region to a new parent and draw layer, linking it into the new parent's region list	verified	one	ui/frames#what-the-region-list-holds	
+0x77fdf0	29	CScriptRegion::NotifyLayerChanged		ui	orchestration		Tells the parent frame its layer changed while the region is registered	verified	one	ui/texture#showing-and-hiding-a-texture	
 0x77fe10	5			ui	orchestration		Runs its object file code not read here	inferred	none		
 0x77fe20	15			ui	primitive		Runs its object file code not read here	inferred	none		
 0x77fe30	5			ui	orchestration		Runs its object file code not read here	inferred	none		
@@ -33959,8 +33959,8 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x782d80	68	CSimpleStatusBar::CSimpleStatusBar	idb	ui	primitive		Constructs a StatusBar frame and stores its two vtables	verified	one	ui/xmltypes#handler-names-by-type	
 0x782dd0	26			ui	orchestration		Runs its object file code that calls 0x77f750; not read here	inferred	none		
 0x782df0	45			ui	orchestration		Runs its object file code not read here	inferred	none		
-0x782e20	89			ui	orchestration		Runs its object file code that calls SStrCmpI; not read here	inferred	none		
-0x782e80	6			ui	orchestration		Runs its object file code not read here	inferred	none		
+0x782e20	89	StatusBarIsTypeName		ui	orchestration	bool __thiscall (const char *name)	Answers whether a name is StatusBar or one of its bases, ignoring case	verified	one	ui/widgettype#type-chains	
+0x782e80	6	StatusBarGetTypeName		ui	orchestration	const char * __thiscall ()	Returns the type name StatusBar	verified	one	ui/widgettype#type-chains	
 0x782e90	43			ui	orchestration		Runs its object file code that calls 0x782ec0, SMemFree; not read here	inferred	none		
 0x782ec0	47			ui	orchestration		Runs its object file code that calls 0x7831f0, FrameScriptReleaseScript; not read here	inferred	none		
 0x782ef0	441	CSimpleStatusBar::LoadXML		ui	primitive		Loads a StatusBar's frame node, then its bar texture and colour, range, value and orientation	verified	one	ui/xmltypes#slider-and-statusbar-values	
@@ -33998,7 +33998,7 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x783c30	1265	CFontObject::LoadXML		ui	primitive		Loads a named font's template, file, height, outline, spacing, justification, colour and shadow	verified	one	ui/xmltypes#regions-and-fonts	
 0x784130	5			ui	orchestration		Runs its object file code not read here	inferred	none		
 0x784140	11			ui	orchestration		Runs its object file code not read here	inferred	none		
-0x784150	42			ui	orchestration		Runs its object file code that calls UnlockScriptObject, LockScriptObject; not read here	inferred	none		
+0x784150	42	FontSetName		ui	orchestration		Clears the font name global, stores the new name and publishes it as a global	verified	one	ui/widgettype#naming-a-widget	
 0x784180	66			ui	orchestration		Pushes a font's changed groups to each follower, then clears the change bits	verified	one	ui/fontstring#following-a-font	
 0x7841d0	268			ui	primitive		Runs its object file code that calls 0x770ad0; not read here	inferred	none		
 0x7842e0	34			ui	orchestration		Runs its object file code that calls 0x783560, SMemFree; not read here	inferred	none		
@@ -34035,8 +34035,8 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x785000	11			ui	orchestration		Runs its object file code not read here	inferred	none		
 0x785010	55	CSimpleCheckbox::CSimpleCheckbox	idb	ui	orchestration		Constructs a CheckButton on a Button and stores its two vtables	verified	one	ui/xmltypes#handler-names-by-type	
 0x785050	53			ui	orchestration		Runs its object file code not read here	inferred	none		
-0x785090	110			ui	orchestration		Runs its object file code that calls SStrCmpI; not read here	inferred	none		
-0x785100	6			ui	orchestration		Runs its object file code not read here	inferred	none		
+0x785090	110	CheckButtonIsTypeName		ui	orchestration	bool __thiscall (const char *name)	Answers whether a name is CheckButton or one of its bases, ignoring case	verified	one	ui/widgettype#type-chains	
+0x785100	6	CheckButtonGetTypeName		ui	orchestration	const char * __thiscall ()	Returns the type name CheckButton	verified	one	ui/widgettype#type-chains	
 0x785110	43			ui	orchestration		Runs its object file code that calls 0x785140, SMemFree; not read here	inferred	none		
 0x785140	40			ui	orchestration		Runs its object file code that calls 0x785330, 0x785440; not read here	inferred	none		
 0x785170	177	CSimpleCheckbox::LoadXML		ui	orchestration		Loads a CheckButton's Button node, then checked and its two checked textures	verified	one	ui/xmltypes#elements-and-attributes-by-type	
@@ -34059,8 +34059,8 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x785620	19			ui	primitive		Runs its object file code not read here	inferred	none		
 0x785640	279	CSimpleMessageFrame::CSimpleMessageFrame	idb	ui	orchestration		Constructs a MessageFrame frame and stores its two vtables	verified	one	ui/xmltypes#handler-names-by-type	
 0x785760	45			ui	orchestration		Runs CSimpleMessageFrame.cpp code not read here	inferred	none		
-0x785790	89			ui	orchestration		Runs CSimpleMessageFrame.cpp code that calls SStrCmpI; not read here	inferred	none		
-0x7857f0	6			ui	orchestration		Runs CSimpleMessageFrame.cpp code not read here	inferred	none		
+0x785790	89	MessageFrameIsTypeName		ui	orchestration	bool __thiscall (const char *name)	Answers whether a name is MessageFrame or one of its bases, ignoring case	verified	one	ui/widgettype#type-chains	
+0x7857f0	6	MessageFrameGetTypeName		ui	orchestration	const char * __thiscall ()	Returns the type name MessageFrame	verified	one	ui/widgettype#type-chains	
 0x785800	43			ui	orchestration		Runs CSimpleMessageFrame.cpp code that calls 0x785830, SMemFree; not read here	inferred	none		
 0x785830	180			ui	primitive		Runs CSimpleMessageFrame.cpp code that calls 0x786720, 0x785e00, SMemFree and 1 more; not read here	inferred	none		
 0x7858f0	5			ui	orchestration		Runs CSimpleMessageFrame.cpp code not read here	inferred	none		
@@ -34105,8 +34105,8 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x786a20	19			ui	primitive		Runs its object file code not read here	inferred	none		
 0x786a40	109	CSimpleScrollFrame::CSimpleScrollFrame	idb	ui	orchestration		Constructs a ScrollFrame frame and stores its two vtables	verified	one	ui/xmltypes#handler-names-by-type	
 0x786ab0	45			ui	orchestration		Runs its object file code not read here	inferred	none		
-0x786ae0	89			ui	orchestration		Runs its object file code that calls SStrCmpI; not read here	inferred	none		
-0x786b40	6			ui	orchestration		Runs its object file code not read here	inferred	none		
+0x786ae0	89	ScrollFrameIsTypeName		ui	orchestration	bool __thiscall (const char *name)	Answers whether a name is ScrollFrame or one of its bases, ignoring case	verified	one	ui/widgettype#type-chains	
+0x786b40	6	ScrollFrameGetTypeName		ui	orchestration	const char * __thiscall ()	Returns the type name ScrollFrame	verified	one	ui/widgettype#type-chains	
 0x786b50	43			ui	orchestration		Runs its object file code that calls 0x786b80, SMemFree; not read here	inferred	none		
 0x786b80	64			ui	orchestration		Runs its object file code that calls FrameScriptReleaseScript; not read here	inferred	none		
 0x786bc0	125	CSimpleScrollFrame::LoadXML		ui	primitive		Loads a ScrollFrame's frame node, then creates its scroll child from XML	verified	one	ui/xmltypes#scroll-child	
@@ -34137,8 +34137,8 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x787670	635			ui	primitive		Constructs a ScrollingMessageFrame frame and stores its two vtables	verified	one	ui/xmltypes#handler-names-by-type	
 0x7878f0	22			ui	orchestration		Runs CSimpleMessageScrollFrame.cpp code that calls SMemFree; not read here	inferred	none		
 0x787910	45			ui	orchestration		Runs CSimpleMessageScrollFrame.cpp code not read here	inferred	none		
-0x787940	89			ui	orchestration		Runs CSimpleMessageScrollFrame.cpp code that calls SStrCmpI; not read here	inferred	none		
-0x7879a0	6			ui	orchestration		Runs CSimpleMessageScrollFrame.cpp code not read here	inferred	none		
+0x787940	89	ScrollingMessageFrameIsTypeName		ui	orchestration	bool __thiscall (const char *name)	Answers whether a name is ScrollingMessageFrame or one of its bases, ignoring case	verified	one	ui/widgettype#type-chains	
+0x7879a0	6	ScrollingMessageFrameGetTypeName		ui	orchestration	const char * __thiscall ()	Returns the type name ScrollingMessageFrame	verified	one	ui/widgettype#type-chains	
 0x7879b0	43			ui	orchestration		Runs CSimpleMessageScrollFrame.cpp code that calls 0x7879e0, SMemFree; not read here	inferred	none		
 0x7879e0	311			ui	primitive		Runs CSimpleMessageScrollFrame.cpp code that calls 0x788f40, 0x788f90, 0x788c00 and 5 more; not read here	inferred	none		
 0x787b20	615	CSimpleMessageScrollFrame::LoadXML		ui	primitive		Loads a ScrollingMessageFrame's frame node, then its font, fading, line count and text elements	verified	one	ui/xmltypes#elements-and-attributes-by-type	
@@ -34196,8 +34196,8 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x7893f0	11			ui	primitive		Runs its object file code not read here	inferred	none		
 0x789400	115	CSimpleSlider::CSimpleSlider	idb	ui	primitive		Constructs a Slider frame and stores its two vtables	verified	one	ui/xmltypes#handler-names-by-type	
 0x789480	45			ui	orchestration		Runs its object file code not read here	inferred	none		
-0x7894b0	89			ui	orchestration		Runs its object file code that calls SStrCmpI; not read here	inferred	none		
-0x789510	6			ui	orchestration		Runs its object file code not read here	inferred	none		
+0x7894b0	89	SliderIsTypeName		ui	orchestration	bool __thiscall (const char *name)	Answers whether a name is Slider or one of its bases, ignoring case	verified	one	ui/widgettype#type-chains	
+0x789510	6	SliderGetTypeName		ui	orchestration	const char * __thiscall ()	Returns the type name Slider	verified	one	ui/widgettype#type-chains	
 0x789520	43			ui	orchestration		Runs its object file code that calls 0x789550, SMemFree; not read here	inferred	none		
 0x789550	47			ui	orchestration		Runs its object file code that calls 0x789860, FrameScriptReleaseScript; not read here	inferred	none		
 0x789580	420	CSimpleSlider::LoadXML		ui	primitive		Loads a Slider's frame node, then its thumb, range, step, value and orientation	verified	one	ui/xmltypes#slider-and-statusbar-values	
@@ -34230,8 +34230,8 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x789dc0	11			ui	orchestration		Runs its object file code not read here	inferred	none		
 0x789dd0	250	CSimpleHTML::CSimpleHTML	idb	ui	primitive		Constructs a SimpleHTML frame and stores its two vtables	verified	one	ui/xmltypes#handler-names-by-type	
 0x789ed0	45			ui	orchestration		Runs CSimpleHTML.cpp code not read here	inferred	none		
-0x789f00	89			ui	orchestration		Runs CSimpleHTML.cpp code that calls SStrCmpI; not read here	inferred	none		
-0x789f60	6			ui	orchestration		Runs CSimpleHTML.cpp code not read here	inferred	none		
+0x789f00	89	SimpleHTMLIsTypeName		ui	orchestration	bool __thiscall (const char *name)	Answers whether a name is SimpleHTML or one of its bases, ignoring case	verified	one	ui/widgettype#type-chains	
+0x789f60	6	SimpleHTMLGetTypeName		ui	orchestration	const char * __thiscall ()	Returns the type name SimpleHTML	verified	one	ui/widgettype#type-chains	
 0x789f70	43			ui	orchestration		Runs CSimpleHTML.cpp code that calls 0x789fa0, SMemFree; not read here	inferred	none		
 0x789fa0	391			ui	primitive		Runs CSimpleHTML.cpp code that calls 0x78a580, SMemFree, 0x7a35e0; not read here	inferred	none		
 0x78a130	434	CSimpleHTML::LoadXML		ui	primitive		Loads a SimpleHTML's frame node, then its fonts, file and hyperlink format	verified	one	ui/xmltypes#elements-and-attributes-by-type	
@@ -34260,8 +34260,8 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x78b200	19			ui	primitive		Runs its object file code not read here	inferred	none		
 0x78b220	163	CSimpleColorSelect::CSimpleColorSelect	idb	ui	orchestration		Constructs a ColorSelect frame and stores its two vtables	verified	one	ui/xmltypes#handler-names-by-type	
 0x78b2d0	45			ui	orchestration		Runs its object file code not read here	inferred	none		
-0x78b300	89			ui	orchestration		Runs its object file code that calls SStrCmpI; not read here	inferred	none		
-0x78b360	6			ui	orchestration		Runs its object file code not read here	inferred	none		
+0x78b300	89	ColorSelectIsTypeName		ui	orchestration	bool __thiscall (const char *name)	Answers whether a name is ColorSelect or one of its bases, ignoring case	verified	one	ui/widgettype#type-chains	
+0x78b360	6	ColorSelectGetTypeName		ui	orchestration	const char * __thiscall ()	Returns the type name ColorSelect	verified	one	ui/widgettype#type-chains	
 0x78b370	5			ui	orchestration		Runs its object file code not read here	inferred	none		
 0x78b380	11			ui	orchestration		Runs its object file code not read here	inferred	none		
 0x78b390	43			ui	orchestration		Runs its object file code that calls 0x78b3c0, SMemFree; not read here	inferred	none		
@@ -34300,8 +34300,8 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x78c0a0	36			ui	primitive		Runs its object file code not read here	inferred	none		
 0x78c0d0	179	CSimpleMovieFrame::CSimpleMovieFrame	idb	ui	orchestration		Constructs a MovieFrame frame and stores its two vtables	verified	one	ui/xmltypes#handler-names-by-type	
 0x78c190	45			ui	orchestration		Runs its object file code not read here	inferred	none		
-0x78c1c0	89			ui	orchestration		Runs its object file code that calls SStrCmpI; not read here	inferred	none		
-0x78c220	6			ui	orchestration		Runs its object file code not read here	inferred	none		
+0x78c1c0	89	MovieFrameIsTypeName		ui	orchestration	bool __thiscall (const char *name)	Answers whether a name is MovieFrame or one of its bases, ignoring case	verified	one	ui/widgettype#type-chains	
+0x78c220	6	MovieFrameGetTypeName		ui	orchestration	const char * __thiscall ()	Returns the type name MovieFrame	verified	one	ui/widgettype#type-chains	
 0x78c230	43			ui	orchestration		Runs its object file code that calls 0x78c280, SMemFree; not read here	inferred	none		
 0x78c260	5			ui	orchestration		Runs its object file code not read here	inferred	none		
 0x78c270	11			ui	orchestration		Runs its object file code not read here	inferred	none		
@@ -34686,30 +34686,30 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x79a670	19			ui	primitive		Runs its object file code not read here	inferred	none		
 0x79a690	5			ui	orchestration		Runs its object file code not read here	inferred	none		
 0x79a6a0	19			ui	primitive		Runs its object file code not read here	inferred	none		
-0x79a6c0	188	Texture::GetDrawLayer	idb	ui	primitive		Implements the Texture method GetDrawLayer	inferred	none		
-0x79a780	270	Texture::SetDrawLayer	idb	ui	primitive		Implements the Texture method SetDrawLayer	inferred	none		
-0x79a890	188	Texture::GetBlendMode	idb	ui	primitive		Implements the Texture method GetBlendMode	inferred	none		
-0x79a950	256	Texture::SetBlendMode	idb	ui	primitive		Implements the Texture method SetBlendMode	inferred	none		
-0x79aa50	376	Texture::GetVertexColor	idb	ui	primitive		Implements the Texture method GetVertexColor	inferred	none		
-0x79abd0	594	Texture::SetVertexColor	idb	ui	primitive		Implements the Texture method SetVertexColor	inferred	none		
-0x79ae30	806	Texture::SetGradient	idb	ui	primitive		Implements the Texture method SetGradient	inferred	none		
+0x79a6c0	188	Texture::GetDrawLayer	idb	ui	primitive		Implements the Texture method GetDrawLayer	verified	one	ui/texture#draw-layer-and-blend-mode	
+0x79a780	270	Texture::SetDrawLayer	idb	ui	primitive		Implements the Texture method SetDrawLayer	verified	one	ui/texture#draw-layer-and-blend-mode	
+0x79a890	188	Texture::GetBlendMode	idb	ui	primitive		Implements the Texture method GetBlendMode	verified	one	ui/texture#draw-layer-and-blend-mode	
+0x79a950	256	Texture::SetBlendMode	idb	ui	primitive		Implements the Texture method SetBlendMode	verified	one	ui/texture#draw-layer-and-blend-mode	
+0x79aa50	376	Texture::GetVertexColor	idb	ui	primitive		Implements the Texture method GetVertexColor	verified	one	ui/texture#two-colour-stores	
+0x79abd0	594	Texture::SetVertexColor	idb	ui	primitive		Implements the Texture method SetVertexColor	verified	one	ui/texture#setting-a-vertex-colour	
+0x79ae30	806	Texture::SetGradient	idb	ui	primitive		Implements the Texture method SetGradient	verified	one	ui/texture#gradients	
 0x79b160	5			ui	orchestration		Runs its object file code not read here	inferred	none		
 0x79b170	11			ui	orchestration		Runs its object file code not read here	inferred	none		
-0x79b180	1019	Texture::SetGradientAlpha	idb	ui	primitive		Implements the Texture method SetGradientAlpha	inferred	none		
-0x79b580	265	Texture::SetAlpha	idb	ui	primitive		Implements the Texture method SetAlpha	inferred	none		
+0x79b180	1019	Texture::SetGradientAlpha	idb	ui	primitive		Implements the Texture method SetGradientAlpha	verified	one	ui/texture#gradients	
+0x79b580	265	Texture::SetAlpha	idb	ui	primitive		Implements the Texture method SetAlpha	verified	one	ui/texture#setting-a-vertex-colour	
 0x79b690	222	Texture::GetAlpha	idb	ui	primitive		Implements the Texture method GetAlpha	inferred	none		
-0x79b770	180	Texture::Show	idb	ui	primitive		Implements the Texture method Show	inferred	none		
-0x79b830	180	Texture::Hide	idb	ui	primitive		Implements the Texture method Hide	inferred	none		
-0x79b8f0	178	Texture::IsVisible	idb	ui	primitive		Implements the Texture method IsVisible	inferred	none		
-0x79b9b0	178	Texture::IsShown	idb	ui	primitive		Implements the Texture method IsShown	inferred	none		
-0x79ba70	205	Texture::GetTexture	idb	ui	primitive		Implements the Texture method GetTexture	inferred	none		
-0x79bb40	687	Texture::SetTexture	idb	ui	primitive		Implements the Texture method SetTexture	inferred	none		
-0x79bdf0	190	Texture::GetTexCoord	idb	ui	primitive		Implements the Texture method GetTexCoord	inferred	none		
-0x79beb0	451	Texture::SetTexCoord	idb	ui	primitive		Stores four corner texture coordinates from 4 or 8 numbers	verified	one	ui/taxiframe#route-line-textures	
-0x79c080	159	Texture::SetTexCoordModifiesRect	idb	ui	primitive		Implements the Texture method SetTexCoordModifiesRect	inferred	none		
-0x79c120	178	Texture::GetTexCoordModifiesRect	idb	ui	primitive		Implements the Texture method GetTexCoordModifiesRect	inferred	none		
-0x79c1e0	224	Texture::SetDesaturated	idb	ui	primitive		Implements the Texture method SetDesaturated	inferred	none		
-0x79c2c0	193	Texture::IsDesaturated	idb	ui	primitive		Implements the Texture method IsDesaturated	inferred	none		
+0x79b770	180	Texture::Show	idb	ui	primitive		Implements the Texture method Show	verified	one	ui/texture#showing-and-hiding-a-texture	
+0x79b830	180	Texture::Hide	idb	ui	primitive		Implements the Texture method Hide	verified	one	ui/texture#showing-and-hiding-a-texture	
+0x79b8f0	178	Texture::IsVisible	idb	ui	primitive		Implements the Texture method IsVisible	verified	one	ui/texture#showing-and-hiding-a-texture	
+0x79b9b0	178	Texture::IsShown	idb	ui	primitive		Implements the Texture method IsShown	verified	one	ui/texture#showing-and-hiding-a-texture	
+0x79ba70	205	Texture::GetTexture	idb	ui	primitive		Implements the Texture method GetTexture	verified	one	ui/texture#reading-the-image-and-the-coordinates	
+0x79bb40	687	Texture::SetTexture	idb	ui	primitive		Implements the Texture method SetTexture	verified	one	ui/texture#settexture	
+0x79bdf0	190	Texture::GetTexCoord	idb	ui	primitive		Implements the Texture method GetTexCoord	verified	one	ui/texture#reading-the-image-and-the-coordinates	
+0x79beb0	451	Texture::SetTexCoord	idb	ui	primitive		Stores four corner texture coordinates from 4 or 8 numbers	verified	one	ui/texture#reading-the-image-and-the-coordinates	
+0x79c080	159	Texture::SetTexCoordModifiesRect	idb	ui	primitive		Implements the Texture method SetTexCoordModifiesRect	verified	one	ui/texture#reading-the-image-and-the-coordinates	
+0x79c120	178	Texture::GetTexCoordModifiesRect	idb	ui	primitive		Implements the Texture method GetTexCoordModifiesRect	verified	one	ui/texture#reading-the-image-and-the-coordinates	
+0x79c1e0	224	Texture::SetDesaturated	idb	ui	primitive		Implements the Texture method SetDesaturated	verified	one	ui/texture#desaturating	
+0x79c2c0	193	Texture::IsDesaturated	idb	ui	primitive		Implements the Texture method IsDesaturated	verified	one	ui/texture#desaturating	
 0x79c390	10			ui	orchestration		Runs its object file code that calls 0x79c3a0; not read here	inferred	none		
 0x79c3a0	190			ui	primitive		Runs its object file code not read here	inferred	none		
 0x79c460	12			ui	orchestration		Runs its object file code that calls _atexit; not read here	inferred	none		
@@ -34822,11 +34822,11 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x7a1180	19			ui	primitive		Runs its object file code not read here	inferred	none		
 0x7a11a0	5			ui	orchestration		Runs its object file code not read here	inferred	none		
 0x7a11b0	19			ui	primitive		Runs its object file code not read here	inferred	none		
-0x7a11d0	182	Region::GetObjectType	idb	ui	orchestration		Implements the Region method GetObjectType, its pair in the table 0x87c9b8	verified	one	ui/frames#the-region-type-id	
-0x7a1290	256	Region::IsObjectType	idb	ui	orchestration		Implements the Region method IsObjectType, its pair in the table 0x87c9b8	inferred	none	ui/methods#region-parent-and-anchor-methods	
+0x7a11d0	182	Region::GetObjectType	idb	ui	orchestration		Implements the Region method GetObjectType, its pair in the table 0x87c9b8	verified	one	ui/widgettype#asking-for-a-type	
+0x7a1290	256	Region::IsObjectType	idb	ui	orchestration		Implements the Region method IsObjectType: 1 for a name in the chain, else nil	verified	one	ui/widgettype#asking-for-a-type	
 0x7a1390	205	Region::GetName	idb	ui	orchestration		Implements the Region method GetName, its pair in the table 0x87c9b8	inferred	none	ui/methods#region-parent-and-anchor-methods	
 0x7a1460	225	Region::GetParent	idb	ui	orchestration		Implements the Region method GetParent, its pair in the table 0x87c9b8	inferred	none	ui/methods#region-parent-and-anchor-methods	
-0x7a1550	669	Region::SetParent	idb	ui	orchestration		Implements the Region method SetParent, its pair in the table 0x87c9b8	inferred	none	ui/methods#region-parent-and-anchor-methods	
+0x7a1550	669	Region::SetParent	idb	ui	orchestration		Implements the Region method SetParent: nil, a frame name or a frame table, refusing a loop, through slot 0x14	verified	one	ui/visibility#reparenting-by-script	
 0x7a17f0	5	RegionMethodsInitInfinityThunk		ui	orchestration		Jumps to 0x7a1800; a static initializer	verified	one	ui/README#static-initializers	
 0x7a1800	11	RegionMethodsInitInfinity		ui	orchestration		Copies +inf into a global of the file	verified	one	ui/README#static-initializers	
 0x7a1810	364	Region::GetCenter	idb	ui	orchestration		Implements the Region method GetCenter, its pair in the table 0x87c9b8	inferred	none	ui/methods#coordinates-the-methods-convert	
@@ -34840,8 +34840,8 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x7a2150	264	Region::SetHeight	idb	ui	orchestration		Implements the Region method SetHeight, its pair in the table 0x87c9b8	inferred	none	ui/methods#coordinates-the-methods-convert	
 0x7a2260	219	Region::GetNumPoints	idb	ui	orchestration		Implements the Region method GetNumPoints, its pair in the table 0x87c9b8	inferred	none	ui/methods#region-parent-and-anchor-methods	
 0x7a2340	507	Region::GetPoint	idb	ui	orchestration		Implements the Region method GetPoint, its pair in the table 0x87c9b8	inferred	none	ui/methods#region-parent-and-anchor-methods	
-0x7a2540	1022	Region::SetPoint	idb	ui	orchestration		Implements the Region method SetPoint, its pair in the table 0x87c9b8	inferred	none	ui/methods#region-parent-and-anchor-methods	
-0x7a2940	553	Region::SetAllPoints	idb	ui	orchestration		Implements the Region method SetAllPoints, its pair in the table 0x87c9b8	inferred	none	ui/methods#region-parent-and-anchor-methods	
+0x7a2540	1022	Region::SetPoint	idb	ui	orchestration		Implements the Region method SetPoint: names a point and a relative frame, then sets the point	verified	one	ui/widgettype#setpoint-and-setallpoints-arguments	
+0x7a2940	553	Region::SetAllPoints	idb	ui	orchestration		Implements the Region method SetAllPoints: names a frame, defaulting to the parent, then pins both corners	verified	one	ui/widgettype#setpoint-and-setallpoints-arguments	
 0x7a2b70	147	Region::ClearAllPoints	idb	ui	orchestration		Implements the Region method ClearAllPoints, its pair in the table 0x87c9b8	inferred	none	ui/methods#region-parent-and-anchor-methods	
 0x7a2c10	10	InitRegionMethodHashThunk		ui	orchestration		Builds the Region method hash table, then registers its exit handler; a static initializer	verified	one	ui/README#static-initializers	
 0x7a2c20	190	InitRegionMethodHash		ui	orchestration		Builds the empty Region method hash table at 0xcf54b4	verified	one	ui/README#static-initializers	

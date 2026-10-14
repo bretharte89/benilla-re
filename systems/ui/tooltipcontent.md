@@ -66,6 +66,21 @@ an index of 7 or more, negatives included, takes entry 1, white. `0x52ad70` retu
 dword at `0xc0d3c8` + 4·index, and `0x52ad90` returns the matching inline escape string for chat text from
 the table at `0x854124`.
 
+
+## Reading a quality colour
+
+`GetItemQualityColor(quality)` returns four values for the quality's table entry: the red, green and blue bytes of its colour over 255, and the colour escape
+string of the same index. The argument must be a number, truncated toward zero; a quality of 7 or more, or below 0, gives the white entry. Anything else raises
+`Usage: GetItemQualityColor(index)`.
+
+Addresses: `0x48dfb0`, `0x48dfbc`, `0x48dfc5`, `0x48dfe3`, `0x48dfe8`, `0x48dff1`, `0x48dff8`, `0x48e007`, `0x48e015`, `0x48e032`, `0x48e050`, `0x48e059`, `0x52ad70`, `0x52ad90`, `0x804578`
+Confidence: verified
+Proof: one
+Test: none
+
+`0x48dfbc` tests argument 1 with `lua_isnumber` and raises the usage message (`0x48dfc5`); `0x48dfe8` truncates with `__ftol`. `0x48dff1` takes the entry's address from `0x52ad70` and `0x48dff8`, `0x48e015` and `0x48e032` read its bytes
+2, 1 and 0 as red, green and blue; each is multiplied by the double 1/255 at `0x804578` (`0x48e007`) and pushed with `lua_pushnumber`. `0x48e050` gets the escape string from `0x52ad90` and pushes it; the binding returns 4.
+
 ## The line bindings
 
 `AddLine(text, r, g, b, wrap)`, `AddDoubleLine(left, right, rL, gL, bL, rR, gR, bR, wrap)` and
@@ -138,7 +153,7 @@ the extra argument is pushed after the count (`0x52fb8c`) and adds a leading arg
 A blank line in a tooltip is written as a space and a newline and is one line tall, not two. The newline
 that ends the text opens no further line, and the empty string adds no line at all, so no builder or
 caller can ask for a line of zero height. The item set block passes this literal twice, in gold with wrap
-on. A font string never reads back a height below one device pixel.
+on. A font string never reads back a height below one interface unit.
 
 Addresses: `0x52dd5e`, `0x52dd68`, `0x52dfb9`, `0x52dfc3`, `0x854b2c`, `0x5c2070`, `0x5c20d6`, `0x5c2810`, `0x5c2896`, `0x5c7470`, `0x5c7659`, `0x5c7752`, `0x5c7260`, `0x5c2116`, `0x772a60`, `0x7729b0`, `0x771e87`
 Confidence: verified
@@ -150,7 +165,7 @@ Test: none
 `0x5c7470`, which every interface font string takes, adds the break's length to its cursor at `0x5c7659`
 and returns a line end one past the newline (`0x5c7752`), so the text ends and counts as one line. The height
 of N lines is `N·size + (N−1)·snapped spacing`, with the spacing zero by default. `0x772a60` returns the
-larger of the declared or measured height and one device pixel.
+larger of the declared or measured height and one interface unit (`regions`).
 
 ## Sizing the tooltip
 
