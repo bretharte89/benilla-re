@@ -122,3 +122,38 @@ The axes are swapped: `u` follows world Y and `v` world X. `0x4a7870` takes the 
 A unit in another map, or a map different from the displayed continent's, gives 0 and 0. `GetPlayerMapPosition` raises `Usage: GetPlayerMapPosition("player")` for a non-string.
 
 `ui::geo_4a7360` runs `0x4a7360` whole on seeded map state.
+
+## GetWorldLocMapPosition
+
+`GetWorldLocMapPosition(continent, x, y)` returns the map position, as two numbers, of the world position (`x`, `y`) on a continent: it passes the
+three numbers to `ProjectWorldPosition` and pushes the two floats it writes. A non-number raises `Usage: GetWorldLocMapPosition(continent, x, y)`.
+
+Addresses: `0x4a88f0`, `0x4a8949`, `0x4a895c`, `0x4a896b`, `0x4a8986`, `0x4a898b`, `0x4a89ac`, `0x4a7360`
+Confidence: verified
+Proof: one
+Test: none
+
+`0x4a8949` reads the continent (truncated), `0x4a895c` the third argument and `0x4a896b` the second as floats, and `0x4a8986` calls `ProjectWorldPosition`; `0x4a89ac` returns 2.
+
+## The explored bits watcher
+
+`EnterWorldUI` arms a watcher on the active player's explored bits, the 256 bytes at `+0xe6c` of the player block (section 4), through `0x4a6430`, and `LeaveWorldUI` removes it through `0x4a6490`. When the bytes change, the watcher `0x4a6460` selects the map again with the current selection: the direct area when one is set, else the zone, under the current continent.
+
+Addresses: `0x4a6430`, `0x4a6460`, `0x4a6490`, `0x4908c0`, `0x490a80`, `0x467e70`, `0x467fb0`, `0x4a67a0`
+Confidence: verified
+Proof: one
+Test: none
+
+`0x4a6430` is `ClntObjMgrSetObjectMirrorHandler(4, 0xe6c, active player, 0x100, 0x4a6460, 0, 0)` and `0x4a6490` the matching clear. The watcher loads the direct area at 0x845074, uses the zone at 0x845070 when it is -1, loads the continent at 0x84506c and calls `0x4a67a0`; `ret 0x10` drops its four arguments, which it ignores.
+
+## Unreached map teleport
+
+`0x4a76e0(x, y)` turns a point of the map into a world position with `0x4a7100`, picks the `WorldSafeLocs` row on the same map whose position is nearest by squared distance, and sends opcode 8 with the clock, the row's map and position and a zero, the message the console command `0x404dc0` builds. It then signals `CLOSE_WORLD_MAP` (event 373). Nothing calls either function, so both are unreached.
+
+Addresses: `0x4a76e0`, `0x4a7100`, `0x404dc0`, `0x42c010`, `0x5ab630`, `0x703e50`
+Confidence: verified
+Proof: one
+Test: none
+
+The census finds no `call`, `jmp` or stored address for `0x4a76e0`, and `0x4a7100` is called only by it. `0x4a7100` answers 0 with no map selected. The rows are 0x38 bytes from the store at 0xc0d578 (count at 0xc0d57c); each is tested for the same map id at +4 and its position read at +8, +0xc and +0x10.
+
