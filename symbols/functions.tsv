@@ -1575,12 +1575,12 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x41ad70	7	GetScaledScreenAspect		screencoord			Returns the float at 0x832a4c, the aspect times 0.75, in st0	verified	one	glue/script#cursor-and-screen-size	
 0x41ad80	37	ScaleScreenDelta		screencoord	primitive	void __fastcall (float *out_x, float *out_y, float x, float y)	Writes K1·x and K2·y to whichever outputs are not null	verified	one	input#click-versus-drag	screencoord::sc_41ad80_scale_xy
 0x41adb0	47			screencoord	unreached		Runs its object file code not read here	inferred	none		
-0x41ade0	37			screencoord			Runs its object file code not read here	inferred	none		
+0x41ade0	37	UnscaleScreenXY		screencoord	primitive	void __fastcall (float *out_x, float *out_y, float x, float y)	Writes x over 0x832a44 and y over 0x832a48 to whichever outputs are not null	verified	one	ui/modelview#viewport-and-clamp	
 0x41ae10	47			screencoord	unreached		Runs its object file code not read here	inferred	none		
 0x41ae40	16	DivideByScreenScaleX		screencoord			Returns a float argument divided by the float at 0x832a44, in st0	verified	one	glue/script#cursor-and-screen-size	screencoord::sc_41ae40_unscale_x
 0x41ae50	16			screencoord			Runs its object file code not read here	inferred	none		
 0x41ae60	16	MultiplyByScreenScaleX		screencoord			Returns the float at 0x832a44 times a float argument, in st0	verified	one	glue/script#cursor-and-screen-size	screencoord::sc_41ae60_scale_x
-0x41ae70	16	NDCToDDCHeight		screencoord			Returns the float at 0x832a48 times a float argument, in st0	inferred	none		screencoord::sc_41ae70_scale_y
+0x41ae70	16	NDCToDDCHeight		screencoord			Returns the float at 0x832a48 times a float argument, in st0	verified	one	ui/modelview#root-transform	screencoord::sc_41ae70_scale_y
 0x41ae80	5			unassigned			Runs its object file code not read here	inferred	none		
 0x41ae90	15			unassigned			Runs its object file code not read here	inferred	none		
 0x41aea0	5			unassigned			Runs its object file code not read here	inferred	none		
@@ -6497,7 +6497,7 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x481ef0	16			ui	unreached		Runs WorldFrame.cpp code not read here	inferred	none		
 0x481f00	87	PickObjectUnderCursor		ui	orchestration		Picks the world object under the cursor for the armed click	inferred	none	input#mouse-commands	
 0x481f60	301	DispatchWorldClick		ui	orchestration		Runs world click action 1 or 4 on the object picked at the press	inferred	none	input#click-versus-drag	
-0x482090	94			ui	orchestration		Runs WorldFrame.cpp code that calls 0x492e70; not read here	inferred	none		
+0x482090	94	WorldFramePublishPick		ui	orchestration	void __thiscall (uint32_t lo, uint32_t hi)	Publishes a changed world pick before it stores it	verified	one	ui/hover#world-hover-and-its-tooltip	
 0x4820f0	264			ui	orchestration		Places the area reticle and the targeting cursor over a picked position	inferred	none	spell/targeting#the-targeting-cursor	
 0x482200	1241			ui	primitive		Runs WorldFrame.cpp code that calls ClntObjMgrGetActivePlayer, ClntObjMgrObjectPtr and 14 more; not read here	inferred	none		
 0x4826e0	90			ui	orchestration		Runs WorldFrame.cpp code that calls 0x5f8760, 0x523c20, 0x5f8790 and 2 more; not read here	inferred	none		
@@ -6517,7 +6517,7 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x483460	839	RenderWorldFrame		ui	primitive		Renders the world; calls 0x6ecb20 and then 0x6eca20	inferred	none	spell/visuals#frame-update	
 0x4837b0	442			ui	primitive		Draws the placement preview model 0xceca8c	inferred	none	spell/targeting#placement-model-and-rotation	
 0x483970	410			ui	orchestration		Runs its object file code that calls CSimpleFrame::OnFrameSizeChanged, MultiplyByScreenScaleX and 2 more; not read here	inferred	none		
-0x483b10	94			ui	primitive		Runs its object file code that calls CSimpleFrame::OnLeave, 0x492e70, 0x523d30; not read here	inferred	none		
+0x483b10	94	WorldFrameOnLeave		ui	orchestration	void __thiscall (uint32_t removal)	Runs the base leave, publishes a cleared world mouseover, resets the cursor	verified	one	ui/hover#world-hover-and-its-tooltip	
 0x483b70	94			ui	primitive		Runs its object file code that calls CSimpleFrame::OnKeyDown, 0x4b66b0, 0x4b7990; not read here	inferred	none		
 0x483bd0	112			ui	primitive		Runs its object file code that calls CSimpleFrame::OnKeyUp, 0x4b66b0, 0x4b7990; not read here	inferred	none		
 0x483c40	104			ui	orchestration		Runs its object file code that calls CSimpleFrame::OnMouseDown, 0x492c20, 0x4b6aa0 and 1 more; not read here	inferred	none		
@@ -6744,8 +6744,8 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x48b330	100	Script::GuildLeave	idb	ui	orchestration		Implements the Lua function GuildLeave	inferred	none		
 0x48b3a0	100	Script::GuildDisband	idb	ui	orchestration		Implements the Lua function GuildDisband	inferred	none		
 0x48b410	100	Script::GuildInfo	idb	ui	orchestration		Implements the Lua function GuildInfo	inferred	none		
-0x48b480	77			ui	primitive		Runs GameUI.cpp code that calls MultiplyByScreenScaleX, 0x494590, GetScaledScreenAspect and 2 more; not read here	inferred	none		
-0x48b4d0	77			ui	primitive		Runs GameUI.cpp code that calls NDCToDDCHeight, 0x494590, GetScaledScreenAspect and 2 more; not read here	inferred	none		
+0x48b480	77	GetUiScreenWidth		ui	primitive	uint32_t __fastcall (lua_State *L)	Pushes the screen width in FrameXML units divided by the UIParent scale	verified	one	ui/modelview#model-unit-to-pixel	
+0x48b4d0	77	GetUiScreenHeight		ui	primitive	uint32_t __fastcall (lua_State *L)	Pushes the screen height in FrameXML units divided by the UIParent scale	verified	one	ui/modelview#model-unit-to-pixel	
 0x48b520	127	Script::GetDamageBonusStat	idb	ui	primitive		Implements the Lua function GetDamageBonusStat	inferred	none		
 0x48b5a0	60	Script::GetReleaseTimeRemaining	idb	ui	primitive		Implements the Lua function GetReleaseTimeRemaining	inferred	none		
 0x48b5e0	62	Script::GetCorpseRecoveryDelay	idb	ui	primitive		Implements the Lua function GetCorpseRecoveryDelay	inferred	none		
@@ -6913,13 +6913,13 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x48f480	518	CGGameUI::InitializeGame	idb	ui	primitive		Runs GameUI.cpp code that calls ClientServices::SetMessageHandler, CVar::Lookup, 0x63e030 and 34 more; not read here	inferred	none		
 0x48f690	1097	CGGameUI::HandlePacket	idb	ui	orchestration		Handles opcodes 0x2c2, 0x2c3, 0x2d2, 0x2e4 and 0x2f4 by a switch; 0x2f4, the weather, goes to 0x67baf0	verified	one	lighting/weather#weather-message	
 0x48fbf0	1496	CGGameUI::Initialize	idb	ui	primitive		Builds the game interface: Lua state, functions, events, signature check, FrameXML, add-ons and saved variables	verified	one	ui/framexml#building-the-game-interface	
-0x4901e0	98			ui	primitive		Runs GameUI.cpp code that calls CVar::Lookup, _sscanf; not read here	inferred	none		
+0x4901e0	98	GetConfiguredAspect		ui	primitive	float __cdecl ()	Returns the gxResolution width over height when widescreen is on, else 4/3	verified	one	ui/uiscale#the-automatic-scale	
 0x490250	302	CGGameUI::RegisterScriptFunctions		ui	primitive		Registers the frame types, the game C functions of 0x83de68 and 53 files of functions as globals	verified	one	ui/luastate#the-c-function-contract	
 0x490380	596			ui	primitive		Runs GameUI.cpp code that calls 0x42a670, __alloca_probe, 0x42a520 and 6 more; not read here	inferred	none		
 0x4905e0	316			ui	primitive		Runs GameUI.cpp code that calls CSimpleFrame::SetFrameLevel, CLayoutFrame::ClearAllPointsThunk and 5 more; not read here	inferred	none		
 0x490720	77			ui	orchestration		Runs GameUI.cpp code that calls SStrToFloat, ConsolePrintf; not read here	inferred	none		
-0x490770	115			ui	primitive		Runs GameUI.cpp code that calls SStrToFloat, 0x494550; not read here	inferred	none		
-0x4907f0	203			ui	primitive		Runs GameUI.cpp code that calls 0x64ac60, 0x494550, GxCapsScreenSize and 2 more; not read here	inferred	none		
+0x490770	115	UiScaleChanged		ui	primitive	uint8_t __thiscall (const char *value, void *userdata)	Applies a new uiScale text to UIParent when useUiScale is on, capped for narrow windows	verified	one	ui/uiscale#applying-a-scale	
+0x4907f0	203	UseUiScaleChanged		ui	primitive	uint8_t __thiscall (const char *value, void *userdata)	Applies the uiScale value when useUiScale turns on, else the automatic scale	verified	one	ui/uiscale#applying-a-scale	
 0x4908c0	441			ui	orchestration		Runs GameUI.cpp code that calls SuppressInterfaceSounds, ClntObjMgrGetActivePlayer and 51 more; not read here	inferred	none		
 0x490a80	321			ui	primitive		Resets interface state on the player's release, among it the trade and loot windows	inferred	none	objectlayer/players#release-and-reactivation	
 0x490bd0	270	CGGameUI::Shutdown		ui	primitive		Leaves the world, signals PLAYER_LOGOUT, writes the saved variables and destroys the interface	verified	one	ui/addons#saved-variables-written	
@@ -6946,7 +6946,7 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x491a60	1145			ui	primitive		Prints and signals an item received, created or looted	inferred	none	objectlayer/playermessages#item-push-bank-and-binding	
 0x491ee0	103			ui	orchestration		Runs GameUI.cpp code that calls SMemFree, 0x491a60; not read here	inferred	none		
 0x491f50	187			ui	primitive		Asks the server for the corpse position through MSG_CORPSE_QUERY	inferred	none	objectlayer/playerfields#player-flag-changes	
-0x492010	124			ui	orchestration		Runs GameUI.cpp code that calls ClntObjMgrGetActivePlayer, ClntObjMgrObjectPtr, 0x5ea700 and 1 more; not read here	inferred	none		
+0x492010	124	CacheCorpseLocation		ui	orchestration	void __fastcall (uint32_t map, float *position, uint32_t extra)	Caches the corpse's map and position and sets the corpse blip on that map, else clears it	verified	one	ui/minimapblips#setting-a-static-blip	
 0x492090	49			ui	orchestration		Runs GameUI.cpp code not read here	inferred	none		
 0x4920d0	24			ui	orchestration		Runs GameUI.cpp code not read here	inferred	none		
 0x4920f0	58			ui	primitive		Runs GameUI.cpp code not read here	inferred	none		
@@ -6961,7 +6961,7 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x492580	76			ui	orchestration		Binds a clicked position through 0x6e60f0 for a click record whose +0xc is 1	inferred	none	spell/targeting#binding-a-clicked-location	
 0x4925d0	591			ui	primitive		Runs GameUI.cpp code that calls ClntObjMgrGetActivePlayer, ClntObjMgrObjectPtr and 11 more; not read here	inferred	none		
 0x492820	112			ui	orchestration		Runs GameUI.cpp code that calls ClntObjMgrGetActivePlayer, ClntObjMgrObjectPtr, 0x493540 and 1 more; not read here	inferred	none		
-0x492890	552			ui	primitive		Runs GameUI.cpp code that calls ClntObjMgrGetActivePlayer, ClntObjMgrObjectPtr, 0x530ae0 and 10 more; not read here	inferred	none		
+0x492890	552	PublishWorldMouseover		ui	orchestration	void __cdecl (uint32_t new_lo, uint32_t new_hi, uint32_t prev_lo, uint32_t prev_hi)	Fades the game tooltip when a mouseover ends and re-owns it to UIParent	verified	one	ui/hover#world-hover-and-its-tooltip	
 0x492b50	163			ui	primitive		Runs GameUI.cpp code that calls IsWrappingItem, 0x495190; not read here	inferred	none		
 0x492c00	31			ui	orchestration		Runs GameUI.cpp code that calls GetInputControl, CInputControl::AccumulateMotion; not read here	inferred	none		
 0x492c20	90			ui	orchestration		Rotates the placement or stops targeting for a world input whose +0x14 is 4	inferred	none	spell/targeting#placement-model-and-rotation	
@@ -6969,11 +6969,11 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x492c90	73			ui	orchestration		Runs GameUI.cpp code that calls 0x495190, 0x492580, 0x493540; not read here	inferred	none		
 0x492ce0	68			ui	orchestration		Runs GameUI.cpp code that calls 0x495190, 0x4925d0, 0x492820; not read here	inferred	none		
 0x492d30	318			ui	primitive		Runs GameUI.cpp code that calls ClntObjMgrObjectPtr, CGUnit_C::CanAutoInteract and 4 more; not read here	inferred	none		
-0x492e70	21			ui	orchestration		Runs GameUI.cpp code that calls 0x492890; not read here	inferred	none		
+0x492e70	21	PublishMouseoverRecord		ui	orchestration	void __thiscall (uint32_t *record)	Passes the four dwords of a record to the world mouseover publisher	verified	one	ui/hover#world-hover-and-its-tooltip	
 0x492e90	218			ui	primitive		Runs GameUI.cpp code that calls 0x494550, 0x4901e0, CGGameUI::Reload and 2 more; not read here	inferred	none		
-0x492f70	223			ui	primitive		Runs GameUI.cpp code that calls 0x4901e0, 0x494550, CGGameUI::Reload; not read here	inferred	none		
+0x492f70	223	ApplyAutoUiScale		ui	primitive	void __fastcall (uint32_t width, uint32_t height, uint32_t force)	Sets UIParent to 768 over the height, capped for narrow windows and at least 0.9	verified	one	ui/uiscale#the-automatic-scale	
 0x493050	19			ui	orchestration		Runs GameUI.cpp code that calls GetInputControl, 0x514490; not read here	inferred	none		
-0x493070	28			ui	orchestration		Runs GameUI.cpp code that calls 0x483e80, CSimpleTop::SetMouseFocus; not read here	inferred	none		
+0x493070	28			ui	orchestration		Makes the world frame the hovered one: runs 0x483e80 on it, then CSimpleTop::SetMouseFocus	verified	one	ui/hover#freelook-and-the-removal	
 0x493090	27			ui	orchestration		Runs GameUI.cpp code that calls 0x483e70; not read here	inferred	none		
 0x4930b0	29			ui	orchestration		Runs GameUI.cpp code not read here	inferred	none		
 0x4930d0	233			ui	primitive		Runs GameUI.cpp code that calls 0x4931c0, ClntObjMgrObjectPtr, CGUnit_C::PlayNPCSound and 2 more; not read here	inferred	none		
@@ -6990,8 +6990,8 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x494200	580			ui	primitive		Runs GameUI.cpp code that calls ClntObjMgrObjectPtr, 0x493e40, HeadingBetweenPoints and 5 more; not read here	inferred	none		
 0x494450	74			ui	orchestration		Runs GameUI.cpp code not read here	inferred	none		
 0x4944a0	168			ui	primitive		Runs GameUI.cpp code that calls ClntObjMgrGetActivePlayer, ClntObjMgrObjectPtr, CGUnit_C::CanCooperate; not read here	inferred	none		
-0x494550	56			ui	orchestration		Runs GameUI.cpp code that calls SetFrameScale, LayoutPendingFrames; not read here	inferred	none		
-0x494590	20			ui	orchestration		Runs GameUI.cpp code not read here	inferred	none		
+0x494550	56	SetUiParentScale		ui	orchestration	void __stdcall (float scale)	Raises a scale to at least 0.64, sets it on UIParent with force and drains the layout queue	verified	one	ui/uiscale#applying-a-scale	
+0x494590	20	GetUiParentScale		ui	orchestration	float __cdecl ()	Returns UIParent's effective scale, or 1.0 without UIParent	verified	one	ui/uiscale#reading-the-scale	
 0x4945b0	35	CGGameUI::AddErrorMessage	idb	ui	primitive		Runs GameUI.cpp code that calls FrameScript_SignalEvent2; not read here	inferred	none		
 0x4945e0	18			ui	orchestration		Runs GameUI.cpp code that calls 0x614550; not read here	inferred	none		
 0x494600	164	SignalUnitCombat		ui	primitive		Signals UNIT_COMBAT for each unit token of a GUID with an action, a hit word, an amount and a school	verified	one	objectlayer/playercombat#spell-combat-log-messages	
@@ -7060,8 +7060,8 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x496380	32			ui	primitive		Runs GameUI.cpp code that calls OsGetAsyncTimeMs; not read here	inferred	none		
 0x4963a0	56			ui	primitive		Keeps a summon's zone, expiry and summoner and signals CONFIRM_SUMMON	inferred	none	objectlayer/playermessages#resurrection-and-summoning	
 0x4963e0	32			ui	primitive		Runs GameUI.cpp code that calls OsGetAsyncTimeMs; not read here	inferred	none		
-0x496400	22	GPartyInfo::GetRemoteStats	idb	ui	orchestration		Runs GameUI.cpp code that calls 0x4e8820; not read here	inferred	none		
-0x496420	22			ui	orchestration		Runs GameUI.cpp code that calls 0x4e8860; not read here	inferred	none		
+0x496400	22	GPartyInfo::GetRemoteStats	idb	ui	orchestration		Returns the party member record of a GUID, or 0	verified	one	ui/tooltipunit#who-the-builder-describes	
+0x496420	22	GetPartyPetRecord		ui	orchestration	void * __thiscall (const uint64_t *guid)	Returns the record at +0x80 of the online party member whose pet has the GUID, or 0	verified	one	ui/tooltipunit#who-the-builder-describes	
 0x496440	37			ui	orchestration		Runs GameUI.cpp code not read here	inferred	none		
 0x496470	49			ui	orchestration		Runs GameUI.cpp code that calls 0x496440; not read here	inferred	none		
 0x4964b0	84			ui	orchestration		Runs GameUI.cpp code that calls 0x496440; not read here	inferred	none		
@@ -7459,7 +7459,7 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x4a7960	79			ui	orchestration		Runs WorldMap.cpp code that calls 0x492090, 0x4a7360; not read here	inferred	none		
 0x4a79b0	120			ui	orchestration		Runs WorldMap.cpp code that calls 0x4a7360; not read here	inferred	none		
 0x4a7a30	68			ui	unreached		Runs WorldMap.cpp code that calls 0x4a7360; not read here	inferred	none		
-0x4a7a80	148			ui	primitive		Runs WorldMap.cpp code that calls SMemAlloc, CSimpleModel::CSimpleModel, NDCToDDCHeight and 1 more; not read here	inferred	none		
+0x4a7a80	148			ui	primitive		Creates the world map arrow's model frame once and sets its scale to G48 times 5/3	verified	one	ui/modelview#model-scale-from-xml	
 0x4a7b20	87			ui	primitive		Runs WorldMap.cpp code not read here	inferred	none		
 0x4a7b80	148			ui	primitive		Runs WorldMap.cpp code that calls SMemAlloc, CSimpleModel::CSimpleModel, NDCToDDCHeight and 1 more; not read here	inferred	none		
 0x4a7c20	189			ui	orchestration		Runs WorldMap.cpp code that calls CM2Model::IsLoaded, 0x4a7b20, GetActiveCamera and 1 more; not read here	inferred	none		
@@ -7939,8 +7939,8 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x4b3300	764			ui	primitive		Runs SpellBookFrame.cpp code that calls GetCursorSpell, 0x4b3260, 0x495190 and 10 more; not read here	inferred	none		
 0x4b3600	235			ui	primitive		Runs SpellBookFrame.cpp code that calls ClntObjMgrGetActivePlayer, ClntObjMgrObjectPtr and 1 more; not read here	inferred	none		
 0x4b36f0	373			ui	primitive		Runs SpellBookFrame.cpp code that calls ClntObjMgrGetActivePlayer, ClntObjMgrObjectPtr; not read here	inferred	none		
-0x4b3870	164			ui	primitive		Runs its object file code not read here	inferred	none		
-0x4b3920	40			ui	primitive		Runs its object file code not read here	inferred	none		
+0x4b3870	164	IsCastableAura		ui	primitive	uint32_t __fastcall (uint32_t spell)	Returns whether the spell is in the known-spell set or the pet list and avoids five aura effects	verified	one	ui/tooltipbuff#auras-of-other-units	
+0x4b3920	40	IsInSpellList		ui	primitive	uint32_t __fastcall (uint32_t spell)	Returns whether a spell id is in a counted array of spell ids	verified	one	ui/tooltipbuff#auras-of-other-units	
 0x4b3950	192			ui	primitive		Runs its object file code that calls SStrCopy, SStr::sub_64A450, sgetu8 and 1 more; not read here	inferred	none		
 0x4b3a10	346			ui	primitive		Runs its object file code that calls SStrCmpI; not read here	inferred	none		
 0x4b3b70	5			ui	orchestration		Runs its object file code not read here	inferred	none		
@@ -8872,7 +8872,7 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x4c55b0	155			ui	primitive		Runs its object file code that calls 0x4c6450, 0x4c6410, SMemFree; not read here	inferred	none		
 0x4c5650	137			ui	primitive		Runs its object file code that calls 0x4c6410, 0x4c56e0; not read here	inferred	none		
 0x4c56e0	299			ui	primitive		Runs its object file code that calls 0x4368c0; not read here	inferred	none		
-0x4c5810	91			ui	primitive		Runs its object file code not read here	inferred	none		
+0x4c5810	91	GetWorldStateValue		ui	orchestration	uint32_t __fastcall (uint32_t id)	Returns the value stored for a world state id, or 0	verified	one	ui/minimapblips#placing-the-blips	
 0x4c5870	449			ui	primitive		Runs its object file code that calls 0x4c6890, 0x4c6530, 0x4c6880 and 4 more; not read here	inferred	none		
 0x4c5a40	44	Script::GetNumWorldStateUI	idb	ui	orchestration		Implements the Lua function GetNumWorldStateUI	inferred	none		
 0x4c5a70	395	Script::GetWorldStateUIInfo	idb	ui	primitive		Implements the Lua function GetWorldStateUIInfo	inferred	none		
@@ -9612,7 +9612,7 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x4d6240	161			ui	orchestration		Runs its object file code that calls CGReputationInfo::FactionToIndex and 4 more; not read here	inferred	none		
 0x4d62f0	64			ui	orchestration		Runs its object file code that calls CGReputationInfo::FactionToIndex and 2 more; not read here	inferred	none		
 0x4d6330	55			ui	primitive		Runs its object file code that calls 0x4d5620, 0x62c5f0; not read here	inferred	none		
-0x4d6370	35			ui	primitive		Runs its object file code that calls CGReputationInfo::FactionToIndex; not read here	inferred	none		
+0x4d6370	35	GetFactionStanding		ui	primitive	int32_t __fastcall (uint32_t faction)	Returns the player's standing value with a faction, or 0	verified	one	ui/tooltipitemreq#the-reputation-line	
 0x4d63a0	93	CGReputationInfo::GetFactionStandingReaction	idb	ui	primitive	uint32_t __fastcall (uint32_t faction)	Returns the rank 0 to 7 of the player's standing with a faction, by thresholds from -6000 to 42000	verified	one	objectlayer/reaction#faction-toward-a-unit	
 0x4d6400	138			ui	primitive		Runs its object file code not read here	inferred	none		
 0x4d6490	46	CGReputationInfo::GetForcedReaction	idb	ui	orchestration	bool __fastcall (uint32_t faction, uint32_t *rank)	Finds the faction in the forced-reaction pairs and stores its rank; false when absent	verified	one	objectlayer/reaction#faction-toward-a-unit	
@@ -9707,7 +9707,7 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x4d85c0	409			ui	primitive		Runs ClassTrainerFrame.cpp code that calls SStrCmp; not read here	inferred	none		
 0x4d8760	240			ui	primitive		Runs ClassTrainerFrame.cpp code that calls SStrCmp; not read here	inferred	none		
 0x4d8850	340			ui	primitive		Runs ClassTrainerFrame.cpp code that calls SStrCmp; not read here	inferred	none		
-0x4d89b0	20			ui	orchestration		Runs ClassTrainerFrame.cpp code not read here	inferred	none		
+0x4d89b0	20	GetTrainerServiceRow		ui	primitive	void * __fastcall (uint32_t index)	Returns the trainer service row of an index, or 0 past the count	verified	one	ui/tooltipbuff#trainer-services	
 0x4d89d0	148			ui	orchestration		Runs ClassTrainerFrame.cpp code that calls 0x4d89b0, CDataStore::PutUInt32 and 2 more; not read here	inferred	none		
 0x4d8a70	35			ui	primitive		Runs ClassTrainerFrame.cpp code that calls 0x4d89d0; not read here	inferred	none		
 0x4d8aa0	169			ui	primitive		Runs ClassTrainerFrame.cpp code that calls FrameScript_GetText; not read here	inferred	none		
@@ -10251,8 +10251,8 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x4e4170	539			ui	primitive		Runs its object file code that calls ClntObjMgrGetActivePlayer, ClntObjMgrObjectPtr, 0x4e44b0 and 1 more; not read here	inferred	none		
 0x4e4390	32	SetAuraDuration		ui	primitive		Stores now plus a duration for an aura slot below 0x30	verified	one	objectlayer/playermessages#notices	
 0x4e43b0	115			ui	primitive		Runs its object file code not read here	inferred	none		
-0x4e4430	23			ui	primitive		Runs its object file code not read here	inferred	none		
-0x4e4450	50			ui	primitive		Runs its object file code that calls 0x4e4430, OsGetAsyncTimeMs; not read here	inferred	none		
+0x4e4430	23	GetBuffRecord		ui	primitive	void * __fastcall (int32_t index)	Returns the 16-byte buff record of an index below 48, else 0	verified	one	ui/tooltipbuff#the-time-left-on-buffs	
+0x4e4450	50	GetBuffTimeLeft		ui	primitive	uint32_t __fastcall (int32_t index)	Returns the milliseconds until a buff ends, or 0 once past	verified	one	ui/tooltipbuff#the-time-left-on-buffs	
 0x4e4490	17			ui	orchestration		Runs its object file code not read here	inferred	none		
 0x4e44b0	282			ui	primitive		Runs its object file code not read here	inferred	none		
 0x4e45d0	365	Script::GetPlayerBuff	idb	ui	primitive		Implements the Lua function GetPlayerBuff	inferred	none		
@@ -10454,8 +10454,8 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x4e85d0	250			ui	primitive		Updates a player's party token and record and asks for its stats; not read here	inferred	none	objectlayer/players#destruction	
 0x4e86d0	28	CountPartyMembers		ui	primitive		Counts the nonzero GUIDs of the four party slots	verified	one	objectlayer/party#group-notices	
 0x4e86f0	282			ui	primitive		Stores the loot method, master and threshold and shows the changes	inferred	none	objectlayer/party#the-group-list	
-0x4e8820	61			ui	primitive		Returns the party member record of a GUID, or 0	inferred	none	objectlayer/party#party-member-stats	
-0x4e8860	86			ui	primitive		Runs PartyFrame.cpp code not read here	inferred	none		
+0x4e8820	61			ui	primitive		Returns the party member record of a GUID, or 0 through the four GUIDs at 0xbc6f48	verified	one	ui/tooltipunit#who-the-builder-describes	
+0x4e8860	86	FindPartyPetRecord		ui	primitive	void * __thiscall (const uint64_t *guid)	Returns the pet part at +0x80 of the online party member record whose pet has the GUID, or 0	verified	one	ui/tooltipunit#who-the-builder-describes	
 0x4e88c0	247			ui	primitive		Runs PartyFrame.cpp code that calls SStrCmp, SStrCopy, CDataStore::PutUInt32 and 2 more; not read here	inferred	none		
 0x4e89c0	346			ui	primitive		Rebuilds the looking-for-group types for the active player; not read here	inferred	none	objectlayer/quests#quest-giver-status-refresh	
 0x4e8b20	180			ui	orchestration		Runs PartyFrame.cpp code that calls SStrCmpI; not read here	inferred	none		
@@ -10599,20 +10599,20 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x4ea9f0	28			ui	primitive		Runs its object file code not read here	inferred	none		
 0x4eaa10	12			ui	orchestration		Runs its object file code that calls _atexit; not read here	inferred	none		
 0x4eaa20	1			ui	orchestration		Runs its object file code not read here	inferred	none		
-0x4eaa30	86			ui	primitive		Runs its object file code not read here	inferred	none		
-0x4eaa90	629			ui	primitive		Runs MinimapFrame.cpp code that calls ClntObjMgrGetActivePlayer, ClntObjMgrObjectPtr and 7 more; not read here	inferred	none		
+0x4eaa30	86	ProjectBlip		ui	primitive	void __thiscall (float player_a, float player_b, float radius, float entity_a, float entity_b, float width, float scale)	Writes a blip's disc position from its offset to the player over the zoom radius, with no rotation	verified	one	ui/minimapblips#the-north-up-disc	
+0x4eaa90	629	ClassifyObjectDot		ui	primitive	uint32_t __fastcall (void *list, uint32_t guid_lo, uint32_t guid_hi)	Classifies an object into a dot cell, or skips it, and appends its dot	verified	one	ui/minimapblips#object-dots	
 0x4ead10	119			ui	primitive		Runs MinimapFrame.cpp code not read here	inferred	none		
 0x4ead90	113			ui	primitive		Runs MinimapFrame.cpp code not read here	inferred	none		
 0x4eae10	229			ui	orchestration		Runs MinimapFrame.cpp code that calls GetTextureDeviceObject, 0x589e80, GxRsSet and 3 more; not read here	inferred	none		
 0x4eaf00	319			ui	primitive		Runs MinimapFrame.cpp code that calls 0x4eb910; not read here	inferred	none		
 0x4eb040	123			ui	orchestration		Runs MinimapFrame.cpp code that calls CSimpleFrame::OnFrameUpdate, CM2Model::IsLoaded and 4 more; not read here	inferred	none		
-0x4eb0c0	1983			ui	primitive		Runs MinimapFrame.cpp code that calls CSimpleFrame::OnMouseMove, CLayoutFrame::GetRect and 5 more; not read here	inferred	none		
-0x4eb880	46			ui	orchestration		Runs MinimapFrame.cpp code that calls CSimpleFrame::OnLeave; not read here	inferred	none		
+0x4eb0c0	1983	MinimapHoverTooltip		ui	primitive		Builds and shows the tooltip of the elements under the cursor	inferred	none	ui/minimapblips#dots-cadence-and-tooltip	
+0x4eb880	46	MinimapOnLeave		ui	orchestration	void __thiscall (uint32_t removal)	Hides the game tooltip, then runs the base leave	verified	one	ui/hover#nameplate-and-minimap-notifies	
 0x4eb8b0	36			ui	orchestration		Runs MinimapFrame.cpp code that calls CSimpleFrame::UpdateScale; not read here	inferred	none		
 0x4eb8e0	34			ui	orchestration		Runs MinimapFrame.cpp code not read here	inferred	none		
 0x4eb910	639			ui	primitive		Runs MinimapFrame.cpp code that calls 0x4ef370, 0x4ead90; not read here	inferred	none		
 0x4ebb90	97			ui	primitive		Runs MinimapFrame.cpp code that calls 0x4eaf00; not read here	inferred	none		
-0x4ebc00	589			ui	primitive		Runs MinimapFrame.cpp code that calls _atexit, GetTextureDeviceObject, 0x589e80 and 3 more; not read here	inferred	none		
+0x4ebc00	589			ui	primitive		Runs MinimapFrame.cpp code that calls _atexit, GetTextureDeviceObject, 0x589e80 and 3 more; not read here	inferred	none	ui/minimapblips#dots-cadence-and-tooltip	
 0x4ebe50	1			ui	orchestration		Runs MinimapFrame.cpp code not read here	inferred	none		
 0x4ebe60	1			ui	orchestration		Runs MinimapFrame.cpp code not read here	inferred	none		
 0x4ebe70	45			ui	orchestration		Runs MinimapFrame.cpp code that calls SimpleFrameRegisterLayer, RegisterLayerCallback; not read here	inferred	none		
@@ -10623,13 +10623,13 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x4ec440	1006			ui	primitive		Runs MinimapFrame.cpp code that calls GetDeviceProjection, BuildOrthoMatrix and 14 more; not read here	inferred	none		
 0x4ec830	1			ui	orchestration		Runs MinimapFrame.cpp code not read here	inferred	none		
 0x4ec840	257			ui	primitive		Runs MinimapFrame.cpp code that calls 0x58b060, 0x589d30, 0x58af60 and 4 more; not read here	inferred	none		
-0x4ec950	3755			ui	primitive		Runs MinimapFrame.cpp code that calls GetActiveCamera, ClntObjMgrObjectPtr and 46 more; not read here	inferred	none		
+0x4ec950	3755	MinimapFrameRender		ui	primitive		Draws the minimap each frame: map, landmark icons, arrows, dots and the player arrow	inferred	none	ui/minimapblips#the-rim-arrows	
 0x4ed800	1			ui	orchestration		Runs MinimapFrame.cpp code not read here	inferred	none		
-0x4ed810	434			ui	primitive		Runs MinimapFrame.cpp code that calls 0x4ef7a0, CGxTexFlags::CGxTexFlags, TextureCreate and 1 more; not read here	inferred	none		
+0x4ed810	434	LoadMinimapTextures		ui	host	void __cdecl ()	Loads the mask, landmark icon and dot icon textures and builds the icon lattice	verified	one	ui/minimap#minimap-textures	
 0x4ed9d0	164			ui	orchestration		Runs MinimapFrame.cpp code that calls 0x5ea700, 0x6d8e10, GxCapsGet and 2 more; not read here	inferred	none		
 0x4eda80	239			ui	primitive		Runs MinimapFrame.cpp code that calls 0x6d92c0, HandleClose, GxTexDestroy and 2 more; not read here	inferred	none		
-0x4edb70	68			ui	orchestration		Runs MinimapFrame.cpp code that calls HandleClose; not read here	inferred	none		
-0x4edbc0	1085	CGMinimapFrame::CGMinimapFrame	idb	ui	primitive		Runs MinimapFrame.cpp code that calls CSimpleFrame::CSimpleFrame, CSimpleFrame::EnableEvent and 5 more; not read here	inferred	none		
+0x4edb70	68	ReleaseMinimapTextures		ui	host	void __cdecl ()	Releases the three texture handles and zeroes them	verified	one	ui/minimap#minimap-textures	
+0x4edbc0	1085	CGMinimapFrame::CGMinimapFrame	idb	ui	primitive		Runs MinimapFrame.cpp code that calls CSimpleFrame::CSimpleFrame, CSimpleFrame::EnableEvent and 5 more; not read here	inferred	none	ui/minimapblips#blip-sizes	
 0x4ee000	45			ui	orchestration		Runs its object file code not read here	inferred	none		
 0x4ee030	89			ui	orchestration		Runs its object file code that calls SStrCmpI; not read here	inferred	none		
 0x4ee090	6			ui	orchestration		Runs its object file code not read here	inferred	none		
@@ -10639,7 +10639,7 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x4ee170	230			ui	primitive		Runs its object file code that calls CreateModelFromPath, SimpleModelGetScene and 3 more; not read here	inferred	none		
 0x4ee260	77			ui	orchestration		Runs its object file code that calls CM2Model::IsLoaded, 0x4ee100; not read here	inferred	none		
 0x4ee2b0	126			ui	orchestration		Runs its object file code that calls CSimpleFrame::PostLoadXML, 0x6f2cf0, 0x4ee170 and 1 more; not read here	inferred	none		
-0x4ee330	364			ui	primitive		Shows a minimap ping from a party member's GUID at a point	inferred	none	objectlayer/playermessages#notices	
+0x4ee330	364	MinimapApplyPing		ui	primitive	void __fastcall (void *guid, float *point)	Stores a world point as the ping and signals MINIMAP_PING with the pinger's token and the offset over the zoom diameter	verified	one	ui/minimap#the-ping	
 0x4ee4a0	411	Minimap::SetMaskTexture	idb	ui	primitive		Implements the Minimap method SetMaskTexture, its pair in the table 0x84c538	verified	one	ui/minimap#lua-methods	
 0x4ee640	411	Minimap::SetIconTexture	idb	ui	primitive		Implements the Minimap method SetIconTexture, its pair in the table 0x84c538	verified	one	ui/minimap#lua-methods	
 0x4ee7e0	411	Minimap::SetBlipTexture	idb	ui	primitive		Implements the Minimap method SetBlipTexture, its pair in the table 0x84c538	verified	one	ui/minimap#lua-methods	
@@ -10649,7 +10649,7 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x4eec20	50	Minimap::GetZoom	idb	ui	orchestration		Implements the Minimap method GetZoom, its pair in the table 0x84c538	verified	one	ui/minimap#zoom	
 0x4eec60	63	Minimap::SetZoom	idb	ui	orchestration		Implements the Minimap method SetZoom, its pair in the table 0x84c538	verified	one	ui/minimap#zoom	
 0x4eeca0	805	Script::PingLocation		ui	primitive		Implements the Minimap method PingLocation, its pair in the table 0x84c538	verified	one	ui/minimap#a-click-on-the-map	
-0x4eefd0	181	Minimap::GetPingPosition		ui	primitive		Implements the Minimap method GetPingPosition, its pair in the table 0x84c538	verified	one	ui/minimap#lua-methods	
+0x4eefd0	181	Minimap::GetPingPosition		ui	primitive		Implements the Minimap method GetPingPosition, its pair in the table 0x84c538	verified	one	ui/minimap#reading-the-ping	
 0x4ef090	10			ui	orchestration		Runs its object file code that calls 0x4ef0a0; not read here	inferred	none		
 0x4ef0a0	190			ui	primitive		Runs its object file code not read here	inferred	none		
 0x4ef160	12			ui	orchestration		Runs its object file code that calls _atexit; not read here	inferred	none		
@@ -11340,7 +11340,7 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x4fadf0	126			ui	primitive		Runs MerchantFrame.cpp code that calls 0x4931c0, FrameScript_SignalEvent, GetCursorAmmo and 3 more; not read here	inferred	none		
 0x4fae70	87			ui	primitive		Runs MerchantFrame.cpp code that calls FrameScript_SignalEvent; not read here	inferred	none		
 0x4faed0	96			ui	primitive		Runs MerchantFrame.cpp code that calls DBCache_ItemStats_C_int_HASHKEY_INT_::GetRecord; not read here	inferred	none		
-0x4faf30	145			ui	primitive		Runs MerchantFrame.cpp code that calls ClntObjMgrGetActivePlayer, ClntObjMgrObjectPtr and 2 more; not read here	inferred	none		
+0x4faf30	145	GetItemRepairCost		ui	primitive	int32_t __fastcall (void *item)	Returns an item's repair cost scaled by one minus the open merchant's discount	verified	one	ui/tooltipitemfoot#results-of-the-item-methods	
 0x4fafd0	234			ui	primitive		Runs its object file code that calls ClntObjMgrGetActivePlayer, ClntObjMgrObjectPtr, _qsort; not read here	inferred	none		
 0x4fb0c0	47			ui	primitive		Runs its object file code not read here	inferred	none		
 0x4fb0f0	43			ui	primitive		Runs its object file code not read here	inferred	none		
@@ -11643,7 +11643,7 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x502740	19			ui	primitive		Runs its object file code not read here	inferred	none		
 0x502760	5			ui	orchestration		Runs its object file code not read here	inferred	none		
 0x502770	11			ui	orchestration		Runs its object file code not read here	inferred	none		
-0x502780	35	CGTabardModelFrame::CGTabardModelFrame	idb	ui	orchestration		Runs its object file code that calls CGCharacterModelBase::CGCharacterModelBase; not read here	inferred	none		
+0x502780	35	CGTabardModelFrame::CGTabardModelFrame	idb	ui	orchestration		Constructs a TabardModel frame: runs the base constructor, then stores the TabardModel tables	verified	one	ui/playermodel#pane-classes	
 0x5027b0	61			ui	orchestration		Runs its object file code not read here	inferred	none		
 0x5027f0	132			ui	orchestration		Runs its object file code that calls SStrCmpI; not read here	inferred	none		
 0x502880	6			ui	orchestration		Runs its object file code not read here	inferred	none		
@@ -11673,7 +11673,7 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x503ba0	21			ui	orchestration		Adds the 10 TabardModel methods of 0x84ee40 to their method hash	verified	one	ui/model#lua-methods	
 0x503bc0	10			ui	orchestration		Runs its object file code not read here	inferred	none		
 0x503bd0	60			ui	orchestration		Pushes a method from the TabardModel hash, else through the PlayerModel lookup	verified	one	ui/model#lua-methods	
-0x503c10	162			ui	primitive		Runs its object file code that calls 0x505b30, SplatVector3, 0x4b1df0 and 2 more; not read here	inferred	none		
+0x503c10	162	TabardModelModelReady		ui	orchestration	void __thiscall (CM2Model *model)	Runs the pane's ready step, then moves the camera target to a point of animation 0's bounds	verified	one	ui/playermodel#tabard-camera-target	
 0x503cc0	5			ui	orchestration		Runs its object file code not read here	inferred	none		
 0x503cd0	15			ui	primitive		Runs its object file code not read here	inferred	none		
 0x503ce0	5			ui	orchestration		Runs its object file code not read here	inferred	none		
@@ -11726,14 +11726,14 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x504190	19			ui	primitive		Runs its object file code not read here	inferred	none		
 0x5041b0	5			ui	orchestration		Runs its object file code not read here	inferred	none		
 0x5041c0	11			ui	orchestration		Runs its object file code not read here	inferred	none		
-0x5041d0	45	CGDressUpModelFrame::CGDressUpModelFrame	idb	ui	orchestration		Runs its object file code that calls CGCharacterModelBase::CGCharacterModelBase; not read here	inferred	none		
+0x5041d0	45	CGDressUpModelFrame::CGDressUpModelFrame	idb	ui	orchestration		Constructs a DressUpModel frame: runs the base constructor, zeroes +0x3f8, stores the DressUpModel tables	verified	one	ui/playermodel#pane-classes	
 0x504200	61			ui	orchestration		Runs its object file code not read here	inferred	none		
 0x504240	132			ui	orchestration		Runs its object file code that calls SStrCmpI; not read here	inferred	none		
 0x5042d0	6			ui	orchestration		Runs its object file code not read here	inferred	none		
 0x5042e0	43			ui	orchestration		Runs its object file code that calls 0x504310, SMemFree; not read here	inferred	none		
 0x504310	49			ui	orchestration		Runs its object file code that calls DeleteCharacterComponent; not read here	inferred	none		
 0x504350	274			ui	orchestration		Runs DressUpModelFrame.cpp code that calls SimpleModelSetModel, DeleteCharacterComponent and 4 more; not read here	inferred	none		
-0x504470	27			ui	orchestration		Runs DressUpModelFrame.cpp code that calls 0x505c50, UpdateCharacterComponent; not read here	inferred	none		
+0x504470	27	DressUpModelUpdateTransform		ui	orchestration	void __thiscall ()	Runs the pane's per-paint step, then a call on the object at +0x3f8	verified	one	ui/playermodel#pane-classes	
 0x504490	168			ui	primitive		Runs DressUpModelFrame.cpp code that calls UnequipCharacterSlot, SetCharacterModelOption; not read here	inferred	none		
 0x504540	1538			ui	primitive		Runs DressUpModelFrame.cpp code that calls DBCache_ItemStats_C_int_HASHKEY_INT_::GetRecord and 11 more; not read here	inferred	none		
 0x504ba0	23			ui	orchestration		Runs its object file code that calls 0x504540; not read here	inferred	none		
@@ -11809,22 +11809,22 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x505630	19			ui	primitive		Runs its object file code not read here	inferred	none		
 0x505650	5			ui	orchestration		Runs its object file code not read here	inferred	none		
 0x505660	19			ui	primitive		Runs its object file code not read here	inferred	none		
-0x505680	249	CGCharacterModelBase::CGCharacterModelBase	idb	ui	orchestration		Runs its object file code that calls CSimpleModel::CSimpleModel, M2LightSetType and 2 more; not read here	inferred	none		
+0x505680	249	CGCharacterModelBase::CGCharacterModelBase	idb	ui	orchestration		Constructs the model frame base: zeroes the pane fields, stores the PlayerModel tables, enables a directional light	verified	one	ui/playermodel#pane-classes	
 0x505780	53			ui	orchestration		Runs its object file code not read here	inferred	none		
 0x5057c0	110			ui	orchestration		Runs its object file code that calls SStrCmpI; not read here	inferred	none		
 0x505830	6			ui	orchestration		Runs its object file code not read here	inferred	none		
 0x505840	43			ui	orchestration		Runs its object file code that calls 0x505870, SMemFree; not read here	inferred	none		
 0x505870	18			ui	orchestration		Runs its object file code not read here	inferred	none		
-0x505890	266			ui	orchestration		Runs its object file code that calls SimpleModelSetCamera, CM2Model::GetBoundingSphere and 9 more; not read here	inferred	none		
-0x5059a0	208			ui	orchestration		Runs its object file code that calls UpdateCharacterComponent, SimpleModelGetScene and 9 more; not read here	inferred	none		
-0x505a70	189			ui	orchestration		Runs its object file code that calls SimpleModelGetScene, CreateModelFromPath and 4 more; not read here	inferred	none		
-0x505b30	27			ui	orchestration		Runs its object file code that calls 0x76ce00, 0x505890; not read here	inferred	none		
-0x505b50	83			ui	orchestration		Runs CharacterModelBase.cpp code that calls ClntObjMgrObjectPtr, 0x5059a0; not read here	inferred	none		
-0x505bb0	159			ui	primitive		Runs CharacterModelBase.cpp code that calls CM2Model::IsLoaded, CM2Model::GetKeyBoneAnimId and 2 more; not read here	inferred	none		
-0x505c50	92			ui	orchestration		Runs CharacterModelBase.cpp code that calls 0x76d1a0, OsGetAsyncTimeMs and 2 more; not read here	inferred	none		
-0x505cb0	48			ui	orchestration		Runs CharacterModelBase.cpp code that calls 0x505a70; not read here	inferred	none		
-0x505ce0	21			ui	orchestration		Runs CharacterModelBase.cpp code not read here	inferred	none		
-0x505d00	99			ui	primitive		Runs CharacterModelBase.cpp code that calls ClntObjMgrObjectPtr, 0x5059a0, 0x505a70; not read here	inferred	none		
+0x505890	266	CharacterModelBaseChooseCamera		ui	orchestration	void __thiscall ()	Installs a frozen copy of camera 1, or a fixed camera aimed at the bounding box centre	verified	one	ui/modelview#the-character-pane-camera	
+0x5059a0	208	CGCharacterModelBase::AttachUnitModel		ui	orchestration	void __thiscall (CGUnit_C *unit)	Shows a duplicate of the unit's model with Stand armed, the completion callback and the hand grips	verified	one	ui/playermodel#the-pane-model	
+0x505a70	189	CGCharacterModelBase::AttachDisplayModel		ui	orchestration	void __thiscall (void *display)	Creates the model of a creature display record in the pane's scene and arms Stand	verified	one	ui/playermodel#the-pane-model	
+0x505b30	27	CharacterModelBaseModelReady		ui	orchestration	void __thiscall (CM2Model *model)	Runs the base ready step, then chooses the pane's camera	verified	one	ui/modelview#the-character-pane-camera	
+0x505b50	83	CGCharacterModelBase::SetUnitGuid		ui	orchestration	void __thiscall (uint32_t guid_lo, uint32_t guid_hi)	Stores the GUID, clears the display record and, if the frame is visible, builds the model copy	verified	one	ui/playermodel#pane-fields	
+0x505bb0	159	CGCharacterModelBase::TurnTo		ui	primitive	void __thiscall (float angle)	Plays a shuffle toward the angle, latches the turn, sets the deadline and stores the facing	verified	one	ui/playermodel#turning-the-model	
+0x505c50	92	CGCharacterModelBase::UpdateTransform		ui	primitive	void __thiscall ()	Rebuilds the root transform, then arms Stand once a turn has ended, and clears the latch	verified	one	ui/playermodel#the-turn-timer	
+0x505cb0	48	CGCharacterModelBase::SetDisplay		ui	orchestration	void __thiscall (void *display)	Clears the GUID, stores a creature display record and, if the frame is visible, builds the model	verified	one	ui/playermodel#pane-fields	
+0x505ce0	21	CGCharacterModelBase::OnHide		ui	orchestration	void __thiscall ()	Clears the pane's model, then runs the base hide step	verified	one	ui/playermodel#the-pane-model	
+0x505d00	99	CGCharacterModelBase::OnShow		ui	orchestration	void __thiscall ()	Builds the pane's model from the unit or display record when not yet visible, then runs the base show step	verified	one	ui/playermodel#the-pane-model	
 0x505d70	206	PlayerModel::SetUnit	idb	ui	primitive		Implements the PlayerModel method SetUnit, its pair in the table 0x84f1fc	verified	one	ui/model#lua-methods	
 0x505e40	190	PlayerModel::RefreshUnit	idb	ui	primitive		Implements the PlayerModel method RefreshUnit, its pair in the table 0x84f1fc	verified	one	ui/model#lua-methods	
 0x505f00	201	PlayerModel::SetRotation	idb	ui	primitive		Implements the PlayerModel method SetRotation, its pair in the table 0x84f1fc	verified	one	ui/model#lua-methods	
@@ -11835,7 +11835,7 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x506230	21			ui	orchestration		Adds the 3 PlayerModel methods of 0x84f1fc to their method hash	verified	one	ui/model#lua-methods	
 0x506250	10			ui	orchestration		Runs its object file code not read here	inferred	none		
 0x506260	60			ui	orchestration		Pushes a method from the PlayerModel hash, else through the Model lookup	verified	one	ui/model#lua-methods	
-0x5062a0	77			ui	orchestration		Runs its object file code that calls CM2Model::PlayAnimation; not read here	inferred	none		
+0x5062a0	77	CGCharacterModelBase::OnAnimDone		ui	orchestration	void __fastcall (CM2Model *model, uint32_t key_bone, uint32_t anim_id, uint32_t mode, uint32_t overshoot, CGCharacterModelBase *frame, uint32_t guid_hi)	Arms Stand when a whole-body track completes, or stops the track on another key bone	verified	one	ui/playermodel#stand-is-the-resting-state	
 0x5062f0	5			ui	orchestration		Runs its object file code not read here	inferred	none		
 0x506300	15			ui	primitive		Runs its object file code not read here	inferred	none		
 0x506310	5			ui	orchestration		Runs its object file code not read here	inferred	none		
@@ -11964,10 +11964,10 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x506f60	11			ui	orchestration		Runs its object file code not read here	inferred	none		
 0x506f70	298			ui	primitive		Runs QuestTextParser.cpp code that calls ClntObjMgrObjectPtr, DBCache::NameCache::GetRecord and 4 more; not read here	inferred	none		
 0x5070a0	1264			ui	primitive		Runs QuestTextParser.cpp code that calls SStrCopy, CGUnit_C::GetUnitName, 0x64b480 and 10 more; not read here	inferred	none		
-0x5075f0	279			ui	primitive		Runs QuestTextParser.cpp code that calls SStrChr, GetSpellLevel, SStrLen and 2 more; not read here	inferred	none		
-0x507710	2511			ui	primitive		Runs QuestTextParser.cpp code that calls SStrChr, SStrCopy, 0x64ac60 and 18 more; not read here	inferred	none		
-0x508180	277			ui	primitive		Runs QuestTextParser.cpp code that calls ClntObjMgrGetActivePlayer, ClntObjMgrObjectPtr and 3 more; not read here	inferred	none		
-0x5082a0	247			ui	primitive		Runs QuestTextParser.cpp code that calls SStrChr, FrameScriptGetPluralIndex, SStrLen and 1 more; not read here	inferred	none		
+0x5075f0	279	ExpandSpellText		ui	primitive	uint32_t __thiscall (char *out, uint32_t size, uint32_t pet, uint32_t level, uint32_t aura, uint32_t stack, uint32_t unmodified)	Copies a spell description with every dollar token expanded and returns 1 when none failed	verified	one	ui/spelltokens#the-expander	
+0x507710	2511	ExpandSpellToken		ui	primitive	uint32_t __thiscall (void *spell, uint32_t level, uint32_t stack, uint32_t pet, uint32_t unmodified)	Expands the token at the text cursor into the buffer and returns 0 when it cannot	verified	one	ui/spelltokens#the-token-syntax	
+0x508180	277	ExpandGenderToken		ui	primitive	uint32_t __fastcall (char *out, uint32_t size)	Appends the male or female form of a dollar g token by the active player's gender	verified	one	ui/spelltokens#gendered-text	
+0x5082a0	247	ExpandPluralToken		ui	primitive	uint32_t __fastcall (char *out, uint32_t size, uint32_t key)	Appends the singular or plural form of a dollar l token by the plural index of the key	verified	one	ui/spelltokens#plural-text	
 0x5083a0	386			ui	primitive		Runs QuestTextParser.cpp code that calls SStrChr, SStrLen, SStrPack and 4 more; not read here	inferred	none		
 0x508560	286			ui	primitive		Runs its object file code that calls SStrChr, SStrLen, SStrPack and 3 more; not read here	inferred	none		
 0x508680	982			ui	primitive		Runs its object file code that calls 0x64b4a0, SStrCopy, 0x508ad0 and 5 more; not read here	inferred	none		
@@ -12893,7 +12893,7 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x523c10	6			ui	unreached		Runs its object file code not read here	inferred	none		
 0x523c20	20			ui	orchestration		Sets the current cursor index and refreshes the cursor when it changes	inferred	none	spell/cast#targeting-refusal-or-cursor	
 0x523c40	207			ui	orchestration		Runs its object file code that calls SStrCmpI, TextureCreateFromFile, 0x44ae00 and 4 more; not read here	inferred	none		
-0x523d10	6			ui	orchestration		Runs its object file code not read here	inferred	none		
+0x523d10	6	GetDefaultCursor		ui	orchestration	uint32_t __cdecl (void)	Returns the default cursor index	verified	one	ui/tooltipitemfoot#the-sell-price	
 0x523d20	7			ui	orchestration		Stores the default cursor index	verified	one	spell/cast#targeting-refusal-or-cursor	
 0x523d30	11			ui	orchestration		Sets the shown cursor to the base cursor through 0x523c20	inferred	none	spell/targeting#the-targeting-cursor	
 0x523d40	55			ui	primitive		Runs its object file code that calls SStrCmpI; not read here	inferred	none		
@@ -13113,23 +13113,23 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x528e20	12			ui	orchestration		Runs its object file code that calls _atexit; not read here	inferred	none		
 0x528e30	14			ui	primitive		Runs its object file code not read here	inferred	none		
 0x528e40	10			ui	orchestration		Runs its object file code that calls 0x528e50; not read here	inferred	none		
-0x528e50	11			ui	orchestration		Runs its object file code not read here	inferred	none		
+0x528e50	11			ui	orchestration		Stores 0xffffd200 in the tooltip's gold colour	verified	one	ui/tooltipcontent#the-colours	
 0x528e60	12			ui	orchestration		Runs its object file code that calls _atexit; not read here	inferred	none		
 0x528e70	1			ui	orchestration		Runs its object file code not read here	inferred	none		
 0x528e80	10			ui	orchestration		Runs its object file code that calls 0x528e90; not read here	inferred	none		
-0x528e90	11			ui	orchestration		Runs its object file code not read here	inferred	none		
+0x528e90	11			ui	orchestration		Stores 0xffffffff in the tooltip's white colour	verified	one	ui/tooltipcontent#the-colours	
 0x528ea0	12			ui	orchestration		Runs its object file code that calls _atexit; not read here	inferred	none		
 0x528eb0	1			ui	orchestration		Runs its object file code not read here	inferred	none		
 0x528ec0	10			ui	orchestration		Runs its object file code that calls 0x528ed0; not read here	inferred	none		
-0x528ed0	11			ui	orchestration		Runs its object file code not read here	inferred	none		
+0x528ed0	11			ui	orchestration		Stores 0xffff2020 in the tooltip's red colour	verified	one	ui/tooltipcontent#the-colours	
 0x528ee0	12			ui	orchestration		Runs its object file code that calls _atexit; not read here	inferred	none		
 0x528ef0	1			ui	orchestration		Runs its object file code not read here	inferred	none		
 0x528f00	10			ui	orchestration		Runs its object file code that calls 0x528f10; not read here	inferred	none		
-0x528f10	11			ui	orchestration		Runs its object file code not read here	inferred	none		
+0x528f10	11			ui	orchestration		Stores 0xff808080 in the tooltip's gray colour	verified	one	ui/tooltipcontent#the-colours	
 0x528f20	12			ui	orchestration		Runs its object file code that calls _atexit; not read here	inferred	none		
 0x528f30	1			ui	orchestration		Runs its object file code not read here	inferred	none		
 0x528f40	10			ui	orchestration		Runs its object file code that calls 0x528f50; not read here	inferred	none		
-0x528f50	11			ui	orchestration		Runs its object file code not read here	inferred	none		
+0x528f50	11			ui	orchestration		Stores 0xff00ff00 in the tooltip's green colour	verified	one	ui/tooltipcontent#the-colours	
 0x528f60	12			ui	orchestration		Runs its object file code that calls _atexit; not read here	inferred	none		
 0x528f70	1			ui	orchestration		Runs its object file code not read here	inferred	none		
 0x528f80	10			ui	orchestration		Runs its object file code that calls 0x528f90; not read here	inferred	none		
@@ -13137,88 +13137,88 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x528fa0	12			ui	orchestration		Runs its object file code that calls _atexit; not read here	inferred	none		
 0x528fb0	1			ui	orchestration		Runs its object file code not read here	inferred	none		
 0x528fc0	10			ui	orchestration		Runs its object file code that calls 0x528fd0; not read here	inferred	none		
-0x528fd0	11			ui	orchestration		Runs its object file code not read here	inferred	none		
+0x528fd0	11			ui	orchestration		Stores 0xffff0000 in the tooltip's pure red colour	verified	one	ui/tooltipcontent#the-colours	
 0x528fe0	12			ui	orchestration		Runs its object file code that calls _atexit; not read here	inferred	none		
 0x528ff0	1			ui	orchestration		Runs its object file code not read here	inferred	none		
 0x529000	10			ui	orchestration		Runs its object file code that calls 0x529010; not read here	inferred	none		
-0x529010	11			ui	orchestration		Runs its object file code not read here	inferred	none		
+0x529010	11			ui	orchestration		Stores 0xff002e5a in the game object tooltip's backdrop colour	verified	one	ui/tooltipobject#the-game-object-tooltip	
 0x529020	12			ui	orchestration		Runs its object file code that calls _atexit; not read here	inferred	none		
 0x529030	1			ui	orchestration		Runs its object file code not read here	inferred	none		
 0x529040	10			ui	orchestration		Runs its object file code that calls 0x529050; not read here	inferred	none		
-0x529050	11			ui	orchestration		Runs its object file code not read here	inferred	none		
+0x529050	11			ui	orchestration		Stores 0xffffff97 in the tooltip's cream colour	verified	one	ui/tooltipcontent#the-colours	
 0x529060	12			ui	orchestration		Runs its object file code that calls _atexit; not read here	inferred	none		
 0x529070	1			ui	orchestration		Runs its object file code not read here	inferred	none		
 0x529080	10			ui	orchestration		Runs its object file code that calls 0x529090; not read here	inferred	none		
-0x529090	11			ui	orchestration		Runs its object file code not read here	inferred	none		
+0x529090	11			ui	orchestration		Stores 0xff808080 in the gray skill colour	verified	one	ui/tooltipitemhead#the-skill-colours	
 0x5290a0	12			ui	orchestration		Runs its object file code that calls _atexit; not read here	inferred	none		
 0x5290b0	1			ui	orchestration		Runs its object file code not read here	inferred	none		
 0x5290c0	10			ui	orchestration		Runs its object file code that calls 0x5290d0; not read here	inferred	none		
-0x5290d0	11			ui	orchestration		Runs its object file code not read here	inferred	none		
+0x5290d0	11			ui	orchestration		Stores 0xff40c040 in the green skill colour	verified	one	ui/tooltipitemhead#the-skill-colours	
 0x5290e0	12			ui	orchestration		Runs its object file code that calls _atexit; not read here	inferred	none		
 0x5290f0	1			ui	orchestration		Runs its object file code not read here	inferred	none		
 0x529100	10			ui	orchestration		Runs its object file code that calls 0x529110; not read here	inferred	none		
-0x529110	11			ui	orchestration		Runs its object file code not read here	inferred	none		
+0x529110	11			ui	orchestration		Stores 0xffffff00 in the yellow skill colour	verified	one	ui/tooltipitemhead#the-skill-colours	
 0x529120	12			ui	orchestration		Runs its object file code that calls _atexit; not read here	inferred	none		
 0x529130	1			ui	orchestration		Runs its object file code not read here	inferred	none		
 0x529140	10			ui	orchestration		Runs its object file code that calls 0x529150; not read here	inferred	none		
-0x529150	11			ui	orchestration		Runs its object file code not read here	inferred	none		
+0x529150	11			ui	orchestration		Stores 0xffff8040 in the orange skill colour	verified	one	ui/tooltipitemhead#the-skill-colours	
 0x529160	12			ui	orchestration		Runs its object file code that calls _atexit; not read here	inferred	none		
 0x529170	1			ui	orchestration		Runs its object file code not read here	inferred	none		
 0x529180	10			ui	orchestration		Runs its object file code that calls 0x529190; not read here	inferred	none		
-0x529190	11			ui	orchestration		Runs its object file code not read here	inferred	none		
+0x529190	11			ui	orchestration		Stores 0xffff2020 in the tooltip's locked red colour	verified	one	ui/tooltipcontent#the-colours	
 0x5291a0	12			ui	orchestration		Runs its object file code that calls _atexit; not read here	inferred	none		
 0x5291b0	1			ui	orchestration		Runs its object file code not read here	inferred	none		
 0x5291c0	10			ui	orchestration		Runs its object file code that calls 0x5291d0; not read here	inferred	none		
-0x5291d0	71			ui	orchestration		Runs its object file code not read here	inferred	none		
+0x5291d0	71	InitItemQualityColours		ui	orchestration	void __cdecl ()	Stores the seven item quality colours, grey to cream	verified	one	ui/tooltipcontent#the-colours	
 0x529220	12			ui	orchestration		Runs its object file code that calls _atexit; not read here	inferred	none		
 0x529230	1			ui	orchestration		Runs its object file code not read here	inferred	none		
-0x529240	357	CGTooltip::CGTooltip	idb	ui	orchestration		Runs its object file code that calls CSimpleFrame::CSimpleFrame; not read here	inferred	none		
+0x529240	357	CGTooltip::CGTooltip	idb	ui	orchestration		Constructs a tooltip object: its frame base, line arrays and virtual table	verified	one	ui/tooltipitem#fields-kept-for-a-rebuild	
 0x5293b0	45			ui	orchestration		Runs its object file code not read here	inferred	none		
 0x5293e0	89			ui	orchestration		Runs its object file code that calls SStrCmpI; not read here	inferred	none		
 0x529440	6			ui	orchestration		Runs its object file code not read here	inferred	none		
 0x529450	43			ui	orchestration		Runs its object file code that calls 0x529480, SMemFree; not read here	inferred	none		
 0x529480	215			ui	primitive		Runs its object file code that calls 0x467d00, ClntObjMgrClearObjectMirrorHandler and 2 more; not read here	inferred	none		
-0x529560	98			ui	orchestration		Runs Tooltip.cpp code that calls ClntObjMgrObjectPtr, 0x783270; not read here	inferred	none		
-0x5295d0	124			ui	orchestration		Runs Tooltip.cpp code that calls CSimpleFrame::GetScriptByName, SStrCmpI; not read here	inferred	none		
+0x529560	98	CGTooltip::OnUnitHealthChanged		ui	orchestration	uint32_t __cdecl (uint32_t guidLow, uint32_t guidHigh, uint32_t length, void *statusBar)	Sets the tooltip health bar's range and value from the unit and returns 1	verified	one	ui/tooltipunit#the-health-bar	
+0x5295d0	124	CGTooltip::GetScriptSlot		ui	orchestration	uint32_t * __thiscall (const char *name)	Returns the address of the tooltip script slot of a name, else the frame's own lookup	verified	one	ui/tooltipobject#the-script-slots	
 0x529650	737			ui	primitive		Runs Tooltip.cpp code that calls CSimpleFrame::PostLoadXML, 0x536d10, 0x536c80 and 4 more; not read here	inferred	none		
 0x529940	243			ui	primitive		Runs Tooltip.cpp code that calls 0x536d10, 0x536c80, 0x536910 and 2 more; not read here	inferred	none		
-0x529a40	1152			ui	primitive		Runs Tooltip.cpp code that calls __ftol, ceil, FrameScript_GetText and 6 more; not read here	inferred	none		
-0x529ec0	222			ui	primitive		Runs Tooltip.cpp code that calls FrameScript_GetText, SStrCopy, GetSpellEffectPointsInt and 2 more; not read here	inferred	none		
-0x529fa0	54			ui	orchestration		Runs Tooltip.cpp code not read here	inferred	none		
-0x529fe0	2613			ui	primitive		Runs Tooltip.cpp code that calls 0x530050, ClntObjMgrObjectPtr, GPartyInfo::GetRemoteStats and 26 more; not read here	inferred	none		
-0x52aa20	747			ui	primitive		Runs Tooltip.cpp code that calls 0x530050, ClntObjMgrObjectPtr, 0x77f410 and 10 more; not read here	inferred	none		
-0x52ad10	88			ui	primitive		Runs Tooltip.cpp code that calls 0x52aa20, 0x530640; not read here	inferred	none		
-0x52ad70	26			ui	orchestration		Runs Tooltip.cpp code not read here	inferred	none		
-0x52ad90	26			ui	orchestration		Runs Tooltip.cpp code not read here	inferred	none		
+0x529a40	1152	CGTooltip::AddStudiedCreatureLines		ui	primitive	void __thiscall (void *unit, char *buffer, uint32_t size)	Adds the damage, armor, health, resistance, diet and pet ability lines of a studied creature	verified	one	ui/tooltipunitstatus#the-studied-creature-lines	
+0x529ec0	222	CGTooltip::AddSkinnableLine		ui	primitive	void __thiscall (void *unit, char *buffer, uint32_t size)	Adds the skinnable line, in the skill colour when the interact spell skins	verified	one	ui/tooltipunitstatus#the-skinnable-line	
+0x529fa0	54	SkillColorPointer		ui	primitive	uint32_t * __fastcall (int32_t required, int32_t value)	Returns the colour pointer of a skill value against its requirement: gray, green, yellow, orange or red	verified	one	ui/tooltipitemhead#the-skill-colours	
+0x529fe0	2613	CGTooltip::BuildUnit		ui	primitive	uint32_t __thiscall (const uint64_t *guid)	Adds the lines of a unit tooltip for a unit in sight, or a party member or party pet record	verified	one	ui/tooltipunit#who-the-builder-describes	
+0x52aa20	747	CGTooltip::BuildGameObject		ui	primitive	void __thiscall (const uint64_t *guid)	Adds the name, backdrop tint, handler lines and lock lines of a game object tooltip	verified	one	ui/tooltipobject#the-game-object-tooltip	
+0x52ad10	88	CGTooltip::OnLockKeyItem		ui	primitive	void __stdcall (CGTooltip *tooltip, uint8_t found)	Builds the game object tooltip again from its stored GUID when the key item arrives	verified	one	ui/tooltipobject#the-game-object-lock-lines	
+0x52ad70	26	QualityColorPointer		ui	primitive	uint32_t * __fastcall (uint32_t quality)	Returns the quality colour pointer, with an index of 7 or more taking entry 1	verified	one	ui/tooltipcontent#the-colours	
+0x52ad90	26	QualityColorEscape		ui	primitive	const char * __fastcall (uint32_t quality)	Returns the inline colour escape string of a quality, with an index of 7 or more taking entry 1	verified	one	ui/tooltipcontent#the-colours	
 0x52adb0	80			ui	orchestration		Formats an item link with its quality colour	inferred	none	objectlayer/quests#quest-completion	
 0x52ae00	238			ui	primitive		Runs Tooltip.cpp code that calls DBCache_ItemStats_C_int_HASHKEY_INT_::GetRecord, 0x5d8bc0, 0x52adb0; not read here	inferred	none		
-0x52aef0	230			ui	orchestration		Runs Tooltip.cpp code that calls 0x530050, ClntObjMgrObjectPtr, DBCache::NameCache::GetRecord and 3 more; not read here	inferred	none		
-0x52afe0	88			ui	primitive		Runs Tooltip.cpp code that calls 0x52aef0, 0x530640; not read here	inferred	none		
+0x52aef0	230	CGTooltip::BuildCorpse		ui	orchestration	void __thiscall (const uint64_t *guid)	Adds the corpse line with the owner's name, or waits for the name cache	verified	one	ui/tooltipobject#the-corpse-tooltip	
+0x52afe0	88	CGTooltip::OnCorpseOwnerName		ui	primitive	void __stdcall (CGTooltip *tooltip, uint8_t found)	Builds the corpse tooltip again from its stored GUID when the owner's name arrives	verified	one	ui/tooltipobject#the-corpse-tooltip	
 0x52b040	85			ui	primitive		Runs Tooltip.cpp code that calls 0x530050, 0x4f0f40, 0x5303b0; not read here	inferred	none		
-0x52b0a0	752			ui	primitive		Runs Tooltip.cpp code that calls 0x530050, ClntObjMgrGetActivePlayer, ClntObjMgrObjectPtr and 8 more; not read here	inferred	none		
-0x52b390	695			ui	primitive		Runs Tooltip.cpp code that calls ClntObjMgrGetActivePlayer, ClntObjMgrObjectPtr and 5 more; not read here	inferred	none		
-0x52b650	11946			ui	primitive		Runs Tooltip.cpp code that calls __alloca_probe, 0x530050, ClntObjMgrGetActivePlayer and 36 more; not read here	inferred	none		
-0x52e530	141			ui	orchestration		Runs Tooltip.cpp code that calls 0x52b650, 0x530640; not read here	inferred	none		
-0x52e5c0	76			ui	primitive		Runs Tooltip.cpp code not read here	inferred	none		
-0x52e610	4531			ui	primitive		Runs Tooltip.cpp code that calls 0x530050, ClntObjMgrGetActivePlayer, ClntObjMgrObjectPtr and 26 more; not read here	inferred	none		
-0x52f820	83			ui	primitive		Runs Tooltip.cpp code that calls 0x52e610, 0x530640; not read here	inferred	none		
-0x52f880	247			ui	orchestration		Runs Tooltip.cpp code that calls 0x530050, 0x530380, 0x5075f0 and 1 more; not read here	inferred	none		
-0x52f980	203			ui	primitive		Runs Tooltip.cpp code that calls floor; not read here	inferred	none		
-0x52fa50	375			ui	primitive		Runs Tooltip.cpp code that calls SStrPrintf, FrameScript_GetText; not read here	inferred	none		
-0x52fbd0	350			ui	primitive		Runs Tooltip.cpp code that calls SStrPrintf, FrameScript_GetText; not read here	inferred	none		
-0x52fd30	264			ui	primitive		Runs Tooltip.cpp code that calls GetUnitCreatureType, ClntObjMgrObjectPtr and 3 more; not read here	inferred	none		
+0x52b0a0	752	CGTooltip::BuildPassiveTalent		ui	primitive	void __thiscall (void *talent)	Adds a talent tooltip with the current and next rank descriptions, without the spell builder	verified	one	ui/tooltipspell#talent-tooltips	
+0x52b390	695	CGTooltip::AddTalentRequirements		ui	primitive	uint32_t __thiscall (void *talent)	Adds the red lines for the prerequisites a talent lacks and returns 1 when none is missing	verified	one	ui/tooltipspell#the-talent-lines	
+0x52b650	11946	CGTooltip::BuildItem		ui	primitive	uint32_t __thiscall (int entry, uint64_t *rec, uint64_t *item, int nameOnly, int header, int valid, int rebuild, int ownLo, int ownHi)	Adds the lines of an item tooltip from its record and the tooltip's instance fields, returning 1 for a timed line	verified	one	ui/tooltipitem#the-builders-arguments	
+0x52e530	141	CGTooltip::OnCacheAnswer		ui	orchestration	void __stdcall (CGTooltip *tooltip, uint8_t found)	Rebuilds an item tooltip from its kept fields when a cache answers, then sizes it	verified	one	ui/tooltipitem#fields-kept-for-a-rebuild	
+0x52e5c0	76	CompareSetBonuses		ui	primitive	int __cdecl (const uint8_t *a, const uint8_t *b)	Orders two item set bonus slots by the members they need, then by slot number	verified	one	ui/tooltipitemreq#set-bonus-lines	
+0x52e610	4531	CGTooltip::BuildSpell		ui	primitive	uint32_t __thiscall (uint32_t spell, uint32_t compact, uint32_t cooldownMs, uint32_t pet, uint32_t showRank, void *talent, uint32_t rebuild)	Adds the lines of a spell tooltip, returning 1 when it shows the cooldown line	verified	one	ui/tooltipspell#the-builders-arguments	
+0x52f820	83	CGTooltip::OnSpellItemAnswer		ui	primitive	void __stdcall (CGTooltip *tooltip, uint8_t found)	Builds the spell tooltip again from its stored spell id when the last item answer arrives	verified	one	ui/tooltipspell#rebuilding-after-a-cache-answers	
+0x52f880	247	CGTooltip::BuildAura		ui	orchestration	void __thiscall (uint32_t spell, uint32_t level, uint32_t stack, uint32_t unused)	Adds the name, dispel type and description of an aura tooltip	verified	one	ui/tooltipbuff#the-aura-tooltip	
+0x52f980	203	IsWholeDuration		ui	primitive	uint32_t __cdecl (float ms, float tolerance)	Returns whether a duration is a whole number of its largest unit within a tolerance	verified	one	ui/spelltokens#tokens-that-compute-a-value	
+0x52fa50	375	FormatDuration		ui	primitive	char * __thiscall (uint32_t ms, const char *prefix, const char *extra, uint32_t round_up)	Formats a duration in milliseconds as days, hours, minutes or seconds through a global string	verified	one	ui/tooltipcontent#durations	
+0x52fbd0	350	FormatDurationFloat		ui	primitive	void __thiscall (float ms, const char *prefix, const char *extra)	Formats a duration with the unit and the unrounded count through the global string of the prefix	verified	one	ui/spelltokens#tokens-that-compute-a-value	
+0x52fd30	264	CGTooltip::FormatUnitOwner		ui	primitive	void __thiscall (char *out, uint32_t size)	Writes the owner title line of a charmed or created unit, or nothing without an owner	verified	one	ui/tooltipunit#the-subtitle-and-owner-lines	
 0x52fe90	300			ui	orchestration		Anchors a tooltip to its owner by its mode	verified	one	ui/tooltip#setowner-and-the-anchor-modes	
 0x52ffe0	97			ui	orchestration		Sets a tooltip's owner, mode and offsets and anchors it	verified	one	ui/tooltip#setowner-and-the-anchor-modes	
-0x530050	543			ui	primitive		Runs Tooltip.cpp code that calls ClntObjMgrClearObjectMirrorHandler, GetScaledScreenAspect and 5 more; not read here	inferred	none		
+0x530050	543	GameTooltipClear		ui	orchestration	void __thiscall ()	Hides the status bar and every line, empties their texts and runs the cleared script	verified	one	ui/tooltipcontent#the-line-arrays	
 0x530270	271			ui	orchestration		Adds a line with a left and a right text while a slot is free and a text is nonempty	verified	one	ui/tooltip#lines	
-0x530380	34			ui	orchestration		Runs Tooltip.cpp code that calls 0x530270; not read here	inferred	none		
-0x5303b0	27			ui	orchestration		Adds a line with a left text	verified	one	ui/tooltip#lines	
+0x530380	34	GameTooltipAddGoldDoubleLine		ui	orchestration	void __thiscall (const char *left, const char *right, uint32_t wrap)	Adds a double line with both texts in gold	verified	one	ui/tooltipcontent#the-line-arrays	
+0x5303b0	27			ui	orchestration	void __thiscall (const char *text, uint32_t *colour, uint32_t wrap)	Adds a single left line in a given colour	verified	one	ui/tooltipcontent#the-line-arrays	
 0x5303d0	474			ui	unreached		Runs Tooltip.cpp code that calls GetScaledScreenAspect, MultiplyByScreenScaleX and 4 more; not read here	inferred	none		
 0x5305b0	113			ui	orchestration		Runs Tooltip.cpp code that calls SStrPrintf, 0x771d80, 0x530640; not read here	inferred	none		
 0x530630	16			ui	orchestration		Runs Tooltip.cpp code not read here	inferred	none		
-0x530640	1054			ui	primitive		Runs Tooltip.cpp code that calls GetScaledScreenAspect, MultiplyByScreenScaleX, 0x772890 and 6 more; not read here	inferred	none		
-0x530a60	24			ui	orchestration		Runs Tooltip.cpp code that calls 0x52ffe0; not read here	inferred	none		
-0x530a80	82			ui	orchestration		Runs Tooltip.cpp code that calls 0x530640; not read here	inferred	none		
+0x530640	1054	GameTooltipSize		ui	primitive	void __thiscall ()	Sizes the plate from its lines, padding and wrap limit, then re-anchors it	verified	one	ui/tooltipcontent#sizing-the-tooltip	
+0x530a60	24	CGTooltip::HideEffective		ui	orchestration	void __thiscall ()	Gives the tooltip no owner, then runs the base effective hide	verified	one	ui/hover#the-tooltip-of-a-hidden-frame	
+0x530a80	82	CGTooltip::ShowEffective		ui	orchestration	void __thiscall ()	Shows the tooltip with an owner and a line, else hides it	verified	one	ui/hover#the-tooltip-of-a-hidden-frame	
 0x530ae0	56			ui	orchestration		Hides a cursor-anchored tooltip, or starts a 2-second fade	verified	one	ui/tooltip#fading-out	
 0x530b20	279			ui	primitive		Keeps a cursor-anchored tooltip at the cursor and fades a fading one	verified	one	ui/tooltip#following-the-cursor	
 0x530c40	527	GameTooltip::AddFontStrings	idb	ui	primitive		Implements the GameTooltip method AddFontStrings, its pair in the table 0x854198	verified	one	ui/tooltip#lua-methods	
@@ -13235,7 +13235,7 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x531f00	197	GameTooltip::FadeOut	idb	ui	primitive		Implements the GameTooltip method FadeOut, its pair in the table 0x854198	verified	one	ui/tooltip#fading-out	
 0x531fd0	715	GameTooltip::SetHyperlink	idb	ui	primitive		Implements the GameTooltip method SetHyperlink, its pair in the table 0x854198	verified	one	ui/tooltip#lua-methods	
 0x5322a0	1078	GameTooltip::SetAction	idb	ui	primitive		Implements the GameTooltip method SetAction, its pair in the table 0x854198	verified	one	ui/tooltip#lua-methods	
-0x5326e0	69			ui	orchestration		Runs Tooltip.cpp code not read here	inferred	none		
+0x5326e0	69	CGTooltip::ClearItemFields		ui	orchestration	void __thiscall (void *fields)	Zeroes the item instance fields at tooltip +0x3d0 and sets the charges to −1	verified	one	ui/tooltipitem#fields-kept-for-a-rebuild	
 0x532730	485	GameTooltip::SetPetAction	idb	ui	primitive		Implements the GameTooltip method SetPetAction, its pair in the table 0x854198	verified	one	ui/tooltip#lua-methods	
 0x532920	471	GameTooltip::SetShapeshift	idb	ui	primitive		Implements the GameTooltip method SetShapeshift, its pair in the table 0x854198	verified	one	ui/tooltip#lua-methods	
 0x532b00	322	GameTooltip::SetPlayerBuff	idb	ui	primitive		Implements the GameTooltip method SetPlayerBuff, its pair in the table 0x854198	verified	one	ui/tooltip#lua-methods	
@@ -13255,7 +13255,7 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x534620	904	GameTooltip::SetBagItem	idb	ui	primitive		Implements the GameTooltip method SetBagItem, its pair in the table 0x854198	verified	one	ui/tooltip#lua-methods	
 0x5349b0	265	GameTooltip::SetUnit	idb	ui	primitive		Implements the GameTooltip method SetUnit, its pair in the table 0x854198	verified	one	ui/tooltip#lua-methods	
 0x534ac0	809	GameTooltip::SetUnitBuff	idb	ui	primitive		Implements the GameTooltip method SetUnitBuff, its pair in the table 0x854198	verified	one	ui/tooltip#lua-methods	
-0x534df0	58			ui	primitive		Runs Tooltip.cpp code not read here	inferred	none		
+0x534df0	58	IsVisibleAura		ui	primitive	uint32_t __fastcall (void *spell)	Returns whether an aura spell is shown: not hidden by attribute bit 7, ex bit 0x10000000 or effects 44, 45 and 151	verified	one	ui/tooltipbuff#auras-of-other-units	
 0x534e30	830	GameTooltip::SetUnitDebuff	idb	ui	primitive		Implements the GameTooltip method SetUnitDebuff, its pair in the table 0x854198	verified	one	ui/tooltip#lua-methods	
 0x535170	571	GameTooltip::SetTalent	idb	ui	primitive		Implements the GameTooltip method SetTalent, its pair in the table 0x854198	verified	one	ui/tooltip#lua-methods	
 0x5353b0	270	GameTooltip::SetSendMailItem	idb	ui	primitive		Implements the GameTooltip method SetSendMailItem, its pair in the table 0x854198	verified	one	ui/tooltip#lua-methods	
@@ -16409,7 +16409,7 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x58a920	26			gx			Runs its object file code not read here	inferred	none		
 0x58a940	19			gx			Runs its object file code that calls 0x592410; not read here	inferred	none		
 0x58a960	15			gx			Runs its object file code not read here	inferred	none		
-0x58a970	15	ClearDevice		gx			Clears the device buffers a mask names through the device's slot +0x6c	inferred	none		
+0x58a970	15	ClearDevice		gx			Clears the device buffers a mask names through the device's slot +0x6c	verified	one	ui/modelview#clip-and-depth-clear	
 0x58a980	164	CGxTexFlags::CGxTexFlags	idb	gx			Runs its object file code that calls GxCapsGet; not read here	inferred	none		
 0x58aa30	185			gx			Runs its object file code that calls GxCapsGet, SErrSetLastError; not read here	inferred	none		
 0x58aaf0	28			gx	unreached		Runs its object file code that calls 0x58aa30; not read here	inferred	none		
@@ -16433,10 +16433,10 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x58aed0	31			gx			Runs its object file code that calls SErrSetLastError; not read here	inferred	none		
 0x58aef0	60			gx	unreached		Runs its object file code that calls SErrSetLastError; not read here	inferred	none		
 0x58af30	39			gx			Runs its object file code that calls SErrSetLastError; not read here	inferred	none		
-0x58af60	216	SetDeviceViewport		gx			Sets the device viewport and its depth range	inferred	none		
+0x58af60	216	SetDeviceViewport		gx			Sets the device viewport and its depth range	verified	one	ui/modelview#viewport-and-clamp	
 0x58b040	15	SetDeviceProjection		gx	host	void __fastcall (const float *matrix)	Passes a matrix to device vtable slot +0x70	verified	one	camera#view-and-projection	
 0x58b050	15	SetDeviceView		gx	host	void __fastcall (const float *matrix)	Passes a matrix to device vtable slot +0x74	verified	one	camera#view-and-projection	
-0x58b060	36	GetDeviceViewport		gx			Reads the device viewport and its depth range	inferred	none		
+0x58b060	36	GetDeviceViewport		gx			Reads the device viewport and its depth range	verified	one	ui/modelview#the-paint	
 0x58b090	13	GetDeviceProjection		gx	host	void __fastcall (float *out)	Copies the device matrix at +0xf50	verified	one	camera#unprojection	
 0x58b0a0	13			gx			Runs its object file code that calls 0x5926c0; not read here	inferred	none		
 0x58b0b0	13	GetDeviceView		gx	host	void __fastcall (float *out)	Copies the top of the device matrix stack at +0x1ac8	verified	one	camera#unprojection	
@@ -16693,7 +16693,7 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x592430	35			gx			Runs its object file code that calls 0x592460, 0x595cc0; not read here	inferred	none		
 0x592460	191			gx			Runs its object file code that calls 0x595d80, 0x595cf0, __ftol; not read here	inferred	none		
 0x592520	3			gx			Runs its object file code not read here	inferred	none		
-0x592530	167			gx			Runs its object file code not read here	inferred	none		
+0x592530	167	GxSetViewport		gx	orchestration	void __thiscall (float x0, float x1, float y0, float y1, float near, float far)	Stores the viewport fractions and sets the dirty flag when any differs	verified	one	ui/modelview#clip-and-depth-clear	
 0x5925e0	43			gx			Runs its object file code not read here	inferred	none		
 0x592610	47			gx			Runs its object file code that calls 0x591440; not read here	inferred	none		
 0x592640	73			gx			Runs its object file code not read here	inferred	none		
@@ -16985,14 +16985,14 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x59b7f0	92			gx			Runs its object file code that calls SStrCmpI; not read here	inferred	none		
 0x59b850	53			gx			Runs its object file code not read here	inferred	none		
 0x59b890	126			gx			Runs its object file code that calls 0x592640, 0x592530; not read here	inferred	none		
-0x59b910	242			gx			Runs its object file code that calls 0x59baa0, 0x59c730; not read here	inferred	none		
+0x59b910	242	GxClearGL		gx	host	void __thiscall (uint32_t mask)	Applies the viewport and scissor, then clears the colour and depth buffers the mask names	verified	one	ui/modelview#clip-and-depth-clear	
 0x59ba10	89			gx			Runs its object file code that calls 0x592430, 0x592140, 0x59b890; not read here	inferred	none		
 0x59ba70	40			gx			Runs its object file code not read here	inferred	none		
 0x59baa0	1422			gx			Runs its object file code not read here	inferred	none		
 0x59c100	1213			gx			Runs its object file code that calls 0x59baa0; not read here	inferred	none		
 0x59c610	185			gx			Runs its object file code that calls 0x59baa0; not read here	inferred	none		
-0x59c6d0	84			gx			Runs its object file code that calls 0x594210, 0x59c820, 0x59c9f0 and 4 more; not read here	inferred	none		
-0x59c730	232			gx			Runs its object file code that calls 0x5922e0, __ftol; not read here	inferred	none		
+0x59c6d0	84	GxApplyDirtyStateGL		gx	host	void __thiscall ()	Applies the dirty device states through the GL applicators, the viewport among them	verified	one	ui/modelview#clip-and-depth-clear	
+0x59c730	232	GxApplyViewportGL		gx	host	void __thiscall ()	Passes the viewport as truncated pixels to glViewport and glScissor, and the depth range to glDepthRange	verified	one	ui/modelview#clip-and-depth-clear	
 0x59c820	461			gx			Runs its object file code that calls 0x5a0090; not read here	inferred	none		
 0x59c9f0	100			gx			Runs its object file code that calls 0x5935d0; not read here	inferred	none		
 0x59ca60	828			gx			Runs its object file code that calls MultiplyMatrix4, 0x5a0090, 0x59baa0 and 2 more; not read here	inferred	none		
@@ -17080,14 +17080,14 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x5a0f30	7			unassigned			Runs its object file code not read here	inferred	none		
 0x5a0f40	6			unassigned			Runs its object file code not read here	inferred	none		
 0x5a0f50	417			unassigned			Runs its object file code that calls 0x590630, 0x592b00, 0x5a1b20 and 1 more; not read here	inferred	none		
-0x5a1100	206			unassigned			Runs its object file code that calls 0x5922e0, __ftol; not read here	inferred	none		
+0x5a1100	206	GxApplyViewportD3D		unassigned	host	void __thiscall ()	Builds a D3DVIEWPORT9 from the viewport fractions and calls SetViewport	verified	one	ui/modelview#clip-and-depth-clear	
 0x5a11d0	629			unassigned			Runs its object file code that calls 0x5925e0; not read here	inferred	none		
 0x5a1450	40			unassigned			Runs its object file code that calls 0x592610; not read here	inferred	none		
 0x5a1480	96			unassigned			Runs its object file code not read here	inferred	none		
 0x5a14e0	416			unassigned			Runs its object file code that calls 0x589ee0, MultiplyMatrix4, 0x5938a0 and 1 more; not read here	inferred	none		
 0x5a1680	277			unassigned			Runs its object file code that calls 0x599900, 0x599790, 0x5a24a0 and 3 more; not read here	inferred	none		
 0x5a17a0	40			unassigned			Runs its object file code not read here	inferred	none		
-0x5a17d0	317			unassigned			Runs its object file code that calls 0x592520, __ftol, 0x5a1100; not read here	inferred	none		
+0x5a17d0	317	GxClearD3D		unassigned	host	void __thiscall (uint32_t mask)	Applies the viewport, then calls IDirect3DDevice9::Clear with no rectangles for the buffers the mask names	verified	one	ui/modelview#clip-and-depth-clear	
 0x5a1910	287			unassigned			Runs its object file code that calls 0x592430, 0x5a17a0, OsSleep and 2 more; not read here	inferred	none		
 0x5a1a30	37			unassigned			Runs its object file code that calls 0x5922e0; not read here	inferred	none		
 0x5a1a60	180			unassigned			Runs its object file code that calls 0x592220, 0x5922e0, __ftol; not read here	inferred	none		
@@ -28778,118 +28778,118 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x6d8420	46	ShutdownShadows		lighting	host	void __cdecl (void)	Releases the blob and ramp textures	inferred	none	lighting/shadows#shadow-textures	
 0x6d8450	212	OnShadowLodChanged		lighting	host		Stores shadowLOD 0 or 1 and at 1 refills the ramp textures	verified	one	lighting/shadows#shadow-settings	
 0x6d8530	146	OnShadowBiasChanged		lighting	orchestration		Stores shadowBias from 0 to 1	verified	one	lighting/shadows#shadow-settings	
-0x6d85d0	10			unassigned			Runs its object file code that calls 0x6d85e0; not read here	inferred	none		
-0x6d85e0	22			unassigned			Runs its object file code not read here	inferred	none		
-0x6d8600	12			unassigned			Runs its object file code that calls _atexit; not read here	inferred	none		
-0x6d8610	14			unassigned			Runs its object file code not read here	inferred	none		
-0x6d8620	5			unassigned			Runs its object file code not read here	inferred	none		
-0x6d8630	19			unassigned			Runs its object file code not read here	inferred	none		
-0x6d8650	5			unassigned			Runs its object file code not read here	inferred	none		
-0x6d8660	19			unassigned			Runs its object file code not read here	inferred	none		
-0x6d8680	5			unassigned			Runs its object file code not read here	inferred	none		
-0x6d8690	25			unassigned			Runs its object file code not read here	inferred	none		
-0x6d86b0	5			unassigned			Runs its object file code not read here	inferred	none		
-0x6d86c0	25			unassigned			Runs its object file code not read here	inferred	none		
-0x6d86e0	10			unassigned			Runs its object file code that calls 0x6d86f0; not read here	inferred	none		
-0x6d86f0	31			unassigned			Runs its object file code not read here	inferred	none		
-0x6d8710	12			unassigned			Runs its object file code that calls _atexit; not read here	inferred	none		
-0x6d8720	1			unassigned			Runs its object file code not read here	inferred	none		
-0x6d8730	10			unassigned			Runs its object file code that calls 0x6d8740; not read here	inferred	none		
-0x6d8740	13			unassigned			Runs its object file code not read here	inferred	none		
-0x6d8750	12			unassigned			Runs its object file code that calls _atexit; not read here	inferred	none		
-0x6d8760	1			unassigned			Runs its object file code not read here	inferred	none		
-0x6d8770	10			unassigned			Runs its object file code that calls 0x6d8780; not read here	inferred	none		
-0x6d8780	13			unassigned			Runs its object file code not read here	inferred	none		
-0x6d8790	12			unassigned			Runs its object file code that calls _atexit; not read here	inferred	none		
-0x6d87a0	1			unassigned			Runs its object file code not read here	inferred	none		
-0x6d87b0	10			unassigned			Runs its object file code that calls 0x6d87c0; not read here	inferred	none		
-0x6d87c0	161			unassigned			Runs its object file code not read here	inferred	none		
-0x6d8870	12			unassigned			Runs its object file code that calls _atexit; not read here	inferred	none		
-0x6d8880	1			unassigned			Runs its object file code not read here	inferred	none		
-0x6d8890	10			unassigned			Runs its object file code that calls 0x6d88a0; not read here	inferred	none		
-0x6d88a0	161			unassigned			Runs its object file code not read here	inferred	none		
-0x6d8950	12			unassigned			Runs its object file code that calls _atexit; not read here	inferred	none		
-0x6d8960	1			unassigned			Runs its object file code not read here	inferred	none		
-0x6d8970	10			unassigned			Runs its object file code that calls 0x6d8980; not read here	inferred	none		
-0x6d8980	61			unassigned			Runs its object file code not read here	inferred	none		
-0x6d89c0	12			unassigned			Runs its object file code that calls _atexit; not read here	inferred	none		
-0x6d89d0	1			unassigned			Runs its object file code not read here	inferred	none		
-0x6d89e0	10			unassigned			Runs its object file code that calls 0x6d89f0; not read here	inferred	none		
-0x6d89f0	32			unassigned			Runs its object file code that calls 0x573ac0; not read here	inferred	none		
-0x6d8a10	12			unassigned			Runs its object file code that calls _atexit; not read here	inferred	none		
-0x6d8a20	32			unassigned			Runs its object file code that calls 0x573ad0; not read here	inferred	none		
-0x6d8a40	10			unassigned			Runs its object file code that calls 0x6d8a50; not read here	inferred	none		
-0x6d8a50	18			unassigned			Runs its object file code not read here	inferred	none		
-0x6d8a70	12			unassigned			Runs its object file code that calls _atexit; not read here	inferred	none		
-0x6d8a80	25			unassigned			Runs its object file code that calls SMemFree; not read here	inferred	none		
-0x6d8aa0	10			unassigned			Runs its object file code that calls 0x6d8ab0; not read here	inferred	none		
-0x6d8ab0	18			unassigned			Runs its object file code not read here	inferred	none		
-0x6d8ad0	12			unassigned			Runs its object file code that calls _atexit; not read here	inferred	none		
-0x6d8ae0	25			unassigned			Runs its object file code that calls SMemFree; not read here	inferred	none		
-0x6d8b00	10			unassigned			Runs its object file code that calls 0x6d8b10; not read here	inferred	none		
-0x6d8b10	18			unassigned			Runs its object file code not read here	inferred	none		
-0x6d8b30	12			unassigned			Runs its object file code that calls _atexit; not read here	inferred	none		
-0x6d8b40	25			unassigned			Runs its object file code that calls SMemFree; not read here	inferred	none		
-0x6d8b60	10			unassigned			Runs its object file code that calls 0x6d8b70; not read here	inferred	none		
-0x6d8b70	23			unassigned			Runs its object file code not read here	inferred	none		
-0x6d8b90	12			unassigned			Runs its object file code that calls _atexit; not read here	inferred	none		
-0x6d8ba0	25			unassigned			Runs its object file code that calls SMemFree; not read here	inferred	none		
-0x6d8bc0	10			unassigned			Runs its object file code that calls 0x6d8bd0; not read here	inferred	none		
-0x6d8bd0	190			unassigned			Runs its object file code not read here	inferred	none		
-0x6d8c90	12			unassigned			Runs its object file code that calls _atexit; not read here	inferred	none		
-0x6d8ca0	359			unassigned			Runs its object file code that calls 0x6db610, 0x6db5d0, 0x6db400 and 1 more; not read here	inferred	none		
-0x6d8e10	560			unassigned			Runs its object file code that calls 0x6db590, 0x6db280, 0x4084b0 and 3 more; not read here	inferred	none		
-0x6d9040	629			unassigned			Runs its object file code that calls SStrPrintf, 0x6485f0, SStrTokenize and 13 more; not read here	inferred	none		
-0x6d92c0	215			unassigned			Runs its object file code that calls 0x6db5d0; not read here	inferred	none		
-0x6d93a0	1770			unassigned			Runs its object file code that calls OsGetCachedUnixTime, 0x4a67a0 and 18 more; not read here	inferred	none		
-0x6d9a90	884			unassigned			Runs its object file code that calls 0x6da9b0, 0x4c5810, 0x6db310 and 1 more; not read here	inferred	none		
-0x6d9e10	31			unassigned			Runs its object file code not read here	inferred	none		
-0x6d9e30	152			unassigned			Runs its object file code not read here	inferred	none		
-0x6d9ed0	633			unassigned			Runs its object file code that calls 0x6da150, SStrPrintf, SStrHashHT and 8 more; not read here	inferred	none		
-0x6da150	48			unassigned			Runs its object file code not read here	inferred	none		
-0x6da180	430			unassigned			Runs its object file code that calls CWorld::GetEntityGroupBox, RotateMatrix; not read here	inferred	none		
-0x6da330	69			unassigned			Runs its object file code that calls CWorld::GetEntityGroupName, SStrLen, SStrCopy and 1 more; not read here	inferred	none		
-0x6da380	445			unassigned			Runs its object file code that calls 0x6d9a90, 0x6da540, 0x6da5e0 and 1 more; not read here	inferred	none		
-0x6da540	97			unassigned			Runs its object file code that calls __ftol; not read here	inferred	none		
-0x6da5b0	44			unassigned			Runs its object file code not read here	inferred	none		
-0x6da5e0	453			unassigned			Runs its object file code that calls HandleClose, 0x6da7b0, SysMsgPrintf and 3 more; not read here	inferred	none		
-0x6da7b0	294			unassigned			Runs its object file code that calls SStrPrintf, SStrHashHT, SStrCmpI and 1 more; not read here	inferred	none		
-0x6da8e0	158			unassigned			Runs its object file code that calls SStrPrintf, CVar::Set; not read here	inferred	none		
-0x6da980	20			unassigned			Runs its object file code not read here	inferred	none		
-0x6da9a0	6			unassigned			Runs its object file code not read here	inferred	none		
-0x6da9b0	73			unassigned			Runs its object file code not read here	inferred	none		
-0x6daa00	23			unassigned			Runs its object file code not read here	inferred	none		
-0x6daa20	327			unassigned			Runs its object file code that calls 0x6db6f0, 0x6db730, 0x6db750 and 1 more; not read here	inferred	none		
-0x6dab70	73			unassigned			Runs its object file code not read here	inferred	none		
-0x6dabc0	78			unassigned			Runs its object file code not read here	inferred	none		
-0x6dac10	155			unassigned			Runs its object file code that calls SStrCopy, OsGetCachedUnixTime, 0x4a67a0 and 1 more; not read here	inferred	none		
-0x6dacb0	28			unassigned			Runs its object file code that calls 0x6dac10; not read here	inferred	none		
-0x6dacd0	47			unassigned			Runs its object file code that calls FrameScript_GetText, 0x6dac10; not read here	inferred	none		
-0x6dad00	6			unassigned			Runs its object file code not read here	inferred	none		
-0x6dad10	699			minimap			Runs Minimap.cpp code that calls ClntObjMgrGetActivePlayer, ClntObjMgrObjectPtr, 0x4e81a0 and 6 more; not read here	inferred	none		
-0x6dafd0	106			unassigned			Runs its object file code that calls SMemFree, 0x6db5d0, 0x6db7f0; not read here	inferred	none		
-0x6db040	182			unassigned			Runs its object file code that calls SMemAlloc; not read here	inferred	none		
-0x6db100	189			unassigned			Runs its object file code that calls 0x6db5d0, 0x6db400, SMemFree; not read here	inferred	none		
-0x6db1c0	190			unassigned			Runs its object file code that calls 0x6db610, 0x6db5d0, 0x6db500 and 1 more; not read here	inferred	none		
-0x6db280	133			unassigned			Runs its object file code that calls SMemReAlloc, SMemAlloc, SMemFree; not read here	inferred	none		
-0x6db310	226			unassigned			Runs its object file code that calls SMemReAlloc, SMemAlloc, SMemFree; not read here	inferred	none		
-0x6db400	136			unassigned			Runs its object file code not read here	inferred	none		
-0x6db490	108			unassigned			Runs its object file code not read here	inferred	none		
-0x6db500	135			unassigned			Runs its object file code that calls 0x6db610, 0x6db5d0, SMemFree; not read here	inferred	none		
-0x6db590	56			unassigned			Runs its object file code that calls SMemFree; not read here	inferred	none		
-0x6db5d0	60			unassigned			Runs its object file code not read here	inferred	none		
-0x6db610	25			unassigned			Runs its object file code not read here	inferred	none		
-0x6db630	181			unassigned			Runs its object file code not read here	inferred	none		
-0x6db6f0	57			unassigned			Runs its object file code not read here	inferred	none		
-0x6db730	31			unassigned			Runs its object file code not read here	inferred	none		
-0x6db750	146			unassigned			Runs its object file code that calls SMemReAlloc, SMemAlloc, SMemFree; not read here	inferred	none		
-0x6db7f0	41			unassigned			Runs its object file code not read here	inferred	none		
-0x6db820	483			unassigned			Runs its object file code that calls 0x6dba10, 0x6dba90, 0x6dba40 and 4 more; not read here	inferred	none		
-0x6dba10	33			unassigned			Runs its object file code not read here	inferred	none		
-0x6dba40	77			unassigned			Runs its object file code not read here	inferred	none		
-0x6dba90	12			unassigned			Runs its object file code not read here	inferred	none		
-0x6dbaa0	316			unassigned			Runs its object file code that calls 0x6dbbe0, 0x6db5d0, 0x6db7f0; not read here	inferred	none		
-0x6dbbe0	264			unassigned			Runs its object file code that calls 0x6dba40, 0x6db5d0, SMemReAlloc and 3 more; not read here	inferred	none		
+0x6d85d0	10			minimap			Runs its object file code that calls 0x6d85e0; not read here	inferred	none		
+0x6d85e0	22			minimap			Runs its object file code not read here	inferred	none		
+0x6d8600	12			minimap			Runs its object file code that calls _atexit; not read here	inferred	none		
+0x6d8610	14			minimap			Runs its object file code not read here	inferred	none		
+0x6d8620	5			minimap			Runs its object file code not read here	inferred	none		
+0x6d8630	19			minimap			Runs its object file code not read here	inferred	none		
+0x6d8650	5			minimap			Runs its object file code not read here	inferred	none		
+0x6d8660	19			minimap			Runs its object file code not read here	inferred	none		
+0x6d8680	5			minimap			Runs its object file code not read here	inferred	none		
+0x6d8690	25			minimap			Runs its object file code not read here	inferred	none		
+0x6d86b0	5			minimap			Runs its object file code not read here	inferred	none		
+0x6d86c0	25			minimap			Runs its object file code not read here	inferred	none		
+0x6d86e0	10			minimap			Runs its object file code that calls 0x6d86f0; not read here	inferred	none		
+0x6d86f0	31			minimap			Runs its object file code not read here	inferred	none		
+0x6d8710	12			minimap			Runs its object file code that calls _atexit; not read here	inferred	none		
+0x6d8720	1			minimap			Runs its object file code not read here	inferred	none		
+0x6d8730	10			minimap			Runs its object file code that calls 0x6d8740; not read here	inferred	none		
+0x6d8740	13			minimap			Runs its object file code not read here	inferred	none		
+0x6d8750	12			minimap			Runs its object file code that calls _atexit; not read here	inferred	none		
+0x6d8760	1			minimap			Runs its object file code not read here	inferred	none		
+0x6d8770	10			minimap			Runs its object file code that calls 0x6d8780; not read here	inferred	none		
+0x6d8780	13			minimap			Runs its object file code not read here	inferred	none		
+0x6d8790	12			minimap			Runs its object file code that calls _atexit; not read here	inferred	none		
+0x6d87a0	1			minimap			Runs its object file code not read here	inferred	none		
+0x6d87b0	10			minimap			Runs its object file code that calls 0x6d87c0; not read here	inferred	none		
+0x6d87c0	161			minimap			Runs its object file code not read here	inferred	none		
+0x6d8870	12			minimap			Runs its object file code that calls _atexit; not read here	inferred	none		
+0x6d8880	1			minimap			Runs its object file code not read here	inferred	none		
+0x6d8890	10			minimap			Runs its object file code that calls 0x6d88a0; not read here	inferred	none		
+0x6d88a0	161			minimap			Runs its object file code not read here	inferred	none		
+0x6d8950	12			minimap			Runs its object file code that calls _atexit; not read here	inferred	none		
+0x6d8960	1			minimap			Runs its object file code not read here	inferred	none		
+0x6d8970	10			minimap			Runs its object file code that calls 0x6d8980; not read here	inferred	none		
+0x6d8980	61			minimap			Runs its object file code not read here	inferred	none		
+0x6d89c0	12			minimap			Runs its object file code that calls _atexit; not read here	inferred	none		
+0x6d89d0	1			minimap			Runs its object file code not read here	inferred	none		
+0x6d89e0	10			minimap			Runs its object file code that calls 0x6d89f0; not read here	inferred	none		
+0x6d89f0	32			minimap			Runs its object file code that calls 0x573ac0; not read here	inferred	none		
+0x6d8a10	12			minimap			Runs its object file code that calls _atexit; not read here	inferred	none		
+0x6d8a20	32			minimap			Runs its object file code that calls 0x573ad0; not read here	inferred	none		
+0x6d8a40	10			minimap			Runs its object file code that calls 0x6d8a50; not read here	inferred	none		
+0x6d8a50	18			minimap			Runs its object file code not read here	inferred	none		
+0x6d8a70	12			minimap			Runs its object file code that calls _atexit; not read here	inferred	none		
+0x6d8a80	25			minimap			Runs its object file code that calls SMemFree; not read here	inferred	none		
+0x6d8aa0	10			minimap			Runs its object file code that calls 0x6d8ab0; not read here	inferred	none		
+0x6d8ab0	18			minimap			Runs its object file code not read here	inferred	none		
+0x6d8ad0	12			minimap			Runs its object file code that calls _atexit; not read here	inferred	none		
+0x6d8ae0	25			minimap			Runs its object file code that calls SMemFree; not read here	inferred	none		
+0x6d8b00	10			minimap			Runs its object file code that calls 0x6d8b10; not read here	inferred	none		
+0x6d8b10	18			minimap			Runs its object file code not read here	inferred	none		
+0x6d8b30	12			minimap			Runs its object file code that calls _atexit; not read here	inferred	none		
+0x6d8b40	25			minimap			Runs its object file code that calls SMemFree; not read here	inferred	none		
+0x6d8b60	10			minimap			Runs its object file code that calls 0x6d8b70; not read here	inferred	none		
+0x6d8b70	23			minimap			Runs its object file code not read here	inferred	none		
+0x6d8b90	12			minimap			Runs its object file code that calls _atexit; not read here	inferred	none		
+0x6d8ba0	25			minimap			Runs its object file code that calls SMemFree; not read here	inferred	none		
+0x6d8bc0	10			minimap			Runs its object file code that calls 0x6d8bd0; not read here	inferred	none		
+0x6d8bd0	190			minimap			Runs its object file code not read here	inferred	none		
+0x6d8c90	12			minimap			Runs its object file code that calls _atexit; not read here	inferred	none		
+0x6d8ca0	359			minimap			Runs its object file code that calls 0x6db610, 0x6db5d0, 0x6db400 and 1 more; not read here	inferred	none		
+0x6d8e10	560	BuildBlipCandidates		minimap	orchestration	void __fastcall (uint32_t continent)	Collects the AreaPOI rows of a continent and the three static records into the candidate array	verified	one	ui/minimapblips#blip-candidates	
+0x6d9040	629			minimap			Runs its object file code that calls SStrPrintf, 0x6485f0, SStrTokenize and 13 more; not read here	inferred	none		
+0x6d92c0	215			minimap			Runs its object file code that calls 0x6db5d0; not read here	inferred	none		
+0x6d93a0	1770	UpdateMinimap		minimap	primitive		Runs the minimap's update, which expires and clears the gossip marker	inferred	none	ui/minimapblips#clearing-the-gossip-marker	
+0x6d9a90	884	PlaceBlips		minimap	primitive	void __cdecl ()	Splits the candidates into in-range icons and at most 3 ranked direction arrows with bearings	verified	one	ui/minimapblips#placing-the-blips	
+0x6d9e10	31			minimap			Runs its object file code not read here	inferred	none		
+0x6d9e30	152			minimap			Runs its object file code not read here	inferred	none		
+0x6d9ed0	633			minimap			Runs its object file code that calls 0x6da150, SStrPrintf, SStrHashHT and 8 more; not read here	inferred	none		
+0x6da150	48			minimap			Runs its object file code not read here	inferred	none		
+0x6da180	430			minimap			Runs its object file code that calls CWorld::GetEntityGroupBox, RotateMatrix; not read here	inferred	none		
+0x6da330	69			minimap			Runs its object file code that calls CWorld::GetEntityGroupName, SStrLen, SStrCopy and 1 more; not read here	inferred	none		
+0x6da380	445			minimap			Runs its object file code that calls 0x6d9a90, 0x6da540, 0x6da5e0 and 1 more; not read here	inferred	none		
+0x6da540	97			minimap			Runs its object file code that calls __ftol; not read here	inferred	none		
+0x6da5b0	44			minimap			Runs its object file code not read here	inferred	none		
+0x6da5e0	453			minimap			Runs its object file code that calls HandleClose, 0x6da7b0, SysMsgPrintf and 3 more; not read here	inferred	none		
+0x6da7b0	294			minimap			Runs its object file code that calls SStrPrintf, SStrHashHT, SStrCmpI and 1 more; not read here	inferred	none		
+0x6da8e0	158	SetZoomIndex		minimap	primitive	void __fastcall (uint32_t index)	Stores a zoom index of at most 5 in the active cell and its option	verified	one	ui/minimap#the-zoom-radius	
+0x6da980	20	GetZoomIndex		minimap	orchestration	uint32_t __cdecl ()	Returns the active zoom index, indoor or outdoor	verified	one	ui/minimap#the-zoom-radius	
+0x6da9a0	6	GetZoomLevelCount		minimap	orchestration	uint32_t __cdecl ()	Returns 6, the number of zoom levels	verified	one	ui/minimap#the-zoom-radius	
+0x6da9b0	73	GetZoomRadius		minimap	primitive	float __cdecl ()	Returns the zoom radius in yards for the active index and indoor state	verified	one	ui/minimap#the-zoom-radius	
+0x6daa00	23			minimap			Runs its object file code not read here	inferred	none		
+0x6daa20	327	BuildArrowList		minimap	orchestration	uint32_t __fastcall (void *list)	Rebuilds the arrow records when dirty, else only refreshes their bearings, and reports a rebuild	verified	one	ui/minimapblips#the-arrow-list	
+0x6dab70	73	GetZoomRadiusDraw		minimap	primitive	float __cdecl ()	Returns the zoom radius in yards, the body the draw uses	verified	one	ui/minimap#the-zoom-radius	
+0x6dabc0	78			minimap			Runs its object file code not read here	inferred	none		
+0x6dac10	155	SetStaticBlip		minimap	orchestration	void __fastcall (uint32_t slot, uint32_t flags, float x, float y, uint32_t icon, int32_t rank, const char *name)	Fills a static blip record, starts the gossip marker's lifetime and places the blips	verified	one	ui/minimapblips#setting-a-static-blip	
+0x6dacb0	28	SetQuestBlip		minimap	orchestration	void __fastcall (int32_t rank, const char *name, float x, float y)	Sets static blip 0, the selected quest's marker, with icon 5 and no flags	verified	one	ui/minimapblips#setting-a-static-blip	
+0x6dacd0	47	SetCorpseBlip		minimap	orchestration	void __stdcall (float x, float y)	Sets static blip 2, the corpse marker, with icon 7, flag 2 and rank -1	verified	one	ui/minimapblips#setting-a-static-blip	
+0x6dad00	6			minimap			Runs its object file code not read here	inferred	none		
+0x6dad10	699	PlacePartyBlips		minimap	primitive	void __fastcall (void *records)	Fills the five party and pet records with an arrow or in-range dot flag and a bearing	verified	one	ui/minimapblips#party-and-pet-arrows	
+0x6dafd0	106			minimap			Runs its object file code that calls SMemFree, 0x6db5d0, 0x6db7f0; not read here	inferred	none		
+0x6db040	182			minimap			Runs its object file code that calls SMemAlloc; not read here	inferred	none		
+0x6db100	189			minimap			Runs its object file code that calls 0x6db5d0, 0x6db400, SMemFree; not read here	inferred	none		
+0x6db1c0	190			minimap			Runs its object file code that calls 0x6db610, 0x6db5d0, 0x6db500 and 1 more; not read here	inferred	none		
+0x6db280	133			minimap			Runs its object file code that calls SMemReAlloc, SMemAlloc, SMemFree; not read here	inferred	none		
+0x6db310	226			minimap			Runs its object file code that calls SMemReAlloc, SMemAlloc, SMemFree; not read here	inferred	none		
+0x6db400	136			minimap			Runs its object file code not read here	inferred	none		
+0x6db490	108			minimap			Runs its object file code not read here	inferred	none		
+0x6db500	135			minimap			Runs its object file code that calls 0x6db610, 0x6db5d0, SMemFree; not read here	inferred	none		
+0x6db590	56			minimap			Runs its object file code that calls SMemFree; not read here	inferred	none		
+0x6db5d0	60			minimap			Runs its object file code not read here	inferred	none		
+0x6db610	25			minimap			Runs its object file code not read here	inferred	none		
+0x6db630	181			minimap			Runs its object file code not read here	inferred	none		
+0x6db6f0	57			minimap			Runs its object file code not read here	inferred	none		
+0x6db730	31			minimap			Runs its object file code not read here	inferred	none		
+0x6db750	146			minimap			Runs its object file code that calls SMemReAlloc, SMemAlloc, SMemFree; not read here	inferred	none		
+0x6db7f0	41			minimap			Runs its object file code not read here	inferred	none		
+0x6db820	483			minimap			Runs its object file code that calls 0x6dba10, 0x6dba90, 0x6dba40 and 4 more; not read here	inferred	none		
+0x6dba10	33			minimap			Runs its object file code not read here	inferred	none		
+0x6dba40	77			minimap			Runs its object file code not read here	inferred	none		
+0x6dba90	12			minimap			Runs its object file code not read here	inferred	none		
+0x6dbaa0	316			minimap			Runs its object file code that calls 0x6dbbe0, 0x6db5d0, 0x6db7f0; not read here	inferred	none		
+0x6dbbe0	264			minimap			Runs its object file code that calls 0x6dba40, 0x6db5d0, SMemReAlloc and 3 more; not read here	inferred	none		
 0x6dbcf0	616			unassigned			Runs its object file code that calls CDataStore::PutUInt32, CDataStore::PutFloat, CDataStore::PutCString; not read here	inferred	none		
 0x6dbf60	536			unassigned			Runs its object file code that calls CDataStore::GetInt32, CDataStore::GetFloat, CDataStore::GetCString; not read here	inferred	none		
 0x6dc180	98			unassigned			Runs its object file code that calls CDataStore::PutGuid, CDataStore::PutCString, 0x4181f0; not read here	inferred	none		
@@ -29609,9 +29609,9 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x6f1a90	53			ui	orchestration		Reads font flags as substrings: OUTLINE 1, THICKOUTLINE 4, MONOCHROME 2	verified	one	ui/fontstring#setfont	
 0x6f1ad0	85			ui	primitive		Runs its object file code that calls SStrPack; not read here	inferred	none		
 0x6f1b30	130	ParseXMLBool		ui	primitive	int __fastcall (const char *text)	Reads a flag: 1 to 9, t, T, y, Y, on or enabled is true, anything else false	verified	one	ui/addons#toc-directives	
-0x6f1c10	213	GetScriptFlagArg		ui	primitive		Reads a script argument as an integer flag: nil 0, a boolean 0 or 1, a number truncated, else by keyword or default	inferred	none		
+0x6f1c10	213	GetScriptFlagArg		ui	primitive		Reads a script argument as a flag: nil 0, a number truncated, a string by keyword, else the default	verified	one	ui/tooltipcontent#the-line-bindings	
 0x6f1d60	328			ui	primitive		Runs its object file code that calls 0x6f2cf0, SStrToFloat, GetScaledScreenAspect and 2 more; not read here	inferred	none		
-0x6f1eb0	486			ui	primitive		Runs its object file code that calls 0x6f2cf0, SStrToFloat, GetScaledScreenAspect and 2 more; not read here	inferred	none		
+0x6f1eb0	486	XmlReadDimension		ui	primitive	uint32_t __fastcall (XmlNode *node, float *x, float *y, void *report)	Reads x and y from a node's attributes or its AbsDimension child, in layout units	verified	one	ui/modelview#model-unit-to-pixel	
 0x6f20a0	806			ui	primitive		Runs its object file code that calls 0x6f2cf0, SStrToFloat, GetScaledScreenAspect and 2 more; not read here	inferred	none		
 0x6f23d0	601			ui	primitive		Runs its object file code that calls 0x6f2cf0, SStrToFloat, __ftol; not read here	inferred	none		
 0x6f2630	182			ui	orchestration		Runs its object file code that calls 0x6f2cf0, 0x6f1a20, SStrCmpI and 1 more; not read here	inferred	none		
@@ -30398,7 +30398,7 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x7117e0	76	M2BatchArrayDeletingDestructorA		models	unreached		Frees an array or object by the deleting-destructor flags; nothing reaches it	verified	one	models/overview#unreached-code	
 0x711830	76	M2BatchArrayDeletingDestructorB		models	unreached		Frees an array or object by the deleting-destructor flags; nothing reaches it	verified	one	models/overview#unreached-code	
 0x711880	215	CM2Model::FreeBatches		models	host		Frees an instance's own batch table, its index buffer and its shader ids	verified	one	models/model#own-batches	
-0x711960	56	CM2Model::HasAnimation		models	orchestration		Returns whether an instance's model has a sequence for an animation id	inferred	none		
+0x711960	56	CM2Model::HasAnimation		models	orchestration		Returns whether an instance's model has a sequence for an animation id	verified	one	ui/modelanim#the-idle-sequence	
 0x7119a0	122	CM2Model::CountVariations		models	unreached		Counts the variations of an animation id's sequence chain; nothing reaches it	verified	one	models/overview#unreached-code	
 0x711a20	392	CM2Model::GetSequenceInfo		models	primitive		Fills a record with a resolved sequence's flags, length, speed, bounds and radius	inferred	none		models::attach_world_transform_difftest
 0x711bb0	25	CM2Model::SetDoneCallback		models	orchestration		Stores an instance's animation-done callback and its two arguments	inferred	none		
@@ -30412,7 +30412,7 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x711ec0	78	CM2Model::GetKeyBoneFlags		models	unreached		Returns a key bone's runtime flags; nothing reaches it	verified	one	models/overview#unreached-code	
 0x711f10	201	CM2Model::SetKeyBoneFlags		models	primitive		Writes a key bone's runtime flags under a mask, or defers the call	verified	one	models/model#deferred-calls	
 0x711fe0	172	CM2Model::GetKeyBoneAnimState		models	primitive		Copies a key bone's animation id, variation, time, speed and timing stamps	inferred	none	models/model#base-transform	models::query_attach_event_difftest
-0x712090	78	CM2Model::GetKeyBoneAnimId		models	orchestration		Returns the animation id playing on a key bone	inferred	none		
+0x712090	78	CM2Model::GetKeyBoneAnimId		models	orchestration		Returns the animation id playing on a key bone	verified	one	ui/playermodel#turning-the-model	
 0x7120e0	108	CM2Model::GetKeyBoneAnimTime		models	unreached		Returns the sequence time of a key bone's animation; nothing reaches it	verified	one	models/overview#unreached-code	
 0x712150	78	CM2Model::GetKeyBoneAnimSpeed		models	orchestration		Returns the speed of a key bone's animation	inferred	none		
 0x7121a0	1607	CM2Model::PlayAnimation		models	primitive		Starts or stops an animation on a key bone, with variation, repeats, speed and a blend from the last	verified	one	models/animation#playing-an-animation	models::anim_fade_difftest, models::keyframe_ratio_difftest, models::keyframe_timing_difftest, models::rate_reciprocal_difftest
@@ -33167,10 +33167,10 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x765010	217	RaiseFrameUnderCursor		ui	unreached		Raises the toplevel ancestor of the topmost hit frame of strata 7 to 0; nothing reaches it	verified	one	ui/README#unreached-functions	
 0x7650f0	421	CSimpleTop::RaiseFrame		ui	orchestration		Raises a frame's toplevel ancestor above its stratum's levels when overlapped, checking overlap on request	verified	one	ui/strata#raising-a-frame	
 0x7652a0	5	CSimpleTop::LowerFrame		ui	orchestration		Returns 0 without changing anything; what Frame:Lower calls	verified	one	ui/strata#raising-a-frame	
-0x7652b0	111	CSimpleTop::StartMovingOrSizing		ui	orchestration		Records the frame, kind, point and cursor of a move or size and raises the frame	inferred	none	ui/input#moving-and-sizing	
+0x7652b0	111	CSimpleTop::StartMovingOrSizing		ui	orchestration		Records the frame, kind, point and cursor of a move or size and raises the frame	verified	one	ui/resizebounds#the-drag	
 0x765320	358	CSimpleTop::StartMovingOrSizingAt		ui	primitive		Chooses a sizing point by the cursor's third of the frame, else the centre, and starts the move or size	inferred	none	ui/input#moving-and-sizing	
 0x765490	274	CSimpleTop::StartModifierDrag		ui	orchestration		Starts moving or sizing the toplevel ancestor of the topmost hit frame of strata 7 to 0	inferred	none	ui/input#mouse-buttons	
-0x7655b0	133	CSimpleTop::UpdateMovingOrSizing		ui	primitive		Applies the cursor difference since the last move to the frame being moved or sized	inferred	none	ui/input#mouse-move-and-the-hover-pick	
+0x7655b0	133	CSimpleTop::UpdateMovingOrSizing		ui	primitive		Applies the cursor difference since the last move to the frame being moved or sized	verified	one	ui/resizebounds#the-drag	
 0x765640	15	CSimpleTop::StopMovingOrSizing		ui	orchestration		Clears the frame being moved or sized and the kind	verified	one	ui/input#mouse-buttons	
 0x765650	377	CSimpleTop::OnLayerUpdate		ui	orchestration		Deletes queued objects, drains the layout queue, runs every visible frame's update slot in order	verified	one	ui/strata#the-update-pass	
 0x7657d0	332	CSimpleTop::OnLayerRender		ui	orchestration		Sets the orthographic projection and draws each stratum's levels, refreshing overlap bits and batches	verified	one	ui/strata#the-update-pass	
@@ -33275,9 +33275,9 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x7683f0	29	CLayoutFrame::SetHeight		ui	orchestration		Stores the height, clears flag 8 and lays the frame out	verified	one	ui/anchors#size-scale-and-stored-rectangle	
 0x768410	4	CLayoutFrame::GetHeight		ui	orchestration		Returns the height +0x54	verified	one	ui/anchors#size-scale-and-stored-rectangle	
 0x768420	4	CLayoutFrame::GetWidth		ui	orchestration		Returns the width +0x50	verified	one	ui/anchors#size-scale-and-stored-rectangle	
-0x768430	287	CLayoutFrame::PinToParentOffset		ui	primitive		Anchors a point to the parent at the frame's current offset and sets the given size	inferred	none	ui/input#moving-and-sizing	
+0x768430	287	CLayoutFrame::PinToParentOffset		ui	primitive		Anchors a point to the parent at the frame's current offset and sets the given size	verified	one	ui/resizebounds#the-drag	
 0x768550	409	CLayoutFrame::ResizeByFactor		ui	unreached		Scales a frame's size about a point, clamped to its resize bounds; nothing live reaches it	verified	one	ui/README#starts-the-listing-hides	
-0x768710	1331	CLayoutFrame::ApplyDragDelta		ui	primitive		Moves or resizes a frame by a cursor difference at a point, clamped to its resize bounds	inferred	none	ui/README#starts-the-listing-hides	
+0x768710	1331	CLayoutFrame::ApplyDragDelta		ui	primitive		Moves or resizes a frame by a cursor difference at a point, clamped to its resize bounds	verified	one	ui/resizebounds#the-drag	
 0x768c70	77	CLayoutFrame::IsPointInRect		ui	orchestration		Answers whether a point lies in the valid rectangle, all four edges inclusive and NaN outside	verified	one	ui/input#mouse-buttons	
 0x768cc0	47	CLayoutFrame::SetClampedToScreen		ui	orchestration		Sets or clears flag 0x10 and lays the frame out	verified	one	ui/anchors#size-scale-and-stored-rectangle	
 0x768cf0	44	CLayoutFrame::OnFrameSizeChanged		ui	orchestration		Lays out every dependent frame	verified	one	ui/anchors#resolving-and-the-changed-callback	
@@ -33315,7 +33315,7 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x76a5c0	13	CSimpleFrame::Lower		ui	orchestration		Asks the top to lower the frame, which does nothing	verified	one	ui/methods#what-the-frame-methods-call	
 0x76a5d0	90	CSimpleFrame::SetBackdrop		ui	orchestration		Replaces the frame's backdrop object	inferred	none		
 0x76a630	34	CSimpleFrame::ResizeByFactor		ui	unreached		Passes a size factor and point to 0x768550; nothing reaches it	verified	one	ui/README#unreached-functions	
-0x76a660	34	CSimpleFrame::ApplyDragDelta		ui	orchestration		Passes a cursor difference and point to 0x768710 on the frame's layout part	inferred	none		
+0x76a660	34	CSimpleFrame::ApplyDragDelta		ui	orchestration		Passes a cursor difference and point to 0x768710 on the frame's layout part	verified	one	ui/resizebounds#the-drag	
 0x76a690	128	CSimpleFrame::SetAlpha		ui	orchestration		Stores the alpha byte and, on a change, refreshes the regions and gives every child the same byte	verified	one	ui/visibility#alpha	
 0x76a710	27	CSimpleFrame::EnableDrawLayer		ui	orchestration		Switches a draw layer on and marks it dirty	inferred	none		
 0x76a730	27	CSimpleFrame::DisableDrawLayer		ui	orchestration		Switches a draw layer off and marks it dirty	inferred	none		
@@ -33343,7 +33343,7 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x76b220	58	CSimpleFrame::GetHitRect		ui	orchestration		Copies the hit rectangle and answers whether the layout is valid	verified	one	ui/input#hit-test	
 0x76b260	33	CSimpleFrame::OnFrameShow		ui	orchestration		Runs the OnShow script unless the frame is loading; slot 0x30	verified	one	ui/visibility#show-and-hide-scripts	
 0x76b290	33	CSimpleFrame::OnFrameHide		ui	orchestration		Runs the OnHide script unless the frame is loading; slot 0x34	verified	one	ui/visibility#show-and-hide-scripts	
-0x76b2c0	47	CSimpleFrame::OnFrameUpdate		ui	orchestration		Runs the OnUpdate script with the elapsed time; slot 0x38	inferred	none		
+0x76b2c0	47	CSimpleFrame::OnFrameUpdate		ui	orchestration		Runs the OnUpdate script with the elapsed time	verified	one	ui/tooltip#following-the-cursor	
 0x76b2f0	5	FrameInitDragThresholdThunk		ui	orchestration		Jumps to 0x76b300; a static initializer	verified	one	ui/README#static-initializers	
 0x76b300	19	FrameInitDragThreshold		ui	primitive		Stores 0.01 squared in 0xcf0c14, the squared drag-start distance	verified	one	ui/README#static-initializers	
 0x76b320	125	CSimpleFrame::OnMouseMove		ui	primitive		Starts a drag past the threshold and answers the hit test; slot 0x3c	inferred	none		
@@ -33353,8 +33353,8 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x76b550	42	CSimpleFrame::RefreshRegions		ui	orchestration		Calls slot 0x24 of each region	inferred	none		
 0x76b580	212	CSimpleFrame::OnFrameSizeChanged		ui	primitive		Lays out dependents, computes the hit rectangle and runs the size callback on a size change	verified	one	ui/input#hit-test	
 0x76b660	54	CSimpleFrame::OnSizeChanged		ui	orchestration		Runs the OnSizeChanged script with the width and height	inferred	none		
-0x76b6a0	76	CSimpleFrame::OnEnter		ui	orchestration		Shows the +0xa4 frame, switches layer 4 on and runs OnEnter	inferred	none		
-0x76b6f0	109	CSimpleFrame::OnLeave		ui	orchestration		Hides the +0xa4 frame, switches layer 4 off, may end a drag and runs OnLeave	inferred	none		
+0x76b6a0	76	CSimpleFrame::OnEnter		ui	orchestration		Shows the +0xa4 frame, switches layer 4 on and runs OnEnter	verified	one	ui/hover#entering-and-leaving	
+0x76b6f0	109	CSimpleFrame::OnLeave		ui	orchestration		Hides the +0xa4 frame, switches layer 4 off, may end a drag and runs OnLeave	verified	one	ui/hover#entering-and-leaving	
 0x76b760	97	CSimpleFrame::OnChar		ui	orchestration		Runs OnChar with the character as text when visible	inferred	none		
 0x76b7d0	615	CSimpleFrame::OnKeyDown		ui	orchestration		Runs OnKeyDown with the key's name when visible	inferred	none		
 0x76bba0	605	CSimpleFrame::OnKeyUp		ui	orchestration		Runs OnKeyUp with the key's name when visible	inferred	none		
@@ -33410,26 +33410,26 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x76ca50	108	DestroyModelFrame		ui	orchestration		Destroys a model frame's members; the ModelFFX destructor calls it	inferred	none		
 0x76cac0	440	CSimpleModel::LoadXML		ui	primitive		Loads a Model's frame node, then its file, scale, fog distances and fog colour	verified	one	ui/xmltypes#elements-and-attributes-by-type	
 0x76cc80	92	CSimpleModel::GetScriptByName		ui	orchestration		Returns a Model's handler slot by name, adding OnUpdateModel and OnAnimFinished	verified	one	ui/xmltypes#handler-names-by-type	
-0x76cce0	68	SimpleModelLoadFile		ui	orchestration		Loads a model file into a model frame's scene and hands the model to slot 36	inferred	none		
-0x76cd30	144	SimpleModelSetModel		ui	primitive		Stores a model frame's scene model at +0x318 and installs its callbacks	inferred	none		
-0x76cdc0	39			ui	orchestration		Runs its object file code that calls FrameScriptExecute; not read here	inferred	none		
+0x76cce0	68	SimpleModelLoadFile		ui	orchestration	void __thiscall (const char *path)	Creates a model of a file in the frame's scene, hands it to slot 36 and drops its own reference	verified	one	ui/modelview#stale-camera-after-setmodel	
+0x76cd30	144	SimpleModelSetModel		ui	orchestration	void __thiscall (CM2Model *model)	Stores a model frame's scene model at +0x318 and installs its callbacks	verified	one	ui/modelview#stale-camera-after-setmodel	
+0x76cdc0	39	SimpleModelDoneCallback		ui	orchestration	void __fastcall (CM2Model *model, uint32_t key_bone, uint32_t anim_id, uint32_t mode, uint32_t overshoot, CSimpleModel *frame, uint32_t guid_hi)	Runs the frame's OnAnimFinished handler when a track completes with mode 0	verified	one	ui/modelanim#completion-and-onanimfinished	
 0x76cdf0	12			ui	orchestration		Runs its object file code not read here	inferred	none		
-0x76ce00	126			ui	orchestration		Runs its object file code that calls CM2Model::SetAnimated, CM2Model::GetScene and 4 more; not read here	inferred	none		
-0x76ce80	60			ui	orchestration		Runs its object file code that calls AddHandleRef, HandleClose; not read here	inferred	none		
-0x76cec0	100	SimpleModelSetCamera		ui	orchestration		Selects a camera of a model frame's scene model by index	inferred	none		
-0x76cf30	27			ui	orchestration		Runs its object file code not read here	inferred	none		
+0x76ce00	126	SimpleModelModelReady		ui	orchestration	void __thiscall (CM2Model *model)	Applies a pending camera index and copies the model's bounding box into the frame	verified	one	ui/modelview#choosing-the-camera	
+0x76ce80	60	SimpleModelInstallCamera		ui	orchestration	void __thiscall (CCamera *camera)	Replaces the frame's camera with a referenced one and sets the pending index to -1	verified	one	ui/modelview#choosing-the-camera	
+0x76cec0	100	SimpleModelSetCamera		ui	orchestration	void __thiscall (uint32_t index)	Installs camera number index of the model, or none past the count, or keeps the index until ready	verified	one	ui/modelview#choosing-the-camera	
+0x76cf30	27	SimpleModelSetLight		ui	orchestration	void __thiscall (M2Light *light)	Copies a light over the frame's own light	verified	one	ui/modelanim#setlight-and-getlight	
 0x76cf50	41			ui	orchestration		Plays a sequence from its start at rate 1.0	verified	one	ui/model#sequences	
 0x76cf80	48			ui	orchestration		Plays a sequence from a time at rate 1.0	verified	one	ui/model#sequences	
-0x76cfb0	6			ui	orchestration		Runs its object file code not read here	inferred	none		
-0x76cfc0	32	SimpleModelGetScene		ui	orchestration		Returns a model frame's M2 scene, creating it on first use	inferred	none		
-0x76cfe0	152			ui	primitive		Runs its object file code that calls CGxTexFlags::CGxTexFlags, TextureCreate, SysMsgAdd and 3 more; not read here	inferred	none		
-0x76d080	78			ui	primitive		Runs its object file code that calls CLayoutFrame::GetWidth, CM2Model::IsLoaded; not read here	inferred	none		
-0x76d0d0	78			ui	primitive		Runs its object file code that calls CLayoutFrame::GetHeight, CM2Model::IsLoaded; not read here	inferred	none		
-0x76d120	58			ui	primitive		Runs its object file code that calls CSimpleFrame::SetAlpha, CM2Model::SetAlpha; not read here	inferred	none		
+0x76cfb0	6	SimpleModelAdvanceTime		ui	orchestration	uint32_t __thiscall ()	Returns 1 and does nothing else; the whole of AdvanceTime past its receiver checks	verified	one	ui/modelanim#advancetime-and-replaceicontexture	
+0x76cfc0	32	SimpleModelGetScene		ui	orchestration	CM2Scene * __thiscall ()	Returns a model frame's M2 scene, creating it on first use	verified	one	ui/modelview#model-frame-fields	
+0x76cfe0	152	SimpleModelReplaceTexture		ui	orchestration	void __thiscall (uint32_t type, const char *name)	Loads a texture by name and swaps it into the model's textures of a type, if the frame has a model	verified	one	ui/modelanim#advancetime-and-replaceicontexture	
+0x76d080	78	SimpleModelGeometryGetWidth		ui	primitive	float __thiscall ()	Returns the authored width, or the model's bounding box width when the authored width is 0.0	verified	one	ui/modelview#implicit-size	
+0x76d0d0	78	SimpleModelGeometryGetHeight		ui	primitive	float __thiscall ()	Returns the authored height, or the model's bounding box height when the authored height is 0.0	verified	one	ui/modelview#implicit-size	
+0x76d120	58	SimpleModelSetAlpha		ui	primitive	void __thiscall (uint32_t alpha)	Sets the frame's alpha, then passes the frame's own alpha over 255 to the model	verified	one	ui/modelanim#frame-alpha	
 0x76d160	56	SimpleModelRegisterLayer		ui	orchestration		Registers a model frame's layers, with its model draw for layer 2	inferred	none		
-0x76d1a0	159			ui	primitive		Runs its object file code that calls FrameScriptExecute, NDCToDDCHeight, CM2Model::SetBaseTransformTRS; not read here	inferred	none		
-0x76d240	1078	SimpleModelDraw		ui	primitive		Draws a model frame's scene	inferred	none		
-0x76d680	368	SimpleModelLightCallback		ui	primitive		Lights a model frame's scene model; the callback the frame installs on its own model	inferred	none		
+0x76d1a0	159	SimpleModelUpdateTransform		ui	primitive	void __thiscall ()	Runs OnUpdateModel, then rebuilds the model's root matrix from position, facing and scale	verified	one	ui/modelview#root-transform	
+0x76d240	1078	SimpleModelDraw		ui	primitive	void __thiscall ()	Draws a model frame's scene inside its own rectangle, viewport and depth clear	verified	one	ui/modelview#the-paint	
+0x76d680	368	SimpleModelLightCallback		ui	primitive		Stages the frame's fog and, when enabled, its light into the scene model's light collector	verified	one	ui/modelanim#fog	
 0x76d7f0	125			ui	orchestration		Advances the model frame's scene clock by the truncated frame milliseconds	verified	one	ui/model#the-animation-clock	
 0x76d870	5			ui	orchestration		Runs its object file code not read here	inferred	none		
 0x76d880	15			ui	primitive		Runs its object file code not read here	inferred	none		
@@ -33476,7 +33476,7 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x76f8c0	15			ui	primitive		Runs its object file code not read here	inferred	none		
 0x76f8d0	5			ui	orchestration		Runs its object file code not read here	inferred	none		
 0x76f8e0	19			ui	primitive		Runs its object file code not read here	inferred	none		
-0x76f900	118			ui	primitive		Runs its object file code that calls __ftol; not read here	inferred	none		
+0x76f900	118	PackColorFromFloats		ui	primitive	void __thiscall (float a, float r, float g, float b)	Packs four floats into 0xAARRGGBB at the this pointer, each as trunc(c·255 + 0.5)	verified	one	ui/modelanim#setlight-and-getlight	
 0x76f980	5			ui	orchestration		Runs its object file code not read here	inferred	none		
 0x76f990	19			ui	primitive		Runs its object file code not read here	inferred	none		
 0x76f9b0	5			ui	orchestration		Runs its object file code not read here	inferred	none		
@@ -33560,14 +33560,14 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x772810	18			ui	orchestration		Runs its object file code not read here	inferred	none		
 0x772830	34			ui	orchestration		Runs its object file code that calls CLayoutFrame::SetWidth; not read here	inferred	none		
 0x772860	34			ui	orchestration		Runs its object file code that calls CLayoutFrame::SetHeight; not read here	inferred	none		
-0x772890	149			ui	primitive		Runs its object file code that calls CLayoutFrame::GetHeight, CLayoutFrame::GetWidth, 0x771ec0 and 3 more; not read here	inferred	none		
+0x772890	149			ui	primitive		Returns the unwrapped text width in layout units, measuring and caching it when none is cached	verified	one	ui/tooltipcontent#sizing-the-tooltip	
 0x772930	113			ui	primitive		Runs its object file code that calls CLayoutFrame::GetWidth, 0x772890, GetScaledScreenAspect and 1 more; not read here	inferred	none		
-0x7729b0	170			ui	primitive		Runs its object file code that calls CLayoutFrame::GetHeight, CLayoutFrame::GetWidth, 0x771ec0 and 2 more; not read here	inferred	none		
-0x772a60	113			ui	primitive		Runs its object file code that calls CLayoutFrame::GetHeight, 0x7729b0, GetScaledScreenAspect and 1 more; not read here	inferred	none		
-0x772ae0	119			ui	primitive		Runs its object file code that calls SStrLen, 0x7727b0, 0x44d670; not read here	inferred	none		
-0x772b60	87			ui	primitive		Runs its object file code that calls 0x7727b0, 0x44db50; not read here	inferred	none		
+0x7729b0	170			ui	primitive		Returns the text height in layout units, measuring and caching it when none is cached	verified	one	ui/tooltipcontent#the-spacer-line	
+0x772a60	113			ui	primitive		Returns the larger of the text height and one device pixel	verified	one	ui/tooltipcontent#the-spacer-line	
+0x772ae0	119	MeasureRunWidth		ui	primitive	float __thiscall (const char *text, int32_t bytes)	Measures the width of a byte range of the label's text, escapes giving none	verified	one	ui/editboxmarkup#how-the-box-draws-and-measures	
+0x772b60	87			ui	primitive		Splits the text into wrapped pieces for a width and a piece count	verified	one	ui/tooltipcontent#sizing-the-tooltip	
 0x772bc0	101			ui	primitive		Runs its object file code that calls SStrLen, 0x7727b0, 0x44d860; not read here	inferred	none		
-0x772c30	101			ui	primitive		Runs its object file code that calls SStrLen, 0x7727b0, 0x44da50; not read here	inferred	none		
+0x772c30	101	CountGlyphsFromRight		ui	primitive	int32_t __thiscall (float x)	Counts the glyphs that fit from the right edge of the line to a point	verified	one	ui/editboxmarkup#faults	
 0x772ca0	122			ui	primitive		Runs its object file code that calls CLayoutFrame::SetLayoutScale, 0x772790, SStrCopy and 3 more; not read here	inferred	none		
 0x772d20	24			ui	orchestration		Runs its object file code that calls CLayoutFrame::Resize; not read here	inferred	none		
 0x772d40	191			ui	primitive		Runs its object file code that calls CLayoutFrame::OnFrameSizeChanged, 0x44d600, 0x772e00 and 2 more; not read here	inferred	none		
@@ -33645,16 +33645,16 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x775b20	197	Frame::Lower	idb	ui	orchestration		Implements the Frame method Lower, its pair in the table 0x878ec0	verified	one	ui/methods#what-the-frame-methods-call	
 0x775bf0	342	Frame::GetHitRectInsets	idb	ui	orchestration		Implements the Frame method GetHitRectInsets, its pair in the table 0x878ec0	inferred	none	ui/methods#coordinates-the-methods-convert	
 0x775d50	463	Frame::SetHitRectInsets	idb	ui	orchestration		Implements the Frame method SetHitRectInsets, its pair in the table 0x878ec0	inferred	none	ui/methods#coordinates-the-methods-convert	
-0x775f20	252	Frame::GetMinResize	idb	ui	orchestration		Implements the Frame method GetMinResize, its pair in the table 0x878ec0	inferred	none		
-0x776020	369	Frame::SetMinResize	idb	ui	orchestration		Implements the Frame method SetMinResize, its pair in the table 0x878ec0	inferred	none	ui/methods#coordinates-the-methods-convert	
-0x7761a0	252	Frame::GetMaxResize	idb	ui	orchestration		Implements the Frame method GetMaxResize, its pair in the table 0x878ec0	inferred	none		
-0x7762a0	369	Frame::SetMaxResize	idb	ui	orchestration		Implements the Frame method SetMaxResize, its pair in the table 0x878ec0	inferred	none	ui/methods#coordinates-the-methods-convert	
+0x775f20	252	Frame::GetMinResize	idb	ui	orchestration		Implements the Frame method GetMinResize, its pair in the table 0x878ec0	verified	one	ui/resizebounds#the-lua-methods	
+0x776020	369	Frame::SetMinResize	idb	ui	orchestration		Implements the Frame method SetMinResize, its pair in the table 0x878ec0	verified	one	ui/resizebounds#the-four-bounds	
+0x7761a0	252	Frame::GetMaxResize	idb	ui	orchestration		Implements the Frame method GetMaxResize, its pair in the table 0x878ec0	verified	one	ui/resizebounds#the-lua-methods	
+0x7762a0	369	Frame::SetMaxResize	idb	ui	orchestration		Implements the Frame method SetMaxResize, its pair in the table 0x878ec0	verified	one	ui/resizebounds#the-four-bounds	
 0x776420	166	Frame::SetMovable	idb	ui	orchestration		Implements the Frame method SetMovable, its pair in the table 0x878ec0	inferred	none		
 0x7764d0	179	Frame::IsMovable		ui	orchestration		Implements the Frame method IsMovable, its pair in the table 0x878ec0	inferred	none		
 0x776590	166	Frame::SetResizable	idb	ui	orchestration		Implements the Frame method SetResizable, its pair in the table 0x878ec0	inferred	none		
 0x776640	179	Frame::IsResizable	idb	ui	orchestration		Implements the Frame method IsResizable, its pair in the table 0x878ec0	inferred	none		
 0x776700	303	Frame::StartMoving	idb	ui	orchestration		Implements the Frame method StartMoving, its pair in the table 0x878ec0	inferred	none		
-0x776830	350	Frame::StartSizing	idb	ui	orchestration		Implements the Frame method StartSizing, its pair in the table 0x878ec0	inferred	none		
+0x776830	350	Frame::StartSizing	idb	ui	orchestration		Implements the Frame method StartSizing, its pair in the table 0x878ec0	verified	one	ui/resizebounds#the-drag	
 0x776990	184	Frame::StopMovingOrSizing	idb	ui	orchestration		Implements the Frame method StopMovingOrSizing, its pair in the table 0x878ec0	inferred	none		
 0x776a50	240	Frame::SetUserPlaced	idb	ui	orchestration		Implements the Frame method SetUserPlaced, its pair in the table 0x878ec0	inferred	none		
 0x776b40	179	Frame::IsUserPlaced	idb	ui	orchestration		Implements the Frame method IsUserPlaced, its pair in the table 0x878ec0	inferred	none		
@@ -33758,7 +33758,7 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x77a750	36			ui	orchestration		Runs the frame's show, then focuses an autoFocus box when nothing holds the focus	verified	one	ui/editbox#keyboard-focus	
 0x77a780	16			ui	orchestration		Runs the frame's hide, then clears the box's focus	verified	one	ui/editbox#keyboard-focus	
 0x77a790	193			ui	primitive		Flushes the box's changes and blinks the caret of the focused box	verified	one	ui/editbox#text-changes-and-their-scripts	
-0x77a860	100			ui	primitive		Runs CSimpleEditBox.cpp code that calls CSimpleFrame::OnMouseMove, 0x77d0d0, 0x77cd10 and 1 more; not read here	inferred	none		
+0x77a860	100	CSimpleEditBox::OnMouseMove		ui	primitive	void __thiscall (void *event)	Moves the cursor and the selection under a drag with the point's glyph index	verified	one	ui/editboxmarkup#where-a-step-is-atomic	
 0x77a8d0	33			ui	orchestration		Runs CSimpleEditBox.cpp code that calls CSimpleFrame::OnSizeChanged, 0x77b8c0; not read here	inferred	none		
 0x77a900	93	CSimpleEditBox::OnChar		ui	orchestration		Takes a typed character for the focused box and inserts it	verified	one	ui/editbox#which-box-takes-a-key	
 0x77a960	138			ui	orchestration		Runs CSimpleEditBox.cpp code that calls GetBlockPoolData, 0x76fc40, 0x770360 and 2 more; not read here	inferred	none		
@@ -33766,7 +33766,7 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x77abb0	106			ui	orchestration		Runs CSimpleEditBox.cpp code that calls 0x42c1a0, 0x77ac30, FrameScriptExecuteVarArgs; not read here	inferred	none		
 0x77ac30	14			ui	orchestration		Runs CSimpleEditBox.cpp code not read here	inferred	none		
 0x77ac40	20			ui	orchestration		Runs CSimpleEditBox.cpp code not read here	inferred	none		
-0x77ac60	164			ui	primitive		Runs CSimpleEditBox.cpp code that calls 0x42c320, 0x77a960, 0x77bb30; not read here	inferred	none		
+0x77ac60	164	CSimpleEditBox::GetCompositionSpan		ui	primitive	void __thiscall (void)	Computes the composition span with non-atomic link steps	verified	one	ui/editboxmarkup#where-a-step-is-atomic	
 0x77ad10	568			ui	primitive		Runs CSimpleEditBox.cpp code that calls 0x42c500, SMemFree, 0x77a9f0 and 7 more; not read here	inferred	none		
 0x77af50	100			ui	orchestration		Switches the input method and runs OnEditFocusGained or OnEditFocusLost, then marks the cursor	verified	one	ui/editbox#keyboard-focus	
 0x77afc0	384			ui	primitive		Runs CSimpleEditBox.cpp code that calls 0x77e3d0, 0x42c310, sgetu8 and 8 more; not read here	inferred	none		
@@ -33777,10 +33777,10 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x77b800	143	CSimpleEditBox::OnMouseDown		ui	orchestration		Places the cursor at a press and focuses the box	verified	one	ui/editbox#which-box-takes-a-key	
 0x77b890	45			ui	orchestration		Runs CSimpleEditBox.cpp code that calls CSimpleFrame::OnMouseUp; not read here	inferred	none		
 0x77b8c0	463			ui	primitive		Lays the label and the caret out inside the insets	verified	one	ui/editbox#multi-line-and-the-labels-justify	
-0x77ba90	160			ui	primitive		Runs CSimpleEditBox.cpp code that calls GxuDetermineQuotedCode; not read here	inferred	none		
+0x77ba90	160	CSimpleEditBox::RebuildTokenClasses		ui	primitive	void __thiscall (void)	Rebuilds the per-byte token class array of the text with every escape enabled	verified	one	ui/editboxmarkup#which-escapes-are-on	
 0x77bb30	335			ui	primitive		Counts the bytes a cursor moves over for a count of characters, skipping escapes	verified	one	ui/editbox#a-negative-letter-limit-hangs	
 0x77bc80	136			ui	primitive		Counts the letters in a byte range of the text	verified	one	ui/editbox#a-negative-letter-limit-hangs	
-0x77bd10	26			ui	primitive		Runs CSimpleEditBox.cpp code not read here	inferred	none		
+0x77bd10	26	CSimpleEditBox::NextTokenStart		ui	primitive	uint32_t __thiscall (uint32_t index)	Returns the index of the token after the one at an index	verified	one	ui/editboxmarkup#boundaries-and-letters	
 0x77bd30	25			ui	primitive		Returns the nearest index below a position whose character class entry is nonzero, or -1	verified	one	ui/editbox#word-steps	
 0x77bd50	55			ui	primitive		Runs CSimpleEditBox.cpp code not read here	inferred	none		
 0x77bd90	108			ui	primitive		Runs CSimpleEditBox.cpp code that calls SMemReAlloc; not read here	inferred	none		
@@ -33798,8 +33798,8 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x77c3f0	175			ui	orchestration		Deletes the selection, or the spaces and the word before the cursor	verified	one	ui/editbox#word-steps	
 0x77c4a0	33			ui	orchestration		Deletes from the start of the text to the cursor	verified	one	ui/editbox#ctrl-letter-keys	
 0x77c4d0	40			ui	orchestration		Deletes from the cursor to the end of the text	verified	one	ui/editbox#ctrl-letter-keys	
-0x77c500	15			ui	orchestration		Runs CSimpleEditBox.cpp code that calls 0x77c510; not read here	inferred	none		
-0x77c510	401			ui	primitive		Runs CSimpleEditBox.cpp code that calls 0x77bd30, 0x77bd10; not read here	inferred	none		
+0x77c500	15	CSimpleEditBox::Clear		ui	orchestration	void __thiscall (void)	Deletes the whole text through 0x77c510	verified	one	ui/editboxmarkup#deleting-through-a-link	
+0x77c510	401	CSimpleEditBox::DeleteRange		ui	primitive	void __thiscall (int32_t low, int32_t high)	Deletes a byte range after moving each end out of a hyperlink, and clears the selection	verified	one	ui/editboxmarkup#deleting-through-a-link	
 0x77c6b0	160			ui	orchestration		Moves the cursor by characters, extending or clearing the selection	verified	one	ui/editbox#keys	
 0x77c750	79			ui	orchestration		Moves the cursor forward one character	verified	one	ui/editbox#keys	
 0x77c7a0	194			ui	orchestration		Moves the cursor past the word and the spaces after it	verified	one	ui/editbox#word-steps	
@@ -33809,7 +33809,7 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x77c9f0	105			ui	orchestration		Moves the cursor forward to the end of its line	verified	one	ui/editbox#keys	
 0x77ca60	91			ui	orchestration		Moves the cursor to the start of the text	verified	one	ui/editbox#keys	
 0x77cac0	93			ui	primitive		Runs CSimpleEditBox.cpp code that calls 0x77c6b0; not read here	inferred	none		
-0x77cb20	309			ui	primitive		Runs CSimpleEditBox.cpp code that calls 0x77bd50, 0x77bc80, 0x77bb30 and 2 more; not read here	inferred	none		
+0x77cb20	309	CSimpleEditBox::MoveLine		ui	primitive	void __thiscall (int32_t direction, int32_t extend)	Moves the cursor to the line above or below with non-atomic link steps	verified	one	ui/editboxmarkup#where-a-step-is-atomic	
 0x77cc60	18			ui	orchestration		Runs CSimpleEditBox.cpp code that calls 0x77cb20; not read here	inferred	none		
 0x77cc80	18			ui	orchestration		Runs CSimpleEditBox.cpp code that calls 0x77cb20; not read here	inferred	none		
 0x77cca0	66	CSimpleEditBox::HighlightText		ui	orchestration		Selects from a start to an end, an end past the text or before the start meaning the end	verified	one	ui/editbox#selection	
@@ -33821,8 +33821,8 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x77cf40	139	CSimpleEditBox::AddHistoryLine		ui	orchestration		Stores a line at the history position and advances it around the ring	verified	one	ui/editbox#history	
 0x77cfd0	95			ui	orchestration		Sets the text to the nearest stored history line after the history position	verified	one	ui/editbox#history	
 0x77d030	154			ui	orchestration		Sets the text to the nearest stored history line before the history position	verified	one	ui/editbox#history	
-0x77d0d0	591			ui	primitive		Runs CSimpleEditBox.cpp code that calls CLayoutFrame::GetRect, 0x7727b0, PixelAlignY and 4 more; not read here	inferred	none		
-0x77d320	177			ui	primitive		Runs CSimpleEditBox.cpp code that calls 0x772c30, 0x77bb30, 0x772bc0; not read here	inferred	none		
+0x77d0d0	591	CSimpleEditBox::GetIndexAtPoint		ui	primitive	void __thiscall (float x, float y, int32_t *index)	Finds the byte index of the glyph under a point with non-atomic link steps	verified	one	ui/editboxmarkup#where-a-step-is-atomic	
+0x77d320	177	CSimpleEditBox::MeasureWindow		ui	primitive	void __thiscall (void)	Measures the visible window of the text with non-atomic link steps	verified	one	ui/editboxmarkup#where-a-step-is-atomic	
 0x77d3e0	240			ui	orchestration		Applies the text, selection and cursor changes in order, then runs OnTextChanged	verified	one	ui/editbox#text-changes-and-their-scripts	
 0x77d4d0	1142			ui	primitive		Rebuilds the label's visible text and sizes a multi-line box to its text	verified	one	ui/editbox#text-changes-and-their-scripts	
 0x77d950	294			ui	orchestration		Places and shows the selection textures over the selected text	verified	one	ui/editbox#selection	
@@ -33861,7 +33861,7 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x77e8c0	11			ui	orchestration		Runs its object file code not read here	inferred	none		
 0x77e8d0	2025			ui	primitive		Runs its object file code that calls SErrSetLastError, 0x41e4b0, GetBlockPoolData and 5 more; not read here	inferred	none		
 0x77f0c0	833			ui	primitive		Runs its object file code that calls SErrSetLastError, 0x41e4b0, 0x7704c0 and 2 more; not read here	inferred	none		
-0x77f410	45			ui	orchestration		Runs its object file code that calls 0x77f750; not read here	inferred	none		
+0x77f410	45	CSimpleBackdrop::SetColor		ui	orchestration	void __thiscall (const uint32_t *colour)	Stores a colour in the backdrop object and repaints it	verified	one	ui/tooltipobject#the-game-object-tooltip	
 0x77f440	143			ui	orchestration		Runs its object file code that calls 0x77f750; not read here	inferred	none		
 0x77f4d0	151			ui	orchestration		Runs its object file code not read here	inferred	none		
 0x77f570	21			ui	primitive		Runs its object file code not read here	inferred	none		
@@ -33876,7 +33876,7 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x77f640	122			ui	orchestration		Runs its object file code that calls CScriptRegion::CScriptRegion, 0x77fd10; not read here	inferred	none		
 0x77f6c0	43			ui	orchestration		Runs its object file code that calls 0x77f6f0, SMemFree; not read here	inferred	none		
 0x77f6f0	85			ui	orchestration		Runs its object file code that calls 0x77fd10, SMemFree; not read here	inferred	none		
-0x77f750	355			ui	primitive		Runs its object file code that calls 0x59fc50, 0x667420, 0x5268b0 and 4 more; not read here	inferred	none		
+0x77f750	355			ui	primitive		Sets a FontString colour from a colour pointer, skipping a colour it already holds	verified	one	ui/tooltipcontent#the-line-arrays	
 0x77f8c0	77			ui	orchestration		Runs its object file code not read here	inferred	none		
 0x77f910	387			ui	primitive		Runs its object file code that calls 0x667300, 0x526930, 0x5ce1c0; not read here	inferred	none		
 0x77faa0	5			ui	orchestration		Runs its object file code not read here	inferred	none		
@@ -36564,8 +36564,8 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x7cb250	1015			ui	primitive		Runs NamePlateFrame.cpp code that calls CSimpleButton::CSimpleButton, GetBlockPoolData and 17 more; not read here	inferred	none		
 0x7cb650	116			ui	primitive		Runs NamePlateFrame.cpp code that calls 0x778850, SMemFree; not read here	inferred	none		
 0x7cb6d0	373			ui	primitive		Runs NamePlateFrame.cpp code that calls 0x77f750, CGUnit_C::GetUnitName, 0x771d80 and 7 more; not read here	inferred	none		
-0x7cb850	95			ui	orchestration		Runs NamePlateFrame.cpp code that calls 0x492890, 0x77fcb0, 0x77f750 and 1 more; not read here	inferred	none		
-0x7cb8b0	91			ui	orchestration		Runs NamePlateFrame.cpp code that calls 0x492890, 0x77fc60, 0x77f750 and 1 more; not read here	inferred	none		
+0x7cb850	95	NamePlateOnEnter		ui	orchestration	void __thiscall ()	Publishes the plate's unit as the world mouseover, lights the plate and runs the button enter	verified	one	ui/hover#nameplate-and-minimap-notifies	
+0x7cb8b0	91	NamePlateOnLeave		ui	orchestration	void __thiscall (uint32_t removal)	Publishes no world mouseover, dims the plate and runs the button leave	verified	one	ui/hover#nameplate-and-minimap-notifies	
 0x7cb910	49			ui	orchestration		Runs NamePlateFrame.cpp code that calls 0x4949f0, 0x779540; not read here	inferred	none		
 0x7cb950	212			ui	primitive		Runs NamePlateFrame.cpp code that calls __ftol, 0x77f750, ClntObjMgrObjectPtr and 1 more; not read here	inferred	none		
 0x7cba30	56			ui	orchestration		Returns 0 while targeting a position with no unit bit, else defers to its base method	inferred	none	spell/targeting#flag-word-predicates	

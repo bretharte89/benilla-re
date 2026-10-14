@@ -4,11 +4,13 @@ CBaseManaged	28	0x81d7f0	camera	Holds a property's header: vtable, update-list l
 CCamera	368	0x81d7c0	camera	Holds a camera: the property slots and update list, then nine properties	verified	one	camera#lifetime
 CEffect	144		objectlayer	Holds a spell effect model: model, GUIDs, spell, records, attachment, sound, flags, times, references and link	verified	one	objectlayer/effects#the-effect-object
 CFrameStrataNode	284		ui	Holds one level of a stratum: its frame lists, update cursor, five batches and dirty layers	verified	one	ui/strata#strata-records-and-level-nodes
+CGCharacterModelBase	1016	0x8084f8	ui	Holds a character pane: a CSimpleModel, the unit GUID, the turn latch and deadline and the display record	verified	one	ui/playermodel#pane-fields
 CGContainer_C	2676	0x80ac88	objectlayer	Holds a container: the item, 74 more watcher lists and its slot list	verified	one	objectlayer/classes#class-sizes-and-pools
 CGGameObject_C	784	0x80c330	objectlayer	Holds a game object: the object, watcher lists, type handler, record, world matrix and box, state	verified	one	objectlayer/classes#class-sizes-and-pools
 CGItem_C	1172	0x80ada8	objectlayer	Holds an item: the object, its field pointers, watcher lists, flags, cached record bytes and expiries	verified	one	objectlayer/classes#class-sizes-and-pools
 CGObject_C	308	0x803640	objectlayer	Holds an object the server described: its storage, pool handle, type, GUID key, hold count and flags	verified	one	objectlayer/classes#class-sizes-and-pools
 CGPlayer_C	11340	0x80af78	objectlayer	Holds a player other than the active one, whose heap block is 26648 bytes; the unit plus the player section	verified	one	objectlayer/classes#class-sizes-and-pools
+CGTooltip	1120	0x808f60	ui	Holds a GameTooltip: the frame, its owner and anchor, its lines and the fields a rebuild needs	verified	one	ui/tooltipitem#fields-kept-for-a-rebuild
 CGUnit_C	5120	0x80c4f8	objectlayer	Holds a unit: the object, the unit members with their field pointers, the unit fields and watch copy	verified	one	objectlayer/classes#class-sizes-and-pools
 CInputControl	28		input	Holds the world input state: held commands, travel sums, times and the armed click	verified	one	input#input-state
 CLayoutFrame	116	0x81c400	ui	Holds a laid-out object's anchor points, dependents, flags, rectangle, size, scale and queue link	verified	one	ui/anchors#construction-and-the-xml-anchors
@@ -25,6 +27,7 @@ CPlayerMoveEvent	80		collision	Holds one queued movement event: list link, time,
 CRibbonEmitter	360		models	Holds a ribbon emitter: its edge ring, node frames, texture cell, materials, colour and heights	verified	one	models/ribbons#ribbon-ring
 CScriptRegion	160	0x81c580	ui	Holds a script object part, a CLayoutFrame at +0x24, a name and a parent	verified	one	ui/frames#vtables-and-the-two-parts
 CSimpleFrame	788	0x81c498	ui	Holds a frame: a CScriptRegion and its strata, flags, scripts, regions, layers and children	verified	one	ui/frames#construction
+CSimpleModel	988	0x81c608	ui	Holds a Model frame: a CSimpleFrame, its scene, model, camera, light, position, facing, scale, fog and bounding box	verified	one	ui/modelview#model-frame-fields
 CSimpleModelFFX	988	0x803960	glue	Holds a ModelFFX frame: a CSimpleModel whose show hook and layer-2 draw add the current full-screen effect	verified	one	glue/select#the-modelffx-frame
 CSimpleTop	4408	0x81c380	ui	Holds the interface root: strata records, input lists, key takers, hover, pressed and moving frames	verified	one	ui/strata#construction-and-teardown
 CharacterSelectionDisplay	288		glue	Holds one character-list record: the session character record in its first 0x110 bytes, then the select screen state	verified	one	glue/flow#enter-world
