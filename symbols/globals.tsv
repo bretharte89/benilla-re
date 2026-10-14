@@ -101,6 +101,14 @@ address	type	name	name_from	system	meaning	confidence	proof	finding
 0x52ffbc	void *[6]	s_cases52fe90		ui	Holds the 6 case addresses of the switch in 0x52fe90	inferred	none	
 0x531530	void *[9]	s_cases5313e0		ui	Holds the 9 case addresses of the switch in 0x5313e0	inferred	none	
 0x538610	void *[5]	s_netEventJumpTable		net	Holds the five case addresses the event drain jumps to for node types 0x12 to 0x16	verified	one	net/dispatch#main-thread-drain
+0x5a3b18	const void *[6]	s_tgaTypeCases		image	Holds the case addresses of the TGA image type dispatch	verified	one	image/tga#decoding
+0x5a3b30	const uint8_t[12]	s_tgaTypeIndex		image	Holds the case of each TGA image type 0 to 11	verified	one	image/tga#decoding
+0x5a49d8	const void *[8]	s_bppCases		image	Holds the case addresses of the bits per pixel switch of 0x5a49b0	verified	one	image/mips#level-sizes
+0x5a80b8	const void *[3]	s_decodeDxtCases		image	Holds the case addresses of the DXT switch of 0x5a7f00	verified	one	image/blp#decoding-one-level
+0x5a80c4	const uint8_t[8]	s_decodeDxtIndex		image	Holds the case of each format 0 to 7 in the DXT switch of 0x5a7f00	verified	one	image/blp#decoding-one-level
+0x5a81f8	const void *[8]	s_levelSizeCases		image	Holds the case addresses of the format switch of 0x5a8140	verified	one	image/mips#level-byte-size-and-pitch
+0x5a86f0	const void *[3]	s_stage1DxtCases		image	Holds the case addresses of the DXT switch of 0x5a8590	verified	one	image/blp#level-pointers-without-copies
+0x5a86fc	const uint8_t[8]	s_stage1DxtIndex		image	Holds the case of each format 0 to 7 in the DXT switch of 0x5a8590	verified	one	image/blp#level-pointers-without-copies
 0x5aa854	void *[11]	s_statusEventJumpTable		net	Holds the case addresses of the status reporter's first switch	inferred	none	net/layout#starts-the-listing-hides
 0x5aa880	void *[39]	s_statusEventJumpTable2		net	Holds the case addresses of the status reporter's second switch	inferred	none	net/layout#starts-the-listing-hides
 0x5aae08	void *[6]	s_charLoginFailedJumpTable		net	Holds the case addresses that map a character login failure byte to a status code	inferred	none	net/layout#starts-the-listing-hides
@@ -116,6 +124,7 @@ address	type	name	name_from	system	meaning	confidence	proof	finding
 0x5b3fd0	void *[6]	s_realmMessageJumpTable		net	Holds the realm connection handler's cases for opcodes 0x3a to 0x4c	verified	one	net/dispatch#realm-connection-messages
 0x5b3fe8	uint8_t[19]	s_realmMessageIndexTable		net	Maps opcodes 0x3a to 0x4c to their case in the realm connection handler	verified	one	net/dispatch#realm-connection-messages
 0x5bcf70	void *[6]	s_selectStateJumpTable		net	Holds the case addresses of the select loop switch on connection state	verified	one	net/threads#select-loop
+0x5c26dc	const void *[6]	s_stripCases		font	Holds the case addresses of the token class switch of 0x5c2590	verified	one	font/markup#stripping
 0x5c2af4	void *[7]	s_cases5c2810		unassigned	Holds the 7 case addresses of the switch in 0x5c2810	inferred	none	
 0x5c2b10	uint8_t[58]	s_caseIndexes5c2810		unassigned	Holds the 58 case indexes of the switch in 0x5c2810	inferred	none	
 0x5d494c	void *[8]	s_tradeStatusJumpTable		objectlayer	Holds the trade status handler's eight cases	verified	one	objectlayer/trade#trade-status-message
@@ -539,6 +548,7 @@ address	type	name	name_from	system	meaning	confidence	proof	finding
 0x80a000	const float	s_sixtyFiveK		unassigned	Holds 65536.0	verified	one	lighting/celestial#celestial-bodies
 0x80a1e8	float	s_minMeleeReach		objectlayer	Holds 5.0, the least melee reach	verified	one	objectlayer/interaction#looting
 0x80a2a8	uint32_t[2]	s_cullModeByState		terrain	Holds the Direct3D cull modes 1 (none) and 2 (clockwise) by the culling state	verified	one	terrain/render#face-culling
+0x80a2d8	void *[4]	StatusSink::vftable		image	Holds the status sink vtable: the deleting destructor and three more slots	verified	one	image/overview#initializers-and-statics
 0x80a398	void *[23]	ClientConnection::vftable		net	Holds ClientConnection's vtable, NetClient's with the event and result slots overridden	verified	one	net/dispatch#dispatch
 0x80a3f4	void *[14]	s_responseObjectVtable		net	Holds the slots of the response object the world connection notifies	verified	one	net/connection#response-object
 0x80a5d4	void *[14]	s_logonVftable		net	Holds the logon object's vtable: the link's callbacks, slot 10 the logon result	verified	one	net/login#logon-results
@@ -549,8 +559,11 @@ address	type	name	name_from	system	meaning	confidence	proof	finding
 0x80a780	void *[10]	s_serverLinkVftable		net	Holds ServerLink's vtable, stored only by its unreached constructor and destructor	verified	one	net/layout#unreached-functions
 0x80a7a8	void *[2]	s_wdataStoreVtable		net	Holds the vtable of the data store the logon link writes its commands into	verified	one	net/connection#connect-and-realm-list
 0x80a7dc	void *[9]	ClientLink::vftable		net	Holds ClientLink's vtable: the connection callbacks, slot 7 the raw data hook	verified	one	net/login#logon-commands
+0x80a884	void *[4]	BatchElementList::vftable		font	Holds the vtable of a batch's element list	verified	one	font/api#batches
 0x80a8ac	float	s_oneOver256		terrain	Holds 1/256, the scale of a magma coordinate	verified	one	terrain/groupdraw#group-liquid-mesh
 0x80a8b0	const float	s_oneOver65536		unassigned	Holds 1/65536	verified	one	lighting/celestial#celestial-bodies
+0x80a8bc	void *[4]	KerningHash::vftable		font	Holds the vtable of a font's kerning hash	verified	one	font/api#font-object
+0x80a8cc	void *[4]	GlyphHash::vftable		font	Holds the vtable of a font's glyph hash	verified	one	font/api#font-object
 0x80a8ec	const uint32_t			font	Holds a dword its object file's code reads; not read here	inferred	none	
 0x80a92c	const float	s_float3c800000		unassigned	Holds the float 0.015625 (0x3c800000)	verified	one	terrain/liquid#wave-field
 0x80a930	uint8_t[64]	s_sha1Padding		net	Holds the padding block of 0x80 and 63 zero bytes	verified	one	net/crypto#sha-1-first-context
@@ -841,8 +854,9 @@ address	type	name	name_from	system	meaning	confidence	proof	finding
 0x811278	const float	s_float3b5a740e		unassigned	Holds the float 0.0033333334 (0x3b5a740e)	inferred	none	
 0x8112a8	const float	s_float40800000		unassigned	Holds the float 4 (0x40800000)	inferred	none	
 0x8112ac	const float	s_float3fc00000At8112ac		unassigned	Holds the float 1.5 (0x3fc00000)	inferred	none	
-0x8112dc	const float			unassigned	Holds the first float of a table its object file's code reads; not read here	inferred	none	
+0x8112dc	const float[12]	s_keyframeTable		playername	Holds the crit scale keyframes: start, end, low and high of three segments	verified	one	playername/worldtext#timing-and-scale
 0x811310	const float	s_float42fe0000		unassigned	Holds the float 127 (0x42fe0000)	inferred	none	
+0x811314	void *[2]	WORLDTEXTSTRING::vftable		playername	Holds the text record vtable: the deleting destructor and one more slot	verified	one	playername/worldtext#text-record
 0x811508	const float	s_piConst		lighting	Holds π as a float	verified	one	lighting/celestial#static-tracks
 0x811510	const float[7]	s_skyKeyTimes		lighting	Holds the day fractions 0.2291667, 0.5, 0.8958333, 0.9166667, 0.1666667, and 1.0 the track keys start from	verified	one	lighting/celestial#static-tracks
 0x81152c	const float[6]	s_skyRingAngles		lighting	Holds the sky dome's ring angles over π: 0, 0.17, 0.2, 0.23, 0.24, 0.25	verified	one	lighting/sky#sky-dome
@@ -1523,8 +1537,17 @@ address	type	name	name_from	system	meaning	confidence	proof	finding
 0x85c224	uint32_t			gx	Holds a dword its object file's code reads; not read here	inferred	none	
 0x85c250	uint32_t[66]	s_stagePresets		terrain	Holds the six texture stage combine presets of 0x2c bytes	verified	one	terrain/watershade#stage-combine-presets
 0x85c7d8	uint32_t[15]	s_filterModes		terrain	Holds the Direct3D magnify, minify and mip filters of each texture filter index	verified	one	terrain/render#texture-detail-bias
-0x85c9b0	const uint8_t[4]	s_paletteCoverageMasks		image	Holds the 2-bit coverage slot masks 3, 0xc, 0x30 and 0xc0 of the palette converter	verified	one	charactermodel/composite#source-planes
-0x85c9c8	const uint32_t[2]	s_alphaNibbleShifts		image	Holds the shifts 2 and 6 that take the top two bits of a 4-bit alpha	verified	one	charactermodel/composite#source-planes
+0x85c824	const char[45]	s_tgaSourcePath		image	Holds the source path of tga.cpp	verified	one	image/overview#initializers-and-statics
+0x85c868	const int32_t[9]	s_classPitchShift		image	Holds the pitch shift of each conversion class	verified	one	image/mips#pixel-pitch-of-a-source-format
+0x85c88c	const int32_t[9]	s_classPitchFactor		image	Holds the pitch factor of each conversion class	verified	one	image/mips#pixel-pitch-of-a-source-format
+0x85c8b0	const uint8_t[16]	s_nibbleExpand		image	Holds each 4-bit value times 0x11	verified	one	image/convert#palette-to-bgra
+0x85c8c0	const uint8_t[2]	s_bitAlpha		image	Holds the alpha of a 1-bit alpha value: 0x00 and 0xff	verified	one	image/convert#palette-to-bgra
+0x85c8c4	const uint16_t[2]	s_alpha444Bit		image	Holds the two words the RGB444 depth 1 alpha merge indexes by bit value	verified	one	image/convert#alpha-merge-into-16-bits
+0x85c8c8	const uint32_t[10]	s_blpFormatClasses		image	Holds the conversion class of each format or alpha type number	verified	one	image/blp#format-classes
+0x85c9b0	const uint8_t[4]	s_alphaFieldMasks		image	Holds the masks of the four 2-bit alpha fields in a byte	verified	one	image/convert#alpha-merge-into-16-bits
+0x85c9b4	const int32_t[3]	s_alphaFieldShifts		image	Holds the shifts of the 2-bit alpha fields	verified	one	image/convert#alpha-merge-into-16-bits
+0x85c9c8	const uint8_t[8]	s_alphaNibbleShifts		image	Holds the nibble shifts of the depth 4 alpha merge	verified	one	image/convert#alpha-merge-into-16-bits
+0x85c9d0	const char[48]	s_blpSourcePath		image	Holds the source path of blp.cpp	verified	one	image/overview#initializers-and-statics
 0x85cae8	char *[83]	s_errorCodeTokens	idb	net	Holds the 83 status code names, RESPONSE_SUCCESS to CHAR_NAME_SUCCESS, the localization keys	verified	one	net/session#session-status
 0x85cc34	uint32_t			net	Holds a dword that IsAllowedLaunchUrl reads; not read here	inferred	none	
 0x85d5b0	char[5]	s_textI		net	Holds the string "(%i)"	inferred	none	
@@ -1539,6 +1562,14 @@ address	type	name	name_from	system	meaning	confidence	proof	finding
 0x85e278	uint32_t[28]	s_clientLinkCommands		net	Holds ClientLink's seven commands: byte, name, handler and this offset each	verified	one	net/login#logon-commands
 0x85e9e0	uint32_t	s_wakePipeRead		net	Holds the read end of the loopback pipe that wakes the select loop	verified	one	net/threads#select-loop
 0x85e9e4	uint32_t	s_netWakeSocket		net	Holds the write end of the network thread's wake socket pair	verified	one	net/wire#sending
+0x85f4d8	const uint32_t[21]	s_stripTable		font	Holds seven triples of mask, replacement character and prefix flag per token class	verified	one	font/markup#stripping
+0x85f534	const char[20]	s_batchTag		font	Holds the allocation tag of a batch	verified	one	font/api#batches
+0x85f554	const char[14]	s_fontTag		font	Holds the allocation tag of a font	verified	one	font/api#creating-a-font
+0x85f56c	const char[16]	s_stringTag		font	Holds the allocation tag of a string	verified	one	font/api#string-pool
+0x85f5fc	const char[50]	s_fontUtilPath		font	Holds the source path of GxuFontUtil.cpp	verified	one	font/overview#object-files
+0x85f630	const char[58]	s_fontMiscPath		font	Holds the source path of GxuFontMiscClasses.cpp	verified	one	font/overview#object-files
+0x85f674	const char[18]	s_glyphTag		font	Holds the allocation tag of a glyph descriptor	verified	one	font/api#destroying-a-font
+0x85f7f0	const char[53]	s_fontStringPath		font	Holds the source path of GxuFontString.cpp	verified	one	font/overview#object-files
 0x85fb30	char[66]	s_textWorldGenericPassiveDoodadsDeathSkeletonsS		objectlayer	Holds the string "World\Generic\PassiveDoodads\DeathSkeletons\%s%sDeathSkeleton.mdx"	inferred	none	
 0x85fc54	uint32_t[141]	s_damageCalcEntryNames		objectlayer	Holds the damage calculation's entry names in 16-byte records, a string first, the last record cut short	verified	one	objectlayer/playercombat#damage-calculation-log
 0x85fe88	uint32_t[6]	s_saveEmblemErrors		objectlayer	Holds the errors for emblem save results 0 to 5	verified	one	objectlayer/party#guild-tabards
@@ -2853,6 +2884,26 @@ address	type	name	name_from	system	meaning	confidence	proof	finding
 0xc0e354	uint32_t	s_creatureCache		dbcache	Holds the creature record cache	inferred	none	objectlayer/quests#quest-updates
 0xc0f2b8	uint32_t	s_combineExtensionOn		terrain	Holds 1 when the combine texture environment extension is available	verified	one	terrain/watershade#stage-combine-presets
 0xc0f3e4	uint32_t	s_textureUnitCount		terrain	Holds the count of texture units the device has	verified	one	terrain/watershade#stage-combine-presets
+0xc0f548	float	s_tgaInfinity		image	Holds +inf copied by 0x5a35f0, which nothing reads	verified	one	image/overview#initializers-and-statics
+0xc0f54c	float	s_convertInfinity		image	Holds +inf copied by 0x5a4c20, which nothing reads	verified	one	image/overview#initializers-and-statics
+0xc0f550	float	s_convertInfinity2		image	Holds +inf copied by 0x5a4f00, which nothing reads	verified	one	image/overview#initializers-and-statics
+0xc0f554	float	s_convertInvTwoPi		image	Holds 1/2π stored by 0x5a4f40, which nothing reads	verified	one	image/overview#initializers-and-statics
+0xc0f558	uint32_t	s_convertMatrixReady		image	Holds 1 once the conversion matrix is filled	verified	one	image/convert#conversion-matrix
+0xc0f560	void *[324]	s_convertMatrix		image	Holds the converter of each source class, destination class and submode	verified	one	image/convert#conversion-matrix
+0xc0fa70	float	s_convertTwoPi		image	Holds 2π stored by 0x5a4f20, which nothing reads	verified	one	image/overview#initializers-and-statics
+0xc0fa78	float	s_blpInfinity		image	Holds +inf copied by 0x5a7890, which nothing reads	verified	one	image/overview#initializers-and-statics
+0xc0fa7c	float	s_blpInvTwoPi		image	Holds 1/2π stored by 0x5a78d0, which nothing reads	verified	one	image/overview#initializers-and-statics
+0xc0fa80	uint16_t[192]	s_dxtInterpTable		image	Holds the DXT interpolation values for 5 and 6-bit channels	verified	one	image/convert#dxt-interpolation-table
+0xc0fc00	float	s_blpTwoPi		image	Holds 2π stored by 0x5a78b0, which nothing reads	verified	one	image/overview#initializers-and-statics
+0xc0fc08	float	s_blpInfinity2		image	Holds +inf copied by 0x5a80f0, which nothing reads	verified	one	image/overview#initializers-and-statics
+0xc0fc10	uint8_t[24624]	s_fsErrorRgb444		image	Holds the error rows of the RGB444 dither	verified	one	image/convert#dithered-16-bit-palettes
+0xc15c40	uint32_t[4]	s_readBuffer		image	Holds the shared BLP read buffer: capacity, last size, data and alignment	verified	one	image/blp#opening-a-file
+0xc15c50	float	s_paletteInvTwoPi		image	Holds 1/2π stored by 0x5a9de0, which nothing reads	verified	one	image/overview#initializers-and-statics
+0xc15c54	uint32_t[5]	s_statusSink		image	Holds the BLP reader's status sink: vtable 0x80a2d8 and an empty list	verified	one	image/overview#initializers-and-statics
+0xc15c68	uint8_t[24624]	s_fsErrorRgb565A2		image	Holds the error rows of the RGB565 plus alpha dither	verified	one	image/convert#dithered-16-bit-palettes
+0xc1bc98	uint8_t[24624]	s_fsErrorRgb555		image	Holds the error rows of the RGB555 dither	verified	one	image/convert#dithered-16-bit-palettes
+0xc21cc8	float	s_paletteTwoPi		image	Holds 2π stored by 0x5a9dc0, which nothing reads	verified	one	image/overview#initializers-and-statics
+0xc21cd0	uint8_t[24624]	s_fsErrorRgb565		image	Holds the error rows of the RGB565 dither	verified	one	image/convert#dithered-16-bit-palettes
 0xc27d08	char[64]	s_logonAccountName		net	Holds the account name the logon authenticated with	verified	one	net/connection#status-text-and-names
 0xc27d80	SelectedCharacterRecord	s_selectedCharacter		net	Holds the selected character's list entry from the last EnterWorld, empty before it	verified	one	ui/unitplayer#the-selected-character-record
 0xc27e90	uint8_t[32]	s_telemetryRecord		net	Holds the 32-byte record built from telemetry.dat that the logon proof appends	verified	one	net/connection#telemetry-record
@@ -2879,6 +2930,45 @@ address	type	name	name_from	system	meaning	confidence	proof	finding
 0xc2a3bc	uint32_t	s_latencyMax		net	Holds the greatest simulated delay in milliseconds; zero-filled and never written	verified	one	net/wire#simulated-latency
 0xc2a3c4	uint32_t	s_initUnitCount		net	Counts the object files whose static initializers ran the shared unit count	inferred	none	net/layout#shared-helpers
 0xc2a428	uint8_t[64]	s_randomPool		net	Holds the SHA-1 random pool SRP6 draws from, seeded at startup with the client clock	verified	one	net/login#random-pool
+0xc2a738	uint8_t[640]	s_fpsDigitsA		font	Holds the first set of frame-rate digit quads	verified	one	font/overview#static-objects
+0xc2a9b8	float[30]	s_frameTimes		font	Holds the last 30 frame times in seconds	verified	one	font/api#frame-rate-bar
+0xc2aa38	uint8_t[640]	s_fpsDigitsB		font	Holds the second set of frame-rate digit quads	verified	one	font/overview#static-objects
+0xc2acb8	uint8_t[640]	s_fpsDigitsC		font	Holds the third set of frame-rate digit quads	verified	one	font/overview#static-objects
+0xc2af38	uint8_t[1920]	s_fpsWork		font	Holds the frame-rate bar's work buffer	verified	one	font/overview#static-objects
+0xc2b6b8	uint32_t	s_lastFrameTime		font	Holds the clock value of the previous frame	verified	one	font/api#frame-rate-bar
+0xc2b6c0	uint16_t[180]	s_quadIndices		font	Holds the index table of 30 quads, six indices each	verified	one	font/overview#static-objects
+0xc2b828	uint8_t	s_viewportCacheGuard		font	Holds bit 0 once the viewport cache is set up	verified	one	font/metrics#viewport-size
+0xc2b82c	float[4]	s_viewportCache		font	Holds the last viewport rectangle seen	verified	one	font/metrics#viewport-size
+0xc2b840	uint32_t[3]	s_batchFreeList		font	Holds the free list of batches: count, head and tail	verified	one	font/overview#static-objects
+0xc2b84c	uint32_t	s_frameTimeIndex		font	Holds the next slot of the frame time ring	verified	one	font/api#frame-rate-bar
+0xc2b974	uint32_t[3]	s_fontRegistry		font	Holds the list of fonts: count, head and tail	verified	one	font/overview#static-objects
+0xc2b980	float	s_fontUtilInfinity		font	Holds +inf copied by 0x5c6660, which nothing reads	verified	one	font/overview#object-files
+0xc2b984	float	s_fontUtilInvTwoPi		font	Holds 1/2π stored by 0x5c7dc0, which nothing reads	verified	one	font/overview#object-files
+0xc2b988	uint32_t[3]	s_stringPool		font	Holds the pool list of free strings: count, head and tail	verified	one	font/overview#static-objects
+0xc2b994	uint32_t[3]	s_stringList		font	Holds the global list of strings: count, head and tail	verified	one	font/overview#static-objects
+0xc2b9a0	uint32_t	s_viewportHeight		font	Holds the viewport height in pixels	verified	one	font/metrics#screen-and-pixel-units
+0xc2b9a4	uint32_t	s_viewportWidth		font	Holds the viewport width in pixels	verified	one	font/metrics#screen-and-pixel-units
+0xc2b9a8	void *	s_fontLibrary		font	Holds the font library handle the faces load through	verified	one	font/api#creating-a-font
+0xc2b9ac	float	s_fontUtilTwoPi		font	Holds 2π stored by 0x5c7da0, which nothing reads	verified	one	font/overview#object-files
+0xc2b9b0	uint8_t	s_batchDebugFlag		font	Holds the flag that stops batch drawing; nothing sets it	verified	one	font/api#batches
+0xc2b9b4	uint32_t[3]	s_miscList		font	Holds a list of GxuFontMiscClasses.cpp: count, head and tail	verified	one	font/overview#static-objects
+0xc2b9c0	float	s_fontMiscInfinity		font	Holds +inf copied by 0x5c7df0, which nothing reads	verified	one	font/overview#object-files
+0xc2b9c4	float	s_fontMiscInvTwoPi		font	Holds 1/2π stored by 0x5c9580, which nothing reads	verified	one	font/overview#object-files
+0xc2b9cc	float	s_fontMiscTwoPi		font	Holds 2π stored by 0x5c9560, which nothing reads	verified	one	font/overview#object-files
+0xc2b9d4	void *	s_quadIndexBuffer		font	Holds the shared index buffer of 512 quads	verified	one	font/api#drawing-a-batch
+0xc2b9d8	void *	s_quadIndexView		font	Holds the index buffer wrapper the quads draw through	verified	one	font/api#drawing-a-batch
+0xc2b9dc	uint8_t	s_worldBatchDrawing		font	Holds 1 while a world-space batch draws	verified	one	font/api#drawing-a-batch
+0xc2b9e0	float	s_fontClassInfinity		font	Holds +inf copied by 0x5c9f40, which nothing reads	verified	one	font/overview#object-files
+0xc2b9e4	float	s_fontClassInvTwoPi		font	Holds 1/2π stored by 0x5cb850, which nothing reads	verified	one	font/overview#object-files
+0xc2b9e8	float	s_fontClassTwoPi		font	Holds 2π stored by 0x5cb830, which nothing reads	verified	one	font/overview#object-files
+0xc2b9ec	float	s_fontStringInfinity		font	Holds +inf copied by 0x5ccb00, which nothing reads	verified	one	font/overview#object-files
+0xc2b9f4	float	s_fontStringInvTwoPi		font	Holds 1/2π stored by 0x5ce1a0, which nothing reads	verified	one	font/overview#object-files
+0xc2b9f8	float[4]	s_texelNudge		font	Holds the raw-mode UV nudges: +1/512, +1/512, -1/512, -1/512	inferred	none	font/string#one-glyph-quad
+0xc2ba08	float	s_fontStringTwoPi		font	Holds 2π stored by 0x5ce180, which nothing reads	verified	one	font/overview#object-files
+0xc2ba40	float	s_fontRasterInfinity		font	Holds +inf copied by 0x5ce430, which nothing reads	verified	one	font/overview#object-files
+0xc2ba48	uint16_t[65536]	s_glyphStaging		font	Holds the 256 by 256 texel staging buffer glyphs are baked into	verified	one	font/glyphs#pages-and-cells
+0xc4ba48	float	s_fontRasterInvTwoPi		font	Holds 1/2π stored by 0x5cfce0, which nothing reads	verified	one	font/overview#object-files
+0xc4ba70	float	s_fontRasterTwoPi		font	Holds 2π stored by 0x5cfc90, which nothing reads	verified	one	font/overview#object-files
 0xc4bab8	uint8_t[896]	s_tradeSlots		objectlayer	Holds 14 64-byte trade item records, the client's 0 to 6 and the partner's 7 to 13	verified	one	objectlayer/trade#trade-state
 0xc4be70	uint32_t[2]	s_tradeMoney		objectlayer	Holds the money offered by the client and by the partner	verified	one	objectlayer/trade#trade-state
 0xc4be78	uint32_t[2]	s_tradeExtendedFlag		objectlayer	Holds the second header dword of each side's last extended trade status	verified	one	objectlayer/trade#trade-state
@@ -3282,14 +3372,30 @@ address	type	name	name_from	system	meaning	confidence	proof	finding
 0xce8534	int32_t	s_violenceLevel		client	Holds the violenceLevel CVar value; written by 0x6c5af0	inferred	none	spell/visuals#spell-visual-record-choice
 0xce8538	int32_t			unassigned	Holds an int32_t that SndInterfaceWorldInitialize, Script::GetGameTime, IsDaytime read; not read here	inferred	none	
 0xce853c	int32_t			unassigned	Holds an int32_t that Script::GetGameTime reads; not read here	inferred	none	
-0xce86d8	uint32_t			unassigned	Holds data whose address its object file's code takes; not read here	inferred	none	
-0xce86ec	uint32_t			unassigned	Holds data whose address its object file's code takes; not read here	inferred	none	
-0xce8720	uint32_t			unassigned	Holds a dword its object file's code reads and writes; not read here	inferred	none	
-0xce875c	uint32_t			unassigned	Holds a dword its object file's code reads and writes; not read here	inferred	none	
-0xce8804	uint32_t			unassigned	Holds a dword its object file's code reads and writes; not read here	inferred	none	
-0xce8820	uint32_t			unassigned	Holds a dword that WorldTextInitialize reads and writes; not read here	inferred	none	
-0xce8828	float			unassigned	Holds the first float of a table its object file's code reads and writes; not read here	inferred	none	
-0xce88dc	uint32_t[15]	s_rankBadgeTextures		ui	Holds the 15 loaded rank badge texture handles	verified	one	ui/honorcredit#rank-badges
+0xce86d4	uint32_t	s_trailObjectCount		playername	Counts the live trail objects	verified	one	playername/swing#trail-objects
+0xce86d8	uint8_t[20]	s_trailObjectPool		playername	Holds the block pool of trail objects	verified	one	playername/overview#block-pools
+0xce86ec	uint8_t[20]	s_swingPool		playername	Holds the block pool of swing records	verified	one	playername/overview#block-pools
+0xce8700	float	s_playerNameInfinity		playername	Holds +inf copied by 0x6c63f0, which nothing reads	verified	one	playername/overview#infinity-copies-and-pools
+0xce870c	uint8_t[20]	s_namePool		playername	Holds the block pool of name records	verified	one	playername/overview#block-pools
+0xce8720	uint32_t	s_nameFlags		playername	Holds the name display mask the five name cvars set	verified	one	playername/plates#name-cvars-and-font
+0xce8724	uint32_t	s_frameTick		playername	Holds the frame tick that name records stamp when updated	verified	one	playername/plates#per-frame-work
+0xce8728	uint32_t[3]	s_nameList		playername	Holds the name record list: link offset, tail and head	verified	one	playername/plates#name-record-layout
+0xce8734	void *	s_nameBatch		playername	Holds the font batch the name texts draw through	verified	one	playername/plates#plate-update
+0xce8738	void *	s_nameFont		playername	Holds the font of UNIT_NAME_FONT, or 0 when the global is missing	verified	one	playername/plates#name-cvars-and-font
+0xce873c	float[8]	s_markerUVOffsets		playername	Holds the four UV offsets of a raid marker quad	verified	one	playername/plates#raid-target-marker
+0xce875c	float[12]	s_markerCorners		playername	Holds the four corner positions of a raid marker quad	verified	one	playername/plates#raid-target-marker
+0xce878c	void *	s_raidTargetTexture		playername	Holds the raid target icon texture	verified	one	playername/plates#raid-target-marker
+0xce8790	float	s_playerNameInfinity2		playername	Holds +inf copied by 0x6c69f0, which nothing reads	verified	one	playername/overview#infinity-copies-and-pools
+0xce87a0	float[8]	s_iconQuadUVs		playername	Holds the four UV pairs of a rank icon quad	verified	one	playername/worldtext#drawing-icons
+0xce87c0	float[12]	s_iconQuadPositions		playername	Holds the four corner positions of a rank icon quad, in units of 32 pixels	verified	one	playername/worldtext#drawing-icons
+0xce87f0	uint32_t[4]	s_iconRing		playername	Holds the rank icon ring: capacity, count, records and growth step	verified	one	playername/worldtext#rank-icon-records
+0xce8800	void *	s_textBatch		playername	Holds the font batch the world texts draw through	verified	one	playername/worldtext#rebuilding-the-string
+0xce8804	float[2]	s_shadowOffset		playername	Holds the world text shadow offsets, 0.002 each	verified	one	playername/worldtext#timing-and-scale
+0xce880c	uint8_t[20]	s_textPool		playername	Holds the block pool of text records	verified	one	playername/overview#block-pools
+0xce8820	void *	s_damageFont		playername	Holds the font of DAMAGE_TEXT_FONT	verified	one	playername/worldtext#damage-text-font
+0xce8828	uint32_t[42]	s_categoryTable		playername	Holds six rows of seven dwords: rise, fade-in end, fade-out start, duration, sizes, colour	verified	one	playername/worldtext#category-table
+0xce88d0	float	s_playerNameInfinity3		playername	Holds +inf copied by 0x6c7980, which nothing reads	verified	one	playername/overview#infinity-copies-and-pools
+0xce88dc	void *[15]	s_rankBadgeTextures		playername	Holds the 15 PvP rank badge textures	verified	one	playername/worldtext#rank-icon-records
 0xce8918	uint32_t[15]	s_filterLists		unassigned	Holds five capacity, count, base triples of word lists: server spam, spam, reserved, profanity, profane names	verified	one	ui/chatfilter#the-word-lists
 0xce89a0	uint32_t			unassigned	Holds a dword that ConstructGlowEffect reads and writes; not read here	inferred	none	
 0xce89c0	float			unassigned	Holds a float its object file's code reads and writes; not read here	inferred	none	
@@ -3539,5 +3645,9 @@ address	type	name	name_from	system	meaning	confidence	proof	finding
 0xcf76fc	uint32_t	s_contextHandlesWrapped		core	Holds 1 once the context handle counter has wrapped to 0	verified	one	core/scheduler#context-insert
 0xcf7700	uint8_t[96]	s_contextTableLocks		core	Holds the read-write locks of the context table's eight buckets	verified	one	core/loop#contexts
 0xcf7760	uint8_t[96]	s_contextTableBuckets		core	Holds the eight bucket lists of the context table, 12 bytes each	verified	one	core/scheduler#context-insert
+0xcf78a1	uint8_t	s_dxt1Rgb565GuardA		image	Holds a guard bit of the DXT1 to RGB565 driver's statics	verified	one	image/convert#dxt-drivers
+0xcf78a2	uint8_t	s_dxt1Rgb565GuardB		image	Holds the guard bit of the DXT1 driver's palette static	verified	one	image/convert#dxt-drivers
+0xcf78a8	uint16_t[4]	s_dxt1Palette		image	Holds the four colours of the block the DXT1 to RGB565 driver is writing	verified	one	image/convert#dxt-drivers
+0xcf78b0	uint8_t	s_dxt1Rgb565GuardC		image	Holds a guard bit of the DXT1 block decoder's statics	verified	one	image/convert#dxt-drivers
 0xcfa128	uint8_t	s_skillLineRecAllocatorBuilt		spell	Holds bit 0 once the ability node pool is built; default 0, written by 0x6e0830	verified	one	spell/tables#ability-node-pool
 0xcfa140	uint32_t[5]	s_skillLineRecAllocator		spell	Holds the ability node pool: element size, per block, in use, block list, free list	verified	one	spell/tables#ability-node-pool

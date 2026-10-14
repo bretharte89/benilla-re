@@ -17114,160 +17114,160 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x5a2f00	1375			unassigned			Runs its object file code that calls 0x596560, 0x5a35d0, 0x5a2e20 and 8 more; not read here	inferred	none		
 0x5a3530	146			unassigned			Runs its object file code that calls SMemReAlloc, SMemAlloc, SMemFree; not read here	inferred	none		
 0x5a35d0	14			unassigned			Runs its object file code not read here	inferred	none		
-0x5a35e0	5			image			Runs its object file code not read here	inferred	none		
-0x5a35f0	11			image			Runs its object file code not read here	inferred	none		
-0x5a3600	88			image			Runs tga.cpp code that calls SMemFree, SFile::Close, 0x5a4320; not read here	inferred	none		
-0x5a3660	378			image			Runs tga.cpp code that calls SErrSetLastError, 0x5a3600, SFile::OpenEx and 2 more; not read here	inferred	none		
-0x5a37e0	49			image			Runs tga.cpp code that calls SErrSetLastError; not read here	inferred	none		
-0x5a3820	417			image			Runs tga.cpp code that calls SMemAlloc, SMemFree, 0x5a3b80; not read here	inferred	none		image::image_tga_palette_expand
-0x5a39d0	85			image			Runs tga.cpp code that calls SErrSetLastError, 0x5a3c80, 0x5a3d70 and 1 more; not read here	inferred	none		
-0x5a3a30	229			image			Runs tga.cpp code that calls SErrSetLastError, 0x5a39d0, 0x5a37e0 and 2 more; not read here	inferred	none		
-0x5a3b40	59			image			Runs tga.cpp code not read here	inferred	none		image::image_tga_pixel_offset
-0x5a3b80	254			image			Runs tga.cpp code that calls 0x4100f0; not read here	inferred	none		image::image_tga_append_alpha
-0x5a3c80	229			image			Runs tga.cpp code that calls 0x5a3b40, 0x648a60, SMemAlloc and 2 more; not read here	inferred	none		
-0x5a3d70	338			image			Runs tga.cpp code that calls SMemAlloc, SFile::GetFileSize, 0x5a3b40 and 5 more; not read here	inferred	none		
-0x5a3ed0	229			image			Runs tga.cpp code that calls SErrSetLastError; not read here	inferred	none		image::image_tga_rle_decode
-0x5a3fc0	176			image			Runs tga.cpp code that calls 0x5a41b0, SErrSetLastError, 0x5a4250 and 3 more; not read here	inferred	none		
-0x5a4070	313			image			Runs tga.cpp code that calls SErrSetLastError, SMemAlloc, SMemFree; not read here	inferred	none		image::image_tga_flip
-0x5a41b0	20			image			Runs tga.cpp code that calls SErrSetLastError; not read here	inferred	none		
-0x5a41d0	20			image	unreached		Runs tga.cpp code that calls SErrSetLastError; not read here	inferred	none		
-0x5a41f0	39			image			Runs tga.cpp code that calls SErrSetLastError; not read here	inferred	none		
-0x5a4220	39			image	unreached		Runs tga.cpp code that calls SErrSetLastError; not read here	inferred	none		
-0x5a4250	200			image			Runs tga.cpp code that calls 0x5a41b0, SErrSetLastError, 0x4100f0; not read here	inferred	none		image::image_tga_alpha_strip
-0x5a4320	39			image			Runs tga.cpp code that calls SMemFree; not read here	inferred	none		
-0x5a4350	98			image	unreached		Runs tga.cpp code that calls 0x5a41d0, 0x5a43c0; not read here	inferred	none		
-0x5a43c0	298			image			Runs tga.cpp code that calls SErrSetLastError, SMemFree, SMemAlloc and 1 more; not read here	inferred	none		image::image_tga_init_from_source
-0x5a44f0	126			image	unreached		Runs tga.cpp code not read here	inferred	none		
-0x5a4570	409			image	unreached		Runs tga.cpp code that calls 0x5a44f0; not read here	inferred	none		
-0x5a4710	246			image	unreached		Runs tga.cpp code that calls SErrSetLastError, SMemAlloc, 0x5a4570 and 1 more; not read here	inferred	none		
-0x5a4810	410			image			Runs its object file code that calls SErrSetLastError, 0x42a460, 0x42a5d0 and 2 more; not read here	inferred	none		
-0x5a49b0	39			image			Runs its object file code not read here	inferred	none		image::image_bpp_by_format
-0x5a4a00	124			image			Runs its object file code that calls 0x5a49b0; not read here	inferred	none		image::image_level_size
-0x5a4a80	56			image			Runs its object file code that calls 0x5a4a00; not read here	inferred	none		image::image_mip_sum
-0x5a4ac0	43			image			Runs its object file code not read here	inferred	none		image::image_level_count
-0x5a4af0	140			image			Runs its object file code that calls 0x5a4ac0, 0x5a4a80, SMemAlloc and 1 more; not read here	inferred	none		image::image_mip_alloc_populate
-0x5a4b80	46			image			Runs its object file code that calls 0x5a4ac0, 0x5a4a80; not read here	inferred	none		image::image_mip_block_size
-0x5a4bb0	82			image			Runs its object file code that calls 0x5a4ac0, 0x5a4a00; not read here	inferred	none		image::image_mip_populate_existing
-0x5a4c10	5			image			Runs its object file code not read here	inferred	none		
-0x5a4c20	11			image			Runs its object file code not read here	inferred	none		
-0x5a4c30	691			image			Runs its object file code that calls __alldiv; not read here	inferred	none		image::image_box_downsample
-0x5a4ef0	5			image			Runs its object file code not read here	inferred	none		
-0x5a4f00	11			image			Runs its object file code not read here	inferred	none		
-0x5a4f10	5			image			Runs its object file code not read here	inferred	none		
-0x5a4f20	15			image			Runs its object file code not read here	inferred	none		
-0x5a4f30	5			image			Runs its object file code not read here	inferred	none		
-0x5a4f40	19			image			Runs its object file code not read here	inferred	none		
-0x5a4f60	83			image			Runs its object file code that calls 0x5a4fc0; not read here	inferred	none		
-0x5a4fc0	163			image			Runs its object file code not read here	inferred	none		
-0x5a5070	342			image			Runs its object file code not read here	inferred	none		image::image_bgra8888_to_argb4444
-0x5a51d0	342			image			Runs its object file code not read here	inferred	none		image::image_bgra8888_to_argb1555
-0x5a5330	333			image			Runs its object file code not read here	inferred	none		image::image_bgra8888_to_rgb565
-0x5a5480	139			image			Runs its object file code not read here	inferred	none		image::image_bgra8888_copy
-0x5a5510	121			image			Runs its object file code not read here	inferred	none		image::image_bgra8888_alpha_key
-0x5a5590	286			image			Runs its object file code not read here	inferred	none		image::image_bgra8888_blend
-0x5a56b0	133			image			Runs its object file code not read here	inferred	none		image::image_copy16
-0x5a5740	64			image			Runs its object file code not read here	inferred	none		image::image_dxt1_block_copy
-0x5a5780	64			image			Runs its object file code not read here	inferred	none		image::image_dxt35_block_copy
-0x5a57c0	578			image			Runs its object file code that calls _atexit, 0x404130, 0x5a7200 and 1 more; not read here	inferred	none		image::image_dxt1_drivers
-0x5a5a10	3			image			Runs its object file code not read here	inferred	none		
-0x5a5a20	578			image			Runs its object file code that calls _atexit, 0x404130, 0x5a73b0 and 1 more; not read here	inferred	none		image::image_dxt1_drivers
-0x5a5c70	3			image			Runs its object file code not read here	inferred	none		
-0x5a5c80	615			image			Runs its object file code that calls _atexit, 0x404130, 0x5a7640 and 1 more; not read here	inferred	none		image::image_dxt1_drivers
-0x5a5ef0	447			image			Runs its object file code that calls _atexit, 0x5a65c0; not read here	inferred	none		image::image_dxt3_drivers
-0x5a60b0	3			image			Runs its object file code not read here	inferred	none		image::image_dxt3_block_decoders, image::image_dxt3_drivers
-0x5a60c0	492			image			Runs its object file code that calls _atexit, 0x5a62f0; not read here	inferred	none		image::image_dxt3_drivers
-0x5a62b0	6			image			Runs its object file code not read here	inferred	none		image::image_dxt3_block_decoders, image::image_dxt3_drivers
-0x5a62c0	44			image			Runs its object file code not read here	inferred	none		image::image_dxt_pitch
-0x5a62f0	660			image			Runs its object file code that calls _atexit, 0x5a6590; not read here	inferred	none		image::image_dxt3_block_decoders
-0x5a6590	37			image			Runs its object file code not read here	inferred	none		image::image_dxt_pack_565comp
-0x5a65c0	690			image			Runs its object file code that calls _atexit, 0x5a6880; not read here	inferred	none		image::image_dxt3_block_decoders
-0x5a6880	55			image			Runs its object file code not read here	inferred	none		image::image_dxt_pack_565comp
-0x5a68c0	1			image			Runs its object file code not read here	inferred	none		
-0x5a68d0	1			image			Runs its object file code not read here	inferred	none		
-0x5a68e0	1			image			Runs its object file code not read here	inferred	none		
-0x5a68f0	1			image			Runs its object file code not read here	inferred	none		
-0x5a6900	1			image			Runs its object file code not read here	inferred	none		
-0x5a6910	1			image			Runs its object file code not read here	inferred	none		
-0x5a6920	1			image			Runs its object file code not read here	inferred	none		
-0x5a6930	1			image			Runs its object file code not read here	inferred	none		
-0x5a6940	1			image			Runs its object file code not read here	inferred	none		
-0x5a6950	1			image			Runs its object file code not read here	inferred	none		
-0x5a6960	1			image			Runs its object file code not read here	inferred	none		
-0x5a6970	1			image			Runs its object file code not read here	inferred	none		
-0x5a6980	7			image			Runs its object file code not read here	inferred	none		
-0x5a6990	587			image			Runs its object file code that calls _atexit; not read here	inferred	none		image::image_dxt1_block_decoders
-0x5a6be0	655			image			Runs its object file code that calls _atexit, 0x5a6e70, 0x5a6ea0; not read here	inferred	none		image::image_dxt1_block_decoders
-0x5a6e70	46			image			Runs its object file code not read here	inferred	none		image::image_dxt_pack_565comp
-0x5a6ea0	75			image			Runs its object file code not read here	inferred	none		image::image_dxt_pack_word
-0x5a6ef0	667			image			Runs its object file code that calls _atexit, 0x5a6590, 0x5a7190; not read here	inferred	none		image::image_dxt1_block_decoders
-0x5a7190	60			image			Runs its object file code not read here	inferred	none		image::image_dxt_pack_word
-0x5a71d0	1			image			Runs its object file code not read here	inferred	none		
-0x5a71e0	1			image			Runs its object file code not read here	inferred	none		
-0x5a71f0	1			image			Runs its object file code not read here	inferred	none		
-0x5a7200	418			image			Runs its object file code not read here	inferred	none		image::image_dxt1_palette_builders
-0x5a73b0	643			image			Runs its object file code not read here	inferred	none		image::image_dxt1_palette_builders
-0x5a7640	572			image			Runs its object file code not read here	inferred	none		image::image_dxt1_palette_builders
-0x5a7880	5			image			Runs its object file code not read here	inferred	none		
-0x5a7890	11			image			Runs its object file code not read here	inferred	none		
-0x5a78a0	5			image			Runs its object file code not read here	inferred	none		
-0x5a78b0	15			image			Runs its object file code not read here	inferred	none		
-0x5a78c0	5			image			Runs its object file code not read here	inferred	none		
-0x5a78d0	19			image			Runs its object file code not read here	inferred	none		
-0x5a78f0	5			image			Runs its object file code not read here	inferred	none		
-0x5a7900	10			image			Runs its object file code not read here	inferred	none		
-0x5a7910	122			image			Runs its object file code not read here	inferred	none		image::image_dxt_interp_lut
-0x5a7990	10			image			Runs its object file code that calls 0x5a79a0; not read here	inferred	none		
-0x5a79a0	54			image			Runs its object file code not read here	inferred	none		
-0x5a79e0	1			image			Runs its object file code not read here	inferred	none		
-0x5a79f0	12			image			Runs its object file code that calls _atexit; not read here	inferred	none		
-0x5a7a00	10			image			Runs its object file code not read here	inferred	none		
-0x5a7a10	43			image			Runs its object file code that calls CStatus::~CStatus, SMemFree; not read here	inferred	none		
-0x5a7a40	10			image			Runs its object file code that calls 0x5a7a50; not read here	inferred	none		
-0x5a7a50	23			image			Runs its object file code not read here	inferred	none		
-0x5a7a70	12			image			Runs its object file code that calls _atexit; not read here	inferred	none		
-0x5a7a80	25			image			Runs its object file code that calls SMemFree; not read here	inferred	none		
-0x5a7aa0	42			image			Runs blp.cpp code that calls SMemFree; not read here	inferred	none		
-0x5a7ad0	103			image	unreached		Runs blp.cpp code that calls 0x5a4af0, 0x5a8220, 0x5a4ac0; not read here	inferred	none		
-0x5a7b40	219			image			Runs blp.cpp code that calls SErrSetLastError, 0x5a7aa0, SFile::OpenEx and 6 more; not read here	inferred	none		
-0x5a7c20	44			image	unreached		Runs blp.cpp code that calls 0x5a7ec0; not read here	inferred	none		
-0x5a7c50	100			image	unreached		Runs blp.cpp code that calls 0x5a7c20, 0x5a7cc0; not read here	inferred	none		
-0x5a7cc0	382			image	unreached		Runs blp.cpp code that calls SErrSetLastError, 0x5a7e40, 0x5a7ad0; not read here	inferred	none		
-0x5a7e40	66			image	unreached		Runs blp.cpp code not read here	inferred	none		
-0x5a7ea0	29			image	unreached		Runs blp.cpp code not read here	inferred	none		
-0x5a7ec0	50			image			Runs blp.cpp code that calls 0x5a8220; not read here	inferred	none		
-0x5a7f00	440			image			Runs blp.cpp code that calls SErrSetLastError, 0x5a7ec0, 0x5a8140 and 5 more; not read here	inferred	none		
-0x5a80d0	8			image			Runs blp.cpp code not read here	inferred	none		image::image_format_lut
-0x5a80e0	5			image			Runs blp.cpp code not read here	inferred	none		
-0x5a80f0	11			image			Runs blp.cpp code not read here	inferred	none		
-0x5a8100	50			image			Runs blp.cpp code that calls SMemFree, 0x5a7ec0; not read here	inferred	none		
-0x5a8140	184			image			Runs blp.cpp code not read here	inferred	none		image::image_compute_mip_byte_size
-0x5a8220	5			image			Runs blp.cpp code not read here	inferred	none		
-0x5a8230	13			image	unreached		Runs blp.cpp code not read here	inferred	none		
-0x5a8240	358			image			Runs blp.cpp code that calls 0x5a7ec0, 0x5a4af0, 0x5a4bb0 and 4 more; not read here	inferred	none		
-0x5a83b0	125			image			Runs blp.cpp code that calls 0x5a7aa0, 0x5a8220, 0x5a4ac0; not read here	inferred	none		
-0x5a8430	347			image			Runs blp.cpp code that calls 0x5a7ec0, 0x5a4af0, 0x5a4bb0 and 2 more; not read here	inferred	none		
-0x5a8590	352			image			Runs its object file code that calls SErrSetLastError, 0x5a7ec0, 0x5a80d0 and 4 more; not read here	inferred	none		
-0x5a8710	16			image			Runs its object file code that calls 0x5a7ec0; not read here	inferred	none		
-0x5a8720	43			image	unreached		Runs its object file code that calls 0x5a8140; not read here	inferred	none		
-0x5a8750	51			image	unreached		Runs its object file code that calls 0x5a8140; not read here	inferred	none		
-0x5a8790	55			image			Runs its object file code not read here	inferred	none		image::image_palconv_expand_bgra8888_a8
-0x5a87d0	319			image			Runs its object file code not read here	inferred	none		image::image_palconv_expand_bgra8888_adepth
-0x5a8910	302			image	unreached		Runs its object file code not read here	inferred	none		
-0x5a8a40	308			image	unreached		Runs its object file code not read here	inferred	none		
-0x5a8b80	127			image	unreached		Runs its object file code not read here	inferred	none		
-0x5a8c00	195			image	unreached		Runs its object file code that calls 0x5a8790, 0x5a87d0, 0x5a8910 and 2 more; not read here	inferred	none		
-0x5a8ce0	413			image			Runs its object file code that calls 0x5a8790, 0x5a87d0, 0x5a92d0 and 3 more; not read here	inferred	none		
-0x5a8ea0	398			image	unreached		Runs its object file code not read here	inferred	none		
-0x5a9030	405			image	unreached		Runs its object file code not read here	inferred	none		
-0x5a91d0	249			image	unreached		Runs its object file code not read here	inferred	none		
-0x5a92d0	686			image			Runs its object file code not read here	inferred	none		image::image_palconv_fs_rgb444
-0x5a9580	726			image			Runs its object file code not read here	inferred	none		image::image_palconv_fs_rgb555
-0x5a9860	529			image			Runs its object file code not read here	inferred	none		image::image_palconv_fs_rgb565
-0x5a9a80	811			image			Runs its object file code not read here	inferred	none		image::image_palconv_fs_rgb565_a2
-0x5a9db0	5			image			Runs its object file code not read here	inferred	none		
-0x5a9dc0	15			image			Runs its object file code not read here	inferred	none		
-0x5a9dd0	5			unassigned			Runs its object file code not read here	inferred	none		
-0x5a9de0	19			unassigned			Runs its object file code not read here	inferred	none		
+0x5a35e0	5	InitTgaInfinityThunk		image	orchestration		Jumps to 0x5a35f0; a static initializer	verified	one	image/overview#initializers-and-statics	
+0x5a35f0	11	InitTgaInfinity		image	orchestration	void __cdecl (void)	Copies +inf into 0xc0f548	verified	one	image/overview#initializers-and-statics	
+0x5a3600	88	TgaClose		image	orchestration	void __thiscall (void)	Frees the pixels, closes the file and frees the ID buffer and palette	verified	one	image/tga#image-record	
+0x5a3660	378	TgaOpen		image	host	int __thiscall (const char *path, int flag)	Opens a TGA file and reads its header, ID field and colour map	verified	one	image/tga#opening-a-file	
+0x5a37e0	49	TgaCheckDepth		image	primitive	int __thiscall (void)	Returns whether bits per pixel less the attribute bits is 24	verified	one	image/tga#decoding	
+0x5a3820	417	TgaExpandPalette		image	primitive	int __thiscall (uint32_t flags)	Replaces the palette indices with their colours	verified	one	image/tga#palette-expansion	image::image_tga_palette_expand
+0x5a39d0	85	TgaDecodeIndexed		image	orchestration	int __thiscall (uint32_t flags)	Reads a colour-mapped image and expands its palette when flag bit 1 is set	verified	one	image/tga#decoding	
+0x5a3a30	229	TgaDecode		image	orchestration	int __thiscall (uint32_t flags)	Decodes the pixels by image type	verified	one	image/tga#decoding	
+0x5a3b40	59	TgaPixelOffset		image	primitive	uint32_t __fastcall (void *image)	Returns the file offset of the pixel data	verified	one	image/tga#image-record	image::image_tga_pixel_offset
+0x5a3b80	254	TgaAppendAlpha		image	primitive	void __thiscall (void *dst, const void *src, const uint8_t *alpha)	Copies each pixel and appends an alpha byte	verified	one	image/tga#alpha-channel	image::image_tga_append_alpha
+0x5a3c80	229	TgaReadPixels		image	host	int __thiscall (uint32_t flags)	Reads uncompressed pixels into a buffer with room for an alpha plane	verified	one	image/tga#decoding	
+0x5a3d70	338	TgaReadRle		image	host	int __thiscall (uint32_t flags)	Reads run-length packets and decodes them into the pixel buffer	verified	one	image/tga#decoding	
+0x5a3ed0	229	TgaDecodeRle		image	primitive	int __thiscall (const uint8_t *packets, uint8_t *out)	Expands run and raw packets until the image is full	verified	one	image/tga#run-length-packets	image::image_tga_rle_decode
+0x5a3fc0	176	TgaSetAlphaPlane		image	orchestration	int __thiscall (const uint8_t *alpha)	Adds an alpha channel to a decoded image from a plane	verified	one	image/tga#alpha-channel	
+0x5a4070	313	TgaSetOrigin		image	primitive	int __thiscall (int top)	Reverses the rows and sets the origin bit	verified	one	image/tga#flipping	image::image_tga_flip
+0x5a41b0	20	TgaRequirePixels		image	primitive	int __fastcall (void *image)	Returns whether the image has pixels and otherwise sets an error	verified	one	image/tga#alpha-channel	
+0x5a41d0	20	TgaRequirePixelsCopy		image	unreached	int __fastcall (void *image)	Returns whether the image has pixels and otherwise sets an error	verified	one	image/overview#unreached-functions	
+0x5a41f0	39	TgaRequirePixels32		image	primitive	int __fastcall (void *image)	Returns whether the image has 32-bit pixels and otherwise sets an error	verified	one	image/tga#alpha-channel	
+0x5a4220	39	TgaRequirePixels32Copy		image	unreached	int __fastcall (void *image)	Returns whether the image has 32-bit pixels and otherwise sets an error	verified	one	image/overview#unreached-functions	
+0x5a4250	200	TgaStripAlpha		image	primitive	int __thiscall (void)	Packs 32-bit pixels down to 24 bits in place	verified	one	image/tga#alpha-channel	image::image_tga_alpha_strip
+0x5a4320	39	TgaFreeId		image	orchestration	void __thiscall (void)	Frees the ID buffer and clears the ID length	verified	one	image/tga#image-record	
+0x5a4350	98	TgaCopyFrom		image	unreached	int __thiscall (void *source)	Fills an image from another image's pixels and header	verified	one	image/overview#unreached-functions	
+0x5a43c0	298	TgaInitFromPixels		image	primitive	int __thiscall (const void *src, uint16_t w, uint16_t h, uint8_t bpp, uint8_t attr, int top, int flip)	Fills an image record from a pixel block	verified	one	image/tga#building-and-saving	image::image_tga_init_from_source
+0x5a44f0	126	TgaRleRunLength		image	unreached	int __thiscall (const void *pixel, int max)	Counts the equal pixels in a row up to 128	verified	one	image/overview#unreached-functions	
+0x5a4570	409	TgaRleEncodeRow		image	unreached	int __thiscall (const void **src, void **dst)	Encodes one row as run and raw packets	verified	one	image/overview#unreached-functions	
+0x5a4710	246	TgaRleEncode		image	unreached	int __thiscall (void)	Encodes the whole image as run-length packets	verified	one	image/overview#unreached-functions	
+0x5a4810	410	TgaSave		image	host	int __thiscall (const char *path)	Writes header, ID, colour map, pixels and footer to a file	verified	one	image/tga#building-and-saving	
+0x5a49b0	39	MipBitsPerPixel		image	primitive	uint32_t __fastcall (uint32_t fmt)	Returns the bits per pixel of a device format	verified	one	image/mips#level-sizes	image::image_bpp_by_format
+0x5a4a00	124	MipLevelSize		image	primitive	uint32_t __fastcall (uint32_t level, uint32_t w, uint32_t h, uint32_t fmt)	Returns the bytes of one mip level	verified	one	image/mips#level-sizes	image::image_level_size
+0x5a4a80	56	MipSumSizes		image	primitive	uint32_t __fastcall (uint32_t count, uint32_t w, uint32_t h, uint32_t fmt)	Sums the bytes of the first levels of a chain	verified	one	image/mips#chain-size-and-level-count	image::image_mip_sum
+0x5a4ac0	43	MipLevelCount		image	primitive	uint32_t __fastcall (uint32_t w, uint32_t h)	Returns the number of levels down to 1 by 1	verified	one	image/mips#chain-size-and-level-count	image::image_level_count
+0x5a4af0	140	MipAllocChain		image	host	uint32_t * __fastcall (uint32_t fmt, uint32_t w, uint32_t h, const char *file, uint32_t line)	Allocates a mip chain and fills its pointer table	verified	one	image/mips#building-the-pointer-table	image::image_mip_alloc_populate
+0x5a4b80	46	MipBlockSize		image	primitive	uint32_t __fastcall (uint32_t fmt, uint32_t w, uint32_t h)	Returns the bytes of a whole chain including its pointer table	verified	one	image/mips#chain-size-and-level-count	image::image_mip_block_size
+0x5a4bb0	82	MipFillChain		image	primitive	void __fastcall (uint32_t fmt, uint32_t w, uint32_t h, uint32_t *base)	Fills the pointer table of a caller-supplied chain	verified	one	image/mips#building-the-pointer-table	image::image_mip_populate_existing
+0x5a4c10	5	InitConvertInfinityThunk		image	orchestration		Jumps to 0x5a4c20; a static initializer	verified	one	image/overview#initializers-and-statics	
+0x5a4c20	11	InitConvertInfinity		image	orchestration	void __cdecl (void)	Copies +inf into 0xc0f54c	verified	one	image/overview#initializers-and-statics	
+0x5a4c30	691	BoxDownsample		image	primitive	void __fastcall (void *dst, uint32_t dstW, uint32_t dstH, const void *src, uint32_t srcW, uint32_t srcH)	Averages each block of a BGRA image weighted by alpha	verified	one	image/mips#box-filter-downsample	image::image_box_downsample
+0x5a4ef0	5	InitConvertInfinity2Thunk		image	orchestration		Jumps to 0x5a4f00; a static initializer	verified	one	image/overview#initializers-and-statics	
+0x5a4f00	11	InitConvertInfinity2		image	orchestration	void __cdecl (void)	Copies +inf into 0xc0f550	verified	one	image/overview#initializers-and-statics	
+0x5a4f10	5	InitConvertTwoPiThunk		image	orchestration		Jumps to 0x5a4f20; a static initializer	verified	one	image/overview#initializers-and-statics	
+0x5a4f20	15	InitConvertTwoPi		image	primitive	void __cdecl (void)	Stores π + π as a float in 0xc0fa70	verified	one	image/overview#initializers-and-statics	
+0x5a4f30	5	InitConvertInvTwoPiThunk		image	orchestration		Jumps to 0x5a4f40; a static initializer	verified	one	image/overview#initializers-and-statics	
+0x5a4f40	19	InitConvertInvTwoPi		image	primitive	void __cdecl (void)	Stores 1 / 2π as a float in 0xc0f554	verified	one	image/overview#initializers-and-statics	
+0x5a4f60	83	ConvertPixels		image	orchestration	void __thiscall (uint32_t submode, const void *src, uint32_t srcStride, uint32_t srcClass, void *dst, uint32_t dstStride, uint32_t dstClass)	Calls the converter of a source class, destination class and submode	verified	one	image/convert#conversion-matrix	
+0x5a4fc0	163	InitConvertMatrix		image	orchestration	void __cdecl (void)	Fills the 17 converter cells of the conversion matrix 0xc0f560	verified	one	image/convert#conversion-matrix	
+0x5a5070	342	ConvertBgraToArgb4444		image	primitive	void __thiscall (const void *src, uint32_t srcStride, void *dst, uint32_t dstStride)	Packs BGRA8888 pixels to ARGB4444	verified	one	image/convert#packing-to-16-bits	image::image_bgra8888_to_argb4444
+0x5a51d0	342	ConvertBgraToArgb1555		image	primitive	void __thiscall (const void *src, uint32_t srcStride, void *dst, uint32_t dstStride)	Packs BGRA8888 pixels to ARGB1555	verified	one	image/convert#packing-to-16-bits	image::image_bgra8888_to_argb1555
+0x5a5330	333	ConvertBgraToRgb565		image	primitive	void __thiscall (const void *src, uint32_t srcStride, void *dst, uint32_t dstStride)	Packs BGRA8888 pixels to RGB565	verified	one	image/convert#packing-to-16-bits	image::image_bgra8888_to_rgb565
+0x5a5480	139	CopyBgra		image	primitive	void __thiscall (const void *src, uint32_t srcStride, void *dst, uint32_t dstStride)	Copies BGRA8888 pixels	verified	one	image/convert#copies-and-blends	image::image_bgra8888_copy
+0x5a5510	121	CopyBgraKeyed		image	primitive	void __thiscall (const void *src, uint32_t srcStride, void *dst, uint32_t dstStride)	Copies the colour of source pixels whose alpha is not 0	verified	one	image/convert#copies-and-blends	image::image_bgra8888_alpha_key
+0x5a5590	286	BlendBgra		image	primitive	void __thiscall (const void *src, uint32_t srcStride, void *dst, uint32_t dstStride)	Blends source pixels over the destination by their alpha	verified	one	image/convert#copies-and-blends	image::image_bgra8888_blend
+0x5a56b0	133	Copy16		image	primitive	void __thiscall (const void *src, uint32_t srcStride, void *dst, uint32_t dstStride)	Copies 16-bit pixels	verified	one	image/convert#copies-and-blends	image::image_copy16
+0x5a5740	64	CopyDxt1Blocks		image	primitive	void __thiscall (const void *src, uint32_t srcStride, void *dst)	Copies the DXT1 blocks of a surface as one run	verified	one	image/convert#dxt-drivers	image::image_dxt1_block_copy
+0x5a5780	64	CopyDxt35Blocks		image	primitive	void __thiscall (const void *src, uint32_t srcStride, void *dst)	Copies the DXT3 or DXT5 blocks of a surface as one run	verified	one	image/convert#dxt-drivers	image::image_dxt35_block_copy
+0x5a57c0	578	DecodeDxt1ToRgb565		image	primitive	void __thiscall (const void *src, uint32_t srcStride, void *dst, uint32_t dstStride)	Decodes a DXT1 surface to RGB565	verified	one	image/convert#dxt-drivers	image::image_dxt1_drivers
+0x5a5a10	3	DxtStaticElementInit		image	orchestration	void * __fastcall (void *element)	Returns its argument; the array constructor of the palette static	verified	one	image/convert#dxt-drivers	
+0x5a5a20	578	DecodeDxt1ToArgb1555		image	primitive	void __thiscall (const void *src, uint32_t srcStride, void *dst, uint32_t dstStride)	Decodes a DXT1 surface to ARGB1555	verified	one	image/convert#dxt-drivers	image::image_dxt1_drivers
+0x5a5c70	3	DxtStaticElementInit2		image	orchestration	void * __fastcall (void *element)	Returns its argument; the array constructor of the palette static	verified	one	image/convert#dxt-drivers	
+0x5a5c80	615	DecodeDxt1ToArgb8888		image	primitive	void __thiscall (const void *src, uint32_t srcStride, void *dst, uint32_t dstStride)	Decodes a DXT1 surface to ARGB8888	verified	one	image/convert#dxt-drivers	image::image_dxt1_drivers
+0x5a5ef0	447	DecodeDxt3ToArgb4444		image	primitive	void __thiscall (const void *src, uint32_t srcStride, void *dst, uint32_t dstStride)	Decodes a DXT3 surface to ARGB4444	verified	one	image/convert#dxt-drivers	image::image_dxt3_drivers
+0x5a60b0	3	DxtAlphaIdentity		image	primitive	uint32_t __fastcall (uint32_t nibble)	Returns a 4-bit alpha unchanged	verified	one	image/convert#dxt3-colours	image::image_dxt3_block_decoders, image::image_dxt3_drivers
+0x5a60c0	492	DecodeDxt3ToArgb8888		image	primitive	void __thiscall (const void *src, uint32_t srcStride, void *dst, uint32_t dstStride)	Decodes a DXT3 surface to ARGB8888	verified	one	image/convert#dxt-drivers	image::image_dxt3_drivers
+0x5a62b0	6	DxtAlphaShift4		image	primitive	uint32_t __fastcall (uint32_t nibble)	Returns a 4-bit alpha shifted left by 4	verified	one	image/convert#dxt3-colours	image::image_dxt3_block_decoders, image::image_dxt3_drivers
+0x5a62c0	44	ConvertClassPitch		image	primitive	uint32_t __fastcall (uint32_t class, uint32_t width)	Returns the row bytes of a conversion class for a width	verified	one	image/mips#pixel-pitch-of-a-source-format	image::image_dxt_pitch
+0x5a62f0	660	DecodeDxt3BlockArgb8888		image	primitive	void __fastcall (const void *block, uint32_t **rows, const void *bounds, uint32_t (__fastcall *alpha)(uint32_t))	Decodes one DXT3 block to ARGB8888	verified	one	image/convert#dxt3-colours	image::image_dxt3_block_decoders
+0x5a6590	37	PackRgb565ToArgb8888		image	primitive	uint32_t __thiscall (uint32_t r, uint32_t g, uint32_t b)	Packs 5, 6 and 5-bit channels into ARGB8888 with alpha 0xff	verified	one	image/convert#dxt1-colours	image::image_dxt_pack_565comp
+0x5a65c0	690	DecodeDxt3BlockArgb4444		image	primitive	void __fastcall (const void *block, uint32_t **rows, const void *bounds, uint32_t (__fastcall *alpha)(uint32_t))	Decodes one DXT3 block to ARGB4444	verified	one	image/convert#dxt3-colours	image::image_dxt3_block_decoders
+0x5a6880	55	PackRgb565ToArgb4444		image	primitive	uint32_t __thiscall (uint32_t r, uint32_t g, uint32_t b)	Packs 5, 6 and 5-bit channels into ARGB4444	verified	one	image/convert#dxt1-colours	image::image_dxt_pack_565comp
+0x5a68c0	1	DestroyDxtStatic68		image	orchestration	void __cdecl (void)	Returns at once; the exit destructor of a driver's function-local static	verified	one	image/convert#dxt-drivers	
+0x5a68d0	1	DestroyDxtStatic69		image	orchestration	void __cdecl (void)	Returns at once; the exit destructor of a driver's function-local static	verified	one	image/convert#dxt-drivers	
+0x5a68e0	1	DestroyDxtStatic70		image	orchestration	void __cdecl (void)	Returns at once; the exit destructor of a driver's function-local static	verified	one	image/convert#dxt-drivers	
+0x5a68f0	1	DestroyDxtStatic71		image	orchestration	void __cdecl (void)	Returns at once; the exit destructor of a driver's function-local static	verified	one	image/convert#dxt-drivers	
+0x5a6900	1	DestroyDxtStatic72		image	orchestration	void __cdecl (void)	Returns at once; the exit destructor of a driver's function-local static	verified	one	image/convert#dxt-drivers	
+0x5a6910	1	DestroyDxtStatic73		image	orchestration	void __cdecl (void)	Returns at once; the exit destructor of a driver's function-local static	verified	one	image/convert#dxt-drivers	
+0x5a6920	1	DestroyDxtStatic74		image	orchestration	void __cdecl (void)	Returns at once; the exit destructor of a driver's function-local static	verified	one	image/convert#dxt-drivers	
+0x5a6930	1	DestroyDxtStatic75		image	orchestration	void __cdecl (void)	Returns at once; the exit destructor of a driver's function-local static	verified	one	image/convert#dxt-drivers	
+0x5a6940	1	DestroyDxtStatic76		image	orchestration	void __cdecl (void)	Returns at once; the exit destructor of a driver's function-local static	verified	one	image/convert#dxt-drivers	
+0x5a6950	1	DestroyDxtStatic77		image	orchestration	void __cdecl (void)	Returns at once; the exit destructor of a driver's function-local static	verified	one	image/convert#dxt-drivers	
+0x5a6960	1	DestroyDxtStatic78		image	orchestration	void __cdecl (void)	Returns at once; the exit destructor of a driver's function-local static	verified	one	image/convert#dxt-drivers	
+0x5a6970	1	DestroyDxtStatic79		image	orchestration	void __cdecl (void)	Returns at once; the exit destructor of a driver's function-local static	verified	one	image/convert#dxt-drivers	
+0x5a6980	7	DxtZeroWord		image	orchestration	void __fastcall (uint32_t *word)	Stores 0 at its argument	inferred	none	image/convert#dxt-drivers	
+0x5a6990	587	DecodeDxt1BlockRgb565		image	primitive	void __fastcall (const void *block, uint32_t **rows, const void *bounds)	Decodes one DXT1 block to RGB565	verified	one	image/convert#dxt1-colours	image::image_dxt1_block_decoders
+0x5a6be0	655	DecodeDxt1BlockArgb1555		image	primitive	void __fastcall (const void *block, uint32_t **rows, const void *bounds)	Decodes one DXT1 block to ARGB1555	verified	one	image/convert#dxt1-colours	image::image_dxt1_block_decoders
+0x5a6e70	46	PackRgb565ToArgb1555		image	primitive	uint32_t __thiscall (uint32_t r, uint32_t g, uint32_t b)	Packs 5, 6 and 5-bit channels into ARGB1555	verified	one	image/convert#dxt1-colours	image::image_dxt_pack_565comp
+0x5a6ea0	75	PackWordToArgb1555		image	primitive	uint16_t * __thiscall (const uint16_t *word)	Packs a 565 word into ARGB1555	verified	one	image/convert#dxt1-colours	image::image_dxt_pack_word
+0x5a6ef0	667	DecodeDxt1BlockArgb8888		image	primitive	void __fastcall (const void *block, uint32_t **rows, const void *bounds)	Decodes one DXT1 block to ARGB8888	verified	one	image/convert#dxt1-colours	image::image_dxt1_block_decoders
+0x5a7190	60	PackWordToArgb8888		image	primitive	uint32_t * __thiscall (const uint16_t *word)	Packs a 565 word into ARGB8888	verified	one	image/convert#dxt1-colours	image::image_dxt_pack_word
+0x5a71d0	1	DestroyDxtStatic80		image	orchestration	void __cdecl (void)	Returns at once; the exit destructor of a driver's function-local static	verified	one	image/convert#dxt-drivers	
+0x5a71e0	1	DestroyDxtStatic81		image	orchestration	void __cdecl (void)	Returns at once; the exit destructor of a driver's function-local static	verified	one	image/convert#dxt-drivers	
+0x5a71f0	1	DestroyDxtStatic82		image	orchestration	void __cdecl (void)	Returns at once; the exit destructor of a driver's function-local static	verified	one	image/convert#dxt-drivers	
+0x5a7200	418	BuildDxt1PaletteRgb565		image	primitive	void __fastcall (const uint16_t *block, uint16_t *palette)	Builds the four DXT1 colours as RGB565	verified	one	image/convert#dxt1-colours	image::image_dxt1_palette_builders
+0x5a73b0	643	BuildDxt1PaletteArgb1555		image	primitive	void __fastcall (const uint16_t *block, uint16_t *palette)	Builds the four DXT1 colours as ARGB1555	verified	one	image/convert#dxt1-colours	image::image_dxt1_palette_builders
+0x5a7640	572	BuildDxt1PaletteArgb8888		image	primitive	void __fastcall (const uint16_t *block, uint32_t *palette)	Builds the four DXT1 colours as ARGB8888	verified	one	image/convert#dxt1-colours	image::image_dxt1_palette_builders
+0x5a7880	5	InitBlpInfinityThunk		image	orchestration		Jumps to 0x5a7890; a static initializer	verified	one	image/overview#initializers-and-statics	
+0x5a7890	11	InitBlpInfinity		image	orchestration	void __cdecl (void)	Copies +inf into 0xc0fa78	verified	one	image/overview#initializers-and-statics	
+0x5a78a0	5	InitBlpTwoPiThunk		image	orchestration		Jumps to 0x5a78b0; a static initializer	verified	one	image/overview#initializers-and-statics	
+0x5a78b0	15	InitBlpTwoPi		image	primitive	void __cdecl (void)	Stores π + π as a float in 0xc0fc00	verified	one	image/overview#initializers-and-statics	
+0x5a78c0	5	InitBlpInvTwoPiThunk		image	orchestration		Jumps to 0x5a78d0; a static initializer	verified	one	image/overview#initializers-and-statics	
+0x5a78d0	19	InitBlpInvTwoPi		image	primitive	void __cdecl (void)	Stores 1 / 2π as a float in 0xc0fa7c	verified	one	image/overview#initializers-and-statics	
+0x5a78f0	5	InitInterpTableThunk		image	orchestration		Jumps to 0x5a7900; a static initializer	verified	one	image/overview#initializers-and-statics	
+0x5a7900	10	InitInterpTable		image	orchestration	void __cdecl (void)	Builds the DXT interpolation table at 0xc0fa80	verified	one	image/convert#dxt-interpolation-table	
+0x5a7910	122	BuildInterpTable		image	primitive	void * __fastcall (void *base)	Fills the DXT interpolation table	verified	one	image/convert#dxt-interpolation-table	image::image_dxt_interp_lut
+0x5a7990	10	InitStatusSinkThunk		image	orchestration		Calls 0x5a79a0 and jumps to 0x5a79f0; a static initializer	verified	one	image/overview#initializers-and-statics	
+0x5a79a0	54	InitStatusSink		image	orchestration	void __cdecl (void)	Makes 0xc15c54 an empty status sink with vtable 0x80a2d8	verified	one	image/overview#initializers-and-statics	
+0x5a79e0	1	StatusSinkSlot3		image	orchestration	void __thiscall (void)	Returns at once; slot 3 of the status sink vtable	inferred	none	image/overview#initializers-and-statics	
+0x5a79f0	12	RegisterDestroyStatusSink		image	orchestration	void __cdecl (void)	Registers 0x5a7a00 with _atexit	verified	one	image/overview#initializers-and-statics	
+0x5a7a00	10	DestroyStatusSink		image	orchestration	void __cdecl (void)	Destroys the status sink 0xc15c54	verified	one	image/overview#initializers-and-statics	
+0x5a7a10	43	StatusSink::DeletingDestructor		image	orchestration	void * __thiscall (uint32_t flags)	Destroys a status sink and frees it when bit 0 of flags is set	verified	one	image/overview#initializers-and-statics	
+0x5a7a40	10	InitReadBufferThunk		image	orchestration		Calls 0x5a7a50 and jumps to 0x5a7a70; a static initializer	verified	one	image/overview#initializers-and-statics	
+0x5a7a50	23	InitReadBuffer		image	orchestration	void __cdecl (void)	Zeroes the four words of the shared read buffer 0xc15c40	verified	one	image/overview#initializers-and-statics	
+0x5a7a70	12	RegisterDestroyReadBuffer		image	orchestration	void __cdecl (void)	Registers 0x5a7a80 with _atexit	verified	one	image/overview#initializers-and-statics	
+0x5a7a80	25	DestroyReadBuffer		image	orchestration	void __cdecl (void)	Frees the shared read buffer 0xc15c48	verified	one	image/overview#initializers-and-statics	
+0x5a7aa0	42	BlpReset		image	orchestration	void __thiscall (void)	Clears the file pointer and frees the decoded chain	verified	one	image/blp#reader-record	
+0x5a7ad0	103	BlpAllocChain		image	unreached	int __thiscall (uint32_t w, uint32_t h)	Allocates a BGRA8888 chain for a width and height	verified	one	image/overview#unreached-functions	
+0x5a7b40	219	BlpOpen		image	host	int __thiscall (const char *path, int flag)	Reads a whole BLP file into the shared buffer and parses its header	verified	one	image/blp#opening-a-file	
+0x5a7c20	44	BlpGetLevel		image	unreached	void * __thiscall (uint32_t level)	Returns the pointer of a decoded level	verified	one	image/overview#unreached-functions	
+0x5a7c50	100	BlpCopyLevelFrom		image	unreached	int __thiscall (void *source, uint32_t level, void *status)	Copies a level from another reader into this one	verified	one	image/overview#unreached-functions	
+0x5a7cc0	382	BlpStoreLevel		image	unreached	int __thiscall (const void *pixels, uint32_t w, uint32_t h, uint32_t alphaDepth, uint32_t level, void *status)	Stores a BGRA level of power of two dimensions into the chain	verified	one	image/overview#unreached-functions	
+0x5a7e40	66	IsPowerOfTwoDimension		image	unreached	int __fastcall (uint32_t dimension)	Returns whether a dimension is a power of two from 1 to 512	verified	one	image/overview#unreached-functions	
+0x5a7ea0	29	BlpSetAlphaDepth		image	unreached	int __thiscall (uint32_t depth)	Stores an alpha depth of 8 or less	verified	one	image/overview#unreached-functions	
+0x5a7ec0	50	BlpCheckLevel		image	primitive	int __thiscall (uint32_t level)	Returns whether a level exists: level 0, or below the level count with mips	verified	one	image/blp#decoding-one-level	
+0x5a7f00	440	BlpDecodeLevel		image	orchestration	int __thiscall (uint32_t fmt, uint32_t level, void **out, uint32_t *size)	Produces the pixels of a level in a device format	verified	one	image/blp#decoding-one-level	
+0x5a80d0	8	BlpFormatClass		image	primitive	uint32_t __fastcall (uint32_t index)	Returns the conversion class of a format or alpha type	verified	one	image/blp#format-classes	image::image_format_lut
+0x5a80e0	5	InitBlpInfinity2Thunk		image	orchestration		Jumps to 0x5a80f0; a static initializer	verified	one	image/overview#initializers-and-statics	
+0x5a80f0	11	InitBlpInfinity2		image	orchestration	void __cdecl (void)	Copies +inf into 0xc0fc08	verified	one	image/overview#initializers-and-statics	
+0x5a8100	50	BlpFreeScratch		image	orchestration	int __thiscall (uint32_t level)	Frees the scratch buffer of the last level and checks the level	verified	one	image/blp#decoding-one-level	
+0x5a8140	184	BlpLevelByteSize		image	primitive	int __thiscall (uint32_t fmt, uint32_t level, uint32_t *size, uint32_t *pitch)	Returns the decoded bytes and row bytes of a level	verified	one	image/mips#level-byte-size-and-pitch	image::image_compute_mip_byte_size
+0x5a8220	5	BlpHasMips		image	primitive	uint32_t __thiscall (void)	Returns the has-mips byte	verified	one	image/blp#reader-record	
+0x5a8230	13	BlpSetHasMips		image	unreached	void __thiscall (uint32_t value)	Stores the has-mips byte	verified	one	image/overview#unreached-functions	
+0x5a8240	358	BlpDecodeChain		image	orchestration	int __thiscall (uint32_t fmt, uint32_t **chain, uint32_t start)	Decodes every level from a start into a mip chain	verified	one	image/blp#decoding-the-chain	
+0x5a83b0	125	BlpParse		image	primitive	int __thiscall (const void *file)	Copies and checks the file header and sets the level count	verified	one	image/blp#reader-record	
+0x5a8430	347	BlpDecodeChainShared		image	orchestration	int __thiscall (uint32_t fmt, uint32_t **chain, uint32_t start, uint32_t flag)	Decodes levels into a chain or points the chain at the file	verified	one	image/blp#level-pointers-without-copies	
+0x5a8590	352	BlpDecodeStage1		image	orchestration	int __thiscall (uint32_t fmt, uint32_t level, void *dst, uint32_t *scratch)	Converts or copies one level by compression into a chain entry	verified	one	image/blp#level-pointers-without-copies	
+0x5a8710	16	BlpCheckLevel2		image	orchestration	int __thiscall (uint32_t level)	Returns whether a level exists	verified	one	image/blp#level-pointers-without-copies	
+0x5a8720	43	BlpLevel0Size		image	unreached	uint32_t __thiscall (void)	Returns the stored or computed size of level 0	verified	one	image/overview#unreached-functions	
+0x5a8750	51	BlpLevelSize		image	unreached	uint32_t __thiscall (uint32_t level)	Returns the stored or computed size of a level	verified	one	image/overview#unreached-functions	
+0x5a8790	55	ExpandPaletteAlpha8		image	primitive	void __thiscall (void *dst, const uint8_t *src, uint32_t count)	Expands indices to BGRA8888 with alpha from a plane	verified	one	image/convert#palette-to-bgra	image::image_palconv_expand_bgra8888_a8
+0x5a87d0	319	ExpandPalette		image	primitive	void __thiscall (void *dst, const uint8_t *src, uint32_t count)	Expands indices to BGRA8888 and fills alpha by the alpha depth	verified	one	image/convert#palette-to-bgra	image::image_palconv_expand_bgra8888_adepth
+0x5a8910	302	DitherNoneRgb444		image	unreached	void __thiscall (void *dst, const uint8_t *src, uint32_t w, uint32_t h)	Converts indices to RGB444 without dithering	verified	one	image/overview#unreached-functions	
+0x5a8a40	308	DitherNoneRgb555		image	unreached	void __thiscall (void *dst, const uint8_t *src, uint32_t w, uint32_t h)	Converts indices to RGB555 without dithering	verified	one	image/overview#unreached-functions	
+0x5a8b80	127	DitherNoneRgb565		image	unreached	void __thiscall (void *dst, const uint8_t *src, uint32_t w, uint32_t h)	Converts indices to RGB565 without dithering	verified	one	image/overview#unreached-functions	
+0x5a8c00	195	ConvertPaletteNoDither		image	unreached	int __thiscall (uint32_t fmt, uint32_t level, void *dst, const void *src)	Dispatches the no-dither converters by format	verified	one	image/overview#unreached-functions	
+0x5a8ce0	413	ConvertPalette		image	orchestration	int __thiscall (uint32_t fmt, uint32_t level, void *dst, const void *src)	Dispatches a palette level to the converter of a device format	verified	one	image/convert#palette-to-bgra	
+0x5a8ea0	398	DitherOrderedRgb444		image	unreached	void __thiscall (void *dst, const uint8_t *src, uint32_t w, uint32_t h)	Converts indices to RGB444 with an ordered dither	verified	one	image/overview#unreached-functions	
+0x5a9030	405	DitherOrderedRgb555		image	unreached	void __thiscall (void *dst, const uint8_t *src, uint32_t w, uint32_t h)	Converts indices to RGB555 with an ordered dither	verified	one	image/overview#unreached-functions	
+0x5a91d0	249	DitherOrderedRgb565		image	unreached	void __thiscall (void *dst, const uint8_t *src, uint32_t w, uint32_t h)	Converts indices to RGB565 with an ordered dither	verified	one	image/overview#unreached-functions	
+0x5a92d0	686	ConvertPaletteRgb444		image	primitive	void __thiscall (void *dst, const uint8_t *src, uint32_t w, uint32_t h)	Converts indices to ARGB4444 with Floyd-Steinberg dithering	verified	one	image/convert#dithered-16-bit-palettes	image::image_palconv_fs_rgb444
+0x5a9580	726	ConvertPaletteRgb555		image	primitive	void __thiscall (void *dst, const uint8_t *src, uint32_t w, uint32_t h)	Converts indices to ARGB1555 with Floyd-Steinberg dithering	verified	one	image/convert#dithered-16-bit-palettes	image::image_palconv_fs_rgb555
+0x5a9860	529	ConvertPaletteRgb565		image	primitive	void __thiscall (void *dst, const uint8_t *src, uint32_t w, uint32_t h)	Converts indices to RGB565 with Floyd-Steinberg dithering	verified	one	image/convert#dithered-16-bit-palettes	image::image_palconv_fs_rgb565
+0x5a9a80	811	ConvertPaletteRgb565A2		image	primitive	void __thiscall (void *dst, const uint8_t *src, uint32_t w, uint32_t h)	Converts indices to RGB565 with dithering and a 2-bit alpha plane	verified	one	image/convert#dithered-16-bit-palettes	image::image_palconv_fs_rgb565_a2
+0x5a9db0	5	InitPaletteTwoPiThunk		image	orchestration		Jumps to 0x5a9dc0; a static initializer	verified	one	image/overview#initializers-and-statics	
+0x5a9dc0	15	InitPaletteTwoPi		image	primitive	void __cdecl (void)	Stores π + π as a float in 0xc21cc8	verified	one	image/overview#initializers-and-statics	
+0x5a9dd0	5	InitPaletteInvTwoPiThunk		image	orchestration		Jumps to 0x5a9de0; a static initializer	verified	one	image/overview#initializers-and-statics	
+0x5a9de0	19	InitPaletteInvTwoPi		image	primitive	void __cdecl (void)	Stores 1 / 2π as a float in 0xc15c50	verified	one	image/overview#initializers-and-statics	
 0x5a9e00	5	InitCopy3Thunk		net	orchestration	void __cdecl (void)	Jumps to 0x5a9e10; a static initializer	verified	one	net/layout#static-initializers	
 0x5a9e10	11	InitCopy3		net	orchestration	void __cdecl (void)	Copies the constant +inf into a global	verified	one	net/layout#static-initializers	
 0x5a9e20	5	InitDouble3Thunk		net	orchestration	void __cdecl (void)	Jumps to 0x5a9e30; a static initializer	verified	one	net/layout#static-initializers	
@@ -18346,45 +18346,45 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x5c17a0	34			unassigned			Runs its object file code not read here	inferred	none		
 0x5c17d0	12			unassigned			Runs its object file code that calls _atexit; not read here	inferred	none		
 0x5c17e0	1			unassigned			Runs its object file code not read here	inferred	none		
-0x5c17f0	41			unassigned			Runs its object file code that calls 0x5c92f0, 0x7cf0e0, 0x7ccfc0 and 1 more; not read here	inferred	none		
-0x5c1820	443			unassigned			Runs its object file code not read here	inferred	none		
-0x5c19e0	242			unassigned			Runs its object file code that calls 0x5cdae0, SMemFree, 0x5caa20 and 6 more; not read here	inferred	none		
-0x5c1ae0	254	GxuFontCreateFont	idb	unassigned			Runs its object file code that calls SErrSetLastError, SMemAlloc, 0x5ca920 and 4 more; not read here	inferred	none		
+0x5c17f0	41	GxuFontInitialize		unassigned	orchestration	void __cdecl (void)	Loads the font library, sets the viewport size and builds the quad tables	inferred	none	font/overview#static-objects	
+0x5c1820	443	GxuFontInitTables		unassigned	primitive	void __cdecl (void)	Fills three quad arrays and the index table of 30 quads	verified	one	font/overview#static-objects	
+0x5c19e0	242	GxuFontShutdown		unassigned	orchestration	void __cdecl (void)	Destroys every string, font and batch and unloads the font library	verified	one	font/api#destroying-a-font	
+0x5c1ae0	254	GxuFontCreateFont	idb	unassigned	orchestration	int __thiscall (const char *name, void **font, float size, uint32_t flags)	Creates a font from a face name, size and flags	verified	one	font/api#creating-a-font	
 0x5c1be0	12			unassigned			Runs its object file code not read here	inferred	none		
-0x5c1bf0	14			unassigned			Runs its object file code not read here	inferred	none		
-0x5c1c00	41			unassigned			Runs its object file code that calls 0x5caa20, SMemFree; not read here	inferred	none		
-0x5c1c30	199	GxuFontCreateString	idb	unassigned			Runs its object file code that calls SErrSetLastError, CGxString::GetNewString and 2 more; not read here	inferred	none		
-0x5c1d00	83	GxuFontDestroyString	idb	unassigned			Runs its object file code that calls CGxString::Recycle; not read here	inferred	none		
-0x5c1d60	243	GxuFontCreateBatch	idb	unassigned			Runs its object file code that calls SMemAlloc, 0x5c3c60, 0x5c3c90 and 1 more; not read here	inferred	none		
-0x5c1e60	23			unassigned			Runs its object file code that calls 0x5c8e40; not read here	inferred	none		
-0x5c1e80	20			unassigned	unreached		Runs its object file code not read here	inferred	none		
+0x5c1bf0	14	GxuFontGetFlags		unassigned	primitive	uint32_t __fastcall (void *font)	Returns the font flags, or 0 for a null font	verified	one	font/api#font-object	
+0x5c1c00	41	GxuFontDestroyFont		unassigned	orchestration	void __fastcall (void **font)	Destroys the font a pointer names and clears the pointer	verified	one	font/api#destroying-a-font	
+0x5c1c30	199	GxuFontCreateString	idb	unassigned	orchestration	int __thiscall (void *font, const char *text, float size, const float *p, float w, float h, float gap, void **out, int jv, int jh, uint32_t fl, void *c)	Creates a string in a font	verified	one	font/api#creating-a-string	
+0x5c1d00	83	GxuFontDestroyString	idb	unassigned	orchestration	void __fastcall (void **string)	Unlinks a string from its lists and recycles it	verified	one	font/api#destroying-a-string	
+0x5c1d60	243	GxuFontCreateBatch	idb	unassigned	orchestration	void * __fastcall (uint8_t world, uint8_t clear)	Takes a batch from the free list or allocates one and sets its two flags	verified	one	font/api#batches	
+0x5c1e60	23	GxuFontBatchAdd		unassigned	orchestration	int __thiscall (void *string)	Adds a string to a batch; 0 when either is null	verified	one	font/api#batches	
+0x5c1e80	20	GxuFontIsSet		unassigned	unreached	int __fastcall (void *p)	Returns whether the word at +0x14 is non-zero	inferred	none	font/overview#unreached-functions	
 0x5c1ea0	75			unassigned	unreached		Runs its object file code not read here	inferred	none		
-0x5c1ef0	10			unassigned			Runs its object file code not read here	inferred	none		
-0x5c1f00	101			unassigned			Runs its object file code that calls 0x5c3930; not read here	inferred	none		
-0x5c1f70	213			unassigned			Runs its object file code that calls 0x5c3ca0, 0x5c3930; not read here	inferred	none		
-0x5c2050	32			unassigned			Runs its object file code that calls 0x5c6940; not read here	inferred	none		
-0x5c2070	273			unassigned			Runs its object file code that calls SErrSetLastError, GxuFontGetOneToOneHeight and 3 more; not read here	inferred	none		font::font_textblock_height_difftest
+0x5c1ef0	10	GxuFontBatchDraw		unassigned	orchestration	void __fastcall (void *batch)	Draws a batch through 0x5c8b70	verified	one	font/api#batches	
+0x5c1f00	101	GxuFontBatchClear		unassigned	orchestration	int __fastcall (void *batch)	Empties a batch	inferred	none	font/api#batches	
+0x5c1f70	213	GxuFontDestroyBatch		unassigned	orchestration	int __fastcall (void *batch)	Returns a batch to the free list	inferred	none	font/api#batches	
+0x5c2050	32	GxuFontGetTextExtent		unassigned	orchestration	void __thiscall (const char *text, float *out)	Measures the width of a text through 0x5c6940	inferred	none	font/measure#text-extent	
+0x5c2070	273	GxuFontGetTextBlockHeight		unassigned	primitive	float __thiscall (const char *text, float size, float width, void *state, uint32_t flags)	Returns the height of a wrapped text	verified	one	font/measure#block-height-and-fit	font::font_textblock_height_difftest
 0x5c2190	42	GxuFontGetMaxCharsWithinWidth	idb	unassigned			Runs its object file code that calls InternalGetMaxCharsWithinWidth; not read here	inferred	none		
-0x5c21c0	339			unassigned			Runs its object file code that calls GxuFontGetOneToOneHeight, __ftol, 0x5c7260; not read here	inferred	none		font::font_height_fit_difftest
-0x5c2320	259			unassigned			Runs its object file code that calls __alloca_probe, InternalGetMaxCharsWithinWidth; not read here	inferred	none		font::font_width_fit_difftest
-0x5c2430	263			unassigned			Runs its object file code that calls GxuFontGetOneToOneHeight, GxuDetermineQuotedCode, 0x5c7260; not read here	inferred	none		font::line_break_enumerate_difftest
-0x5c2540	67	GxuFontGetOneToOneHeight	idb	unassigned			Runs its object file code that calls SErrSetLastError, GxuFontGetPixelSize; not read here	inferred	none		font::one_to_one_height_difftest
-0x5c2590	329			unassigned			Runs its object file code that calls GxuDetermineQuotedCode, SStrPrintf; not read here	inferred	none		font::strip_control_codes_difftest
+0x5c21c0	339	GxuFontGetMaxCharsWithinHeight		unassigned	primitive	int __thiscall (const char *text, float size, float width, float height, float gap, int *broke, uint32_t flags)	Counts the characters that fit a height	verified	one	font/measure#block-height-and-fit	font::font_height_fit_difftest
+0x5c2320	259	GxuFontGetCharsFittingWidth		unassigned	primitive	int __thiscall (const char *text, float size, float width, int count, float *out, uint32_t flags)	Counts the characters from the end that fit a width	verified	one	font/measure#fitting-characters-to-a-width	font::font_width_fit_difftest
+0x5c2430	263	GxuFontEnumerateLines		unassigned	primitive	int __thiscall (const char *text, float size, float width, uint32_t flags, uint32_t *offsets, int count)	Fills the byte offset at which each line starts	verified	one	font/markup#line-starts	font::line_break_enumerate_difftest
+0x5c2540	67	GxuFontGetOneToOneHeight	idb	unassigned	primitive	float __fastcall (void *font)	Returns the font pixel size over the viewport height	verified	one	font/metrics#screen-and-pixel-units	font::one_to_one_height_difftest
+0x5c2590	329	GxuStripControlCodes		unassigned	primitive	int __thiscall (int length, uint32_t mask, char *out, int capacity)	Removes or normalizes markup codes from a text	verified	one	font/markup#stripping	font::strip_control_codes_difftest
 0x5c2700	66			unassigned	unreached		Runs its object file code that calls SStrPrintf; not read here	inferred	none		
-0x5c2750	26			unassigned			Runs its object file code that calls SErrSetLastError, 0x5ccb40; not read here	inferred	none		
-0x5c2770	19			unassigned			Runs its object file code that calls SErrSetLastError, 0x5ccb10; not read here	inferred	none		
+0x5c2750	26	GxuStringSetColor		unassigned	orchestration	void __thiscall (const uint32_t *color)	Sets a string's main colour	verified	one	font/api#string-setters	
+0x5c2770	19	GxuStringSetPosition		unassigned	orchestration	void __thiscall (const float *position)	Sets a string's position	verified	one	font/api#string-setters	
 0x5c2790	3			unassigned	unreached		Runs its object file code not read here	inferred	none		
-0x5c27a0	28			unassigned			Runs its object file code that calls 0x5cd650; not read here	inferred	none		
+0x5c27a0	28	GxuStringSetShadow		unassigned	orchestration	void __thiscall (const float *offset, const uint32_t *color)	Sets a string's shadow colour and offsets	verified	one	font/api#string-setters	
 0x5c27c0	10			unassigned			Runs its object file code not read here	inferred	none		
 0x5c27d0	12			unassigned	unreached		Runs its object file code not read here	inferred	none		
 0x5c27e0	14			unassigned			Runs its object file code that calls 0x5cd420; not read here	inferred	none		
 0x5c27f0	28			unassigned			Runs its object file code that calls 0x5cd4d0; not read here	inferred	none		
-0x5c2810	737	GxuDetermineQuotedCode	idb	unassigned			Runs its object file code that calls sgetu8, _strtol; not read here	inferred	none		font::decode_quoted_code_difftest
-0x5c2b50	380			unassigned			Runs its object file code that calls _atexit, GxCapsWindowSize, __ftol and 1 more; not read here	inferred	none		font::viewport_pixel_dims_difftest
+0x5c2810	737	GxuDetermineQuotedCode	idb	unassigned	primitive	uint32_t __thiscall (uint32_t *length, int unused, uint32_t flags, uint32_t *value)	Reads one markup token and returns its class	verified	one	font/markup#markup-tokens	font::decode_quoted_code_difftest
+0x5c2b50	380	GxuFontUpdateViewport		unassigned	primitive	void __cdecl (void)	Recomputes the viewport pixel size and relays out every font	verified	one	font/metrics#viewport-size	font::viewport_pixel_dims_difftest
 0x5c2cd0	1			unassigned			Runs its object file code not read here	inferred	none		
-0x5c2ce0	1886			unassigned			Runs its object file code that calls 0x5cdf40, OsGetAsyncTimeMs, 0x5c3440 and 17 more; not read here	inferred	none		
-0x5c3440	69			unassigned			Runs its object file code not read here	inferred	none		
-0x5c3490	16			unassigned	unreached		Runs its object file code not read here	inferred	none		
+0x5c2ce0	1886	GxuFontFrame		unassigned	orchestration	void __cdecl (void)	Ages every string and draws the frame-rate bar when the debug flag is set	verified	one	font/api#layout-lifetime	
+0x5c3440	69	FrameRateMean		unassigned	primitive	float __cdecl (void)	Returns the frame rate from the mean of the last 30 frame times	verified	one	font/api#frame-rate-bar	
+0x5c3490	16	GxuFontToggleDebug		unassigned	unreached	void __cdecl (void)	Toggles the debug flag 0xc2b9b0	verified	one	font/overview#unreached-functions	
 0x5c34a0	41			unassigned	unreached		Runs its object file code that calls 0x5caef0; not read here	inferred	none		
 0x5c34d0	60			unassigned			Runs its object file code not read here	inferred	none		
 0x5c3510	34			unassigned			Runs its object file code that calls 0x5c91b0, SMemFree; not read here	inferred	none		
@@ -18442,221 +18442,221 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x5c65c0	45			gxumath	unreached		Runs its object file code not read here	inferred	none		
 0x5c65f0	33			gxumath	unreached		Runs its object file code not read here	inferred	none		
 0x5c6620	33			gxumath	unreached		Runs its object file code not read here	inferred	none		
-0x5c6650	5			gxumath			Runs its object file code not read here	inferred	none		
-0x5c6660	11			gxumath			Runs its object file code not read here	inferred	none		
-0x5c6670	10			unassigned			Runs its object file code that calls 0x5c6680; not read here	inferred	none		
-0x5c6680	34			unassigned			Runs its object file code not read here	inferred	none		
-0x5c66b0	12			unassigned			Runs its object file code that calls _atexit; not read here	inferred	none		
-0x5c66c0	155			unassigned			Runs its object file code not read here	inferred	none		
-0x5c6760	10			unassigned			Runs its object file code that calls 0x5c6770; not read here	inferred	none		
-0x5c6770	34			unassigned			Runs its object file code not read here	inferred	none		
-0x5c67a0	12			unassigned			Runs its object file code that calls _atexit; not read here	inferred	none		
-0x5c67b0	155			unassigned			Runs its object file code not read here	inferred	none		
-0x5c6850	10			unassigned			Runs its object file code that calls 0x5c6860; not read here	inferred	none		
-0x5c6860	34			unassigned			Runs its object file code not read here	inferred	none		
-0x5c6890	12			unassigned			Runs its object file code that calls _atexit; not read here	inferred	none		
-0x5c68a0	155			unassigned			Runs its object file code not read here	inferred	none		
-0x5c6940	523			unassigned			Runs its object file code that calls SErrSetLastError, GxuFontGetOneToOneHeight, 0x5c7010 and 8 more; not read here	inferred	none		font::text_extent_measure_difftest
-0x5c6b70	217	CGxFont::GetCharAdvance	idb	unassigned			Runs its object file code that calls GxuDetermineQuotedCode, CGxFont::ComputeStepFixedWidth and 3 more; not read here	inferred	none		font::char_advance_difftest
-0x5c6c50	725	InternalGetMaxCharsWithinWidth	idb	unassigned			Runs its object file code that calls SErrSetLastError, GxuFontGetOneToOneHeight, 0x5c7010 and 9 more; not read here	inferred	none		font::wrap_max_chars_difftest
-0x5c6f40	19			font			Runs GxuFontUtil.cpp code that calls SMemAlloc; not read here	inferred	none		
-0x5c6f60	23			font			Runs GxuFontUtil.cpp code that calls SMemFree; not read here	inferred	none		
-0x5c6f80	32			font			Runs GxuFontUtil.cpp code that calls SMemReAlloc; not read here	inferred	none		
-0x5c6fa0	99	ScreenToPixelHeight	idb	font			Runs its object file code that calls __ftol; not read here	inferred	none		font::screen_to_pixel_height_difftest
-0x5c7010	99			font			Runs its object file code that calls __ftol; not read here	inferred	none		font::screen_to_pixel_width_difftest
-0x5c7080	34			font			Runs its object file code not read here	inferred	none		font::pixel_to_screen_height_difftest
-0x5c70b0	424			font			Runs its object file code that calls 0x58b060, GxCapsGet, floor and 2 more; not read here	inferred	none		
-0x5c7260	148			font			Runs its object file code that calls 0x5c7300, 0x5c7470; not read here	inferred	none		
-0x5c7300	343			font			Runs its object file code that calls GxuDetermineQuotedCode, CGxFont::NewCodeDesc and 6 more; not read here	inferred	none		font::measure_run_fixedwidth_difftest
-0x5c7470	753			font			Runs its object file code that calls GxuFontGetOneToOneHeight, 0x5c7010, ceil and 10 more; not read here	inferred	none		font::measure_run_proportional_difftest
-0x5c7780	684			font			Runs its object file code that calls _iswspace; not read here	inferred	none		font::line_break_class_ascii_difftest, font::line_break_class_cjk_difftest
-0x5c7d90	5			font			Runs its object file code not read here	inferred	none		
-0x5c7da0	15			font			Runs its object file code not read here	inferred	none		
-0x5c7db0	5			font			Runs its object file code not read here	inferred	none		
-0x5c7dc0	19			font			Runs its object file code not read here	inferred	none		
-0x5c7de0	5			font			Runs its object file code not read here	inferred	none		
-0x5c7df0	11			font			Runs its object file code not read here	inferred	none		
-0x5c7e00	10			font			Runs its object file code that calls 0x5c7e10; not read here	inferred	none		
-0x5c7e10	34			font			Runs its object file code not read here	inferred	none		
-0x5c7e40	12			font			Runs its object file code that calls _atexit; not read here	inferred	none		
-0x5c7e50	169			font			Runs its object file code not read here	inferred	none		
-0x5c7f00	22			font			Runs its object file code not read here	inferred	none		
-0x5c7f20	5			font			Runs its object file code not read here	inferred	none		
-0x5c7f30	32			font			Runs GxuFontMiscClasses.cpp code that calls SMemFree; not read here	inferred	none		
-0x5c7f50	42			font			Runs GxuFontMiscClasses.cpp code that calls 0x5c7f30; not read here	inferred	none		
-0x5c7f80	134			font			Runs GxuFontMiscClasses.cpp code not read here	inferred	none		font::glyph_uv_rect_difftest
-0x5c8010	30			font			Runs GxuFontMiscClasses.cpp code not read here	inferred	none		font::cell_free_after_difftest
-0x5c8030	29			font			Runs GxuFontMiscClasses.cpp code not read here	inferred	none		font::cell_free_before_difftest
-0x5c8050	343			font			Runs GxuFontMiscClasses.cpp code that calls 0x5c8010, 0x5c96e0, 0x5c95b0 and 2 more; not read here	inferred	none		
-0x5c81b0	802			font			Runs GxuFontMiscClasses.cpp code that calls SMemAlloc, 0x5c7f00, 0x5c96a0 and 6 more; not read here	inferred	none		
-0x5c84e0	123			font			Runs GxuFontMiscClasses.cpp code that calls 0x5c8590, SMemFree, 0x5c95a0 and 2 more; not read here	inferred	none		
-0x5c8560	34			font			Runs GxuFontMiscClasses.cpp code not read here	inferred	none		
-0x5c8590	146			font			Runs GxuFontMiscClasses.cpp code that calls 0x5c93c0, 0x5260c0, SMemFree; not read here	inferred	none		
-0x5c8630	152			font			Runs GxuFontMiscClasses.cpp code that calls 0x5c8560, SMemAlloc; not read here	inferred	none		
-0x5c86d0	61			font			Runs its object file code that calls 0x5c8590, SMemFree; not read here	inferred	none		
-0x5c8710	1115			font			Runs its object file code that calls ScreenToPixelHeight, 0x5c7010, floor and 8 more; not read here	inferred	none		font::glyph_quad_emit_difftest
-0x5c8b70	707			font			Runs its object file code that calls GetDeviceProjection, GetDeviceView, 0x589f40 and 7 more; not read here	inferred	none		
-0x5c8e40	251			font			Runs its object file code that calls 0x5c9770, 0x5c9980, 0x5c9b70 and 1 more; not read here	inferred	none		
-0x5c8f40	152			font			Runs its object file code that calls GxBufUnlock, 0x58a010, 0x5c9330 and 4 more; not read here	inferred	none		
-0x5c8fe0	462			font			Runs its object file code that calls 0x5cd6a0, 0x5cfc50, 0x58a140 and 6 more; not read here	inferred	none		
-0x5c91b0	316			font			Runs its object file code that calls 0x5c9700; not read here	inferred	none		
-0x5c92f0	54			font			Runs its object file code that calls 0x58a160, 0x589f80; not read here	inferred	none		
-0x5c9330	76			font			Runs its object file code that calls GxBufLock; not read here	inferred	none		
-0x5c9380	51			font			Runs its object file code that calls 0x58a040, GxBufferRelease; not read here	inferred	none		
-0x5c93c0	23			font			Runs its object file code that calls SMemFree; not read here	inferred	none		
-0x5c93e0	171			font			Runs its object file code not read here	inferred	none		
-0x5c9490	181			font			Runs its object file code not read here	inferred	none		
-0x5c9550	5			font			Runs its object file code not read here	inferred	none		
-0x5c9560	15			font			Runs its object file code not read here	inferred	none		
-0x5c9570	5			font			Runs its object file code not read here	inferred	none		
-0x5c9580	19			font			Runs its object file code not read here	inferred	none		
-0x5c95a0	1			font			Runs its object file code not read here	inferred	none		
-0x5c95b0	234			font			Runs its object file code that calls 0x5c7f20; not read here	inferred	none		
-0x5c96a0	60			font			Runs its object file code not read here	inferred	none		
-0x5c96e0	25			font			Runs its object file code not read here	inferred	none		
-0x5c9700	41			font			Runs its object file code not read here	inferred	none		
-0x5c9730	60			font			Runs its object file code not read here	inferred	none		
-0x5c9770	337			font			Runs its object file code that calls 0x5c9dc0, 0x5c9e00, 0x5c9e20 and 3 more; not read here	inferred	none		
-0x5c98d0	176			font			Runs its object file code that calls SMemFree; not read here	inferred	none		
-0x5c9980	483			font			Runs its object file code that calls 0x5c3c60, 0x5c3c90, 0x5c9c30 and 4 more; not read here	inferred	none		
-0x5c9b70	181			font			Runs its object file code not read here	inferred	none		
-0x5c9c30	77			font			Runs its object file code not read here	inferred	none		
-0x5c9c80	317			font			Runs its object file code that calls 0x5c9e20, 0x5c3930, 0x5c3c30; not read here	inferred	none		
-0x5c9dc0	57			font			Runs its object file code not read here	inferred	none		
-0x5c9e00	31			font			Runs its object file code not read here	inferred	none		
-0x5c9e20	264			font			Runs its object file code that calls 0x5c9c30, 0x5c3930, SMemReAlloc and 3 more; not read here	inferred	none		
-0x5c9f30	5			font			Runs its object file code not read here	inferred	none		
-0x5c9f40	11			font			Runs its object file code not read here	inferred	none		
-0x5c9f50	66			font			Runs its object file code that calls 0x5cdc00; not read here	inferred	none		
-0x5c9fa0	143			font			Runs its object file code that calls sgetu8; not read here	inferred	none		
-0x5ca030	300			font			Runs its object file code that calls 0x5d0370, 0x5caea0, ScreenToPixelHeight and 3 more; not read here	inferred	none		font::font_raster_metrics_difftest
-0x5ca160	105			font			Runs its object file code that calls 0x5d0370, GxuFontGetPixelSize, 0x7ce760 and 1 more; not read here	inferred	none		
-0x5ca1d0	109			font			Runs its object file code that calls SStrPrintf, 0x5ca740, 0x5d0390 and 2 more; not read here	inferred	none		
-0x5ca240	111			font			Runs its object file code that calls 0x5ca2b0; not read here	inferred	none		
-0x5ca2b0	29			font			Runs its object file code not read here	inferred	none		font::glyph_metric_outline_bias_difftest
-0x5ca2d0	467	CGxFont::ComputeStep	idb	font			Runs its object file code that calls 0x5d0370, 0x7ce960, 0x7ce830 and 6 more; not read here	inferred	none		font::compute_step_difftest
-0x5ca4b0	563	CGxFont::ComputeStepFixedWidth	idb	font			Runs its object file code that calls 0x5c96e0, 0x5cc080, 0x5cc290 and 3 more; not read here	inferred	none		font::compute_step_fixedwidth_difftest
-0x5ca6f0	61			font			Runs its object file code that calls 0x5ca760, 0x5ca030, 0x5ccb80; not read here	inferred	none		
-0x5ca730	8			font			Runs its object file code not read here	inferred	none		
-0x5ca740	30			font			Runs its object file code that calls 0x5d0390; not read here	inferred	none		
-0x5ca760	317			font			Runs its object file code that calls GxTexDestroy, 0x5cb0e0, 0x5c96e0 and 6 more; not read here	inferred	none		
-0x5ca8a0	120			font			Runs its object file code not read here	inferred	none		
-0x5ca920	247			font			Runs its object file code that calls 0x5cb8a0, 0x5cbe50, 0x5cb8d0 and 3 more; not read here	inferred	none		
-0x5caa20	424			font			Runs its object file code that calls 0x5ca740, GxTexDestroy, 0x5cb620 and 15 more; not read here	inferred	none		
-0x5cabd0	691	CGxFont::NewCodeDesc	idb	font			Runs its object file code that calls 0x5c7f00, 0x5ca160, 0x5c7f20 and 13 more; not read here	inferred	none		
-0x5cae90	7	GxuFontGetPixelSize	idb	font			Runs its object file code not read here	inferred	none		
-0x5caea0	77			font			Runs its object file code that calls 0x5c7080; not read here	inferred	none		font::min_metric_screen_height_difftest
-0x5caef0	393			font	unreached		Runs its object file code that calls 0x5d0370, SStrPrintf, 0x5cf640 and 1 more; not read here	inferred	none		
-0x5cb080	90			font			Runs its object file code that calls ceil, ScreenToPixelHeight, GxuFontGetPixelSize; not read here	inferred	none		font::glyph_width_scaled_difftest
-0x5cb0e0	135			font			Runs its object file code that calls 0x5c96e0, 0x5c96a0, SMemFree; not read here	inferred	none		
-0x5cb170	105			font			Runs its object file code that calls 0x5c7f20, 0x5c96a0, 0x5cb870 and 1 more; not read here	inferred	none		
-0x5cb1e0	226			font			Runs its object file code that calls SMemAlloc, 0x5c7f00; not read here	inferred	none		
-0x5cb2d0	189			font			Runs its object file code that calls 0x5c96a0, 0x5cb390, SMemFree; not read here	inferred	none		
-0x5cb390	136			font			Runs its object file code not read here	inferred	none		
-0x5cb420	117			font			Runs its object file code that calls 0x5cbe60, SMemFree; not read here	inferred	none		
-0x5cb4a0	191			font			Runs its object file code that calls SMemAlloc; not read here	inferred	none		
-0x5cb560	189			font			Runs its object file code that calls 0x5cb990, 0x5cbcc0, SMemFree; not read here	inferred	none		
-0x5cb620	117			font			Runs its object file code that calls 0x5cb940, 0x5c96a0, SMemFree; not read here	inferred	none		
-0x5cb6a0	190			font			Runs its object file code that calls 0x5c96e0, 0x5c96a0, 0x5cbb30 and 1 more; not read here	inferred	none		
-0x5cb760	190			font			Runs its object file code that calls 0x5cc480, 0x5cb990, 0x5cbdc0 and 1 more; not read here	inferred	none		
-0x5cb820	5			font			Runs its object file code not read here	inferred	none		
-0x5cb830	15			font			Runs its object file code not read here	inferred	none		
-0x5cb840	5			font			Runs its object file code not read here	inferred	none		
-0x5cb850	19			font			Runs its object file code not read here	inferred	none		
-0x5cb870	41			font			Runs its object file code not read here	inferred	none		
-0x5cb8a0	33			font			Runs its object file code not read here	inferred	none		
-0x5cb8d0	108			font			Runs its object file code not read here	inferred	none		
-0x5cb940	77			font			Runs its object file code not read here	inferred	none		
-0x5cb990	60			font			Runs its object file code not read here	inferred	none		
-0x5cb9d0	60			font			Runs its object file code not read here	inferred	none		
-0x5cba10	25			font			Runs its object file code not read here	inferred	none		
-0x5cba30	256			font			Runs its object file code that calls 0x5cb870; not read here	inferred	none		
-0x5cbb30	135			font			Runs its object file code that calls 0x5c96e0, 0x5c96a0, SMemFree; not read here	inferred	none		
-0x5cbbc0	255			font			Runs its object file code that calls 0x5cbe60; not read here	inferred	none		
-0x5cbcc0	136			font			Runs its object file code not read here	inferred	none		
-0x5cbd50	108			font			Runs its object file code not read here	inferred	none		
-0x5cbdc0	135			font			Runs its object file code that calls 0x5cc480, 0x5cb990, SMemFree; not read here	inferred	none		
-0x5cbe50	12			font			Runs its object file code not read here	inferred	none		
-0x5cbe60	41			font			Runs its object file code not read here	inferred	none		
-0x5cbe90	483			font			Runs its object file code that calls 0x5cb8a0, 0x5cbe50, 0x5cb940 and 4 more; not read here	inferred	none		
-0x5cc080	337			font			Runs its object file code that calls 0x5cc980, 0x5cc9c0, 0x5cc9e0 and 3 more; not read here	inferred	none		
-0x5cc1e0	176			font			Runs its object file code that calls SMemFree; not read here	inferred	none		
-0x5cc290	483			font			Runs its object file code that calls 0x5cc4a0, 0x5cc720, 0x5cc590 and 4 more; not read here	inferred	none		
-0x5cc480	25			font			Runs its object file code not read here	inferred	none		
-0x5cc4a0	33			font			Runs its object file code not read here	inferred	none		
-0x5cc4d0	181			font			Runs its object file code not read here	inferred	none		
-0x5cc590	77			font			Runs its object file code not read here	inferred	none		
-0x5cc5e0	316			font			Runs its object file code that calls 0x5cc870, 0x5c96a0, 0x5cb870; not read here	inferred	none		
-0x5cc720	12			font			Runs its object file code not read here	inferred	none		
-0x5cc730	316			font			Runs its object file code that calls 0x5cc9e0, 0x5cb990, 0x5cbe60; not read here	inferred	none		
-0x5cc870	264			font			Runs its object file code that calls 0x5cb940, 0x5c96a0, SMemReAlloc and 3 more; not read here	inferred	none		
-0x5cc980	57			font			Runs its object file code not read here	inferred	none		
-0x5cc9c0	31			font			Runs its object file code not read here	inferred	none		
-0x5cc9e0	264			font			Runs its object file code that calls 0x5cc590, 0x5cb990, SMemReAlloc and 3 more; not read here	inferred	none		
-0x5ccaf0	5			font			Runs its object file code not read here	inferred	none		
-0x5ccb00	11			font			Runs its object file code not read here	inferred	none		
-0x5ccb10	36			font			Runs its object file code that calls 0x5cdf70; not read here	inferred	none		
-0x5ccb40	61			font			Runs its object file code that calls 0x5cdef0; not read here	inferred	none		
-0x5ccb80	82			font			Runs its object file code that calls GxuFontGetOneToOneHeight, 0x5cdef0; not read here	inferred	none		font::resolve_clamp_size_difftest
-0x5ccbe0	1726			font			Runs its object file code that calls 0x5ce1c0, ScreenToPixelHeight, GxuFontGetPixelSize and 19 more; not read here	inferred	none		font::glyph_quad_build_difftest
-0x5cd2c0	1			font			Runs its object file code not read here	inferred	none		
-0x5cd2d0	64			font	unreached		Runs its object file code that calls GxuFontCreateString; not read here	inferred	none		
-0x5cd310	211			font			Runs its object file code that calls 0x5ce2b0; not read here	inferred	none		font::hyperlink_region_rect_difftest
-0x5cd3f0	42			font			Runs its object file code that calls 0x5c9fa0, 0x5cdef0; not read here	inferred	none		
-0x5cd420	64			font			Runs its object file code that calls 0x5cdc20; not read here	inferred	none		
-0x5cd460	48			font			Runs its object file code not read here	inferred	none		
-0x5cd490	51			font			Runs its object file code not read here	inferred	none		
-0x5cd4d0	370			font			Runs its object file code that calls 0x5cdef0, 0x5cd6a0, __ftol and 2 more; not read here	inferred	none		font::selection_highlight_fade_difftest
-0x5cd650	64			font			Runs its object file code that calls 0x5cdef0; not read here	inferred	none		
-0x5cd690	3			font	unreached		Runs its object file code not read here	inferred	none		
-0x5cd6a0	40			font			Runs its object file code that calls 0x5cd3f0, 0x5cdc20; not read here	inferred	none		
-0x5cd6d0	344	CGxString::Initialize	idb	font			Runs GxuFontString.cpp code that calls SStrLen, SMemFree, SMemAlloc and 2 more; not read here	inferred	none		font::cgxstring_size_clamp_difftest
-0x5cd830	273	CGxString::GetNewString	idb	font			Runs GxuFontString.cpp code that calls SMemAlloc, 0x5cda00, 0x5c9700; not read here	inferred	none		
-0x5cd950	151	CGxString::Recycle	idb	font			Runs GxuFontString.cpp code not read here	inferred	none		
-0x5cd9f0	5			font			Runs GxuFontString.cpp code not read here	inferred	none		
-0x5cda00	209			font			Runs GxuFontString.cpp code not read here	inferred	none		
-0x5cdae0	274			font			Runs GxuFontString.cpp code that calls 0x5c84e0, SMemFree, 0x5ce150; not read here	inferred	none		
-0x5cdc00	31			font			Runs its object file code not read here	inferred	none		
-0x5cdc20	713			font			Runs its object file code that calls ScreenToPixelHeight, __ftol, GxuDetermineQuotedCode and 6 more; not read here	inferred	none		font::string_layout_lines_difftest
-0x5cdef0	78			font			Runs its object file code that calls 0x5c84e0; not read here	inferred	none		
-0x5cdf40	36			font			Runs its object file code not read here	inferred	none		
-0x5cdf70	274			font			Runs its object file code that calls __ftol, floor; not read here	inferred	none		font::anchor_justify_snap_difftest
-0x5ce090	45			font			Runs its object file code not read here	inferred	none		
-0x5ce0c0	81			font			Runs its object file code that calls 0x5c8710; not read here	inferred	none		
-0x5ce120	46			font	unreached		Runs its object file code that calls SStrLen, 0x5c2050; not read here	inferred	none		
-0x5ce150	23			font			Runs its object file code that calls SMemFree; not read here	inferred	none		
-0x5ce170	5			font			Runs its object file code not read here	inferred	none		
-0x5ce180	15			font			Runs its object file code not read here	inferred	none		
-0x5ce190	5			font			Runs its object file code not read here	inferred	none		
-0x5ce1a0	19			font			Runs its object file code not read here	inferred	none		
-0x5ce1c0	38			font			Runs its object file code that calls SMemFree; not read here	inferred	none		
-0x5ce1f0	31			font			Runs its object file code not read here	inferred	none		
-0x5ce210	154			font			Runs its object file code that calls SMemReAlloc, SMemAlloc, SMemFree; not read here	inferred	none		
-0x5ce2b0	146			font			Runs its object file code that calls SMemReAlloc, SMemAlloc, SMemFree; not read here	inferred	none		
-0x5ce350	57			font			Runs its object file code not read here	inferred	none		
-0x5ce390	144			font			Runs its object file code that calls SMemReAlloc, SMemAlloc, SMemFree; not read here	inferred	none		
-0x5ce420	5			font			Runs its object file code not read here	inferred	none		
-0x5ce430	11			font			Runs its object file code not read here	inferred	none		
-0x5ce440	1217			font			Runs its object file code that calls __alloca_probe; not read here	inferred	none		font::glyph_blit_outline_difftest
-0x5ce910	286			font			Runs its object file code not read here	inferred	none		font::glyph_blit_mono_difftest
-0x5cea30	2030			font			Runs its object file code that calls __alloca_probe; not read here	inferred	none		font::glyph_blit_aa_outline_difftest
-0x5cf220	237			font			Runs its object file code not read here	inferred	none		font::glyph_blit_argb4444_difftest
-0x5cf310	72			font			Runs its object file code that calls 0x5ce440, 0x5cea30, 0x5ce910 and 1 more; not read here	inferred	none		
-0x5cf360	361			font			Runs its object file code that calls 0x5cb0e0, 0x5cfd00, SMemReAlloc and 4 more; not read here	inferred	none		font::texcache_set_cellsize_difftest
-0x5cf4d0	68			font			Runs its object file code that calls CGxTexFlags::CGxTexFlags, 0x58aa30; not read here	inferred	none		
-0x5cf520	127			font			Runs its object file code that calls 0x5cf5f0; not read here	inferred	none		
-0x5cf5a0	74			font			Runs its object file code that calls 0x5c81b0; not read here	inferred	none		
-0x5cf5f0	65			font			Runs its object file code that calls 0x5cf310; not read here	inferred	none		font::atlas_texel_addr_difftest
-0x5cf640	1494			font	unreached		Runs its object file code that calls GetDeviceView, GetDeviceProjection, 0x58b210 and 26 more; not read here	inferred	none		
-0x5cfc20	1			font	unreached		Runs its object file code not read here	inferred	none		
-0x5cfc30	1			font	unreached		Runs its object file code not read here	inferred	none		
-0x5cfc40	1			font	unreached		Runs its object file code not read here	inferred	none		
-0x5cfc50	43			font			Runs its object file code that calls GxTexUpdateRect; not read here	inferred	none		
-0x5cfc80	5			font			Runs its object file code not read here	inferred	none		
-0x5cfc90	15			font			Runs its object file code not read here	inferred	none		
-0x5cfca0	33			unassigned			Runs its object file code not read here	inferred	none		
-0x5cfcd0	5			unassigned			Runs its object file code not read here	inferred	none		
-0x5cfce0	19			unassigned			Runs its object file code not read here	inferred	none		
+0x5c6650	5	InitFontUtilInfinityThunk		font	orchestration		Jumps to 0x5c6660; a static initializer	verified	one	font/overview#object-files	
+0x5c6660	11	InitFontUtilInfinity		font	orchestration	void __cdecl (void)	Copies +inf into 0xc2b980	verified	one	font/overview#object-files	
+0x5c6670	10	InitFontRegistryThunk		font	orchestration		Calls 0x5c6680 and registers 0x5c66c0 with _atexit; a static initializer	verified	one	font/overview#static-objects	
+0x5c6680	34	InitFontRegistry		font	orchestration	void __cdecl (void)	Makes the font registry 0xc2b974 an empty list	verified	one	font/overview#static-objects	
+0x5c66b0	12	RegisterDestroyFontRegistry		font	orchestration	void __cdecl (void)	Registers 0x5c66c0 with _atexit	inferred	none	font/overview#static-objects	
+0x5c66c0	155	DestroyFontRegistry		font	primitive	void __cdecl (void)	Unlinks the fonts of the registry	inferred	none	font/overview#static-objects	
+0x5c6760	10	InitStringPoolThunk		font	orchestration		Calls 0x5c6770 and registers 0x5c67b0 with _atexit; a static initializer	verified	one	font/overview#static-objects	
+0x5c6770	34	InitStringPool		font	orchestration	void __cdecl (void)	Makes the string pool list 0xc2b988 empty	verified	one	font/overview#static-objects	
+0x5c67a0	12	RegisterDestroyStringPool		font	orchestration	void __cdecl (void)	Registers 0x5c67b0 with _atexit	inferred	none	font/overview#static-objects	
+0x5c67b0	155	DestroyStringPool		font	primitive	void __cdecl (void)	Unlinks the records of the string pool	inferred	none	font/overview#static-objects	
+0x5c6850	10	InitStringListThunk		font	orchestration		Calls 0x5c6860 and registers 0x5c68a0 with _atexit; a static initializer	verified	one	font/overview#static-objects	
+0x5c6860	34	InitStringList		font	orchestration	void __cdecl (void)	Makes the global string list 0xc2b994 empty	verified	one	font/overview#static-objects	
+0x5c6890	12	RegisterDestroyStringList		font	orchestration	void __cdecl (void)	Registers 0x5c68a0 with _atexit	inferred	none	font/overview#static-objects	
+0x5c68a0	155	DestroyStringList		font	primitive	void __cdecl (void)	Unlinks the records of the global string list	inferred	none	font/overview#static-objects	
+0x5c6940	523	MeasureTextExtent		font	primitive	float __thiscall (const char *text, int bytes, float size, uint32_t flags, float extra)	Returns the width of the widest line of a text	verified	one	font/measure#text-extent	font::text_extent_measure_difftest
+0x5c6b70	217	CGxFont::GetCharAdvance	idb	font	primitive	float __thiscall (uint32_t cur, const char *next, float size, uint32_t flags)	Returns a glyph's advance in pixels	verified	one	font/metrics#advance-of-a-glyph	font::char_advance_difftest
+0x5c6c50	725	InternalGetMaxCharsWithinWidth	idb	font	primitive	int __thiscall (const char *text, float size, float width, uint32_t flags, float extra, float *outWidth, int *outBytes, float *cumulative)	Counts the characters that fit one line of a width	verified	one	font/measure#fitting-characters-to-a-width	font::wrap_max_chars_difftest
+0x5c6f40	19			font	orchestration		Runs GxuFontUtil.cpp code that calls SMemAlloc; not read here	inferred	none		
+0x5c6f60	23			font	orchestration		Runs GxuFontUtil.cpp code that calls SMemFree; not read here	inferred	none		
+0x5c6f80	32			font	orchestration		Runs GxuFontUtil.cpp code that calls SMemReAlloc; not read here	inferred	none		
+0x5c6fa0	99	ScreenToPixelHeight	idb	font	primitive	float __cdecl (int raw, float fraction)	Converts a height fraction to rounded pixels	verified	one	font/metrics#screen-and-pixel-units	font::screen_to_pixel_height_difftest
+0x5c7010	99	ScreenToPixelWidth		font	primitive	float __cdecl (int raw, float fraction)	Converts a width fraction to rounded pixels	verified	one	font/metrics#screen-and-pixel-units	font::screen_to_pixel_width_difftest
+0x5c7080	34	PixelToScreenHeight		font	primitive	float __cdecl (int pixels)	Converts pixels to a fraction of the viewport height	verified	one	font/metrics#screen-and-pixel-units	font::pixel_to_screen_height_difftest
+0x5c70b0	424	SnapViewportRect		font	primitive	void __cdecl (void)	Rounds the viewport rectangle to pixels and installs its orthographic matrix	verified	one	font/measure#viewport-rectangle	
+0x5c7260	148	MeasureLineStep		font	orchestration	void __thiscall (const char *text, float size, float box, uint32_t flags, float extra, int *bytes, float *width, const char **next, uint8_t *broke)	Measures one line by the fixed or proportional run	verified	one	font/measure#steps-along-a-line	
+0x5c7300	343	MeasureRunFixed		font	primitive	void __thiscall (const char *text, float size, float extra, int *bytes, float *width, const char **next)	Measures a fixed-width run to the next newline	verified	one	font/measure#steps-along-a-line	font::measure_run_fixedwidth_difftest
+0x5c7470	753	MeasureRunProportional		font	primitive	void __thiscall (const char *text, float size, float box, uint32_t flags, float extra, int *bytes, float *width, const char **next, uint8_t *broke)	Measures how much of a text fits one line with break opportunities	verified	one	font/measure#steps-along-a-line	font::measure_run_proportional_difftest
+0x5c7780	684	LineBreakClass		font	primitive	int __cdecl (uint32_t cur, uint32_t next)	Returns whether a line may break between two characters	verified	one	font/markup#break-opportunities	font::line_break_class_ascii_difftest, font::line_break_class_cjk_difftest
+0x5c7d90	5	InitFontUtilTwoPiThunk		font	orchestration		Jumps to 0x5c7da0; a static initializer	verified	one	font/overview#object-files	
+0x5c7da0	15	InitFontUtilTwoPi		font	primitive	void __cdecl (void)	Stores π + π as a float in 0xc2b9ac	verified	one	font/overview#object-files	
+0x5c7db0	5	InitFontUtilInvTwoPiThunk		font	orchestration		Jumps to 0x5c7dc0; a static initializer	verified	one	font/overview#object-files	
+0x5c7dc0	19	InitFontUtilInvTwoPi		font	primitive	void __cdecl (void)	Stores 1 / 2π as a float in 0xc2b984	verified	one	font/overview#object-files	
+0x5c7de0	5	InitFontMiscInfinityThunk		font	orchestration		Jumps to 0x5c7df0; a static initializer	verified	one	font/overview#object-files	
+0x5c7df0	11	InitFontMiscInfinity		font	orchestration	void __cdecl (void)	Copies +inf into 0xc2b9c0	verified	one	font/overview#object-files	
+0x5c7e00	10	InitMiscListThunk		font	orchestration		Calls 0x5c7e10 and registers 0x5c7e50 with _atexit; a static initializer	verified	one	font/overview#static-objects	
+0x5c7e10	34	InitMiscList		font	orchestration	void __cdecl (void)	Makes the list 0xc2b9b4 empty	verified	one	font/overview#static-objects	
+0x5c7e40	12	RegisterDestroyMiscList		font	orchestration	void __cdecl (void)	Registers 0x5c7e50 with _atexit	inferred	none	font/overview#static-objects	
+0x5c7e50	169	DestroyMiscList		font	primitive	void __cdecl (void)	Unlinks the records of the list 0xc2b9b4	inferred	none	font/overview#static-objects	
+0x5c7f00	22			font	orchestration		Runs its object file code not read here	inferred	none		
+0x5c7f20	5			font	orchestration		Runs its object file code not read here	inferred	none		
+0x5c7f30	32			font	orchestration		Runs GxuFontMiscClasses.cpp code that calls SMemFree; not read here	inferred	none		
+0x5c7f50	42			font	orchestration		Runs GxuFontMiscClasses.cpp code that calls 0x5c7f30; not read here	inferred	none		
+0x5c7f80	134	CharCodeDesc::SetUvRect		font	primitive	void __thiscall (uint32_t a, uint32_t b, uint32_t x0, uint32_t advance)	Sets a glyph's atlas UV rectangle	verified	one	font/glyphs#pages-and-cells	font::glyph_uv_rect_difftest
+0x5c8010	30	AtlasCell::FreeAfter		font	primitive	int __thiscall (void)	Returns the free texels to the right of a cell	verified	one	font/glyphs#pages-and-cells	font::cell_free_after_difftest
+0x5c8030	29	AtlasCell::FreeBefore		font	primitive	int __thiscall (void)	Returns the free texels to the left of a cell	verified	one	font/glyphs#pages-and-cells	font::cell_free_before_difftest
+0x5c8050	343	AtlasRow::ReleaseCell		font	primitive	void __thiscall (void *desc)	Releases the cell of a glyph	inferred	none	font/glyphs#finding-or-making-a-glyph	
+0x5c81b0	802	AtlasRow::AllocateCell		font	primitive	void * __thiscall (void *desc, uint32_t row, uint32_t cellSize)	Finds a free span in a row and gives it to a glyph	inferred	none	font/glyphs#finding-or-making-a-glyph	
+0x5c84e0	123			font	primitive		Runs GxuFontMiscClasses.cpp code that calls 0x5c8590, SMemFree, 0x5c95a0 and 2 more; not read here	inferred	none		
+0x5c8560	34			font	primitive		Runs GxuFontMiscClasses.cpp code not read here	inferred	none		
+0x5c8590	146			font	primitive		Runs GxuFontMiscClasses.cpp code that calls 0x5c93c0, 0x5260c0, SMemFree; not read here	inferred	none		
+0x5c8630	152			font	primitive		Runs GxuFontMiscClasses.cpp code that calls 0x5c8560, SMemAlloc; not read here	inferred	none		
+0x5c86d0	61			font	orchestration		Runs its object file code that calls 0x5c8590, SMemFree; not read here	inferred	none		
+0x5c8710	1115	CGxStringBatch::EmitGlyphQuads		font	primitive	void __thiscall (const void *quads, const float *snap, const float *pen, const uint32_t *color)	Translates laid-out quads by the pen into the vertex buffer	verified	one	font/glyphs#emitting-quads	font::glyph_quad_emit_difftest
+0x5c8b70	707	CGxStringBatch::Draw		font	orchestration	void __thiscall (void)	Draws every run of the batch under world or pixel matrices	verified	one	font/api#drawing-a-batch	
+0x5c8e40	251	CGxStringBatch::Add		font	primitive	void __thiscall (void *string)	Adds a string to the batch's run of its font	verified	one	font/api#batches	
+0x5c8f40	152	FlushQuads		font	orchestration	void * __thiscall (uint32_t vertices)	Draws the quads of a full vertex buffer and locks it again	verified	one	font/api#drawing-a-batch	
+0x5c8fe0	462	CGxStringBatch::DrawRun		font	orchestration	void __thiscall (void)	Lays out, uploads and draws one run page by page	verified	one	font/api#drawing-a-batch	
+0x5c91b0	316			font	primitive		Runs its object file code that calls 0x5c9700; not read here	inferred	none		
+0x5c92f0	54	CreateQuadIndexBuffer		font	orchestration	void __cdecl (void)	Creates the shared quad index buffer	verified	one	font/api#drawing-a-batch	
+0x5c9330	76	FillQuadIndices		font	primitive	void __cdecl (void)	Fills the index buffer with six indices for each of 512 quads	verified	one	font/api#drawing-a-batch	
+0x5c9380	51	DestroyQuadIndexBuffer		font	orchestration	void __cdecl (void)	Releases the quad index buffer	verified	one	font/api#drawing-a-batch	
+0x5c93c0	23			font	orchestration		Runs its object file code that calls SMemFree; not read here	inferred	none		
+0x5c93e0	171			font	primitive		Runs its object file code not read here	inferred	none		
+0x5c9490	181	ElementTable::Insert		font	primitive		Inserts a record in a hash table	inferred	none	font/glyphs#finding-or-making-a-glyph	
+0x5c9550	5	InitFontMiscTwoPiThunk		font	orchestration		Jumps to 0x5c9560; a static initializer	verified	one	font/overview#object-files	
+0x5c9560	15	InitFontMiscTwoPi		font	primitive	void __cdecl (void)	Stores π + π as a float in 0xc2b9cc	verified	one	font/overview#object-files	
+0x5c9570	5	InitFontMiscInvTwoPiThunk		font	orchestration		Jumps to 0x5c9580; a static initializer	verified	one	font/overview#object-files	
+0x5c9580	19	InitFontMiscInvTwoPi		font	primitive	void __cdecl (void)	Stores 1 / 2π as a float in 0xc2b9c4	verified	one	font/overview#object-files	
+0x5c95a0	1			font	orchestration		Runs its object file code not read here	inferred	none		
+0x5c95b0	234			font	primitive		Runs its object file code that calls 0x5c7f20; not read here	inferred	none		
+0x5c96a0	60			font	primitive		Runs its object file code not read here	inferred	none		
+0x5c96e0	25			font	primitive		Runs its object file code not read here	inferred	none		
+0x5c9700	41			font	primitive		Runs its object file code not read here	inferred	none		
+0x5c9730	60			font	primitive		Runs its object file code not read here	inferred	none		
+0x5c9770	337			font	primitive		Runs its object file code that calls 0x5c9dc0, 0x5c9e00, 0x5c9e20 and 3 more; not read here	inferred	none		
+0x5c98d0	176			font	primitive		Runs its object file code that calls SMemFree; not read here	inferred	none		
+0x5c9980	483			font	primitive		Runs its object file code that calls 0x5c3c60, 0x5c3c90, 0x5c9c30 and 4 more; not read here	inferred	none		
+0x5c9b70	181			font	primitive		Runs its object file code not read here	inferred	none		
+0x5c9c30	77			font	primitive		Runs its object file code not read here	inferred	none		
+0x5c9c80	317			font	primitive		Runs its object file code that calls 0x5c9e20, 0x5c3930, 0x5c3c30; not read here	inferred	none		
+0x5c9dc0	57			font	primitive		Runs its object file code not read here	inferred	none		
+0x5c9e00	31			font	primitive		Runs its object file code not read here	inferred	none		
+0x5c9e20	264			font	primitive		Runs its object file code that calls 0x5c9c30, 0x5c3930, SMemReAlloc and 3 more; not read here	inferred	none		
+0x5c9f30	5	InitFontClassInfinityThunk		font	orchestration		Jumps to 0x5c9f40; a static initializer	verified	one	font/overview#object-files	
+0x5c9f40	11	InitFontClassInfinity		font	orchestration	void __cdecl (void)	Copies +inf into 0xc2b9e0	verified	one	font/overview#object-files	
+0x5c9f50	66			font	orchestration		Runs its object file code that calls 0x5cdc00; not read here	inferred	none		
+0x5c9fa0	143	CGxFont::HasGlyphs		font	primitive	int __thiscall (const char *text)	Returns whether every character of a text is in the glyph hash	verified	one	font/glyphs#finding-or-making-a-glyph	
+0x5ca030	300	CGxFont::ComputeRasterMetrics		font	primitive	int __fastcall (void *font)	Derives the pixel size, cell size and advance ratio of a font	verified	one	font/metrics#per-font-metrics	font::font_raster_metrics_difftest
+0x5ca160	105	CGxFont::RasterizeGlyph		font	orchestration	int __thiscall (void *desc, uint32_t code)	Rasterizes a glyph through the face into a descriptor	verified	one	font/glyphs#finding-or-making-a-glyph	
+0x5ca1d0	109	CGxFont::Init		font	orchestration	int __thiscall (const char *name, uint32_t flags, float size)	Stores name, flags and size, loads the face and computes the metrics	verified	one	font/api#creating-a-font	
+0x5ca240	111	CGxFont::GetGlyphStepBase		font	primitive	double __thiscall (uint32_t code)	Returns the step base of a cached glyph, or 0.0	verified	one	font/metrics#glyph-width-and-step-base	
+0x5ca2b0	29	GlyphStepBase		font	primitive	double __thiscall (void *desc)	Returns the glyph step metric, plus 1.0 for a thick outline	verified	one	font/metrics#glyph-width-and-step-base	font::glyph_metric_outline_bias_difftest
+0x5ca2d0	467	CGxFont::ComputeStep	idb	font	primitive		Returns the proportional step from one glyph to the next	verified	one	font/metrics#step-between-two-glyphs	font::compute_step_difftest
+0x5ca4b0	563	CGxFont::ComputeStepFixedWidth	idb	font	primitive		Returns the fixed-width step that centres a glyph in its cell	verified	one	font/metrics#step-between-two-glyphs	font::compute_step_fixedwidth_difftest
+0x5ca6f0	61	CGxFont::Relayout		font	orchestration	void __fastcall (void *font)	Empties the caches, recomputes the metrics and resolves every string size	verified	one	font/metrics#per-font-metrics	
+0x5ca730	8	CGxFont::FaceQuery		font	orchestration	int __fastcall (void *font)	Passes the face to 0x5d03c0	inferred	none	font/api#creating-a-font	
+0x5ca740	30	CGxFont::ResetFace		font	orchestration	void __fastcall (void *font)	Frees the face and empties the caches	verified	one	font/api#creating-a-font	
+0x5ca760	317	CGxFont::FlushCaches		font	primitive	void __fastcall (void *font)	Releases the atlas pages and drains the glyph and kerning caches	verified	one	font/api#destroying-a-font	
+0x5ca8a0	120	CharCodeDesc::Unlink		font	primitive	void __fastcall (void *desc)	Unlinks a glyph from its two lists	verified	one	font/api#destroying-a-font	
+0x5ca920	247			font	primitive		Runs its object file code that calls 0x5cb8a0, 0x5cbe50, 0x5cb8d0 and 3 more; not read here	inferred	none		
+0x5caa20	424			font	primitive		Runs its object file code that calls 0x5ca740, GxTexDestroy, 0x5cb620 and 15 more; not read here	inferred	none		
+0x5cabd0	691	CGxFont::NewCodeDesc	idb	font	primitive	void * __thiscall (uint32_t code)	Returns the cached glyph of a code, making and placing it when missing	verified	one	font/glyphs#finding-or-making-a-glyph	
+0x5cae90	7	GxuFontGetPixelSize	idb	font	primitive	uint32_t __fastcall (void *font)	Returns the font's rendered pixel size	verified	one	font/api#font-object	
+0x5caea0	77	MinMetricScreenHeight		font	primitive	float __fastcall (void *face, float value)	Returns the larger of a value and the face's smallest metric over the viewport height	verified	one	font/metrics#per-font-metrics	font::min_metric_screen_height_difftest
+0x5caef0	393	CGxFont::DumpAtlas		font	unreached	void __thiscall (void)	Dumps the font's atlas pages through 0x5cf640	inferred	none	font/overview#unreached-functions	
+0x5cb080	90	GlyphWidth		font	primitive	double __thiscall (void *desc, int mode, float size)	Returns a glyph's width, rounded up or scaled by the render size	verified	one	font/metrics#glyph-width-and-step-base	font::glyph_width_scaled_difftest
+0x5cb0e0	135			font	primitive		Runs its object file code that calls 0x5c96e0, 0x5c96a0, SMemFree; not read here	inferred	none		
+0x5cb170	105			font	orchestration		Runs its object file code that calls 0x5c7f20, 0x5c96a0, 0x5cb870 and 1 more; not read here	inferred	none		
+0x5cb1e0	226			font	primitive		Runs its object file code that calls SMemAlloc, 0x5c7f00; not read here	inferred	none		
+0x5cb2d0	189			font	primitive		Runs its object file code that calls 0x5c96a0, 0x5cb390, SMemFree; not read here	inferred	none		
+0x5cb390	136			font	primitive		Runs its object file code not read here	inferred	none		
+0x5cb420	117			font	orchestration		Runs its object file code that calls 0x5cbe60, SMemFree; not read here	inferred	none		
+0x5cb4a0	191			font	primitive		Runs its object file code that calls SMemAlloc; not read here	inferred	none		
+0x5cb560	189			font	primitive		Runs its object file code that calls 0x5cb990, 0x5cbcc0, SMemFree; not read here	inferred	none		
+0x5cb620	117			font	primitive		Runs its object file code that calls 0x5cb940, 0x5c96a0, SMemFree; not read here	inferred	none		
+0x5cb6a0	190			font	primitive		Runs its object file code that calls 0x5c96e0, 0x5c96a0, 0x5cbb30 and 1 more; not read here	inferred	none		
+0x5cb760	190			font	primitive		Runs its object file code that calls 0x5cc480, 0x5cb990, 0x5cbdc0 and 1 more; not read here	inferred	none		
+0x5cb820	5	InitFontClassTwoPiThunk		font	orchestration		Jumps to 0x5cb830; a static initializer	verified	one	font/overview#object-files	
+0x5cb830	15	InitFontClassTwoPi		font	primitive	void __cdecl (void)	Stores π + π as a float in 0xc2b9e8	verified	one	font/overview#object-files	
+0x5cb840	5	InitFontClassInvTwoPiThunk		font	orchestration		Jumps to 0x5cb850; a static initializer	verified	one	font/overview#object-files	
+0x5cb850	19	InitFontClassInvTwoPi		font	primitive	void __cdecl (void)	Stores 1 / 2π as a float in 0xc2b9e4	verified	one	font/overview#object-files	
+0x5cb870	41			font	primitive		Runs its object file code not read here	inferred	none		
+0x5cb8a0	33			font	primitive		Runs its object file code not read here	inferred	none		
+0x5cb8d0	108			font	primitive		Runs its object file code not read here	inferred	none		
+0x5cb940	77			font	primitive		Runs its object file code not read here	inferred	none		
+0x5cb990	60			font	primitive		Runs its object file code not read here	inferred	none		
+0x5cb9d0	60			font	primitive		Runs its object file code not read here	inferred	none		
+0x5cba10	25			font	primitive		Runs its object file code not read here	inferred	none		
+0x5cba30	256			font	primitive		Runs its object file code that calls 0x5cb870; not read here	inferred	none		
+0x5cbb30	135			font	primitive		Runs its object file code that calls 0x5c96e0, 0x5c96a0, SMemFree; not read here	inferred	none		
+0x5cbbc0	255			font	primitive		Runs its object file code that calls 0x5cbe60; not read here	inferred	none		
+0x5cbcc0	136			font	primitive		Runs its object file code not read here	inferred	none		
+0x5cbd50	108			font	primitive		Runs its object file code not read here	inferred	none		
+0x5cbdc0	135			font	primitive		Runs its object file code that calls 0x5cc480, 0x5cb990, SMemFree; not read here	inferred	none		
+0x5cbe50	12			font	primitive		Runs its object file code not read here	inferred	none		
+0x5cbe60	41			font	primitive		Runs its object file code not read here	inferred	none		
+0x5cbe90	483			font	primitive		Runs its object file code that calls 0x5cb8a0, 0x5cbe50, 0x5cb940 and 4 more; not read here	inferred	none		
+0x5cc080	337			font	primitive		Runs its object file code that calls 0x5cc980, 0x5cc9c0, 0x5cc9e0 and 3 more; not read here	inferred	none		
+0x5cc1e0	176			font	primitive		Runs its object file code that calls SMemFree; not read here	inferred	none		
+0x5cc290	483			font	primitive		Runs its object file code that calls 0x5cc4a0, 0x5cc720, 0x5cc590 and 4 more; not read here	inferred	none		
+0x5cc480	25			font	primitive		Runs its object file code not read here	inferred	none		
+0x5cc4a0	33			font	primitive		Runs its object file code not read here	inferred	none		
+0x5cc4d0	181			font	primitive		Runs its object file code not read here	inferred	none		
+0x5cc590	77			font	primitive		Runs its object file code not read here	inferred	none		
+0x5cc5e0	316			font	primitive		Runs its object file code that calls 0x5cc870, 0x5c96a0, 0x5cb870; not read here	inferred	none		
+0x5cc720	12			font	primitive		Runs its object file code not read here	inferred	none		
+0x5cc730	316			font	primitive		Runs its object file code that calls 0x5cc9e0, 0x5cb990, 0x5cbe60; not read here	inferred	none		
+0x5cc870	264			font	primitive		Runs its object file code that calls 0x5cb940, 0x5c96a0, SMemReAlloc and 3 more; not read here	inferred	none		
+0x5cc980	57			font	primitive		Runs its object file code not read here	inferred	none		
+0x5cc9c0	31			font	primitive		Runs its object file code not read here	inferred	none		
+0x5cc9e0	264			font	primitive		Runs its object file code that calls 0x5cc590, 0x5cb990, SMemReAlloc and 3 more; not read here	inferred	none		
+0x5ccaf0	5	InitFontStringInfinityThunk		font	orchestration		Jumps to 0x5ccb00; a static initializer	verified	one	font/overview#object-files	
+0x5ccb00	11	InitFontStringInfinity		font	orchestration	void __cdecl (void)	Copies +inf into 0xc2b9ec	verified	one	font/overview#object-files	
+0x5ccb10	36	CGxString::SetPosition		font	orchestration	void __thiscall (const float *position)	Stores the position and recomputes the anchor	verified	one	font/api#string-setters	
+0x5ccb40	61	CGxString::SetColor		font	orchestration	void __thiscall (const uint32_t *color)	Stores the main colour and limits the shadow alpha to it	verified	one	font/api#string-setters	
+0x5ccb80	82	CGxString::ResolveClampSize		font	primitive	void __fastcall (void *string)	Resolves the size and clamps it to two device pixels	verified	one	font/string#setting-the-text-and-size	font::resolve_clamp_size_difftest
+0x5ccbe0	1726	CGxString::BuildGlyphQuad		font	primitive		Writes the four vertices of one glyph's quad	verified	one	font/string#one-glyph-quad	font::glyph_quad_build_difftest
+0x5cd2c0	1			font	orchestration		Runs its object file code not read here	inferred	none		
+0x5cd2d0	64	CGxString::Clone		font	unreached	void * __fastcall (void *string)	Creates a string with the same parameters	verified	one	font/overview#unreached-functions	
+0x5cd310	211	CGxString::AddHyperlinkRegion		font	primitive		Normalizes a hyperlink rectangle and appends it to the region array	verified	one	font/string#hyperlink-regions-and-selection	font::hyperlink_region_rect_difftest
+0x5cd3f0	42	CGxString::CheckGlyphsCached		font	orchestration	void __fastcall (void *string)	Drops the layout when a glyph of the text is not cached	verified	one	font/string#hyperlink-regions-and-selection	
+0x5cd420	64	CGxString::GetQuadCount		font	orchestration	int __thiscall (int *out)	Lays the string out and returns its count	verified	one	font/string#hyperlink-regions-and-selection	
+0x5cd460	48	CGxString::SetCellAlpha		font	orchestration	void __thiscall (const uint32_t *cell, uint8_t alpha)	Sets the alpha byte of one cell of the line buffers	verified	one	font/string#hyperlink-regions-and-selection	
+0x5cd490	51	CGxString::GetCellAlpha		font	orchestration	uint8_t __thiscall (const uint32_t *cell)	Returns the alpha byte of one cell of the line buffers	verified	one	font/string#hyperlink-regions-and-selection	
+0x5cd4d0	370	CGxString::FillSelection		font	primitive		Fills a range of cells with a fading alpha	verified	one	font/string#hyperlink-regions-and-selection	font::selection_highlight_fade_difftest
+0x5cd650	64	CGxString::SetShadow		font	primitive	void __thiscall (const float *offset, const uint32_t *color)	Stores the shadow colour and offsets and turns the shadow on	verified	one	font/api#string-setters	
+0x5cd690	3	CGxString::NoOp		font	unreached	void __thiscall (uint32_t a, uint32_t b)	Returns at once	inferred	none	font/overview#unreached-functions	
+0x5cd6a0	40	CGxString::Layout		font	orchestration	int __fastcall (void *string)	Lays the string out and resets its age; returns whether it has a layout	verified	one	font/api#layout-lifetime	
+0x5cd6d0	344	CGxString::Initialize	idb	font	primitive		Fills a new string from its text, size, box and justification	verified	one	font/string#setting-the-text-and-size	font::cgxstring_size_clamp_difftest
+0x5cd830	273	CGxString::GetNewString	idb	font	primitive	void * __fastcall (int link)	Takes a string record from the pool or allocates one	verified	one	font/api#string-pool	
+0x5cd950	151	CGxString::Recycle	idb	font	primitive	void __fastcall (void *string)	Unlinks a string and returns it to the pool	verified	one	font/api#destroying-a-string	
+0x5cd9f0	5	CGxString::ClearShadowFlag		font	primitive	void __fastcall (void *string)	Clears bit 0 of the string flags	inferred	none	font/string#string-object	
+0x5cda00	209			font	orchestration		Runs GxuFontString.cpp code not read here	inferred	none		
+0x5cdae0	274			font	primitive		Runs GxuFontString.cpp code that calls 0x5c84e0, SMemFree, 0x5ce150; not read here	inferred	none		
+0x5cdc00	31			font	primitive		Runs its object file code not read here	inferred	none		
+0x5cdc20	713	CGxString::LayoutLines		font	primitive	void __fastcall (void *string)	Lays out a string line by line into glyph quads	verified	one	font/string#laying-out-lines	font::string_layout_lines_difftest
+0x5cdef0	78	CGxString::Invalidate		font	primitive	void __fastcall (void *string)	Drops a string's layout and its line buffers	verified	one	font/api#layout-lifetime	
+0x5cdf40	36	CGxString::Age		font	orchestration	void __fastcall (void *string)	Ages a laid-out string and drops its layout after 30 frames	verified	one	font/api#layout-lifetime	
+0x5cdf70	274	CGxString::ComputeAnchor		font	primitive	void __fastcall (void *string)	Turns the position into the pixel-snapped screen anchor	verified	one	font/string#anchor-and-justification	font::anchor_justify_snap_difftest
+0x5ce090	45	CGxString::GetLineCount		font	primitive	int __thiscall (int line)	Returns the count of a line buffer, doubled when the shadow flag is set	verified	one	font/glyphs#emitting-quads	
+0x5ce0c0	81	CGxString::EmitLine		font	orchestration	void __thiscall (void *out, int line, int start, int count)	Passes a line buffer to the quad emitter with the string's colours and anchor	verified	one	font/glyphs#emitting-quads	
+0x5ce120	46	CGxString::DumpText		font	unreached	void __thiscall (void)	Measures a text through 0x5c2050	inferred	none	font/overview#unreached-functions	
+0x5ce150	23			font	orchestration		Runs its object file code that calls SMemFree; not read here	inferred	none		
+0x5ce170	5	InitFontStringTwoPiThunk		font	orchestration		Jumps to 0x5ce180; a static initializer	verified	one	font/overview#object-files	
+0x5ce180	15	InitFontStringTwoPi		font	primitive	void __cdecl (void)	Stores π + π as a float in 0xc2ba08	verified	one	font/overview#object-files	
+0x5ce190	5	InitFontStringInvTwoPiThunk		font	orchestration		Jumps to 0x5ce1a0; a static initializer	verified	one	font/overview#object-files	
+0x5ce1a0	19	InitFontStringInvTwoPi		font	primitive	void __cdecl (void)	Stores 1 / 2π as a float in 0xc2b9f4	verified	one	font/overview#object-files	
+0x5ce1c0	38			font	orchestration		Runs its object file code that calls SMemFree; not read here	inferred	none		
+0x5ce1f0	31			font	primitive		Runs its object file code not read here	inferred	none		
+0x5ce210	154			font	primitive		Runs its object file code that calls SMemReAlloc, SMemAlloc, SMemFree; not read here	inferred	none		
+0x5ce2b0	146			font	primitive		Runs its object file code that calls SMemReAlloc, SMemAlloc, SMemFree; not read here	inferred	none		
+0x5ce350	57			font	primitive		Runs its object file code not read here	inferred	none		
+0x5ce390	144			font	primitive		Runs its object file code that calls SMemReAlloc, SMemAlloc, SMemFree; not read here	inferred	none		
+0x5ce420	5	InitFontRasterInfinityThunk		font	orchestration		Jumps to 0x5ce430; a static initializer	verified	one	font/overview#object-files	
+0x5ce430	11	InitFontRasterInfinity		font	orchestration	void __cdecl (void)	Copies +inf into 0xc2ba40	verified	one	font/overview#object-files	
+0x5ce440	1217	GlyphBlitOutline		font	primitive	void __thiscall (void *dst, const void *src)	Bakes a 1-bit glyph with an outline into an atlas cell	verified	one	font/glyphs#outlined-bakes	font::glyph_blit_outline_difftest
+0x5ce910	286	GlyphBlitMono		font	primitive	void __thiscall (void *dst, const void *src)	Bakes a 1-bit glyph into an atlas cell	verified	one	font/glyphs#plain-and-monochrome-bakes	font::glyph_blit_mono_difftest
+0x5cea30	2030	GlyphBlitAaOutline		font	primitive	void __thiscall (void *dst, const void *src)	Bakes an antialiased glyph with an outline into an atlas cell	verified	one	font/glyphs#outlined-bakes	font::glyph_blit_aa_outline_difftest
+0x5cf220	237	GlyphBlitArgb4444		font	primitive	void __thiscall (void *dst, const void *src)	Bakes an 8-bit coverage glyph into an atlas cell	verified	one	font/glyphs#plain-and-monochrome-bakes	font::glyph_blit_argb4444_difftest
+0x5cf310	72	BakeGlyph		font	orchestration	void __thiscall (void *dst, const void *src)	Bakes a glyph into its cell by the font flags	verified	one	font/glyphs#baking-a-glyph	
+0x5cf360	361	AtlasPage::SetCellSize		font	primitive	void __thiscall (void *font, uint32_t cellSize)	Sets the number of cell rows of a page to 256 over the cell size	verified	one	font/glyphs#pages-and-cells	font::texcache_set_cellsize_difftest
+0x5cf4d0	68	AtlasPage::CreateTexture		font	orchestration	void __thiscall (uint32_t flag)	Creates a page texture with a data callback	verified	one	font/glyphs#page-texture	
+0x5cf520	127	AtlasPage::TextureCallback		font	primitive		Reports the staging buffer and its pitch for the page texture	verified	one	font/glyphs#page-texture	
+0x5cf5a0	74	AtlasPage::PlaceGlyph		font	primitive	void * __thiscall (void *desc)	Finds a free span for a glyph in the rows of a page	verified	one	font/glyphs#finding-or-making-a-glyph	
+0x5cf5f0	65	AtlasTexelAddress		font	primitive	void * __thiscall (void *desc)	Returns the staging buffer address of a glyph's cell	verified	one	font/glyphs#pages-and-cells	font::atlas_texel_addr_difftest
+0x5cf640	1494	AtlasPage::Dump		font	unreached	void __thiscall (void)	Draws a page's cells to a target and saves it as a TGA file	inferred	none	font/overview#unreached-functions	
+0x5cfc20	1	DestroyDumpStatic1		font	unreached	void __cdecl (void)	Returns at once; the exit destructor of a static of 0x5cf640	verified	one	font/overview#unreached-functions	
+0x5cfc30	1	DestroyDumpStatic2		font	unreached	void __cdecl (void)	Returns at once; the exit destructor of a static of 0x5cf640	verified	one	font/overview#unreached-functions	
+0x5cfc40	1	DestroyDumpStatic3		font	unreached	void __cdecl (void)	Returns at once; the exit destructor of a static of 0x5cf640	verified	one	font/overview#unreached-functions	
+0x5cfc50	43	AtlasPage::Upload		font	orchestration	void __fastcall (void *page)	Uploads a dirty atlas page to its texture and clears the dirty byte	verified	one	font/api#drawing-a-batch	
+0x5cfc80	5	InitFontRasterTwoPiThunk		font	orchestration		Jumps to 0x5cfc90; a static initializer	verified	one	font/overview#object-files	
+0x5cfc90	15	InitFontRasterTwoPi		font	primitive	void __cdecl (void)	Stores π + π as a float in 0xc4ba70	verified	one	font/overview#object-files	
+0x5cfca0	33	AtlasRow::InitList		font	primitive	void __fastcall (void *row)	Empties the cell list at +4 of a page row and stores the link offset 0x18 at +0	verified	one	font/glyphs#pages-and-cells	
+0x5cfcd0	5	InitFontRasterInvTwoPiThunk		font	orchestration		Jumps to 0x5cfce0; a static initializer	verified	one	font/overview#object-files	
+0x5cfce0	19	InitFontRasterInvTwoPi		font	primitive	void __cdecl (void)	Stores 1 / 2π as a float in 0xc4ba48	verified	one	font/overview#object-files	
 0x5cfd00	177			unassigned			Runs its object file code that calls SMemFree; not read here	inferred	none		
 0x5cfdc0	46			unassigned			Runs its object file code not read here	inferred	none		
 0x5cfdf0	5			unassigned			Runs its object file code not read here	inferred	none		
@@ -28208,114 +28208,114 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x6c62d0	194	FormatCoinIconPath		unassigned		void __fastcall (int32_t amount, char *dest, uint32_t size)	Formats the coin icon path an amount shows	verified	one	ui/cursormoney#coin-icons	
 0x6c63a0	41	LootInitialize	idb	unassigned			Runs its object file code not read here	inferred	none		
 0x6c63d0	8	LootDestroy	idb	unassigned			Runs its object file code not read here	inferred	none		
-0x6c63e0	5			unassigned			Runs its object file code not read here	inferred	none		
-0x6c63f0	11			unassigned			Runs its object file code not read here	inferred	none		
-0x6c6400	10			unassigned			Runs its object file code that calls 0x6c6410; not read here	inferred	none		
-0x6c6410	18			unassigned			Runs its object file code that calls InitBlockPool; not read here	inferred	none		
-0x6c6430	12			unassigned			Runs its object file code that calls _atexit; not read here	inferred	none		
-0x6c6440	10			unassigned			Runs its object file code not read here	inferred	none		
-0x6c6450	10			unassigned			Runs its object file code that calls 0x6c6460; not read here	inferred	none		
-0x6c6460	18			unassigned			Runs its object file code that calls InitBlockPool; not read here	inferred	none		
-0x6c6480	12			unassigned			Runs its object file code that calls _atexit; not read here	inferred	none		
-0x6c6490	10			unassigned			Runs its object file code not read here	inferred	none		
-0x6c64a0	33			unassigned			Runs its object file code not read here	inferred	none		
-0x6c64d0	97			unassigned			Runs its object file code not read here	inferred	none		
-0x6c6540	29			unassigned			Runs its object file code not read here	inferred	none		
-0x6c6560	418			unassigned			Runs its object file code that calls 0x6c64a0, __ftol, 0x6c6540 and 8 more; not read here	inferred	none		playername::pn_swing_step_count
-0x6c6710	52			unassigned			Runs its object file code that calls CM2Model::SetDrawCallback, HandleClose2, CDataAllocator::PutData; not read here	inferred	none		
-0x6c6750	152			unassigned			Runs its object file code that calls GetBlockPoolData, CM2Model::SetDrawCallback, OsGetAsyncTimeMs; not read here	inferred	none		
-0x6c67f0	236			unassigned			Runs its object file code that calls CM2Model::HasEvent, 0x589f40, GxRsSet and 6 more; not read here	inferred	none		
-0x6c68e0	1			unassigned			Runs its object file code not read here	inferred	none		
-0x6c68f0	39			unassigned			Runs its object file code that calls FreeBlockPoolBlocks; not read here	inferred	none		
-0x6c6920	68			unassigned			Runs its object file code that calls GetBlockPoolData, CM2Model::AddRef; not read here	inferred	none		
-0x6c6970	36			unassigned			Runs its object file code that calls 0x6c6710, CDataAllocator::PutData; not read here	inferred	none		
-0x6c69a0	32			unassigned	unreached		Runs its object file code that calls CDataAllocator::PutData; not read here	inferred	none		
-0x6c69c0	25			unassigned			Runs its object file code that calls 0x6c6750; not read here	inferred	none		
-0x6c69e0	5			unassigned			Runs its object file code not read here	inferred	none		
-0x6c69f0	11			unassigned			Runs its object file code not read here	inferred	none		
-0x6c6a00	10			unassigned			Runs its object file code that calls 0x6c6a10; not read here	inferred	none		
-0x6c6a10	121			unassigned			Runs its object file code not read here	inferred	none		
-0x6c6a90	12			unassigned			Runs its object file code that calls _atexit; not read here	inferred	none		
-0x6c6aa0	1			unassigned			Runs its object file code not read here	inferred	none		
-0x6c6ab0	10			unassigned			Runs its object file code that calls 0x6c6ac0; not read here	inferred	none		
-0x6c6ac0	81			unassigned			Runs its object file code not read here	inferred	none		
-0x6c6b20	12			unassigned			Runs its object file code that calls _atexit; not read here	inferred	none		
-0x6c6b30	1			unassigned			Runs its object file code not read here	inferred	none		
-0x6c6b40	10			unassigned			Runs its object file code that calls 0x6c6b50; not read here	inferred	none		
-0x6c6b50	34			unassigned			Runs its object file code not read here	inferred	none		
-0x6c6b80	12			unassigned			Runs its object file code that calls _atexit; not read here	inferred	none		
-0x6c6b90	165			unassigned			Runs its object file code not read here	inferred	none		
-0x6c6c40	10			unassigned			Runs its object file code that calls 0x6c6c50; not read here	inferred	none		
-0x6c6c50	18			unassigned			Runs its object file code that calls InitBlockPool; not read here	inferred	none		
-0x6c6c70	12			unassigned			Runs its object file code that calls _atexit; not read here	inferred	none		
-0x6c6c80	10			unassigned			Runs its object file code not read here	inferred	none		
-0x6c6c90	55			unassigned			Runs its object file code not read here	inferred	none		
-0x6c6cd0	109			unassigned			Runs its object file code that calls GxuFontDestroyString, 0x6c86a0; not read here	inferred	none		
-0x6c6d40	183			playername			Runs PlayerName.cpp code that calls ClntObjMgrObjectPtr, CM2Model::IsReady, 0x50d390 and 2 more; not read here	inferred	none		
-0x6c6e00	86			playername			Runs PlayerName.cpp code that calls ClntObjMgrObjectPtr, CM2Model::IsReady, 0x6c86d0; not read here	inferred	none		
-0x6c6e60	43			playername			Runs PlayerName.cpp code that calls 0x6c86a0; not read here	inferred	none		
-0x6c6e90	1363			playername			Runs PlayerName.cpp code that calls ClntObjMgrObjectPtr, CGUnit_C::ShouldShowName and 32 more; not read here	inferred	none		playername::pn_plate_render, playername::pn_plate_render_text_width_scale, playername::pn_plate_render_billboard_quad, playername::pn_plate_render_screen_y_accumulate, playername::pn_plate_render_accumulate2
-0x6c73f0	125			playername			Runs PlayerName.cpp code that calls ClntObjMgrObjectPtr, CGUnit_C::GetNamePosition, 0x6c8570; not read here	inferred	none		playername::pn_worldtext_anchor_lift
-0x6c7470	324	PlayerNameInitialize	idb	playername			Runs PlayerName.cpp code that calls PlayerNameShutdown, FrameScript::GetVariable and 6 more; not read here	inferred	none		
-0x6c75c0	98			playername			Runs PlayerName.cpp code that calls 0x64ac60; not read here	inferred	none		
-0x6c7630	105	PlayerNameShutdown	idb	playername			Runs PlayerName.cpp code that calls 0x5c1c00, 0x5c1f70, FreeBlockPoolBlocks and 2 more; not read here	inferred	none		
-0x6c76a0	214			playername			Runs PlayerName.cpp code that calls ClntObjMgrObjectPtr, GetBlockPoolData, 0x6c6c90 and 1 more; not read here	inferred	none		
-0x6c7780	73			playername			Runs PlayerName.cpp code that calls ClntObjMgrObjectPtr, CM2Model::IsReady, 0x6c6e90; not read here	inferred	none		
-0x6c77d0	29			unassigned			Runs its object file code that calls 0x6c6cd0, CDataAllocator::PutData; not read here	inferred	none		
-0x6c77f0	9			unassigned			Runs its object file code not read here	inferred	none		
-0x6c7800	53			unassigned	primitive		Runs code after a ghost change; not read here	inferred	none	objectlayer/playerfields#player-flag-changes	
-0x6c7840	88			unassigned			Runs its object file code that calls 0x50d390, ClntObjMgrGetC8, 0x6c73f0; not read here	inferred	none		
-0x6c78a0	7			unassigned			Runs its object file code not read here	inferred	none		
-0x6c78b0	58			unassigned			Runs its object file code that calls 0x6c6e60; not read here	inferred	none		
-0x6c78f0	9			unassigned		void __thiscall (void *record)	Sets bit 0 of the dword at +0x18 of a non-null record	inferred	none		
-0x6c7900	74			unassigned			Runs its object file code that calls OsGetAsyncTimeMs, 0x6c6d40, 0x6c6e00; not read here	inferred	none		
-0x6c7950	20			unassigned			Runs its object file code not read here	inferred	none		
-0x6c7970	5			unassigned			Runs its object file code not read here	inferred	none		
-0x6c7980	11			unassigned			Runs its object file code not read here	inferred	none		
-0x6c7990	10			unassigned			Runs its object file code that calls 0x6c79a0; not read here	inferred	none		
-0x6c79a0	444			unassigned			Runs its object file code that calls NTempest::CImVector::Set, 0x6c7b60; not read here	inferred	none		
-0x6c7b60	52			unassigned			Runs its object file code not read here	inferred	none		
-0x6c7ba0	12			unassigned			Runs its object file code that calls _atexit; not read here	inferred	none		
-0x6c7bb0	1			unassigned			Runs its object file code not read here	inferred	none		
-0x6c7bc0	10			unassigned			Runs its object file code that calls 0x6c7bd0; not read here	inferred	none		
-0x6c7bd0	18			unassigned			Runs its object file code that calls InitBlockPool; not read here	inferred	none		
-0x6c7bf0	12			unassigned			Runs its object file code that calls _atexit; not read here	inferred	none		
-0x6c7c00	10			unassigned			Runs its object file code not read here	inferred	none		
-0x6c7c10	10			unassigned			Runs its object file code that calls 0x6c7c20; not read here	inferred	none		
-0x6c7c20	21			unassigned			Runs its object file code not read here	inferred	none		
-0x6c7c40	12			unassigned			Runs its object file code that calls _atexit; not read here	inferred	none		
-0x6c7c50	1			unassigned			Runs its object file code not read here	inferred	none		
-0x6c7c60	10			unassigned			Runs its object file code that calls 0x6c7c70; not read here	inferred	none		
-0x6c7c70	23			unassigned			Runs its object file code not read here	inferred	none		
-0x6c7c90	12			unassigned			Runs its object file code that calls _atexit; not read here	inferred	none		
-0x6c7ca0	25			unassigned			Runs its object file code that calls SMemFree; not read here	inferred	none		
-0x6c7cc0	591			unassigned			Runs its object file code that calls 0x6c80b0, 0x6c82e0, 0x6c8070 and 8 more; not read here	inferred	none		playername::pn_label_clip_quad, playername::pn_label_clip_quad_world_z
-0x6c7f10	345	AddRankBadgeQuad		ui	primitive	void __thiscall ()	Adds a quad with the badge texture of a world text record's rank, for ranks 5 to 19	verified	one	ui/honorcredit#rank-badges	
-0x6c8070	53			unassigned			Runs its object file code not read here	inferred	none		playername::pn_interp_param
-0x6c80b0	240			unassigned			Runs its object file code that calls 0x6c82c0; not read here	inferred	none		playername::pn_keyframe_interp
-0x6c81a0	282			unassigned			Runs its object file code that calls GxuFontDestroyString, TextBlockGetFontPtr, 0x41ae50 and 6 more; not read here	inferred	none		playername::pn_string_measure_layout
-0x6c82c0	31			unassigned			Runs its object file code that calls 0x6c81a0; not read here	inferred	none		playername::pn_width_dirty_guard
-0x6c82e0	397			unassigned			Runs its object file code that calls __ftol, 0x5c2750, 0x5c27a0; not read here	inferred	none		playername::pn_time_alpha_fade
-0x6c8470	176	WorldTextInitialize	idb	ui	primitive	void __cdecl ()	Loads the 15 rank badge textures among the world text setup	verified	one	ui/honorcredit#rank-badges	
-0x6c8520	79			unassigned			Runs its object file code that calls HandleClose, FreeBlockPoolBlocks, 0x5c1f70; not read here	inferred	none		
-0x6c8570	223			ui	primitive	void *__thiscall (uint32_t category, float *pos, const char *text, uint32_t flags, uint32_t *extra)	Builds a world text record and copies the rank into it for category 5	verified	one	ui/honorcredit#rank-badges	
-0x6c8650	61			unassigned			Runs its object file code that calls GxuFontDestroyString, SMemFree; not read here	inferred	none		
-0x6c8690	8			unassigned	unreached		Runs its object file code not read here	inferred	none		
-0x6c86a0	26			unassigned			Runs its object file code that calls CDataAllocator::PutData; not read here	inferred	none		
-0x6c86c0	14			unassigned			Runs its object file code that calls 0x6c7cc0; not read here	inferred	none		
-0x6c86d0	10			unassigned			Runs its object file code not read here	inferred	none		
-0x6c86e0	10			unassigned			Runs its object file code that calls 0x6c86f0; not read here	inferred	none		
-0x6c86f0	121			unassigned			Runs its object file code not read here	inferred	none		
-0x6c8770	12			unassigned			Runs its object file code that calls _atexit; not read here	inferred	none		
-0x6c8780	1			unassigned			Runs its object file code not read here	inferred	none		
-0x6c8790	10			unassigned			Runs its object file code that calls 0x6c87a0; not read here	inferred	none		
-0x6c87a0	81			unassigned			Runs its object file code not read here	inferred	none		
-0x6c8800	12			unassigned			Runs its object file code that calls _atexit; not read here	inferred	none		
-0x6c8810	1			unassigned			Runs its object file code not read here	inferred	none		
-0x6c8820	1244			unassigned			Runs its object file code that calls 0x5c1ef0, GetDeviceProjection, GetDeviceView and 22 more; not read here	inferred	none		playername::pn_render_driver
-0x6c8d00	424			unassigned			Runs its object file code that calls 0x58b060, GxCapsGet, GxCapsWindowSize and 4 more; not read here	inferred	none		playername::pn_matrix_scale
-0x6c8eb0	57			unassigned			Runs its object file code not read here	inferred	none		
-0x6c8ef0	202			unassigned			Runs its object file code that calls SMemReAlloc, SMemAlloc, SMemFree; not read here	inferred	none		
+0x6c63e0	5	InitPlayerNameInfinityThunk		playername	orchestration		Jumps to 0x6c63f0; a static initializer	verified	one	playername/overview#infinity-copies-and-pools	
+0x6c63f0	11	InitPlayerNameInfinity		playername	orchestration	void __cdecl (void)	Copies +inf into 0xce8700	verified	one	playername/overview#infinity-copies-and-pools	
+0x6c6400	10	InitSwingPoolThunk		playername	orchestration		Calls 0x6c6410 and registers 0x6c6430 with _atexit; a static initializer	verified	one	playername/overview#infinity-copies-and-pools	
+0x6c6410	18	InitSwingPool		playername	orchestration	void __cdecl (void)	Makes 0xce86ec a pool of 0x618-byte swing records, 8 per block	verified	one	playername/overview#block-pools	
+0x6c6430	12	RegisterDestroySwingPool		playername	orchestration	void __cdecl (void)	Registers 0x6c6440 with _atexit	verified	one	playername/overview#infinity-copies-and-pools	
+0x6c6440	10	DestroySwingPool		playername	orchestration	void __cdecl (void)	Frees every block of the swing pool 0xce86ec	verified	one	playername/overview#block-pools	
+0x6c6450	10	InitTrailPoolThunk		playername	orchestration		Calls 0x6c6460 and registers 0x6c6480 with _atexit; a static initializer	verified	one	playername/overview#infinity-copies-and-pools	
+0x6c6460	18	InitTrailPool		playername	orchestration	void __cdecl (void)	Makes 0xce86d8 a pool of 8-byte trail objects, 128 per block	verified	one	playername/overview#block-pools	
+0x6c6480	12	RegisterDestroyTrailPool		playername	orchestration	void __cdecl (void)	Registers 0x6c6490 with _atexit	verified	one	playername/overview#infinity-copies-and-pools	
+0x6c6490	10	DestroyTrailPool		playername	orchestration	void __cdecl (void)	Frees every block of the trail object pool 0xce86d8	verified	one	playername/overview#block-pools	
+0x6c64a0	33	SWING::AppendPoint		playername	primitive	float * __thiscall (void)	Returns the ring slot of the next point and advances the write counter	verified	one	playername/swing#ring-read-slot	
+0x6c64d0	97	SWING::FillVertices		playername	primitive	void __thiscall (uint32_t color, uint32_t step, void *vertices)	Writes the ring points and fading colours into a vertex buffer	verified	one	playername/swing#ring-read-slot	
+0x6c6540	29	SWING::ClampTail		playername	primitive	int32_t __thiscall (int32_t keep)	Raises the read counter to keep at most a number of points and returns the count	verified	one	playername/swing#trail-step	
+0x6c6560	418	SWING::Step		playername	primitive	bool __thiscall (uint32_t now, const float *p2, const float *p1)	Adds the two attachment points and draws the fading strip; false ends the trail	verified	one	playername/swing#trail-step	playername::pn_swing_step_count
+0x6c6710	52	WTOBJECT::Release		playername	orchestration	void __thiscall (void)	Clears the model callback, releases the model and frees the swing record	verified	one	playername/swing#trail-objects	
+0x6c6750	152	WTOBJECT::SetTrail		playername	orchestration	void __thiscall (const uint32_t *color, uint32_t lifetime)	Starts a trail: takes a swing record, installs the callback and stores colour and time	verified	one	playername/swing#trail-objects	
+0x6c67f0	236	WTOBJECT::DrawCallback		playername	orchestration	void __cdecl (WTOBJECT *object)	Reads the model events $WTB and $WTT and steps the trail	verified	one	playername/swing#trail-callback	
+0x6c68e0	1	PlayerNameNoop		playername	orchestration	void __cdecl (void)	Returns at once; the world session start calls it	inferred	none	playername/plates#name-cvars-and-font	
+0x6c68f0	39	WorldTextShutdownPools		playername	orchestration	void __cdecl (void)	Frees every block of the trail object and swing pools	verified	one	playername/swing#trail-objects	
+0x6c6920	68	WTOBJECT::Create		playername	orchestration	WTOBJECT * __thiscall (void)	Takes a trail object from its pool and holds a reference to the model	verified	one	playername/swing#trail-objects	
+0x6c6970	36	WTOBJECT::Destroy		playername	orchestration	void __thiscall (void)	Releases a trail object and returns it to its pool	verified	one	playername/swing#trail-objects	
+0x6c69a0	32	WTOBJECT::FreeSwing		playername	unreached	void __thiscall (void)	Returns the swing record to its pool and clears the pointer	verified	one	playername/overview#unreached-functions	
+0x6c69c0	25	WTOBJECT::StartTrail		playername	orchestration	void __thiscall (const uint32_t *color, uint32_t lifetime)	Starts a trail when the colour pointer and the lifetime are set	verified	one	playername/swing#trail-objects	
+0x6c69e0	5	InitPlayerNameInfinity2Thunk		playername	orchestration		Jumps to 0x6c69f0; a static initializer	verified	one	playername/overview#infinity-copies-and-pools	
+0x6c69f0	11	InitPlayerNameInfinity2		playername	orchestration	void __cdecl (void)	Copies +inf into 0xce8790	verified	one	playername/overview#infinity-copies-and-pools	
+0x6c6a00	10	InitMarkerCornersThunk		playername	orchestration		Calls 0x6c6a10 and registers 0x6c6a90 with _atexit; a static initializer	verified	one	playername/overview#table-initializers	
+0x6c6a10	121	InitMarkerCorners		playername	primitive	void __cdecl (void)	Stores the four marker corner positions in 0xce875c	verified	one	playername/plates#raid-target-marker	
+0x6c6a90	12	RegisterDestroyMarkerCorners		playername	orchestration	void __cdecl (void)	Registers 0x6c6aa0 with _atexit	verified	one	playername/overview#table-initializers	
+0x6c6aa0	1	DestroyMarkerCorners		playername	orchestration	void __cdecl (void)	Returns at once	verified	one	playername/overview#table-initializers	
+0x6c6ab0	10	InitMarkerUVThunk		playername	orchestration		Calls 0x6c6ac0 and registers 0x6c6b20 with _atexit; a static initializer	verified	one	playername/overview#table-initializers	
+0x6c6ac0	81	InitMarkerUV		playername	primitive	void __cdecl (void)	Stores the four marker UV offsets in 0xce873c	verified	one	playername/plates#raid-target-marker	
+0x6c6b20	12	RegisterDestroyMarkerUV		playername	orchestration	void __cdecl (void)	Registers 0x6c6b30 with _atexit	verified	one	playername/overview#table-initializers	
+0x6c6b30	1	DestroyMarkerUV		playername	orchestration	void __cdecl (void)	Returns at once	verified	one	playername/overview#table-initializers	
+0x6c6b40	10	InitNameListThunk		playername	orchestration		Calls 0x6c6b50 and registers 0x6c6b80 with _atexit; a static initializer	verified	one	playername/overview#table-initializers	
+0x6c6b50	34	InitNameList		playername	orchestration	void __cdecl (void)	Makes the name record list 0xce8728 empty with link offset 0	verified	one	playername/plates#name-record-layout	
+0x6c6b80	12	RegisterDestroyNameList		playername	orchestration	void __cdecl (void)	Registers 0x6c6b90 with _atexit	verified	one	playername/overview#table-initializers	
+0x6c6b90	165	DestroyNameList		playername	orchestration	void __cdecl (void)	Unlinks every record of the name list and clears its head and tail	verified	one	playername/plates#name-record-layout	
+0x6c6c40	10	InitNamePoolThunk		playername	orchestration		Calls 0x6c6c50 and registers 0x6c6c70 with _atexit; a static initializer	verified	one	playername/overview#infinity-copies-and-pools	
+0x6c6c50	18	InitNamePool		playername	orchestration	void __cdecl (void)	Makes 0xce870c a pool of 0x38-byte name records, 256 per block	verified	one	playername/overview#block-pools	
+0x6c6c70	12	RegisterDestroyNamePool		playername	orchestration	void __cdecl (void)	Registers 0x6c6c80 with _atexit	verified	one	playername/overview#infinity-copies-and-pools	
+0x6c6c80	10	DestroyNamePool		playername	orchestration	void __cdecl (void)	Frees every block of the name pool 0xce870c	verified	one	playername/overview#block-pools	
+0x6c6c90	55	PLAYERNAMEDESC::PLAYERNAMEDESC		playername	orchestration	void __thiscall (void)	Clears a name record, sets its flags to 3 and stamps the frame tick	verified	one	playername/plates#name-record-layout	
+0x6c6cd0	109	PLAYERNAMEDESC::~PLAYERNAMEDESC		playername	orchestration	void __thiscall (void)	Destroys the name text, releases the world texts and unlinks the record	verified	one	playername/plates#name-record-layout	
+0x6c6d40	183	PLAYERNAMEDESC::DrawWorldTexts		playername	orchestration	void __thiscall (uint32_t now)	Draws the record's world texts and releases the finished ones	verified	one	playername/plates#per-frame-work	
+0x6c6e00	86	PLAYERNAMEDESC::QueueIcons		playername	orchestration	void __thiscall (void)	Queues the rank icon of each world text when the model is ready	verified	one	playername/plates#per-frame-work	
+0x6c6e60	43	PLAYERNAMEDESC::ReleaseWorldTexts		playername	orchestration	void __thiscall (void)	Releases the four world texts and clears their slots	verified	one	playername/plates#per-frame-work	
+0x6c6e90	1363	PLAYERNAMEDESC::UpdatePlate		playername	primitive	void __thiscall (void)	Shows, builds, places and draws a unit's name text and raid target marker	verified	one	playername/plates#plate-update	playername::pn_plate_render, playername::pn_plate_render_text_width_scale, playername::pn_plate_render_billboard_quad, playername::pn_plate_render_screen_y_accumulate, playername::pn_plate_render_accumulate2
+0x6c73f0	125	PLAYERNAMEDESC::AddWorldText		playername	primitive	void __thiscall (uint32_t category, const char *text, const uint32_t *color, const uint32_t *icon)	Takes a free slot and constructs a world text over the unit, 1/3 below its name position	verified	one	playername/worldtext#submitting-a-text	playername::pn_worldtext_anchor_lift
+0x6c7470	324	PlayerNameInitialize	idb	playername	orchestration	void __cdecl (void)	Creates the name font and batch, registers the name cvars and loads the marker texture	verified	one	playername/plates#name-cvars-and-font	
+0x6c75c0	98	PlayerNameCVarChanged		playername	orchestration	bool __cdecl (const char *value, uint32_t mask)	Sets or clears a name flag mask from a cvar value and marks every record for rebuild	verified	one	playername/plates#name-cvars-and-font	
+0x6c7630	105	PlayerNameShutdown	idb	playername	orchestration	void __cdecl (void)	Destroys the name font, batch, pool and marker texture	verified	one	playername/plates#name-cvars-and-font	
+0x6c76a0	214	CreatePlayerNameDesc		playername	orchestration	PLAYERNAMEDESC * __thiscall (void)	Creates a name record for a GUID and installs its draw callback on the unit's model	verified	one	playername/plates#name-record-layout	
+0x6c7780	73	PlayerNameDrawCallback		playername	orchestration	void __cdecl (PLAYERNAMEDESC *desc)	Updates a name record when its unit exists and its model is ready	verified	one	playername/plates#per-frame-work	
+0x6c77d0	29	DestroyPlayerNameDesc		playername	orchestration	void __thiscall (void)	Destroys a name record and returns it to its pool	verified	one	playername/plates#name-record-layout	
+0x6c77f0	9	PlayerNameMarkColorDirty		playername	orchestration	void __thiscall (void)	Sets the refetch-colour flag of a name record	verified	one	playername/plates#name-record-layout	
+0x6c7800	53	PlayerNameMarkAllColorDirty		playername	orchestration	void __cdecl (void)	Sets the refetch-colour flag of every name record	verified	one	playername/plates#name-record-layout	
+0x6c7840	88	SubmitWorldText		playername	orchestration	void __fastcall (void *desc, uint32_t category, const char *text, const uint32_t *color, const uint32_t *icon)	Adds a world text over a unit unless the camera or manager gate holds	verified	one	playername/worldtext#submitting-a-text	
+0x6c78a0	7	PlayerNameNextFrame		playername	primitive	void __cdecl (void)	Increments the frame tick	verified	one	playername/plates#per-frame-work	
+0x6c78b0	58	PlayerNameReleaseStale		playername	orchestration	void __cdecl (void)	Releases the world texts of every record not updated this frame	verified	one	playername/plates#per-frame-work	
+0x6c78f0	9	PlayerNameMarkRebuild		playername	orchestration	void __thiscall (void)	Sets the rebuild-text flag of a name record	verified	one	playername/plates#name-record-layout	
+0x6c7900	74	PlayerNameRender		playername	orchestration	void __cdecl (void)	Draws every record's world texts and queued icons	verified	one	playername/plates#per-frame-work	
+0x6c7950	20	PlayerNameHasText		playername	orchestration	bool __thiscall (void)	Returns whether a name record holds a name text	verified	one	playername/plates#per-frame-work	
+0x6c7970	5	InitPlayerNameInfinity3Thunk		playername	orchestration		Jumps to 0x6c7980; a static initializer	verified	one	playername/overview#infinity-copies-and-pools	
+0x6c7980	11	InitPlayerNameInfinity3		playername	orchestration	void __cdecl (void)	Copies +inf into 0xce88d0	verified	one	playername/overview#infinity-copies-and-pools	
+0x6c7990	10	InitCategoryTableThunk		playername	orchestration		Calls 0x6c79a0 and registers 0x6c7ba0 with _atexit; a static initializer	verified	one	playername/overview#table-initializers	
+0x6c79a0	444	InitCategoryTable		playername	primitive	void __cdecl (void)	Stores the six world text category rows in 0xce8828	verified	one	playername/worldtext#category-table	
+0x6c7b60	52	WorldTextCategory::Init		playername	primitive	void __thiscall (uint32_t rise, uint32_t fadeIn, uint32_t fadeOut, uint32_t duration, float sizeLow, float sizeHigh, const uint32_t *color)	Stores one category row's seven fields	verified	one	playername/worldtext#category-table	
+0x6c7ba0	12	RegisterDestroyCategoryTable		playername	orchestration	void __cdecl (void)	Registers 0x6c7bb0 with _atexit	verified	one	playername/overview#table-initializers	
+0x6c7bb0	1	DestroyCategoryTable		playername	orchestration	void __cdecl (void)	Returns at once	verified	one	playername/overview#table-initializers	
+0x6c7bc0	10	InitTextPoolThunk		playername	orchestration		Calls 0x6c7bd0 and registers 0x6c7bf0 with _atexit; a static initializer	verified	one	playername/overview#infinity-copies-and-pools	
+0x6c7bd0	18	InitTextPool		playername	orchestration	void __cdecl (void)	Makes 0xce880c a pool of 0x80-byte text records, 30 per block	verified	one	playername/overview#block-pools	
+0x6c7bf0	12	RegisterDestroyTextPool		playername	orchestration	void __cdecl (void)	Registers 0x6c7c00 with _atexit	verified	one	playername/overview#infinity-copies-and-pools	
+0x6c7c00	10	DestroyTextPool		playername	orchestration	void __cdecl (void)	Frees every block of the text pool 0xce880c	verified	one	playername/overview#block-pools	
+0x6c7c10	10	InitShadowOffsetThunk		playername	orchestration		Calls 0x6c7c20 and registers 0x6c7c40 with _atexit; a static initializer	verified	one	playername/overview#table-initializers	
+0x6c7c20	21	InitShadowOffset		playername	primitive	void __cdecl (void)	Stores 0.002 in both shadow offsets 0xce8804 and 0xce8808	verified	one	playername/worldtext#timing-and-scale	
+0x6c7c40	12	RegisterDestroyShadowOffset		playername	orchestration	void __cdecl (void)	Registers 0x6c7c50 with _atexit	verified	one	playername/overview#table-initializers	
+0x6c7c50	1	DestroyShadowOffset		playername	orchestration	void __cdecl (void)	Returns at once	verified	one	playername/overview#table-initializers	
+0x6c7c60	10	InitIconRingThunk		playername	orchestration		Calls 0x6c7c70 and registers 0x6c7c90 with _atexit; a static initializer	verified	one	playername/overview#table-initializers	
+0x6c7c70	23	InitIconRing		playername	orchestration	void __cdecl (void)	Clears the rank icon ring 0xce87f0 to 0xce87fc	verified	one	playername/worldtext#rank-icon-records	
+0x6c7c90	12	RegisterDestroyIconRing		playername	orchestration	void __cdecl (void)	Registers 0x6c7ca0 with _atexit	verified	one	playername/overview#table-initializers	
+0x6c7ca0	25	DestroyIconRing		playername	orchestration	void __cdecl (void)	Frees the rank icon ring buffer 0xce87f8	verified	one	playername/worldtext#rank-icon-records	
+0x6c7cc0	591	WORLDTEXTSTRING::Draw		playername	primitive	bool __thiscall (uint32_t now)	Ages a text, projects its anchor and clamps its rectangle; false releases it	verified	one	playername/worldtext#placing-a-text	playername::pn_label_clip_quad, playername::pn_label_clip_quad_world_z
+0x6c7f10	345	WORLDTEXTSTRING::QueueIcon		playername	primitive	void __thiscall (void)	Appends the rank icon record of a text to the icon ring	verified	one	playername/worldtext#rank-icon-records	playername::pn_glyph_quad_build, playername::pn_glyph_quad_build_deltas
+0x6c8070	53	WORLDTEXTSTRING::Rise		playername	primitive	double __thiscall (uint32_t elapsed)	Returns the elapsed share of the duration times the category rise	verified	one	playername/worldtext#timing-and-scale	playername::pn_interp_param
+0x6c80b0	240	WORLDTEXTSTRING::ScaleAt		playername	primitive	void __thiscall (uint32_t elapsed)	Computes the size at an age from the category row and passes it on	verified	one	playername/worldtext#timing-and-scale	playername::pn_keyframe_interp
+0x6c81a0	282	WORLDTEXTSTRING::Rebuild		playername	orchestration	void __thiscall (void)	Recreates the string at the cached size and stores its half extents	verified	one	playername/worldtext#rebuilding-the-string	playername::pn_string_measure_layout
+0x6c82c0	31	WORLDTEXTSTRING::SetSize		playername	primitive	void __thiscall (float size)	Stores a changed size and rebuilds the string	verified	one	playername/worldtext#timing-and-scale	playername::pn_width_dirty_guard
+0x6c82e0	397	WORLDTEXTSTRING::Fade		playername	primitive	void __thiscall (uint32_t elapsed)	Sets the text and shadow alpha bytes for an age	verified	one	playername/worldtext#timing-and-scale	playername::pn_time_alpha_fade
+0x6c8470	176	WorldTextInitialize	idb	playername	orchestration	void __cdecl (void)	Creates the damage text font and batch and loads the rank badge textures	verified	one	playername/worldtext#damage-text-font	
+0x6c8520	79	WorldTextShutdown		playername	orchestration	void __cdecl (void)	Releases the damage font, the text pool, the batch and the badge textures	verified	one	playername/worldtext#damage-text-font	
+0x6c8570	223	WORLDTEXTSTRING::Create		playername	orchestration	WORLDTEXTSTRING * __cdecl (uint32_t category, const float *position, const char *text, const uint32_t *color, const uint32_t *icon)	Takes a text record from its pool and fills it	verified	one	playername/worldtext#text-record	
+0x6c8650	61	WORLDTEXTSTRING::DeletingDestructor		playername	orchestration	void __thiscall (uint32_t flags)	Destroys the string and frees the record when bit 0 of flags is set	verified	one	playername/worldtext#text-record	
+0x6c8690	8	WORLDTEXTSTRING::SetIcon		playername	unreached	void __fastcall (void *text, uint32_t value)	Stores a rank icon value at +0x7c	verified	one	playername/overview#unreached-functions	
+0x6c86a0	26	WORLDTEXTSTRING::Release		playername	orchestration	void __thiscall (void)	Destroys a text through its vtable and returns it to its pool	verified	one	playername/worldtext#text-record	
+0x6c86c0	14	WORLDTEXTSTRING::DrawIfSet		playername	orchestration	bool __fastcall (WORLDTEXTSTRING *text, uint32_t now)	Draws a text when it is not null	verified	one	playername/worldtext#text-record	
+0x6c86d0	10	WORLDTEXTSTRING::QueueIconIfSet		playername	orchestration	void __fastcall (WORLDTEXTSTRING *text)	Queues a text's icon when it is not null	verified	one	playername/worldtext#text-record	
+0x6c86e0	10	InitIconQuadThunk		playername	orchestration		Calls 0x6c86f0 and registers 0x6c8770 with _atexit; a static initializer	verified	one	playername/overview#table-initializers	
+0x6c86f0	121	InitIconQuad		playername	primitive	void __cdecl (void)	Stores the rank icon quad positions in 0xce87c0	verified	one	playername/worldtext#drawing-icons	
+0x6c8770	12	RegisterDestroyIconQuad		playername	orchestration	void __cdecl (void)	Registers 0x6c8780 with _atexit	verified	one	playername/overview#table-initializers	
+0x6c8780	1	DestroyIconQuad		playername	orchestration	void __cdecl (void)	Returns at once	verified	one	playername/overview#table-initializers	
+0x6c8790	10	InitIconUVThunk		playername	orchestration		Calls 0x6c87a0 and registers 0x6c8800 with _atexit; a static initializer	verified	one	playername/overview#table-initializers	
+0x6c87a0	81	InitIconUV		playername	primitive	void __cdecl (void)	Stores the rank icon quad UVs in 0xce87a0	verified	one	playername/worldtext#drawing-icons	
+0x6c8800	12	RegisterDestroyIconUV		playername	orchestration	void __cdecl (void)	Registers 0x6c8810 with _atexit	verified	one	playername/overview#table-initializers	
+0x6c8810	1	DestroyIconUV		playername	orchestration	void __cdecl (void)	Returns at once	verified	one	playername/overview#table-initializers	
+0x6c8820	1244	WorldTextDrawIcons		playername	orchestration	void __cdecl (void)	Flushes the text batch and draws every queued rank icon as a pixel quad	verified	one	playername/worldtext#drawing-icons	playername::pn_render_driver
+0x6c8d00	424	WorldTextSetPixelProjection		playername	primitive	void __cdecl (void)	Sets an orthographic projection that maps the viewport to whole pixels	verified	one	playername/worldtext#drawing-icons	playername::pn_matrix_scale
+0x6c8eb0	57	SArray::GrowChunk		playername	primitive	uint32_t __thiscall (uint32_t count)	Returns the growth step for a count	verified	one	playername/worldtext#rank-icon-records	
+0x6c8ef0	202	SArray::SetCapacity		playername	host	void __thiscall (uint32_t count)	Reallocates the array to a capacity and copies its records	verified	one	playername/worldtext#rank-icon-records	
 0x6c8fc0	10			unassigned			Runs its object file code that calls 0x6c8fd0; not read here	inferred	none		
 0x6c8fd0	18			unassigned			Runs its object file code not read here	inferred	none		
 0x6c8ff0	12			unassigned			Runs its object file code that calls _atexit; not read here	inferred	none		

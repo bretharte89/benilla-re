@@ -42,12 +42,9 @@ these, a system with a doc, a library, or `unassigned`; the check holds the tabl
   `NPCText.cpp`
 - `fastmath`: the fast logarithm after the spline file
 - `ffxeffects`: `FFXEffects.cpp`, the full-screen glow and death effects
-- `font`: `GxuFontUtil.cpp`, `GxuFontMiscClasses.cpp` and `GxuFontString.cpp`, the fonts and text
-  strings the interface draws
 - `gx`: the graphics layer: `Texture.cpp`, `TextureCache.cpp`, the `CGxDevice` files,
   `IGxuFontGlyph.cpp` and `Lightning.cpp`
 - `gxumath`: the Gxu matrix builders: perspective, orthographic, look-at and frustum corners
-- `image`: `tga.cpp` and `blp.cpp`, the TGA and BLP image readers
 - `loadingscreen`: `LoadingScreen.cpp`
 - `minigame`: `Minigame_C.cpp`, the minigame object, and the board file linked after it (0x728b10
   to 0x728ef3): its +∞ initializer `0x728b10`, the shared header's constants and the board check
@@ -57,7 +54,6 @@ these, a system with a doc, a library, or `unassigned`; the check holds the tabl
 - `os`: the engine's Windows layer outside `core`'s time and window files: CPU and system queries,
   file calls, `OsIME.cpp` and the IME initializer file after it, `OsGui.cpp`, `OsCall.cpp` (engine
   threads), `OsTcp.cpp`, `OsURLDownload.cpp`, `OsClipboard.cpp` and `OsISoundCache.cpp`
-- `playername`: `PlayerName.cpp`, the unit names drawn in the world (`UnitNamePlayer` and the like)
 - `screencoord`: the screen aspect and scale helpers
 - `spline`: the movement spline file
 - `sysmsg`: `SysMessage.cpp`, the system message printers
