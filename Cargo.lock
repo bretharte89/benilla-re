@@ -93,6 +93,13 @@ dependencies = [
 ]
 
 [[package]]
+name = "benilla-re-charactermodel"
+version = "0.1.0"
+dependencies = [
+ "benilla-re-difftest",
+]
+
+[[package]]
 name = "benilla-re-cmath"
 version = "0.1.0"
 dependencies = [
@@ -131,6 +138,13 @@ dependencies = [
 ]
 
 [[package]]
+name = "benilla-re-font"
+version = "0.1.0"
+dependencies = [
+ "benilla-re-difftest",
+]
+
+[[package]]
 name = "benilla-re-gametime"
 version = "0.1.0"
 dependencies = [
@@ -143,6 +157,13 @@ version = "0.1.0"
 dependencies = [
  "benilla-re-difftest",
  "benilla-re-random",
+]
+
+[[package]]
+name = "benilla-re-image"
+version = "0.1.0"
+dependencies = [
+ "benilla-re-difftest",
 ]
 
 [[package]]
