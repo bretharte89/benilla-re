@@ -148,6 +148,21 @@ only tests for a row; this one reads `+0x4` to `+0x10` (`0x6250fc`, `0x625105`),
 other readers are its load, set-up and teardown `0x53eb20`. The row's five strings `+0x14` to
 `+0x24`, the ground splat textures, are never read, and no creature or display flag gates the spurt. Slices: diff_blood_spurt_front_back, diff_blood_spurt_front_back_diff_rounding `0x6250b6`-`0x6250d7`; diff_blood_spurt_dot `0x6250b6`-`0x6250d2`.
 
+## Suppressed wound animations
+
+A creature whose type flags have 0x8 plays no wound flinch and no parry animation, still bleeds, and
+still makes its injury sound.
+
+Addresses: `0x6125f0`, `0x60ea70`, `0x60ea9f`, `0x60ec00`, `0x60ec1f`, `0x62462c`, `0x624649`, `0x624666`, `0x623490`
+Confidence: verified
+Proof: one
+Test: none
+
+`0x6125f0` returns bit 3 of the record's flags `+0x14`, or 0 without a record. It has two callers: the
+wound flinch `0x60ea70` (`0x60ea9f`) and the parry animation `0x60ec00` (`0x60ec1f`), which maps the
+unit's own main-hand weapon to the animations 20 to 23. The pain sound of `0x624530` goes
+through slot 34 `0x623490` at `0x62462c`, `0x624649` and `0x624666`; the only creature flag that path reads is bit 5, which picks the sound class (`sounds`).
+
 ## Combat model events
 
 The attacker's model events present its swing. `$CAH` plays the weapon impact sound of a damaging
@@ -190,6 +205,44 @@ Test: `objectlayer::castbar_anim_speed_difftest`
 `+0x18`. `0x624d75`: the time left is `end − ftol(t/speed) − start` from the state; when positive,
 `0x624e12` plays 0xa0 at speed `length/left`, `fild` of the length over `fidiv` of the time.
 `0x624b27` reads the ranged item info, `+0x98(2, 0)`: subclass 3 or 18 keeps the ammo `+0xd28` off. Slices: castbar_anim_speed_difftest `0x624d75`-`0x624e26`.
+
+## The ranged release
+
+The release tag `$BWR` ends the draw and launches the queued missiles. It clears bit 0x4000 of
+`+0xd58`. When the unit has missiles waiting (`+0xac`), a bow animation (46, 105 or 109) plays
+animation 0 on the ranged model at rate 1.0 and releases from attachment 35, a rifle animation (49,
+106 or 110) plays 161 and releases from attachment 36, and any other animation releases from the
+event's point. The in-hand ammo is detached last.
+
+Addresses: `0x5ffbd0`, `0x6000c6`, `0x6000d1`, `0x600159`, `0x600160`, `0x600167`, `0x60016c`, `0x600182`, `0x6001ae`, `0x600209`, `0x600219`, `0x600273`, `0x600294`, `0x600299`, `0x6002ba`, `0x5fcfb0`, `0x5fcfd0`, `0x5fdb50`, `0x60c940`, `0x60f8f0`, `0x60fb60`
+Confidence: verified
+Proof: one
+Test: none
+
+`0x6000c6` compares the tag with `$BWR` (0x52574224) and `0x6000d1` jumps to `0x600159`, which calls
+`StopAutoMove(0, 1)` when the auto-move mode `0x60f8f0` is 0 (`0x600167`). `0x60016c` clears the bit,
+`0x600182` tests the queue. `0x6001ae` asks `IsBowAnimation` of the body's current animation
+(`0x5fdb50`) and `0x600219` `IsRifleAnimation`. The bow arm's `PlayAnimation` call (`0x600209`) passes
+animation 0, the rifle arm's (`0x600273`) 161. `0x600294` calls `ReleaseMissiles` with the point, whose
+`0x60f530` detaches the ammo; `0x600299` to `0x6002ba` detach it again when still attached.
+
+## The ranged state bits
+
+Three bits of `+0xd58` run a shooter: 0x200 while an auto-repeat spell runs, 0x400 while a spell is
+precast and 0x4000 while the bow is drawn. Only the local cast sets 0x200, so another unit's shots
+show the drawn weapon, the fire animation and the ammo but not the load and hold idle.
+
+Addresses: `0x6e593b`, `0x6ea113`, `0x6e1e45`, `0x60d02c`, `0x60d05e`, `0x60fc5f`, `0x5fbdc0`, `0x624b70`, `0x600177`, `0x60f322`, `0x60f533`, `0x60d020`, `0x60d040`, `0x60fc50`, `0x5fbd60`, `0x5fd460`
+Confidence: verified
+Proof: one
+Test: none
+
+Bit 0x200 is set only at `0x6e593b`, when the local cast of an AttributesEx2 bit 5 spell is sent, and
+cleared only at `0x6ea113`, the auto-repeat cancel, and `0x6e1e45`, a cast result of 47 or 48. Bit 0x400
+is set by `0x60d020` (`0x60d02c`) and cleared by `0x60d040` (`0x60d05e`) when the spell id matches `+0xc8c`, by
+`0x60fc50` (`0x60fc5f`) always, and with 0x2000 by `0x5fbd60` (`0x5fbdc0`). Bit 0x4000 is set at `0x624b70`
+and cleared at `0x600177`, `0x60f322` and `0x60f533`. `0x5fd460` claims the load and hold
+animations only when the sheathe state is 2 and bit 0x200 is set.
 
 ## Environmental damage and death
 

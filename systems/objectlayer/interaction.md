@@ -86,6 +86,68 @@ not `IsDeadOrGhost`, mover flags without 0x2000, `UNIT_FIELD_FLAGS` without 0x40
 mode 6 only when `r² < d²`. `0x5df460(byte)` sets the auto-loot byte `+0x1d30` and, with a held
 GUID, calls `0x4c1fa0(0)`. `0x5ed5f0` holds a GUID as the loot target and plays animation 0x32. Slices: loot_range_5df130_difftest `0x5df1a0`-`0x5df1d4`; interact_reach_5df2a0_difftest `0x5df301`-`0x5df389`; p3_interact_reach_sq_5ec110 `0x5ec142`-`0x5ec17e`; p3_interact_in_range_5ec110 `0x5ec196`-`0x5ec1c1`.
 
+## The loot target
+
+The active player's loot target is a GUID at `+0x1d28`. Five sites set it: `LootUnit`
+(`0x5df253`), `LootCorpse` (`0x5df40d`), a loot response that accepts its source (`0x5ebb60`),
+`SetLootTarget` (`0x5ed5fb`) and `OpenItem` (`0x5edcc0`). Six clear it: the player constructor
+(`0x5dd403`), the loot window's close (`0x48f2c9`), the player notice that names the target
+(`0x5e3a84`), two legs of the loot response (`0x5eb9d2`, `0x5ebad4`) and the loot release
+response (`0x5ec0d4`). The base animation kneels the active player while it is set; another unit
+kneels on unit flag 0x400.
+
+Addresses: `0x5df253`, `0x5df40d`, `0x5ebb60`, `0x5ed5fb`, `0x5edcc0`, `0x5dd403`, `0x48f2c9`, `0x5e3a84`, `0x5eb9d2`, `0x5ebad4`, `0x5ec0d4`, `0x6126b0`, `0x612710`, `0x5fd260`, `0x5fd266`, `0x5fd270`
+Confidence: verified
+Proof: one
+Test: none
+
+Each site stores both dwords. `0x5eb9d2` stores the zero in `esi` and `0x5ebad4` the zero of `xor eax,eax`
+(after error 0x83). `0x5fd260` declines the kneel (anim 50) with a mount model (`0x5fd266`) or bit
+0x40 of `+0xd58` clear (`0x5fd270`), then needs `0x6126b0` (`IsLooting`: the latch for the active
+player, flag 0x400 for others) and `0x612710` (`ShowsLootAnimation`).
+
+## Clicking while mounted
+
+A mounted player's right click does the following. A lootable corpse is not looted and the click
+falls to the skinning test, so a corpse that cannot be skinned does nothing and shows nothing.
+Skinning, a player corpse's insignia and a lock opened by a spell cast, and the cast validator
+refuses the mounted caster with failure 0x39. A live NPC with services opens its dialog. A
+hostile creature is not attacked and shows no error. A pet order does nothing when the pet is
+mounted.
+
+Addresses: `0x60bea0`, `0x60bf36`, `0x60bf98`, `0x60c01f`, `0x60c1b4`, `0x60c257`, `0x60c25f`, `0x60c270`, `0x5d6c22`, `0x6094f0`, `0x609c6f`, `0x609c8c`, `0x612df0`, `0x4bd40d`, `0x6131aa`, `0x6e4efb`, `0x5ecb70`
+Confidence: verified
+Proof: one
+Test: none
+
+`0x60bea0` reads the mount display (field 133, `+0x1fc`) three times: `0x60bf36` on the pet the
+player controls, `0x60bf98` on the player for the loot leg, whose `jg` goes to the skin leg
+(`0x60c01f`), and `0x60c1b4` on the player for the attack leg. A mount ends the pet leg at
+`0x60c25f` and the attack leg at `0x60c257`; the latter calls `0x60c270`, which speaks a greeting
+only when the unit's reaction toward the player and the player's toward it are both 3 or more. The
+attack leg shows no error: the refusal ladder `0x612df0` is called from `0x4bd40d`, `0x6131aa` and
+`0x6e4efb`, never from a click. `0x6094f0` fails a mounted caster at `0x609c8c` unless the spell's
+attribute word `+0x18` holds bit 0x1000000 (`0x609c6f`).
+
+## Mounted cursor and selection
+
+The hover cursor knows about the mount only for the attack cursor and a controlled pet's, so a
+mounted player sees the loot cursor over a corpse the click then ignores. Selecting a target
+sends `CMSG_SET_SELECTION` mounted or not. The client never ends a mount itself.
+
+Addresses: `0x482200`, `0x482278`, `0x482659`, `0x493540`, `0x49367d`, `0x493748`, `0x493857`, `0x6e7040`, `0x4e49a0`
+Confidence: verified
+Proof: one
+Test: none
+
+The hover classifier `0x482200` reads `+0x1fc` twice: `0x482278` on the controlled pet and
+`0x482659` on the player for the attack cursor; the loot, skin, corpse and object branches read
+nothing of it. `0x493540`, the target setter, reads it at `0x49367d` and `0x493748` only in tests
+whose pass records attackability and the enemy GUID at `0xb4e2e8`; the `0x13d` send at `0x493857`
+does not test it. The aura cancel `0x6e7040`, which a dismount is, has nine call sites, among them
+`CancelPlayerBuff`'s (`0x4e49a0`), and none is on a click path. No `0x375` immediate exists in the
+image.
+
 ## Interacting through a spell
 
 `0x5f05e0(object, walk, set, value)` interacts with a corpse or player through the spell at
@@ -184,6 +246,26 @@ The text row's `+8` indexes the `Emotes` store `0xc0ddd4` (loader `0x544290`); t
 `+0xc`, kind `+0x10`, state `+0x14` and animation `+8`. The number is `0x4592b0(id, race, gender)`
 with the display race and gender while shapeshifted. The sheathe call is `SetSheatheState`; the
 mask at `0x85ff10` is 0x10b.
+
+## Emote eligibility
+
+`0x47db40(flags, mode, out)` decides whether an `Emotes` row, by its flags `+0xc`, may be performed
+by the unit. It refuses, in order: with `mode` set and flag 0x400; flag 0x1 unless the stand state
+is 0; flag 0x80 while the mover swims (0x200000); a sleeping or dead stand state (3 or 7) unless
+flag 0x200 allows it. Flag 0x4000 with any of the movement bits 0x20ff sets `out` to 1, the
+mark that the emote needs standing still. Anything else is eligible.
+
+Addresses: `0x47db40`, `0x47db56`, `0x47db58`, `0x47db65`, `0x47db6c`, `0x47db76`, `0x47db7d`, `0x47db8e`, `0x47db95`, `0x47dbab`, `0x47dbb3`, `0x47dbbc`, `0x5ef5c3`, `0x5ef5ca`
+Confidence: verified
+Proof: one
+Test: none
+
+`0x47db58` tests `dh` for 0x400 (when `mode` is nonzero); `0x47db65` tests 0x1 and `0x47db6c` reads
+the stand state, byte `+0x210` of the unit's fields; `0x47db76` tests the sign bit of the flag
+byte (0x80) and `0x47db7d` the mover's flags `+0x40`; `0x47db8e` tests 0x200 and `0x47db95` the
+stand state against 3 and 7; `0x47dbab` to `0x47dbbc` handle 0x4000. `0x5ef5c3` is the only
+caller, in `SendTextEmote`, which skips the whole emote and its packet when the result is 0
+(`0x5ef5ca`).
 
 ## AFK
 

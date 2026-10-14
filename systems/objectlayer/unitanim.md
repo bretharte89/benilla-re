@@ -45,6 +45,43 @@ The ready animation `0x5fcdc0` maps the main-hand weapon subclass through `0x5fc
 `0x5fd830` is 41 swimming, 120 stealthed, 193 Hover when flying, else 0 Stand. `0x5fce30` allows
 a shuffle while turning, not flying, and not in an emote, cast or ranged animation.
 
+## The airborne hold
+
+A falling unit keeps its animation: the selector returns the keep-current value 208 (0xd0) and
+the play is skipped. The hold ends the moment the fall ends, and no resolver holds a one-shot after it.
+
+Addresses: `0x5fd8b0`, `0x5fd8e8`, `0x5fd8ee`, `0x5fd8f3`, `0x5fd8fe`, `0x5fd901`, `0x5fd906`, `0x5fd914`, `0x5fd919`, `0x5fd926`, `0x5fd9e0`, `0x5fda03`, `0x5fda08`, `0x5fda0d`
+Confidence: verified
+Proof: one
+Test: none
+
+`0x5fd8b0` runs the first two resolvers, then tests the unit's own mover flags `+0x9e8`: falling
+(0x2000) with far falling (0x4000) holds (`0x5fd8ee`, `0x5fd8f3`). Else it reads the active mover (`+0x118`): with
+falling clear (`0x5fd901`) the resolvers `0x5fd100` onward run (`0x5fd926`); with falling set the fall
+velocity at `+0xa0` is compared with 0.0 (`0x5fd906`), and only an exact 0 (`0x5fd914`) lets them run, a
+nonzero value or NaN holds with 208 (`0x5fd919`). `0x5fd9e0` skips `0x5fe2f0` for 208 (`0x5fda08`).
+The resolvers after the gate end at the pending request `+0xd64`, then the idle; none tests a sequence still running.
+
+## The shuffle gate
+
+A unit turning on the spot shuffles (animation 11 left, 12 right) only when `0x5fce30` allows it. The
+display-facing step starts a shuffle and can never end one: a shuffle ends when its sequence
+does, and the next pick claims it again while the unit still turns.
+
+Addresses: `0x5fce30`, `0x5fce33`, `0x5fce42`, `0x5fce5d`, `0x5fce79`, `0x5fce84`, `0x5fce8d`, `0x5fce98`, `0x5fcea3`, `0x5fceac`, `0x5fce47`, `0x5fd3f6`, `0x5fd72c`, `0x6084d3`, `0x6084da`, `0x5fdb50`
+Confidence: verified
+Proof: one
+Test: none
+
+The gate returns 0 unless the mover flags have 0x30 (turn left or right) or `+0xd58` has 0x800 or
+0x1000 (`0x5fce33`, `0x5fce42`). It also returns 0 when the mover flags have 0x40200800 (`0x5fce5d`),
+when a spline whose flags `+0x18` lack 0x4 has 0x200 (`0x5fce47`), when the animation playing
+(`0x5fdb50`) is an emote, a spell cast, a thrown, bow or rifle animation (`0x5fce79` to `0x5fcea3`) and when `+0xd58` has 0x4 or 0x8
+(`0x5fceac`). Its callers are `0x5fd3f6`, `0x5fd72c` and the facing step (`0x6084d3`). At
+`0x6084da` the step recomputes the base animation only when the gate allows it, and it clears
+0x800 and 0x1000 before the call, so the frame the turn settles the gate returns 0 and
+nothing recomputes.
+
 ## Playing an animation
 
 `0x5fe2f0(anim)` plays an animation on the body, the upper body or the mount. An unloaded model
@@ -70,6 +107,74 @@ its animation, or one with flag 0x4 freeze the tracks. `0x5fdba0` plays a track 
 `0x5fdf80` reads the animation's `AnimationData` row: 0x4 of its `+0x8` puts the weapons away,
 0x20 or a swing while attacking draws them, and 112 nocks the ammunition. `0x60f5b0` tests 0x80 of
 the row's `+0xc`.
+
+## Mounted animation
+
+A mounted unit's body holds Mount (91) as its base animation for as long as the mount model
+exists, and a requested animation splits by its set. `0x607a00` arms Mount on the body when the
+mount is made. In `0x5fe2f0`, a mount model at `+0xdc` takes the branch at `0x5fe7b5`: a
+full-body animation (`0x5fec80`) is armed on the mount model, an upper-body animation
+(`0x5fed90`) on the body's key bone, and the body's base track is set to 91 at `0x5fe809`, unless
+it already plays it. A cast clip such as SpellCastOmni (54) is upper-body, so it plays as a torso
+overlay on the Mount pose and never reaches the mount.
+
+Addresses: `0x607a00`, `0x607b40`, `0x607b44`, `0x5fe2f0`, `0x5fe7b5`, `0x5fe809`, `0x5feb90`, `0x5febcb`, `0x5febea`, `0x5fec06`, `0x5fec80`, `0x5fed90`, `0x5fd260`, `0x5fd26e`, `0x7121a0`, `0x5fdba0`, `0x5fdcdb`, `0x5fdceb`
+Confidence: verified
+Proof: one
+Test: none
+
+`0x607b40` pushes 0x5b and `0x607b44` calls `PlayAnimation` on `+0xd8` with key bone -1. The
+full-body set is 33 ids: 0, 1, 3 to 6, 8 to 13, 37 to 45, 92 to 95, 119, 120, 127, 131, 132, 135,
+143 and 187; the upper-body set holds 95 ids from 2 to 195, including 54 and 123 (UseStandingLoop)
+and not 91. `0x5feb90` tests the mount model again: unless the mount track is -1 or equals the
+animation it last played, `0x5febcb` plays it on the mount model. The key-bone track and the
+forced base track are committed through `0x5fdba0` at `0x5febea` and `0x5fec06`; it plays on the
+body model `+0xd8` (`0x5fdceb`), on the key bone `+0xd5c` for the first and bone -1 for the second,
+and plays nothing for a key-bone track when the model has no key bone (`0x5fdccd`). Base-animation legs that need an unmounted
+body, such as the loot kneel (`0x5fd26e`), decline when `+0xdc` is set; no resolver returns 91.
+
+## The ranged shot cycle
+
+A ranged shot's attack animation ends in the default branch of `0x5fc3f0`, which re-picks the base
+animation. A drawn ranged weapon (`+0xd40` equal to 2, bit 0x200 of `+0xd58`) makes `0x5fd460`
+claim the pick with the load animation of the weapon's item subclass: 105 for a bow, 106 for a gun
+or crossbow, 112 for a thrown weapon, 111 for a wand, else 25. The end of 105 plays 109 and the end
+of 106 plays 110; the ends of 109, 110, 111 and 112 replay 109, 110 or 111 while the unit has a
+ranged model (`+0xd24`) and is channelling or holds the auto-repeat bits, else re-pick.
+
+Addresses: `0x5fc3f0`, `0x5fc45a`, `0x5fc5bc`, `0x5fc5e9`, `0x5fc601`, `0x5fc62e`, `0x5fc646`, `0x5fc673`, `0x5fd460`, `0x5fd48f`, `0x5fd4fe`, `0x5fd508`
+Confidence: verified
+Proof: one
+Test: none
+
+The attack ids 46, 49 and 107 have the default case of the index table at 0x5fc848 (`0x5fc45a`,
+`UpdateBaseAnimation(-1)`); 105 and 106 are cases 11 and 12 of the jump table at 0x5fc7ec, which push
+0x6d and 0x6e (`0x5fc5e9`, `0x5fc62e`). The cases of 109 (`0x5fc5bc`), 110 (`0x5fc601`) and 111 and
+112 (`0x5fc646`) need `+0xd24`, then the channel field (`[fields+0x228]`) or bit 0x600, 0x400 and
+0x400 of `+0xd58`, and push 0x6d, 0x6e and 0x6f. `0x5fd460` starts by testing `+0xd40` and bit 0x200;
+`0x5fd48f` loads the hand 2 item record, its class byte 2, and maps subclass − 2 through a byte table
+(0x5fd530) and the jump table at 0x5fd51c to the stores of 0x69, 0x6a, 0x70, 0x6f; `0x5fd4fe` leaves 25.
+
+## Animation rate
+
+`0x5fe2f0` gives a moving animation a playback rate: the unit's current speed over what the
+model's sequence covers at its size. The rate starts at 1.0 and stays there unless the requested
+id is one of the 15 move animations and the divisor is above zero. The divisor is the length of the
+first row of the model's base matrix, `√(m00² + m01² + m02²)`, times the sequence's move speed, read
+from the mount model when there is one, else the body.
+
+Addresses: `0x5fe2f0`, `0x5fe4be`, `0x5fe50a`, `0x5fe515`, `0x5fe520`, `0x5fe528`, `0x5fe53c`, `0x5fe541`, `0x5fe54d`, `0x5fe685`, `0x5fee80`, `0x711a20`, `0x7c4c90`
+Confidence: verified
+Proof: one
+Test: none
+
+`0x5fe4be` seeds 1.0. `0x5fe50a` calls `CM2Model::GetSequenceInfo(id, 0)` on the model of the
+`+0xdc` else `+0xd8`; its record's `+0x8` is the first-row length times the resolved sequence's
+`+0xc`. `0x5fe515` and `0x5fe520` skip the rate for a divisor that is zero, below zero or not a
+number; `0x5fe528` skips it for an id outside the move set. `0x5fe53c` takes `GetCurrentSpeed(movement, 0)`
+and `0x5fe541` divides; `0x5fe54d` stores the rate even when the sequence length is 0. `0x5fe685`
+hands the rate to the animation descriptor. The base matrix is set from `+0x90 · +0x94` and `+0x98`
+(`+0x9c` mounted), so a scaled unit's rate carries its scale (`objectbase`).
 
 ## Animation sets
 
@@ -143,6 +248,28 @@ sprays. The print's sizes come from `0x607920`: the mount's `+0xcc0` and scaled 
 `CreatureModelData` row. `0x5ffb10(hand, bit)` takes the hand's item and the sheathe state
 before or after the change by `+0xd58`, re-attaches the weapon and plays the sheathe sound
 0x458530. `0x607840` drops events whose position is not a number. Slices: uh_placement_dist2_difftest `0x5fbfdb`-`0x5fc015`; uh_placement_inner_range_difftest `0x5fc0b3`-`0x5fc0c1`; uh_placement_ground_z_difftest `0x5fc157`-`0x5fc197`; uh_placement_height_gate_difftest `0x5fc157`-`0x5fc172`.
+
+## Event points
+
+The dispatcher `0x5ffbd0` reads an event's tag at `[ebx+0x8]`, its data at `[ebx+0xc]` and its world point at
+`[ebx+0x10]`. The footprint tags (`$BR0` to `$WL3`), the terrain footstep of `$FSD`, `$ESD`, the
+connecting swing of `$CSS`, `$SHL`, `$SHR` and the missile tags `$CST`, `$CSL` and `$CSR` use that
+point. `$TRD` plays at the unit's position plus 1.0 in z, and the foley of `$FSD` and the sounds
+of `$FD1` to `$FD9` at its position plus 2.0. `$CSD` carries the data as a voice id and plays at
+attachment 17, and a missed `$CSS` plays at attachment 1. `$BTH` and `$DTH` take no point.
+
+Addresses: `0x5ffbd0`, `0x5ffc82`, `0x5ffe32`, `0x5fff44`, `0x5fff5a`, `0x5fffca`, `0x600139`, `0x5ffeca`, `0x5ffeed`, `0x5fffad`, `0x5fbf70`, `0x623390`, `0x6239f0`, `0x62faa0`, `0x623c10`, `0x623b90`, `0x60c940`
+Confidence: verified
+Proof: one
+Test: none
+
+The arms load `[ebx+0x10]` at `0x5ffc82`, `0x5ffe32` (the `$.R` and `$.L` footprints, passed to
+`0x5fbf70`), `0x5fff44` (`0x623390`), `0x5fff5a` (`0x6239f0`), `0x5fffca` and `0x600143` (`0x60c940`).
+The `$TRD` arm `0x5ffeca` tests the player type bit and calls `0x62faa0`, which adds 1.0 to
+`GetPosition` (slot 5, `fadd` of the float 1.0); the arm at `0x5ffeed` passes `[ebx+0xc]` to
+`0x623c10`, which calls `0x623b90(17)`, the attachment's position or the unit's plus the table
+height. The `$FD` sounds add 2.0 (`sounds`). The model queue computes the point once for an event
+(`models/animation`), so every arm that reads it sees the same value.
 
 ## Emotes
 

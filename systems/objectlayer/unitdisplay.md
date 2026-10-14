@@ -61,6 +61,56 @@ component from the extra row (race, gender, skin, face, hair, facial hair; textu
 has flag 0x4, from its bytes. Equipment: 19 slots for a native player display, else the extra's
 ten item displays `+0x20` to `+0x44`, then both hands (`0x60b770`).
 
+## Player appearance bytes
+
+A player's character component takes its look from three fields: race and gender from
+`UNIT_FIELD_BYTES_0`, skin, face, hair style and hair color from `PLAYER_BYTES` (field 193), and
+facial hair from `PLAYER_BYTES_2` (field 194).
+
+Addresses: `0x5fb200`, `0x5fb4a2`, `0x5fb4ac`, `0x5fb4b6`, `0x5fb4bc`, `0x5fb4c6`, `0x5fb4d0`, `0x5fb4da`, `0x5fb4e4`, `0x476b90`
+Confidence: verified
+Proof: one
+Test: none
+
+`0x5fb200` reads bytes 0 and 2 of the unit descriptor at `+0x78` and `+0x7a` (`0x5fb4a2`,
+`0x5fb4ac`) as race and gender. The player block pointer `+0xe68` (`0x5fb4b6`), the descriptor from
+offset 0x2f0, gives bytes 0 to 3 at `+0x14` to `+0x17` as skin (`0x5fb4bc`), face (`0x5fb4c6`), hair
+style (`0x5fb4d0`) and hair color (`0x5fb4da`), and byte 0 at `+0x18` as facial hair (`0x5fb4e4`). The
+record is handed to the component by `0x476b90`.
+
+## Model data flags
+
+The flags word `+0x4` of a unit's `CreatureModelData` row is tested at four places, none of
+which decides whether the model is drawn.
+
+Addresses: `0x5fc0dd`, `0x5fc0e1`, `0x600003`, `0x600007`, `0x5fb3d3`, `0x5fb3d7`, `0x60adc7`, `0x60add2`, `0x60b198`, `0x60b1a2`
+Confidence: verified
+Proof: one
+Test: none
+
+Bit 0x1 skips the footstep ground effect (`0x5fc0dd`, `0x5fc0e1`), bit 0x2 the breath puff of the `$BTH`
+event (`0x600003`, `0x600007`), bit 0x4 allows the character bake (`0x5fb3d3`, `0x5fb3d7`) and bit 0x8
+sets bit 0x20000 of `+0xd58`, clearing it otherwise (`0x60adc7`, `0x60b198`). All four go through the row
+cached at `+0xb3c`.
+
+## The display alpha
+
+A unit's alpha comes from its display row. The rebuild of a display ends by fading the unit over
+1000 ms to the row's alpha byte over 255 (slot 27, 1.0 without a row), times the alpha of the
+first effect on the list `+0xb50` when there is one. The same fade restores the alpha when such an
+effect ends. A player is a unit, so a player in a creature display takes the row's alpha.
+
+Addresses: `0x60abe0`, `0x60ad9f`, `0x60d180`, `0x60d2d0`, `0x614f80`, `0x60d219`, `0x5ff2b2`, `0x60d9de`
+Confidence: verified
+Proof: one
+Test: none
+
+`0x60ad9f` is the call to `RestoreAlpha` (`0x60d180`) in the rebuild; `0x60d180` calls slot 27
+(`0x60d2d0`: `fild [row+0x14]`, `fmul` 1/255), multiplies by `[+0xb50]+0x78` when the list is not
+empty and calls `FadeTo(alpha, 0x3e8)`. The other callers are `0x5ff2b2`, `0x60d219` and `0x60d9de`
+(`auras`). Slot 27 is the same function in the unit and player tables; no code tests the object
+type.
+
 ## Mounts
 
 The `UNIT_FIELD_MOUNTDISPLAYID` watcher passes the old id to `0x5ffa50`, which dismounts from the
@@ -133,6 +183,121 @@ one (0x47a070), opening or closing the hand.
 `0x611e10` uses option 17, keeps the model at `+0xd24`, gives a bow `0x611ff0` (a line from `$WTT`
 to `$WTB`) and lets the active player face its target. `0x608d60` rebuilds a hand's trail at `+0xd34` (0x6c6920, a
 `WTOBJECT`); `0x60ba00` and `0x60d5d0` release them, `0x60e550` passes them arguments. `0x608dd0`, which nothing reaches, rebuilds both. Slices run `0x612044`-`0x612116` and `0x612221`-`0x612269`.
+
+## The ammo model
+
+A shooter holds one ammo model, built from an item display id. Two callers set it: a spell start that
+carries an ammo id, for any caster, and a change of the active player's own ammo field. An id of 0
+removes it. Firing does not remove it.
+
+Addresses: `0x60ba30`, `0x60ba5f`, `0x60ba7e`, `0x60bab3`, `0x60bacb`, `0x60baf6`, `0x60bb19`, `0x60bb24`, `0x6e78b6`, `0x4c70b0`, `0x4c70fc`, `0x479f40`, `0x838d70`, `0x838d50`, `0x60f530`, `0x624b70`, `0x60f322`, `0x60f533`, `0x600177`
+Confidence: verified
+Proof: one
+Test: none
+
+`0x60ba30(id)` does nothing when `+0xd2c` already holds the id and a model hangs at `+0xd28`;
+else it detaches and closes the old model (`0x60ba5f` to `0x60ba7e`), stores the id, and builds the new
+one with `0x479f40(body, record, selector)`. The selector is 0x18, or 0x19 for a ranged item of inventory
+type 0x19 (`0x60bab3`), and picks the `Item\ObjectComponents\Ammo\` or `Weapon\` directory
+(`0x838d70`, `0x838d50`); the record is the item display row for the id. The model attaches to the body at
+35 only for selector 0x18, a ranged item that is not a gun or crossbow (class 2, subclass 3 or 18,
+`0x60bacb`), and bit 0x4000 of `+0xd58` (`0x60bb19`). The spell start calls it at `0x6e78b6` with the packet's id; the field watcher below calls it too.
+`0x60f530` detaches the model without clearing `+0xd28` or `+0xd2c`; its six callers are the cancel, the
+cast-result and movement paths. Bit 0x4000 is set at `0x624b70` and cleared at `0x60f322`, `0x60f533` and `0x600177`.
+
+## The ammo field watcher
+
+The active player's ammo field sets the ammo model before any shot.
+
+Addresses: `0x4c70b0`, `0x4c6fea`, `0x4c70b1`, `0x4c70c7`, `0x4c70dc`, `0x4c70e7`, `0x4c70e9`, `0x4c70fc`, `0x4c7110`, `0x4c711a`, `0x60ba30`
+Confidence: verified
+Proof: one
+Test: none
+
+`0x4c70b0` is registered at `0x4c6fea` for byte offset 0x102c of the player block and calls `0x60ba30`
+at `0x4c70fc` with that field of the active player. It ignores its arguments: it resolves the active player's own GUID (`0x4c70b1` to `0x4c70c7`, mask 0x10) and compares it with itself
+(`0x4c70dc` to `0x4c70e7`), so the zero branch (`0x4c70e9`) is never taken. It then signals event 0xba (`0x4c7110`) and returns 1 (`0x4c711a`).
+
+## The quiver
+
+A bow shows its quiver on the back while the bow is drawn.
+
+Addresses: `0x611e10`, `0x611e31`, `0x611f08`, `0x611f17`, `0x6117bd`, `0x611813`, `0x611f2d`, `0x611f33`, `0x611f4c`, `0x6222e0`, `0x5da0b0`, `0x478aa0`, `0x478960`, `0x479c50`, `0x479cfe`, `0x4798c0`, `0x838d10`
+Confidence: verified
+Proof: one
+Test: none
+
+`0x611e10(leaving)` hangs the ranged weapon. For a player with a character component
+(`+0xd30`), a nonzero argument, passed when the ranged state ends (`0x6117bd`), clears slot 11
+(`0x611f17`), and so does the change out of state 2 to state 0 (`0x611813`). With the argument 0 and a weapon whose inventory type
+is neither 0x1a nor 0x19 (`0x611e31`), so a bow, it finds an item of class 11 among the unit's items at
+`+0x1d38` (`0x6222e0`), takes its display id (`0x5da0b0`) and sets slot 11 (`0x478aa0`). The component
+builds `Item\ObjectComponents\Quiver\` plus the record's model name (`0x479c50`) and attaches the model at
+attachment 26 (`0x479cfe`).
+
+## The bowstring
+
+A bow's string is drawn by a callback, not by the model.
+
+Addresses: `0x611ff0`, `0x611edf`, `0x611eee`, `0x710db0`, `0x7131b0`, `0x6121b8`, `0x6121c9`
+Confidence: verified
+Proof: one
+Test: none
+
+`0x611e10` registers `0x611ff0` with `SetDrawCallback` (`0x611eee`) only when the ranged weapon is
+class 2, subclass 2 (`0x611edf`). The callback reads the bow's event positions `$WTT` and `$WTB`
+through `0x7131b0` and joins them to a middle point by two lines: the unit's attachment 35 while
+bit 0x4000 of `+0xd58` is set (`0x6121b8`), else the midpoint of the two ends.
+
+## The shield and unarmed animations
+
+A shield is not held while the unit plays an unarmed ready or attack animation.
+
+Addresses: `0x60b770`, `0x60b8c9`, `0x60b8d9`, `0x60b6e0`, `0x60b590`, `0x60b632`, `0x5fdb50`
+Confidence: verified
+Proof: one
+Test: none
+
+`0x60b770` calls `0x60b6e0` with the current animation (`0x5fdb50`) at `0x60b8c9`; for the ids 16, 20,
+25, 117 and 118 it clears the in-hand flag of a shield (inventory type 14) at `0x60b8d9`. `0x60b590`
+asks the same question at `0x60b632`.
+
+## Weapon trails
+
+A visual kit's character procedure of type 8 arms the swing trails of the unit's weapons. It
+stores the colour, parameter 0 with parameter 3 in the top byte, at `+0xd1c` and the duration,
+parameter 2, at `+0xd20`. The next `PlayAnimation` passes both to each of the two trail objects at
+`+0xd34` and clears `+0xd20`, so one animation fires one trail. The trails draw their own geometry.
+
+Addresses: `0x60d80a`, `0x60d828`, `0x60d835`, `0x5fe48e`, `0x5fe4a3`, `0x5fe4ac`, `0x5fe4b1`, `0x60e550`, `0x6c69c0`
+Confidence: verified
+Proof: one
+Test: none
+
+`0x60d80a` truncates the three parameters with `_ftol`; `0x60d828` and `0x60d835` store them. The
+read in `0x5fe48e` skips the pass when the duration is 0; `0x5fe4ac` calls `0x60e550(&colour,
+duration)`, which calls `0x6c69c0` on each trail object that exists.
+
+## Disarm and the hands
+
+Hands attach through `0x60b770(hand)`, which asks for the hand's weapon without `raw` and returns,
+attaching nothing, when the weapon is hidden by disarm. The flags watcher redoes the hands when the
+disarm bit 0x200000 changes. A unit that holds a class 2 item in the main hand, is now disarmed and
+has a weapon drawn (`+0xd40` not 0) loses the main-hand attachment (`0x47a310`, equipment slot
+0xf); every other change re-hangs the hand through `0x60b770(0)`. The ranged weapon is never hidden.
+
+Addresses: `0x5ff580`, `0x5ff614`, `0x5ff623`, `0x5ff63e`, `0x5ff65d`, `0x5ff676`, `0x5ff67d`, `0x5ff690`, `0x5ff695`, `0x5ff699`, `0x5ff6a5`, `0x60b770`, `0x60b791`, `0x60b79e`, `0x47a310`
+Confidence: verified
+Proof: one
+Test: none
+
+`0x5ff614` and `0x5ff619` run the block only when 0x200000 is in the changed bits. `0x5ff629` calls
+slot 38 (`GetWeapon(0, 1)`, the true main hand); `0x5ff631` and `0x5ff636` pass on to the off hand
+unless it is a class 2 item; `0x5ff63e` tests the flag, `0x5ff65d` the drawn state, and `0x5ff676`
+detaches. `0x5ff695` repeats the block for the off hand but pushes slot 0x10 at `0x5ff699`, an
+equipment index that slot 38 does not know: a player returns none, so `0x5ff6a5` leaves the block
+dead, and a creature reads past its virtual item block. `0x60b791` calls slot 38 and `0x60b79e`
+returns on none.
 
 ## Shapeshift forms
 
