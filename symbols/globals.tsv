@@ -31,7 +31,8 @@ address	type	name	name_from	system	meaning	confidence	proof	finding
 0x4712e0	void *[5]	s_countCustomizationCases		glue	Holds the five case addresses of the customization count 0x471270, skin to facial hair	verified	one	glue/create#randomizing-and-counts
 0x480850	uint8_t[121]	s_worldPickTypeCaseTable		ui	Maps an object type mask less 9 to the four cases of 0x480780: unit, player, game object, corpse, else 4	verified	one	spell/targeting#object-pick-filters
 0x4901c8	const uint32_t[4]	s_signatureAnswerCases		ui	Holds the four case addresses CGGameUI::Initialize jumps through on the FrameXML signature answer	verified	one	ui/framexml#building-the-game-interface
-0x494b54	const uint8_t[12]	s_actionCheckCases		ui	Maps the action kinds 0 to 11 of 0x494a50 to its three cases	verified	one	ui/luastate#the-context-word
+0x494b48	void *[3]	s_protectedGateArms		ui	Holds the three arm addresses of the action gate 0x494a50: refuse, flags test, continue	verified	one	ui/protected#protected-action-gate
+0x494b54	uint8_t[12]	s_protectedGateTagArm		ui	Holds the arm index of each action gate tag 0 to 11	verified	one	ui/protected#protected-action-gate
 0x494f40	void *[7]	s_cases494e20		ui	Holds the 7 case addresses of the switch in 0x494e20	inferred	none	
 0x496888	void *[4]	s_cases496720		ui	Holds the 4 case addresses of the switch in 0x496720	inferred	none	
 0x49afe0	void *[5]	s_cases49a870		ui	Holds the 5 case addresses of the switch in 0x49a870	inferred	none	
@@ -258,6 +259,7 @@ address	type	name	name_from	system	meaning	confidence	proof	finding
 0x7a3060	uint8_t[9]	s_pointXCaseIndex		ui	Holds the case of each anchor point for the x getter: 0, 1, 2 repeated	verified	one	ui/anchors#relative-point-coordinates
 0x7a3134	void *[3]	s_pointYCases		ui	Holds the three case addresses of the relative point y getter	verified	one	ui/anchors#relative-point-coordinates
 0x7a3140	uint8_t[9]	s_pointYCaseIndex		ui	Holds the case of each anchor point for the y getter: 0, 0, 0, 1, 1, 1, 2, 2, 2	verified	one	ui/anchors#relative-point-coordinates
+0x7c229c	void *[4]	s_circleBoxModeCases		cmath	Holds the four mode case addresses of the circle against a box test 0x7c2040	verified	one	cmath/geometry#circle-and-point-against-a-box
 0x7c5468	void *[5]	s_displacementCases		collision	Holds the five case labels of the displacement dispatcher 0x7c5360	verified	one	collision/kinematics#displacement-dispatcher
 0x7c547c	uint8_t[15]	s_displacementCaseIndex		collision	Holds the case index for modes 1 to 15 of the displacement dispatcher	verified	one	collision/kinematics#displacement-dispatcher
 0x7ff310	const void *			unassigned	Holds a function address that OsGetTickCount, OsGetCachedUnixTime, DestroyTimeManager read; not read here	inferred	none	
@@ -523,10 +525,12 @@ address	type	name	name_from	system	meaning	confidence	proof	finding
 0x80c418	const float	s_float428c0000		objectlayer	Holds the float 70 (0x428c0000)	inferred	none	
 0x80c450	float	s_pathPointReachedSq		objectlayer	Holds 0.0007716049, (1/36)², under which a path point counts as the unit's position	verified	one	objectlayer/unitmovement#monster-moves
 0x80c454	uint32_t[8]	s_questStatusMarkers		objectlayer	Maps quest statuses 0 to 7 to marker models 0, 3, 0, 2, 7, 1, 6, 6	verified	one	objectlayer/unitnames#quest-markers
+0x80c484	const float	s_sprintSpeedThreshold		objectlayer	Holds 11.0, the speed from which the moving animation is Sprint	verified	one	collision/walkmode#moving-animation-choice
 0x80c48c	uint32_t[12]	s_missWordKinds		objectlayer	Holds the name descriptor kind of each miss outcome: 6, then 3, with ABSORB 1	verified	one	objectlayer/unitnames#damage-and-miss-numbers
 0x80c4e8	const float	s_twelve		unassigned	Holds 12.0	verified	one	lighting/celestial#celestial-bodies
 0x80c4ec	const float	s_fmodVersion		unassigned	Holds 3.75, the FMOD version the engine requires	verified	one	sound/engine#device-initialization
 0x80c4f8	void *[46]	CGUnit_C::vftable		objectlayer	Holds the unit vtable, 46 slots	verified	one	objectlayer/classes#constructors-and-final-vtables
+0x80c5bc	const float	s_stopNearSquared		collision	Holds 9.0, the squared distance under which a stop-form move flushes at its point	verified	one	collision/ride#monster-move-body
 0x80c5c0	const float	s_point4		unassigned	Holds 0.4	verified	one	lighting/celestial#disc-draw
 0x80c5c4	float	s_facetFacingBound		collision	Holds -1e-5 (0xb727c5ac), the n·dir at or below which a facet faces against the motion	verified	one	collision/contact#nearest-facet-per-face
 0x80c5c8	const float	s_rectEpsilon		ui	Holds 1e-5, the edge change below which a resolved rectangle counts as unchanged	verified	one	ui/anchors#resolving-and-the-changed-callback
@@ -534,6 +538,7 @@ address	type	name	name_from	system	meaning	confidence	proof	finding
 0x80c698	const float	s_float3a03126f		unassigned	Holds the float 0.0005 (0x3a03126f)	inferred	none	
 0x80c6a0	const double	s_double3f5d7dbf40000000		objectlayer	Holds the double 0.0017999999690800905 (0x3f5d7dbf40000000)	inferred	none	
 0x80c6a8	const float	s_float3eb6e48a		unassigned	Holds the float 0.35721236 (0x3eb6e48a)	inferred	none	
+0x80c730	const float	s_teleportReloadDistance		collision	Holds 30.0, the distance past which a forced move reloads the world	verified	one	collision/teleport#forced-position-reload
 0x80c734	float	s_splineWarpSpeedSquared		collision	Holds 3600.0 (0x45610000), the squared horizontal speed in yd/s above which a spline step skips collision	verified	one	collision/mover#spline-warp-gate
 0x80c738	float	s_mapCoordinateSpan		collision	Holds 34131.332 (0x47055355), the bound on 17066.666 minus a coordinate	verified	one	collision/mover#position-validity
 0x80c73c	float	s_collisionRadiusCap		collision	Holds 0.54071623 (0x3f0a6c61), the cap on half width over scale in 0x617460	verified	one	collision/mover#collision-size
@@ -828,6 +833,8 @@ address	type	name	name_from	system	meaning	confidence	proof	finding
 0x81d888	void *[11]	s_planeEmitterVftable		models	Holds the plane emitter's virtual functions	verified	one	models/particles#emitter-classes
 0x81d8b4	void *[11]	s_sphereEmitterVftable		models	Holds the sphere emitter's virtual functions	verified	one	models/particles#emitter-classes
 0x81d8e0	void *[11]	s_splineEmitterVftable		models	Holds the spline emitter's virtual functions	verified	one	models/particles#emitter-classes
+0x81d994	const uint32_t[3]	s_nextAxis		cmath	Holds 1, 2, 0, the next axis of each axis for the matrix to quaternion conversion	verified	one	cmath/quaternions#matrix-to-quaternion
+0x81d9a0	const float	s_quaternionEpsilon		cmath	Holds 2^-21, the sine bound under which the quaternion functions copy	verified	one	cmath/quaternions#exponential-and-logarithm
 0x81d9bc	const float	s_rayTriangleNegEpsilon		cmath	Holds -1e-6, the lower determinant bound of the ray triangle test	verified	one	models/scene#ray-triangle-test
 0x81da58	float	s_gravity		collision	Holds g, 19.291105 (0x419a542f) yards per second squared, down-positive	verified	one	collision/falling#arc-fields-and-constants
 0x81da5c	float	s_negInvGravity		collision	Holds -1/g, -0.051837362 (0xbd54536a)	verified	one	collision/falling#arc-fields-and-constants
@@ -1541,6 +1548,7 @@ address	type	name	name_from	system	meaning	confidence	proof	finding
 0x879828	char[26]	s_textFrameSIsNotResizable		ui	Holds the string "Frame %s is not resizable"	inferred	none	
 0x879844	char[37]	s_textFrameSIsNotMovableOrResizable		ui	Holds the string "Frame %s is not movable or resizable"	inferred	none	
 0x879b78	char[13]	s_textIgnoreArrows		ui	Holds the string "ignoreArrows"	inferred	none	
+0x879c8c	char[15]	s_onEnterPressed		ui	Holds the script name OnEnterPressed of an edit box	verified	one	ui/protected#input-event-flags
 0x879cac	char[3]	s_editBoxPipeText		ui	Holds ||, the text an edit box inserts for a typed pipe	verified	one	ui/editbox#typed-characters
 0x879cb0	char[5]	s_editBoxTabText		ui	Holds the four spaces an edit box inserts for a tab character	verified	one	ui/editbox#typed-characters
 0x879d00	uint32_t[78]	s_buttonMethods		ui	Holds the 39 pairs of a name and a function of the Button methods	verified	one	ui/button#lua-methods
@@ -1970,7 +1978,7 @@ address	type	name	name_from	system	meaning	confidence	proof	finding
 0xb711b8	uint32_t			ui	Holds a dword that CGTutorial::InitializeGame, CGTutorial::OnTutorialFlags read and write; not read here	inferred	none	
 0xb711e4	uint32_t			ui	Holds a dword that CGTutorial::InitializeGame, CGTutorial::OnTutorialFlags read and write; not read here	inferred	none	
 0xb711ec	uint32_t			ui	Holds a dword that CGTutorial::InitializeGame, CGTutorial::OnTutorialFlags read and write; not read here	inferred	none	
-0xb71290	uint32_t			ui	Holds a dword that CGGameUI::Initialize, CheckActivePlayer, Script::GetNumBindings read and write; not read here	inferred	none	
+0xb71290	void *	s_bindings		ui	Holds the key binding object of 0xdc bytes that 0x4b6050 builds, whose +0xd8 is 1 while a binding runs	verified	one	ui/protected#input-event-flags
 0xb712a8	uint8_t			unassigned	Holds a byte that Script::UninviteFromRaid, CGGameUI::ClosestObjectMatch read and write; not read here	inferred	none	
 0xb713f0	uint32_t			ui	Holds a dword that CGRaidInfo::InitializeGame reads and writes; not read here	inferred	none	
 0xb713f4	uint32_t			ui	Holds a dword that CGRaidInfo::InitializeGame, HandleRaidReadyCheckPacket read and write; not read here	inferred	none	
@@ -2149,6 +2157,7 @@ address	type	name	name_from	system	meaning	confidence	proof	finding
 0xc0da2c	int32_t			unassigned	Holds an int32_t that Script::GetNumPackages, Script::GetPackageInfo read and write; not read here	inferred	none	
 0xc0da78	uint8_t[20]	s_nameGenStore		dbc	Holds the NameGen.dbc store: records, count, id index and maximum id	inferred	none	
 0xc0daa8	uint32_t			unassigned	Holds a dword that ClientInitializeGame, NewWorldHandler, HandleLoginVerifyWorldPacket read and write; not read here	inferred	none	
+0xc0daac	uint32_t	s_mapRecordCount		unassigned	Holds the bound of the Map.dbc row array at 0xc0daa8	inferred	none	collision/teleport#far-transfer-handlers
 0xc0dac8	uint32_t[5]	s_lockTypeStore		dbc	Holds the LockType.dbc store	verified	one	objectlayer/gameobjects#cursor
 0xc0dadc	uint32_t[5]	s_lockStore		dbc	Holds the Lock.dbc store	verified	one	objectlayer/gameobjects#locks
 0xc0db40	uint32_t			unassigned	Holds a dword that Script::GetNumLaguages, Script::GetLanguageByIndex, StaticDBLoadAll read and write; not read here	inferred	none	
@@ -2438,6 +2447,7 @@ address	type	name	name_from	system	meaning	confidence	proof	finding
 0xc89f40	uint32_t	s_traceCellCount		terrain	Counts the cells a segment walk listed	verified	one	terrain/trace#terrain-walk
 0xc89f44	uint8_t	s_terrainShaderFlagA		terrain	Holds 1 when a terrain shader set is in use, which selects the combined chunk texture	verified	one	terrain/chunk#mcnk-header
 0xc89f50	uint32_t[8192]	s_wdtTiles		terrain	Holds the WDT's 64x64 tile entries of two dwords: flags and the pending ADT read	verified	one	terrain/files#wdt
+0xc91f54	void *	s_entityFacetCallback		terrain	Holds the callback 0x483340 that resolves an entity record to a game object model and box	verified	one	terrain/entities#entity-gather
 0xc91f78	char[256]	s_mapDirectory		terrain	Holds the map's directory, World\Maps\ and the map name	verified	one	terrain/files#map-load
 0xc92078	CMapAreaLow *[4096]	s_lowDetailTiles		terrain	Holds each tile's low-detail tile from the WDL, or null	verified	one	terrain/files#wdl
 0xc9607c	uint8_t	s_groupLiquidShaderFlag		terrain	Holds a shader flag the map load sets	inferred	none	
@@ -2458,7 +2468,7 @@ address	type	name	name_from	system	meaning	confidence	proof	finding
 0xc9e35c	uint32_t[8]	s_wdtHeader		terrain	Holds the WDT's 32-byte map header; bit 0 of its first dword marks a one-object map	verified	one	terrain/files#wdt
 0xc9e384	uint8_t	s_mapIsOneObject		terrain	Holds 1 when the WDT names one map object for the whole map	inferred	none	
 0xc9e388	uint32_t	s_useSse		terrain	Holds 1 when the processor has SSE, set at map start-up	verified	one	terrain/queries#chunk-height
-0xca03e4	void *	s_aaBspLeafCache		models	Holds the BSP leaf cache's slot table, freed with a BSP tree	verified	one	models/overview#object-files
+0xca03e4	void *	s_bspNodeCache		models	Holds the BSP node cache, null unless the console enables it	inferred	none	models/collisionquery#box-descent-and-face-test
 0xca03e8	uint32_t	s_aaBspLeafCacheVictim		models	Holds the counter whose low three bits pick the leaf cache slot to replace	verified	one	models/overview#object-files
 0xca05f0	uint8_t	s_footprintPools		terrain	Begins the footprint ring pools	inferred	none	
 0xca7d70	void *	s_sceneDefList		terrain	Holds the scene's placement list	inferred	none	
@@ -2489,6 +2499,10 @@ address	type	name	name_from	system	meaning	confidence	proof	finding
 0xcbe320	uint32_t	s_portalWindowCount		terrain	Holds the count of the portal flood's windows	inferred	none	
 0xcbe324	uint8_t	s_portalWindowList		terrain	Begins the portal flood's window list	inferred	none	
 0xcde5ac	uint32_t	s_portalInsideLeg		terrain	Holds 1 while the inside visibility pass runs	inferred	none	
+0xcde648	uint16_t[8192]	s_wmoKeptFaces		models	Holds the indices of the faces a WMO box query kept, in order	verified	one	models/collisionquery#box-descent-and-face-test
+0xce26e0	uint32_t	s_wmoVisitedCount		models	Holds the count of entries in the visited-face stack 0xce26e8	verified	one	models/collisionquery#box-descent-and-face-test
+0xce26e8	uint16_t[8192]	s_wmoVisitedFaces		models	Holds the face indices a WMO box query has marked visited, to clear their visited bit	verified	one	models/collisionquery#box-descent-and-face-test
+0xce66fc	uint32_t	s_wmoKeptCount		models	Holds the count of entries in the kept-face array 0xcde648	verified	one	models/collisionquery#box-descent-and-face-test
 0xce8270	uint8_t[24]	s_areaReadLock		terrain	Holds the critical section around ADT reads and parses	inferred	none	terrain/files#tile-file-read
 0xce8534	int32_t	s_violenceLevel		client	Holds the violenceLevel CVar value; written by 0x6c5af0	inferred	none	spell/visuals#spell-visual-record-choice
 0xce8538	int32_t			unassigned	Holds an int32_t that SndInterfaceWorldInitialize, Script::GetGameTime, IsDaytime read; not read here	inferred	none	
@@ -2681,6 +2695,41 @@ address	type	name	name_from	system	meaning	confidence	proof	finding
 0xcf58e8	float	s_particleCameraDistance		models	Holds the distance from the last updated emitter to the camera	verified	one	models/particles#update
 0xcf58f0	float[128]	s_particleNoise		models	Holds 128 uniform values in [0, 1) the particle code draws from	verified	one	models/cache#noise-table
 0xcf5b68	float[16]	s_particleViewMatrix		models	Holds the matrix an emitter's draw takes particle positions into view space with	verified	one	models/particles#particle-view-space
+0xcf5c04	float	s_geometryFile1Infinity		cmath	Holds +infinity from start-up, stored by 0x7bc0a0	verified	one	cmath/geometry#static-constants
+0xcf5c08	float	s_geometryFile1InvTwoPi		cmath	Holds 1/2π, 0.15915494, from start-up, stored by 0x7bdf30	verified	one	cmath/geometry#static-constants
+0xcf5c0c	float	s_geometryFile1TwoPi		cmath	Holds 2π, 6.2831855, from start-up, stored by 0x7bdf10	verified	one	cmath/geometry#static-constants
+0xcf5c10	float	s_geometryFile2Infinity		cmath	Holds +infinity from start-up, stored by 0x7be0d0	verified	one	cmath/geometry#static-constants
+0xcf5c14	float	s_geometryFile2InvTwoPi		cmath	Holds 1/2π, 0.15915494, from start-up, stored by 0x7bf660	verified	one	cmath/geometry#static-constants
+0xcf5c18	float	s_geometryFile2TwoPi		cmath	Holds 2π, 6.2831855, from start-up, stored by 0x7bf640	verified	one	cmath/geometry#static-constants
+0xcf5c1c	float	s_geometryFile3Infinity		cmath	Holds +infinity from start-up, stored by 0x7bf6f0	verified	one	cmath/geometry#static-constants
+0xcf5c20	float	s_geometryFile3InvTwoPi		cmath	Holds 1/2π, 0.15915494, from start-up, stored by 0x7bf790	verified	one	cmath/geometry#static-constants
+0xcf5c24	float	s_geometryFile3TwoPi		cmath	Holds 2π, 6.2831855, from start-up, stored by 0x7bf770	verified	one	cmath/geometry#static-constants
+0xcf5c28	float	s_geometryFile4Infinity		cmath	Holds +infinity from start-up, stored by 0x7bf850	verified	one	cmath/geometry#static-constants
+0xcf5c2c	float	s_geometryFile4InvTwoPi		cmath	Holds 1/2π, 0.15915494, from start-up, stored by 0x7bf9b0	verified	one	cmath/geometry#static-constants
+0xcf5c30	float	s_geometryFile4TwoPi		cmath	Holds 2π, 6.2831855, from start-up, stored by 0x7bf990	verified	one	cmath/geometry#static-constants
+0xcf5c34	float	s_geometryFile5Infinity		cmath	Holds +infinity from start-up, stored by 0x7bfa40	verified	one	cmath/geometry#static-constants
+0xcf5c38	float	s_geometryFile5InvTwoPi		cmath	Holds 1/2π, 0.15915494, from start-up, stored by 0x7bfa80	verified	one	cmath/geometry#static-constants
+0xcf5c3c	float	s_geometryFile5TwoPi		cmath	Holds 2π, 6.2831855, from start-up, stored by 0x7bfa60	verified	one	cmath/geometry#static-constants
+0xcf5c40	float	s_geometryFile6Infinity		cmath	Holds +infinity from start-up, stored by 0x7bfb30	verified	one	cmath/geometry#static-constants
+0xcf5c44	float	s_geometryFile6InvTwoPi		cmath	Holds 1/2π, 0.15915494, from start-up, stored by 0x7c00d0	verified	one	cmath/geometry#static-constants
+0xcf5c48	float	s_geometryFile6TwoPi		cmath	Holds 2π, 6.2831855, from start-up, stored by 0x7c00b0	verified	one	cmath/geometry#static-constants
+0xcf5c4c	float	s_geometryFile7Infinity		cmath	Holds +infinity from start-up, stored by 0x7c0180	verified	one	cmath/geometry#static-constants
+0xcf5c50	float	s_geometryFile7InvTwoPi		cmath	Holds 1/2π, 0.15915494, from start-up, stored by 0x7c1300	verified	one	cmath/geometry#static-constants
+0xcf5c54	float	s_geometryFile7TwoPi		cmath	Holds 2π, 6.2831855, from start-up, stored by 0x7c12e0	verified	one	cmath/geometry#static-constants
+0xcf5c58	float	s_geometryFile8Infinity		cmath	Holds +infinity from start-up, stored by 0x7c13b0	verified	one	cmath/geometry#static-constants
+0xcf5c5c	float	s_geometryFile8InvTwoPi		cmath	Holds 1/2π, 0.15915494, from start-up, stored by 0x7c1430	verified	one	cmath/geometry#static-constants
+0xcf5c60	float	s_geometryFile8TwoPi		cmath	Holds 2π, 6.2831855, from start-up, stored by 0x7c1410	verified	one	cmath/geometry#static-constants
+0xcf5c64	float	s_geometryFile9Infinity		cmath	Holds +infinity from start-up, stored by 0x7c1580	verified	one	cmath/geometry#static-constants
+0xcf5c68	float	s_geometryFile9InvTwoPi		cmath	Holds 1/2π, 0.15915494, from start-up, stored by 0x7c1880	verified	one	cmath/geometry#static-constants
+0xcf5c6c	float	s_geometryFile9TwoPi		cmath	Holds 2π, 6.2831855, from start-up, stored by 0x7c1860	verified	one	cmath/geometry#static-constants
+0xcf5c70	float	s_geometryFile10Infinity		cmath	Holds +infinity from start-up, stored by 0x7c18b0	verified	one	cmath/geometry#static-constants
+0xcf5c74	float	s_geometryFile10InvTwoPi		cmath	Holds 1/2π, 0.15915494, from start-up, stored by 0x7c42d0	verified	one	cmath/geometry#static-constants
+0xcf5c78	float	s_geometryFile10TwoPi		cmath	Holds 2π, 6.2831855, from start-up, stored by 0x7c42b0	verified	one	cmath/geometry#static-constants
+0xcf5c7c	uint32_t[6]	s_polygonAxisPairs		cmath	Holds the two kept axes of each dropped axis for the polygon test, set by 0x7c18d0	verified	one	cmath/geometry#point-in-polygon
+0xcf5c94	float	s_geometryFile11Infinity		cmath	Holds +infinity from start-up, stored by 0x7c4350	verified	one	cmath/geometry#static-constants
+0xcf5c98	float	s_geometryFile11InvTwoPi		cmath	Holds 1/2π, 0.15915494, from start-up, stored by 0x7c4390	verified	one	cmath/geometry#static-constants
+0xcf5c9c	float	s_geometryFile11TwoPi		cmath	Holds 2π, 6.2831855, from start-up, stored by 0x7c4370	verified	one	cmath/geometry#static-constants
+0xcf5ca0	float	s_geometryFile12Infinity		cmath	Holds +infinity from start-up, stored by 0x7c43c0	verified	one	cmath/geometry#static-constants
 0xcf5ca4	float	s_geometryInvTwoPi		unassigned	Holds 1/2π, 0.15915494, from start-up	verified	one	collision/overview#object-files
 0xcf5ca8	float	s_geometryTwoPi		unassigned	Holds 2π, 6.2831855, from start-up	verified	one	collision/overview#object-files
 0xcf5cc0	float	s_sharedInfinity		collision	Holds +∞ from start-up	verified	one	collision/overview#shared-file-initializers
