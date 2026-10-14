@@ -5,8 +5,8 @@ How a received world packet reaches the function that handles its opcode.
 The `NetClient` (`NetClient.cpp`) holds two tables of 828 entries, a handler and a context per
 opcode. Code anywhere in the client fills them through `NetClient::SetMessageHandler`
 (`0x537a60`), mostly by way of `ClientServices::SetMessageHandler` (`0x5ab650`), which addresses
-the one live client; `tables/opcodes.tsv` lists all 387 registrations. Packets arrive on the
-network thread (`wire`), which copies each into a node of the `NETEVENTQUEUE` (`NetInternal.cpp`)
+the one live client; `tables/opcodes.tsv` lists all 387 registrations. Packets arrive on
+a network worker thread (`threads`), which copies each into a node of the `NETEVENTQUEUE` (`NetInternal.cpp`)
 instead of handling it. The main thread drains the queue from an event handler and the
 dispatcher `0x537aa0` calls each packet's handler. The realm connection registers one handler,
 `RealmConnection::MessageHandler` (`0x5b3ea0`), for the ten opcodes of logon to the world
@@ -61,7 +61,7 @@ and `0x80a658`.
 
 ## Network thread handoff
 
-The connection's handler on the network thread is the `NetClient`'s slot 1, `0x537b10`. It adds
+The connection's handler on a network worker thread (`threads`) is the `NetClient`'s slot 1, `0x537b10`. It adds
 the packet's length to the received-byte count and peeks the opcode: `SMSG_PONG` (`0x1dd`) is
 handled there and then (`session`, Ping and latency); every other packet is copied into a
 queue node of type `0x12`. Connecting, a failed connection and disconnecting queue nodes of
@@ -104,8 +104,10 @@ calls `0x538040` for each client; that tail-jumps to `0x5384d0` with the queue a
 `0x538529`, `jmp [eax*4+0x538610]` on the type less `0x12`, five entries, reached only while the
 client's `+0x1a60` is zero; type `0x16` sets it. `0x538597` calls `0x537ff0` unless a `0x16` node set the local flag at `0x53855f`.
 Slot 12, `0x537c50`, adds the length plus 2 to `0xc0d468`, requires `+0x70 == 6` (`0x537c71`), wraps
-the data in a data store and calls `0x537aa0` (`0x537ca0`). The client's `+0x1a5c` counts nodes
-in flight; when it drops to zero on a marked client, the drain calls the client's slot 0 with 1.
+the data in a data store and calls `0x537aa0` (`0x537ca0`). The client's `+0x1a5c` is a reference count: one per
+queued node and one for the poll in progress (`0x5384f1`); each handled node and the end of the poll
+release one (`0x53856b`, `0x5385a4`), and when it reaches zero on a marked client the poll calls the
+client's slot 0 with 1.
 
 ## Realm connection messages
 

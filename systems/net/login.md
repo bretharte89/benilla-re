@@ -236,39 +236,23 @@ whole.
 
 ## Reconnect
 
-With a kept session key the logon object sends the reconnect challenge (`0x02`) instead. Its
-reply carries a 16-byte challenge; the proof (`0x03`) sends `R1 = MD5(account ‖ time)`,
-`SHA1(account ‖ R1 ‖ challenge ‖ K)` and `SHA1(R1 ‖ C)`, and a zero reply hands the kept key back.
+With a kept session key the logon object sends the reconnect challenge instead of a logon: `0x02`, `0x02`, then the logon challenge body. The reply is a result byte, a 16-byte seed and a 16-byte checksum salt; a non-zero result, or a reply that does not hold the two values, is malformed and the link disconnects. The link keeps the seed, enters state 5 and gives the salt to the logon object, which answers with the proof below. The reply to the proof is a result byte: non-zero, as `0xff` from 16 up, enters state 2 and reports it; zero enters state 6 and hands the key back.
 
-Addresses: `0x5b2134`, `0x5bb6d0`, `0x5bae00`, `0x5baec0`, `0x5bbcb7`
-Confidence: inferred
-Proof: none
-Test: none
-
-`0x5b2134` tests the logon object's `+0xc` and calls `0x5bb6d0` with the key at `+0x54`. The rest is
-one reading of the reconnect branch of `0x5bbad0` from `0x5bbcb7` and of the two handlers, not
-recorded here at the instruction level.
-
-## SHA-1 overwrites its input
-
-The client's SHA-1 (`0x5d1db0` family: init, update, transform, final) keeps its 16-word
-message schedule in the 64-byte block it is given, so a transformed block is left holding
-schedule words. The update hands the transform the caller's own bytes for every full 64-byte
-block that follows the context's buffered bytes; those spans of the caller's buffer are
-overwritten. A short input, or the part copied into the context's buffer, is not. The hash
-itself is SHA-1 by its constants; its rounds are not recorded here.
-
-Addresses: `0x5d1db0`, `0x5d1de0`, `0x5d1ec0`, `0x5d32b0`, `0x5d1e48`, `0x5d1e69`, `0x5d233f`, `0x5d2386`
+Addresses: `0x5b2134`, `0x5bb6d0`, `0x5bae00`, `0x5baec0`, `0x5bae94`, `0x5baf0b`, `0x5baf3c`
 Confidence: verified
 Proof: one
-Test: `net::sha1_family_b`, `net::sha1_prng_next`, `net::sha1_prng_seed`, `net::srp6_client_session`, `net::srp6_credential_hash`, `net::srp6_file_hmac`, `net::srp6_interleave`
+Test: none
 
-`0x5d1db0` stores `0x67452301`, `0xefcdab89`, `0x98badcfe`, `0x10325476` and `0xc3d2e1f0` and zeroes
-the 64-bit bit count at `+0x14`. `0x5d1de0` fills the buffer at `+0x1c` and transforms it
-(`0x5d1e48`, `edx` the buffer), then calls the transform with `edx` pointing into the caller's
-data (`0x5d1e63`, `0x5d1e69`) for each further 64 bytes. In `0x5d1ec0`, `edx` is the block: from
-the seventeenth word on, each schedule word is stored back into it, `mov [edx],esi` at
-`0x5d233f`, `mov [edx+0x4],esi` at `0x5d2386` and so on. The round additions use `0x5a827999` and
-`0x6ed9eba1`, and the subtraction forms of `0x8f1bbcdc` and `0xca62c1d6`.
-`sha1_family_b`, `sha1_prng_next`, `sha1_prng_seed`, `srp6_client_session`, `srp6_credential_hash`,
-`srp6_file_hmac` and `srp6_interleave` run `0x5d1db0`, `0x5d1de0`, `0x5d1ec0` and `0x5d32b0` whole.
+`0x5b2134` tests the logon object's `+0xc` and calls `0x5bb6d0` with the account and the key (`+0xd`, `+0x54`), which enters state 3, upper-cases the account into `+0x19c`, copies the key to `+0x1fc` and sends. `0x5bae00` waits for 17 bytes (`0x5bae0d`) but reads 33 (the result byte and two 16-byte slices), so a reply that arrives split after 17 bytes is taken as malformed (`0x5bae66`) instead of waited for; it reads the result byte (`0x5bae2d`; non-zero returns 1) and two borrowed 16-byte slices (`0x5bae4e`, `0x5bae5b`), returns 1 when the cursor passed the end (`0x5bae66`), copies the first to `+0x1dc`, sets state 5 (`0x5bae94`) and calls the owner's slot 5 with the second (`0x5baea9`). `0x5baec0` stores state 2 and calls slot 11 with the result for a non-zero byte (`0x5baf0b`, `0x5baf15` to `0x5baf19`), else state 6 and slot 11 with `+0x1fc` and 40 (`0x5baf3c`).
+
+## Reconnect proof
+
+The reconnect proof is `0x03`, `R1 = MD5(account ‖ unix time as a dword)` (16 bytes), `R2 = SHA-1(account ‖ R1 ‖ seed ‖ K)` (20, `K` the kept 40-byte key), `R3 = SHA-1(R1 ‖ C)` (20, with `C` 20 zero bytes on a reconnect), the count of key records, and the key records, 30 bytes from each 32-byte source: its u16 at `+0` (`0x5bbe10`), its u32 at `+4` (`0x5bbe23`), its 4 bytes at `+8` (`0x5bbe38`), and the 20-byte hash `0x5bba80` of the record with `R1` (16 bytes) and the seed at `+0x1dc` (16 bytes) (`0x5bbe43` to `0x5bbe6a`). No security byte follows them (`0x5bbe7a` to `0x5bbe8b`).
+
+Addresses: `0x5bbad0`, `0x5bbcb7`, `0x5bbd06`, `0x5bbd24`, `0x5bbd7c`, `0x5bbd92`, `0x5bbdc6`, `0x4294c0`
+Confidence: verified
+Proof: one
+Test: none
+
+In `0x5bbad0`, `0x5bbcb7` hashes the account (`strlen`, `0x661dd0`) and the time (`0x4294c0` is `time(0)`) into R1; `0x5bbd06` puts `0x03` and R1; `0x5bbd24` to `0x5bbd7c` hash the account, R1, `+0x1dc` (16) and `+0x1fc` (40) into R2; `0x5bbd92` to `0x5bbdc6` hash R1 and the argument into R3, which `0x5b1c98` makes 20 zeros.
+
