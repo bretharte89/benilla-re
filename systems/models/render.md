@@ -188,6 +188,26 @@ state 2 with alpha byte 0 (`0x70c997`). Kinds above 2 pack `(a << 24) | 0xffffff
 
 Of `0x70c190`, `scale_add_difftest` runs `0x70c631`–`0x70c69c`.
 
+## Model specular
+
+A model draw sets no specular colour. Its material step writes the device colour states 1 (diffuse) and 2
+(emissive) and the shininess state 4 only, and the light's third colour, which the commit hands the
+device as the specular of light 0, is filled only by the directional branch of the light add, from a
+light of the model's own. The world light's apply adds to the ambient and the diffuse sums alone. The
+specular colour state 3 is set at twelve sites, all in the map code between `0x685080` and `0x6bfab1`.
+
+Addresses: `0x70c8ad`, `0x70c997`, `0x70ca20`, `0x71bf60`, `0x71c0ed`, `0x71c7a8`, `0x6a8050`, `0x6a7300`, `0x685080`, `0x68522f`, `0x6b50a4`, `0x6b50f8`, `0x6b55db`, `0x6b560f`, `0x6b6672`, `0x6b68b4`, `0x6bf307`, `0x6bf562`, `0x6bfa3f`, `0x6bfab1`, `0x589e00`
+Confidence: verified
+Proof: one
+Test: none
+
+The scan is every `call 0x589e00` with the nearest earlier `mov ecx,N` in eight instructions: N = 3 at the
+twelve map sites, N = 1 at `0x70c8ad` and `0x70ca20` and N = 2 at `0x70c997` in the model code (the
+control). `0x71bf60` has one caller in the image, `0x71c0ed`, which follows `0x71bc70` and `0x71bce0` for
+the light's `+0x30` and `+0x3c`; `0x71c7a8` passes `+0x6c` of the record as the third colour. The
+world light apply `0x6a8050` calls `0x71bc70`, `0x71bce0` and `0x71bf90`, and `0x6a7300` the same
+three.
+
 ## Batch draw
 
 A batch element binds its textures, lighting and material. With vertex shaders it loads the
@@ -262,6 +282,30 @@ building the material from the record's `+0x4` flags and `+0x28` blend, and `0x7
 instance's draw callback `+0x1b8`. `0x70cb10` ends each.
 
 Of `0x70ca50`, `model_matrix_translate_difftest` runs `0x70ca9b`–`0x70caef`.
+
+## Custom element light
+
+A custom element (kind 5) is lit by the collector of its own model, staged just before its callback
+runs, so the result does not depend on draw order. The element uses the context's blank material
+(flags 0, blend 0), which is lit, and a lane value of 0, so `0x70baf0` always takes the
+fixed-function commit `0x71c730`. A model's collector `+0x3b8` is its own `+0x204` or, for a model with
+a parent whose flag `+0x4` bit 0 is clear, the parent's. A custom element on a held item whose parent link is
+the wearer draws under the wearer's light. The redundant-state skip never holds for a non-null collector. Emission is set to 0.
+
+Addresses: `0x70d960`, `0x70d982`, `0x70d98d`, `0x70d99a`, `0x70ca50`, `0x70ca61`, `0x70ca68`, `0x70ca30`, `0x70baf0`, `0x70bb0a`, `0x70bb7a`, `0x70bb96`, `0x70bba4`, `0x70bdf6`, `0x70b281`, `0x70b2c9`, `0x70b2d0`, `0x70b5e0`, `0x70b607`, `0x70b68c`, `0x70b6aa`, `0x718960`, `0x718982`, `0x718995`, `0x7189a9`, `0x710db0`, `0x70e0b8`, `0x70e786`
+Confidence: verified
+Proof: one
+Test: none
+
+`0x70d982` calls `0x70ca50`, which runs `0x70b740`, `0x70baf0` and `0x70c190`; only then
+`0x70d99a` calls `[model + 0x1b8]` with `[model + 0x1bc]` (stored by `0x710db0`). No other handler of
+kind 5 stores `[ctx + 0x3348]`, so the loop's default `&[ctx + 0x3358]` (`0x70b5e0`) stays, and its
+two words are stored only as 0 (`0x70b2c9`, `0x70b2d0`). `[ctx + 0x32f0]` is zeroed each element
+(`0x70b607`) and stored only by kinds 0 and 2 (`0x70cb71`, `0x70d371`). `0x70bb96` falls through
+for lit, `0x70bba4` jumps to `0x70bdf6`. The skip at `0x70bb7a` compares the current collector with
+`[ctx + 0x3324]`, which only the constructor stores (0, `0x70b281`); `0x70b68c` reads it back. The
+collector is stored by `0x718982` to `0x7189a9`; the constructor and `0x70e786` store 0. Kinds 3,
+4 and 5 commit state 2 as 0 at `0x70ca30`.
 
 ## Grouped and projected draws
 

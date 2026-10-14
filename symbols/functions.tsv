@@ -116,7 +116,7 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x404080	3			client			Runs its object file code not read here	inferred	none		
 0x404090	1			client			Runs its object file code not read here	inferred	none		
 0x4040a0	84			client			Runs its object file code that calls 0x42b240, SStr::sub_64A450, SRegSaveString; not read here	inferred	none		
-0x404100	33	_WinMain@16	idb	client		int __stdcall (void *instance, void *previous, char *command_line, int show)	Sets the x87 control word to 0x027F through 0x409bf2 and 0x409c06, then runs the client	verified	one	METHOD#the-harness	
+0x404100	33	_WinMain@16	idb	client		int __stdcall (void *instance, void *previous, char *command_line, int show)	Sets the x87 control word to 0x023F through 0x409bf2 and 0x409c06, then runs the client	verified	one	METHOD#the-harness	
 0x404130	38			client			Runs its object file code not read here	inferred	none		
 0x404160	5			client			Runs its object file code not read here	inferred	none		
 0x404170	19			client			Runs its object file code not read here	inferred	none		
@@ -12123,7 +12123,7 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x50a950	154			unassigned			Runs its object file code that calls 0x50a9f0; not read here	inferred	none		
 0x50a9f0	348			unassigned			Runs its object file code that calls SErrSetLastError; not read here	inferred	none		
 0x50ab50	27			unassigned			Runs its object file code that calls 0x7bf4b0; not read here	inferred	none		
-0x50ab70	406			unassigned			Runs its object file code that calls BuildPerspectiveMatrix, SetDeviceProjection and 2 more; not read here	inferred	none		
+0x50ab70	406			models	orchestration		Sets the device projection and a view that looks from the origin along the camera forward with its up	verified	one	models/scene#scene-origin	
 0x50ad10	23			unassigned			Runs its object file code that calls M2CreateScene; not read here	inferred	none		
 0x50ad30	5			unassigned			Runs its object file code not read here	inferred	none		
 0x50ad40	15			unassigned			Runs its object file code not read here	inferred	none		
@@ -24588,7 +24588,7 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x671380	868	CWorld::CreateLightObjectA		terrain	primitive	void * __fastcall (void *a, void *b, uint32_t c)	Creates a world light object with flags 0x200 or 0x8000 from colour, position and radius	inferred	none		terrain::pos_magnitude_difftest
 0x6716f0	75	CWorld::SetObjectModel		terrain	orchestration	void __fastcall (void *object, void *model)	Swaps a world object's model, moving its light callback	verified	one	terrain/world#model-lighting-callback	
 0x671740	140	CWorld::SetObjectFlags		terrain	orchestration	void __fastcall (void *object, uint32_t flags)	Writes a world object's flag bits into its +0x90	inferred	none		
-0x6717d0	689	SetWorldObjectBounds		terrain	primitive		Sets a world object's transform and bounding box	inferred	none	spell/visuals#emitter-initialization	terrain::camera_set_difftest
+0x6717d0	689	SyncLightNode		terrain	primitive		Stores a light node's position, scale, world box, centre, radius and probe point from a matrix	verified	one	terrain/lightattach#node-sync	terrain::camera_set_difftest
 0x671a90	5	CWorld::UpdateLightObject		terrain	orchestration	void __cdecl (void)	Jumps to the light state animator 0x69e770	inferred	none		
 0x671aa0	23	GetObjectBoxPointer		terrain	unreached	void * __fastcall (void *object)	Returns a world object's box pointer	inferred	none	terrain/overview#unreached-functions	
 0x671ac0	100	ReleaseWorldObject		terrain	orchestration		Releases a world object	inferred	none	spell/visuals#shard-model-start-and-end	
@@ -25149,7 +25149,7 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x6855a0	288	DrawMagmaPass		terrain	host	void __cdecl (void)	Draws the magma liquid slots with culling, lighting and blending off	verified	one	terrain/liquidpass#liquid-draw-passes	terrain::chunk_liquid_pass2_offset_difftest
 0x6856c0	965	CullExteriorMapObjects		terrain	primitive	void __fastcall (void *list)	Culls the map objects seen from outside and seeds their visible groups	inferred	none	terrain/scene#exterior-map-objects	terrain::wmo_corner_ray_negate_difftest, terrain::wmo_dir_len2_gate_difftest, terrain::wmo_dir_normalize_difftest, terrain::wmo_plane_offset_negate_difftest
 0x685a90	722	CullInteriorMapObject		terrain	primitive	void __cdecl (void)	Prepares the portal flood for the map object holding the camera and runs the interior seed	verified	one	terrain/portals#camera-inside-a-map-object	terrain::corner_ray_negate_difftest, terrain::dir_len2_gate_difftest, terrain::dir_normalize_difftest, terrain::plane_offset_negate_difftest
-0x685d70	617	AttachMapObjectFrustum		terrain	orchestration	void __fastcall (void *def, void *group)	Gives a visible map object a frustum slot and links it to the frame	inferred	none	terrain/scene#exterior-map-objects	
+0x685d70	617	AddGroupToFrame		terrain	orchestration	void __fastcall (uint32_t group_key, void *instance, uint32_t unused)	Submits a map object group of an instance for the frame, linking it once and recording each visit	verified	one	terrain/portals#group-submit	
 0x685fe0	20	ResetHorizon		terrain	orchestration	void __cdecl (void)	Fills the 320-column horizon with -1000000	verified	one	terrain/cull#horizon-buffer	
 0x686000	379	TestHorizonSphere		terrain	primitive	uint8_t __fastcall (const float *centre, float radius)	Returns 2 when a sphere is hidden behind the horizon, else 0	verified	one	terrain/scene#sphere-and-box-tests	terrain::horizon_span_test, terrain::horizon_non_finite_probes
 0x686180	447	TestHorizonBox		terrain	primitive	uint32_t __fastcall (const float *box, uint32_t flags)	Returns 2 when a box lies below the horizon in every column it spans, else 0	verified	one	terrain/cull#horizon-box-test	terrain::horizon_box_test, terrain::horizon_non_finite_probes
@@ -25760,7 +25760,7 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x6953d0	1	MapLoadNoOpB		terrain	orchestration	void __cdecl (void)	Returns at once, a console callback	verified	one	terrain/world#world-thunks	
 0x6953e0	610	CreateEntityMapObjDef		terrain	orchestration	void * __fastcall (const char *path, const float *position, const float *rotation)	Creates a map object placement for a game object under the next negative unique id	inferred	none		
 0x695650	769	PlaceMapObjDef		terrain	primitive	CMapObjDef * __fastcall (const char *name, const void *entry, const float *origin)	Makes or finds the object def of an MODF entry and sets its matrices, box and sphere	verified	one	terrain/files#object-placements	terrain::placement_setup_difftest
-0x695960	317	PlaceGroupDoodads		terrain	host	void __fastcall (void *def, void *group)	Links a map object group's doodads to the chunks under them	inferred	none		
+0x695960	317	CreateGroupDefs		terrain	host	void __fastcall (void *root, void *instance)	Makes a def group for each group of a placed map object with its world sphere, box and light class	verified	one	terrain/doodads#group-def-creation	
 0x695aa0	341	CreateGroupDoodads		terrain	orchestration	void __fastcall (void *def, void *group)	Makes the defs of a map object group's doodads in its set and sets their light flags	inferred	none	terrain/doodads#group-doodads	
 0x695c00	660	CreateGroupLights		terrain	host	void __fastcall (void *def, void *group)	Makes the map lights of a group's type 0 light entries and links them to the group	inferred	none	terrain/doodads#group-lights	terrain::detail_slope_recip_difftest, terrain::detail_color_scale_g1_difftest, terrain::detail_color_scale_g2_difftest
 0x695ea0	5	InitTerrainTwoPi6Thunk		terrain	orchestration	void __cdecl (void)	Jumps to 0x695eb0; a static initializer	verified	one	terrain/statics#static-initializers	
@@ -26213,10 +26213,10 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x69dba0	140	GetEntityGroupBoxes		terrain	orchestration	uint32_t __fastcall (void *entity, void *out)	Copies an entity's map object group boxes	inferred	none		
 0x69dc30	311	GetEntityInteriorLight		terrain	primitive	void __fastcall (void *entity, void *out)	Rotates the interior light of an entity's group into the world	inferred	none		terrain::interior_light_rotate_difftest
 0x69dd70	165	ForEachChunkDef		terrain	orchestration	uint32_t __fastcall (void *chunk, void *a, void *b, void *c)	Runs the group liquid search over each of an indoor entity's map object groups	verified	one	terrain/world#nearest-liquid	
-0x69de20	917	GetCameraInteriorFog		terrain	primitive	uint32_t __fastcall (void *a, void *b)	Evaluates the fog of the groups holding the camera from their fog records nearest first	inferred	none	terrain/lights#camera-interior-fog	terrain::light_distance_difftest
+0x69de20	917	GetCameraInteriorFog		terrain	primitive	uint32_t __fastcall (void *record, void *instance, uint8_t flag, void *container)	Fills the fog record of the map object holding the camera from its MFOG records, nearest weighing most	verified	one	terrain/lights#camera-interior-fog	terrain::light_distance_difftest
 0x69e1c0	95	LightFalloff		terrain	primitive	float __fastcall (void *light, float distance)	Returns 1 below a range's start and falls linearly to 0 at its end	verified	one	terrain/lights#point-lights	terrain::wmo_molt_attenuation_difftest
 0x69e220	20	DestroyFogQueue		terrain	orchestration	void __cdecl (void)	Calls the fog queue's destructor at exit, as a tail call	inferred	none		
-0x69e240	55	CopyLightPair		terrain	orchestration	void __fastcall (void *dst, const void *src)	Copies two interleaved vector records	inferred	none		
+0x69e240	55	CopyFogSubrecords		terrain	orchestration	void __thiscall (void *dst, const void *src)	Copies two 12-byte fog sub-records	verified	one	terrain/lights#camera-interior-fog	
 0x69e280	574	UpdateMapEntityEnvironment		terrain	primitive	void __thiscall (void *this)	Recomputes an entity's indoors, liquid and shadow state and its light targets	verified	one	terrain/mapentities#entity-environment	terrain::env_update_color_difftest
 0x69e4c0	683	BakeMapEntityGroupLight		terrain	primitive	void __thiscall (void *this, void *a, void *b, void *c)	Bakes a map object group's vertex colour into an entity's directional light and ambient target	verified	one	terrain/lights#interior-light-bake	terrain::cmapobj_vert_offsets_difftest
 0x69e770	429	AnimateMapEntityLight		terrain	primitive	void __thiscall (void *this)	Steps an entity's ambient bytes and intensity toward their targets by the frame time	verified	one	terrain/mapentities#entity-light-ramp	terrain::color_step_magnitude_difftest, terrain::intensity_ramp_difftest
@@ -26230,7 +26230,7 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x69e9e0	83	FogQ::FogQ		terrain	orchestration	void * __fastcall (void *a, void *b, void *c, void *d)	Allocates a fog queue entry and copies its fields	inferred	none		
 0x69ea40	157	PushFogEntry		terrain	host	void __thiscall (void *array, const void *entry)	Appends an 8-byte entry to a growable array	inferred	none		
 0x69eae0	43	FogQEntry::DeletingDestructor		terrain	orchestration	void * __thiscall (void *this, uint32_t flags)	Destroys a fog queue entry and frees it when bit 0 of the argument is set	inferred	none		
-0x69eb10	81	SetFogEntry		terrain	orchestration	void __fastcall (void *entry, const void *source)	Copies a fog entry's values	inferred	none		
+0x69eb10	81	RemoveHeapEntries		terrain	orchestration	uint8_t __thiscall (void *array, uint32_t index, uint32_t count)	Removes a run of 8-byte entries from a growable array by moving the tail down	verified	one	terrain/lights#fog-record-blend	
 0x69eb70	26	CopyColorRgb		terrain	orchestration	void __fastcall (uint32_t *dst, uint32_t color)	Copies a colour's red, green and blue, keeping the alpha	inferred	none		
 0x69eb90	5	InitTerrainSquare199Thunk		terrain	orchestration	void __cdecl (void)	Jumps to 0x69eba0; a static initializer	verified	one	terrain/statics#static-initializers	
 0x69eba0	19	InitTerrainSquare199		terrain	primitive	void __cdecl (void)	Stores 10 squared as a float in a global	verified	one	terrain/statics#static-initializers	
@@ -26278,7 +26278,7 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x69ef80	19	InitTerrainProduct48		terrain	primitive	void __cdecl (void)	Stores a global set just before × 256 as a float in a global	verified	one	terrain/statics#static-initializers	
 0x69efa0	5	InitTerrainQuotient24Thunk		terrain	orchestration	void __cdecl (void)	Jumps to 0x69efb0; a static initializer	verified	one	terrain/statics#static-initializers	
 0x69efb0	19	InitTerrainQuotient24		terrain	primitive	void __cdecl (void)	Stores 1 divided by 4.16667 as a float in a global	verified	one	terrain/statics#static-initializers	
-0x69efd0	227	LerpFogRecord		terrain	primitive	void __fastcall (void *out, const void *a, const void *b, float t)	Blends two records of two floats and a packed colour, keeping the alpha	inferred	none		terrain::lerp_color_rec_difftest
+0x69efd0	227	LerpFogRecord		terrain	primitive	void __fastcall (void *out, const void *a, const void *b, float t)	Blends two records of two floats and a packed colour, keeping the alpha	verified	one	terrain/lights#fog-record-blend	terrain::lerp_color_rec_difftest
 0x69f0c0	5	InitTerrainSquare216Thunk		terrain	orchestration	void __cdecl (void)	Jumps to 0x69f0d0; a static initializer	verified	one	terrain/statics#static-initializers	
 0x69f0d0	19	InitTerrainSquare216		terrain	primitive	void __cdecl (void)	Stores 10 squared as a float in a global	verified	one	terrain/statics#static-initializers	
 0x69f0f0	5	InitTerrainQuotient25Thunk		terrain	orchestration	void __cdecl (void)	Jumps to 0x69f100; a static initializer	verified	one	terrain/statics#static-initializers	
@@ -26534,14 +26534,14 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x6a3630	153	CMapObj::ClearFields		models	orchestration		Zeroes a map object's header and group pointers	inferred	none		
 0x6a36d0	223	CMapObj::Free		models	host		Closes a map object's file and frees its data and groups	inferred	none	models/overview#object-files	
 0x6a37b0	649	CMapObj::IntersectSegment		models	primitive		Tests a segment against a map object's groups and returns the hit and surface	inferred	none	models/wmo#queries	models::seg_face_cross_difftest, models::seg_face_dot_difftest, models::seg_normal_scale_difftest
-0x6a3a40	200	CMapObj::IntersectSegmentTwoGroups		models	primitive		Tests a segment against two groups of a map object	inferred	none		
+0x6a3a40	200	CMapObj::GroupFaceRay		models	primitive		Traces a segment against one group under a class word and returns the face it hits	verified	one	terrain/lightattach#containment-queries	
 0x6a3b10	266	CMapObj::CollectSegmentFacets		models	primitive		Collects the facets of a map object's groups a segment crosses	inferred	none	models/wmo#queries	
 0x6a3c20	207	CMapObj::CollectBoxFacets		models	primitive		Collects the facets of a map object's groups a box touches	inferred	none	models/wmo#queries	
 0x6a3cf0	199	CMapObj::QueryGroups		models	primitive		Tests a query against each loaded group of a map object	inferred	none		
 0x6a3dc0	285	CMapObj::CollectVolumeFacets		models	primitive		Collects the facets of a map object's groups inside a convex volume	inferred	none	models/wmo#queries	
-0x6a3ee0	46	CMapObj::ResetGroupQuery		models	orchestration		Clears a group's query state after validating it	inferred	none		
-0x6a3f10	97	CMapObj::GroupSegmentAnyHit		models	orchestration		Returns whether a segment hits a group of a map object	inferred	none		
-0x6a3f80	639	CMapObj::CrossPortals		models	primitive		Finds the group a segment enters through a map object's portals	inferred	none		models::portal_extent_scale_difftest, models::portal_plane_side_difftest, models::portal_result_scale_difftest, models::portal_seg_normalize_difftest
+0x6a3ee0	46	CMapObj::GroupBoxAnyHit		models	orchestration		Returns whether a box touches a face of a group that the mask 0x86 lets through	verified	one	terrain/lightattach#containment-queries	
+0x6a3f10	97	CMapObj::GroupSegmentAnyHit		models	orchestration		Returns whether a segment hits a face of a group that the mask 0x86 lets through, lowering the fraction	verified	one	terrain/lightattach#containment-queries	
+0x6a3f80	639	CMapObj::CrossPortals		models	primitive	uint8_t __thiscall (const float *segment, float *fraction, uint32_t *groups)	Finds the nearest portal a segment crosses and the two groups beside it	verified	one	models/wmo#portal-crossing	models::portal_extent_scale_difftest, models::portal_plane_side_difftest, models::portal_result_scale_difftest, models::portal_seg_normalize_difftest
 0x6a4200	108	CMapObj::IsReady		models	host		Returns whether a map object's groups and their textures are loaded	inferred	none		
 0x6a4270	62	CMapObj::AreGroupsLoaded		models	orchestration		Returns whether a map object and all its groups are loaded	inferred	none		
 0x6a42b0	39	CMapObj::GetGroup		models	orchestration		Returns a loaded group of a map object by index	inferred	none		
@@ -26551,11 +26551,11 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x6a44b0	250	CMapObj::GetGroupBoundingSphere		models	primitive	float * __thiscall (CMapObj *this, float *sphere, uint32_t group)	Returns the centre and radius of a group record's box, or zero when unloaded	verified	one	models/wmo#bounding-spheres-and-volume	models::wmo_bounding_sphere_difftest
 0x6a45b0	142	CMapObj::GetGroupBoundingBox		models	orchestration		Copies a group's bounding box from the group info	inferred	none		
 0x6a4640	38	CMapObj::GetGroupFlags		models	orchestration		Returns a group's flags from the group info	inferred	none		
-0x6a4670	150	CMapObj::BoxOverlaps		models	orchestration		Returns whether a box overlaps a map object's bounding box	inferred	none		
+0x6a4670	150	CMapObj::BoxOverlaps		models	orchestration		Returns whether a box overlaps a map object's bounding box	verified	one	terrain/lightattach#containment-walk	
 0x6a4710	149	CMapObj::ContainsPoint		models	unreached		Returns whether a point lies in a map object's bounding box; nothing reaches it	inferred	none	models/overview#unreached-code	
 0x6a47b0	47	CMapObj::QueryLiquid		models	primitive		Forwards a liquid query to a group when the map object is loaded	inferred	none		
 0x6a47e0	73	CMapObj::QueryGroupLiquid		models	primitive		Resolves a group and forwards a liquid query to it	inferred	none		
-0x6a4830	170	CMapObj::BoxOverlapsGroup		models	orchestration		Returns whether a box overlaps a group's bounding box	inferred	none		
+0x6a4830	170	CMapObj::BoxOverlapsGroup		models	orchestration		Returns whether a box overlaps a group's bounding box	verified	one	terrain/lightattach#containment-walk	
 0x6a48e0	166	CMapObj::GroupContainsPoint		models	unreached		Returns whether a point lies in a group's bounding box; nothing reaches it	inferred	none	models/overview#unreached-code	
 0x6a4990	100	PointInsidePlanes		models	primitive	bool __thiscall (CMapObj *this, const float *point)	Returns whether a point lies inside a loaded map object's convex volume planes	verified	one	models/wmo#bounding-spheres-and-volume	models::wmo_point_in_convex_volume_difftest
 0x6a4a00	46	CMapObj::GetLoadedGroup		models	orchestration		Returns a group of a map object when both are loaded	inferred	none	models/wmo#queries	
@@ -26567,7 +26567,7 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x6a4b40	379	CMapObj::RayHitClosest		models	unreached		Finds the closest group surface a ray hits and its vertex colour; nothing reaches it	inferred	none	models/overview#unreached-code	
 0x6a4cc0	255	CMapObj::RayHitGroup		models	primitive		Finds the surface a ray hits in one group and its vertex colour	inferred	none		models::cmapobj_seg_hit_difftest
 0x6a4dc0	63	CMapObj::SampleGroupColor		models	orchestration		Samples a group's vertex colour at a hit	inferred	none		
-0x6a4e00	221	CMapObj::GroupLiquidAt		models	orchestration		Returns whether a group's liquid covers a point	inferred	none		
+0x6a4e00	221	CMapObj::GroupLiquidAt		models	orchestration	uint8_t __thiscall (uint32_t mask, const float *point, uint32_t *type, float *height, float *vector)	Asks a map object's groups in order for liquid at a point; the first answer wins	verified	one	models/wmo#group-liquid-scope	
 0x6a4ee0	207	CMapObj::InGroupLiquid		models	unreached		Returns whether a point lies in any group's liquid area	inferred	none	models/overview#unreached-code	
 0x6a4fb0	103	CMapObj::FindDoodadSet		models	primitive		Returns the doodad set whose range holds an index	inferred	none		
 0x6a5020	477	CMapObj::GatherBoxGroups		models	primitive		Floods through a map object's portals to gather the groups a box reaches	inferred	none		models::box_overlap_deltas_difftest
@@ -26734,10 +26734,10 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x6a8730	190	PurgeMapObjectLinks		terrain	orchestration	void __cdecl (void)	Frees the links of map objects marked for removal	inferred	none		
 0x6a87f0	79	SetEntityLightFlags		terrain	orchestration	void __thiscall (void *entity, void *mapObject, void *groupNode)	Sets an entity's indoors bit and light flags from the header flags of the map object group it stands in	verified	one	terrain/mapentities#group-claim-flags	
 0x6a8840	476	TraceMapObjectsNearest		terrain	orchestration	uint8_t __fastcall (const float *start, const float *end, float *t, void *out)	Traces a segment against the loaded map objects and returns the nearest face, object, group node and word	inferred	none	terrain/mapentities#map-object-trace	
-0x6a8a20	487	AttachEntityToGround		terrain	primitive	void __fastcall (void *entity)	Probes down from an entity against terrain and map objects and attaches it to the nearer	inferred	none	terrain/mapentities#entity-placement	terrain::cmapdoodaddef_ground_attach_difftest
-0x6a8c10	142	PlaceEntity		terrain	orchestration	void __fastcall (void *entity)	Links an entity to the map object group that holds it, sets its light flags and bakes its light	inferred	none	terrain/mapentities#entity-placement	
+0x6a8a20	487	AttachEntityToGround		terrain	primitive	void __fastcall (void *entity)	Probes down from an entity against terrain and map objects and attaches it to the nearer	verified	one	terrain/lightattach#down-ray-attach	terrain::cmapdoodaddef_ground_attach_difftest
+0x6a8c10	142	PlaceEntity		terrain	orchestration	void __fastcall (void *entity)	Links an entity to the map object group that holds it, sets its light flags and bakes its light	verified	one	terrain/lightattach#containment-attach	
 0x6a8ca0	547	LinkEntityToChunks		terrain	primitive	void __fastcall (void *entity)	Links an entity into the lists of every chunk its box overlaps	inferred	none		terrain::def_chunk_window_difftest
-0x6a8ed0	793	LinkEntityToMapObject		terrain	primitive	void __fastcall (void *entity, void *a, void *b)	Finds the map object group holding an entity and links the entity into its lists	inferred	none	terrain/mapentities#entity-placement	terrain::floordrop_down_probe_difftest, terrain::floordrop_lerp_difftest, terrain::floordrop_offset_difftest
+0x6a8ed0	793	LinkEntityToMapObject		terrain	primitive	void __fastcall (void *entity, void *a, void *b)	Finds the map object group holding an entity and links the entity into its lists	verified	one	terrain/lightattach#containment-walk	terrain::floordrop_down_probe_difftest, terrain::floordrop_lerp_difftest, terrain::floordrop_offset_difftest
 0x6a91f0	210	LinkEntityToGroup		terrain	orchestration	void __fastcall (void *entity, void *group)	Links an entity into a map object group's lists	inferred	none		
 0x6a92d0	180	LinkEntityToObject		terrain	orchestration	void __fastcall (void *entity, void *object)	Links an entity into a map object's lists	inferred	none		
 0x6a9390	5	InitTerrainTwoPi16Thunk		terrain	orchestration	void __cdecl (void)	Jumps to 0x6a93a0; a static initializer	verified	one	terrain/statics#static-initializers	
@@ -27406,8 +27406,8 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x6b91c0	238	CMapObjGroup::CollectSegment		models	primitive		Collects the facets a segment crosses through a group's BSP	inferred	none		
 0x6b92b0	384	CMapObjGroup::IntersectSegment		models	primitive		Intersects a segment with a group's BSP and liquid	inferred	none	models/wmo#queries	models::bspdispatch_normalize_difftest
 0x6b9430	252	CMapObjGroup::CollectVolume		models	primitive		Collects a group's facets and liquid in a convex volume	inferred	none		
-0x6b9530	172	CMapObjGroup::ResetQuery		models	primitive		Clears a group's BSP query and capture state	inferred	none		
-0x6b95e0	349	CMapObjGroup::SegmentAnyHit		models	primitive		Returns whether a segment hits any face of a group's BSP	inferred	none		models::seg_normalize_difftest
+0x6b9530	172	CMapObjGroup::BoxAnyHit		models	primitive		Returns whether a box touches a face of a group's BSP that the mask lets through	verified	one	terrain/lightattach#containment-queries	
+0x6b95e0	349	CMapObjGroup::SegmentAnyHit		models	primitive		Returns whether a segment hits any face of a group's BSP	verified	one	terrain/lightattach#containment-queries	models::seg_normalize_difftest
 0x6b9740	189	CMapObjGroup::ClearA		models	orchestration		Zeroes the first part of a group's fields	inferred	none		
 0x6b9800	188	CMapObjGroup::ClearB		models	orchestration		Zeroes the second part of a group's fields	inferred	none		
 0x6b98c0	130	CMapObjGroup::Free		models	host		Closes a group's file and frees its BSP, buffers and data	inferred	none		
@@ -27416,7 +27416,7 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x6b9d50	1	CMapObjGroup::NoOp		models	orchestration		Returns; an exit hook registered by the colour sampler	inferred	none		
 0x6b9d60	236	CMapObjGroup::SampleBelow		models	unreached		Samples the surface and colour of a group under a segment; nothing reaches it	inferred	none	models/overview#unreached-code	
 0x6b9e50	189	CMapObjGroup::LiquidTileFlags		models	unreached		Returns the liquid tile flags of a group at a point	inferred	none	models/overview#unreached-code	
-0x6b9f10	590	CMapObjGroup::LiquidHeight		models	primitive		Returns a group's liquid height at a point	inferred	none	models/wmo#queries	models::mliq_liquid_height_difftest
+0x6b9f10	590	CMapObjGroup::LiquidHeight		models	primitive	uint8_t __thiscall (const float *point, uint32_t *type, float *height, float *vector)	Answers a group's liquid at a point: its type and unbiased surface, or the group's own type everywhere	verified	one	models/wmo#group-liquid-override	models::mliq_liquid_height_difftest
 0x6ba180	93	VertexBufferBlockSetSize		models	primitive		Sets a vertex buffer block's size and its device buffer	inferred	none		
 0x6ba1e0	149	VertexBufferPoolCreate		models	primitive		Creates a vertex buffer pool's index and vertex buffers	inferred	none	models/wmo#vertex-buffer-pools	
 0x6ba280	187	VertexBufferPoolDestroy		models	host		Frees a vertex buffer pool's blocks and device buffers	inferred	none		

@@ -110,7 +110,7 @@ Proof: one
 Test: `models::m2_light_aggregate_dist_difftest`
 
 `0x71bfdf` squares the z difference, adds the y square, then the x square, at the FPU's 53-bit
-precision (control word 0x027F), and the sum stays on the stack until `fstp` into `+0x170`.
+precision (control word 0x023F), and the sum stays on the stack until `fstp` into `+0x170`.
 Insertion sifts up past the parent at `(i − 1) >> 1` unless `fcom` at `0x71c009` sets exactly one
 of C0 and C3 (smaller or equal); replacement at `0x71c04f` needs C0 alone; the sift down takes the
 first child when it is strictly larger, else the second, and moves it up while `fcom` at `0x71c08e`
@@ -229,12 +229,12 @@ colour, attenuation `+0x54` to `+0x5c`, at `+0x18` (view space) or at `+0xc` min
 origin. Unused slots are disabled. A colour reaches the device as an ARGB word divided by its
 largest component, alpha included, with that largest value as the light's scale.
 
-Addresses: `0x71c730`, `0x71ca80`, `0x591260`, `0x589d80`, `0x589de0`, `0x71b7c0`
+Addresses: `0x71c730`, `0x71ca80`, `0x591260`, `0x589d80`, `0x589de0`, `0x71b7c0`, `0x593040`, `0x71c889`
 Confidence: verified
 Proof: one
 Test: `models::driver_clamp_pack_difftest`, `models::driver_mag_gate_difftest`, `models::driver_vec_diff_difftest`, `models::light_clamp_pack_difftest`, `models::m2_light_color_pack_difftest`
 
-`0x71c730(origin, fog)` sets device light bit 1 for point lights; the colour calls pass alpha 0.0
+The device multiplies each byte by the scale again (`0x593040`), so a diffuse above 1 reaches it as byte × scale / 255, undivided. `0x71c730(origin, fog)` sets device light bit 1 for point lights; the colour calls pass alpha 0.0
 (ambient, third) and 1.0 (diffuse). `0x71ca80` takes the maximum through `fcomp` with `test ah,5`,
 writes colour 0 when it is under 1e-5, else clamps each scaled channel to 0 when at or under 0 and
 to 255 when at or over 1, else `__ftol(v·255 + 0.5)`. With `fog` non-zero and
@@ -287,6 +287,30 @@ Test: none
 The loop at `0x7189e6` tests state `+0x100` and byte `+0xec`, reads the bone matrix at instance
 `+0x94 + 64·bone`, calls `0x71b650` or `0x71b6a0`, then `0x71b780(enabled)` with 0 when either
 gate fails, and stores scene `+0x10` into state `+0x108` (the light's `+0x4`).
+
+## Light emitting instances
+
+A model's lights belong to the scene it was attached to, stored at instance `+0x2c` by `0x70ea00`;
+`0x71b5f0` copies it into each light at load. The world scene is `0xc7b298`,
+made by `0x706e10` at `0x66f720`; the other six makers of scenes (the stars, the glue previews and
+three more) give separate grids. A unit body, a placed doodad, a game object display and a detail
+doodad are made in the world scene, and an attached item takes its wearer's scene, so they all emit
+into the grid the map gathers from. An instance emits only while it is on its scene's animate list; an
+attached item is reached by the recursion from its wearer instead.
+
+Addresses: `0x70ea00`, `0x70e00d`, `0x70ea0d`, `0x71b5f0`, `0x70f20f`, `0x70f21e`, `0x706e10`, `0x66f720`, `0x66f725`, `0x7e60f3`, `0x46c348`, `0x76cfcd`, `0x50ad1a`, `0x525227`, `0x6d47b7`, `0x613e33`, `0x613e43`, `0x695107`, `0x69510f`, `0x6b249e`, `0x6b24ad`, `0x4798da`, `0x4798e1`, `0x7105c0`, `0x707350`, `0x710b90`, `0x712f70`, `0x718960`, `0x672d20`, `0x684155`, `0x607e43`, `0xc7b298`
+Confidence: verified
+Proof: one
+Test: none
+
+The constructor zeroes `+0x2c` (`0x70e00d`) and `0x70ea0d` stores the scene; `0x71b5f0`, called only at
+`0x70f21e`, takes it from `[ebx+0x2c]` (`0x70f20f`). `0x706e10` has seven
+callers; `0xc7b298` is written once, at `0x66f725`. The unit body (`0x613e33`), the doodad node
+(`0x695107`) and the detail doodad (`0x6b249e`) load the world scene into `ecx` before `0x707350`, and
+the item path (`0x4798da`) asks the wearer for its scene with `0x7105c0` first. `0x710b90` links at
+`0x710ba1` and unlinks at `0x710bc2`; it has 31 call sites, among them the world node show and hide
+(`0x672d3a`, `0x672d57`) and the doodad drain (`0x684155`). `0x718960` tests only the load flag
+before its light loop.
 
 ## Instance lighting
 

@@ -87,7 +87,7 @@ multiplies the radius by `+0x30` and `0x6953a0` stores it at `+0x68`; the boxes 
 ## Group doodads
 
 `0x695aa0` makes the defs of a map object group. For each doodad index of the group it takes only
-those in no doodad set or in the object's current set, makes the def with `0x694e90`, links it into
+those in the first doodad set or in the object's current set, and none outside every set; it makes the def with `0x694e90`, links it into
 the group's doodad list and sets its light flags: an interior group's def gets bit 2 unless it has
 bit 4; any other group's def gets bit 4, bit 2 cleared and intensity 1.0. It then sets bit 3 of the
 group's flags.
@@ -97,7 +97,9 @@ Confidence: inferred
 Proof: none
 Test: none
 
-`ret 8`. The set test is `0x6a4fb0` against the object's `+0x124` (`0x695aec`); the def is
+`ret 8`. `0x6a4fb0` returns the 0-based index of the set whose range holds the doodad index, or 0xffffffff
+(`0x6a500d`) for an index in no set; a 0 passes (`0x695aea`), anything else must equal the object's `+0x124`
+(`0x695aec`). `0x6953e0` stores 0 there (`0x6954a7`), `0x695650` the record's word `+0x3a` (`0x695753`). The def is
 `0x694e90(index, record, path, id + 1, matrix)` (`0x695b1e`). `0x695b94` tests the object's `+0xc`
 bit 2; `0x695ba4` and `0x695bb3` set the flags; `0x695bea` ORs bit 3 into the group's flags.
 
@@ -120,6 +122,71 @@ Test: none
 fields 0, 0.7 and 0.03. `0x695d1d` and `0x695d8c` scale the entry's two colours by its intensity
 into the light's `+0x3c` and `+0x48`. `0x695e01` places an interior group's light and `0x695e08`
 another's; `0x695e8a` ORs bit 4 into the group's flags.
+
+## Group def creation
+
+`0x695960(root, instance)` makes a def group for each group of a placed map object. Each def group is
+allocated (`0x6a0ca0`), given a link node targeting the instance (`0x6a0450`) and linked into the
+instance's list (`+0x134`, link offset `+0x130`). Its sphere at `+0x5c` (centre) and `+0x68` (radius) is
+the group's (`0x6a44b0`) with the centre moved to the world by the instance matrix `+0x94`; its world
+box at `+0x44` is the group's box moved by the same matrix. It stores the group index at `+0x7c` and
+the instance's word `+0x150` at `+0x88`, clears `+0xc` and sets its light class from the group's
+flags in the root's group record: bit 4 with 0x48, else bit 2.
+
+Addresses: `0x695960`, `0x695986`, `0x69598f`, `0x695999`, `0x6959d3`, `0x6959ea`, `0x6959f1`, `0x695a1f`, `0x695a36`, `0x695a45`, `0x695a54`, `0x695a5c`, `0x695a65`, `0x695a6e`, `0x695a74`, `0x695a79`, `0x695a7d`, `0x695a83`, `0x6a0ca0`, `0x6a0450`, `0x6a44b0`, `0x6a45b0`, `0x6a4640`, `0x6dc540`, `0x7bcc60`
+Confidence: verified
+Proof: one
+Test: none
+
+`ret 0`, `ecx` the root and `edx` the instance, looping the root's group count `+0x168`. `0x695a1f`
+calls `0x6a44b0(rec+0x5c, index)` and `0x695a36` `0x7bcc60` with `+0x94`; `0x695a45` takes the box
+(`0x6a45b0`) and `0x695a54` moves it into `rec+0x44`. `0x6a4640` returns the first dword of the group
+record, and `0x695a79 test al,0x48` picks `or [rec+0xc],4` (`0x695a83`) or `,2` (`0x695a7d`).
+`0x685d70` finds the def group by `+0x7c` (`portals#group-submit`), and the sphere is the query the
+group draw's light gather uses (`groupdraw#group-light-gather`).
+
+## Map light record
+
+A map object's `MOLT` record is 0x30 bytes: type `+0x0`, two flags `+0x2` and `+0x3`, colour bytes
+`+0x4` to `+0x6`, position `+0x8`, intensity `+0x14`, a quaternion `+0x18` that nothing reads, and the
+attenuation start `+0x28` and end `+0x2c`. Only type 0 makes a light. With flag `+0x2` the light's
+`+0x3c` triple is the bytes `+0x6`, `+0x5`, `+0x4` over 255 times the intensity, and with flag `+0x3`
+the triple at `+0x48` is the same. The light's falloff in the scene grid is the constants 0, 0.7 and
+0.03 (`+0x54`, `+0x58`, `+0x5c`) whatever the start and end say; those only set its own range triple.
+
+Addresses: `0x695c00`, `0x695c2f`, `0x695c3d`, `0x695c6a`, `0x695c93`, `0x695cb1`, `0x695cc1`, `0x695cdc`, `0x695cfe`, `0x695d03`, `0x695d0a`, `0x695d11`, `0x695d18`, `0x695d1f`, `0x695d2e`, `0x695d87`, `0x695d8e`, `0x698f50`, `0x699110`, `0x699120`, `0x699146`, `0x71b650`, `0x6c3c5d`, `0x801360`, `0x801620`, `0x8026c8`
+Confidence: verified
+Proof: one
+Test: none
+
+`0x695c00` and `0x698f50` both walk the group's references (`+0xe4`, count `+0x140`) over the root's
+records (`+0x148`) and call `0x71b650`. `0x6c3c5d` stores the record pointer at the root's `+0x148` and
+the count at `+0x180` (size over 0x30).
+In `0x695c00`, `0x695c3d` skips a nonzero type, `0x695d18` and `0x695d87` test the two flags, and the
+three colour bytes are read at `0x695d1f`, `0x695d23` and `0x695d27`, each times 1/255 (`0x8026c8`) and the intensity
+(`0x695d2e`); the light's own range is formed from `0x28` and `0x2c` (`0x695c93`), a gap under 0.001
+getting 0.1 added to the end. `0x695d03`, `0x695d0a` and `0x695d11` store 0, `0x3f333333` and
+`0x3cf5c28f`. `0x698f50` reads the same records at `0x699120` and registers them at `0x699146`.
+
+## Group re-pose
+
+`0x698f50(position, heading)` poses a placed map object again. It rebuilds the matrices `+0x24`, `+0x94` and
+`+0xd4`, moves each group's sphere and box and each map light of the object to the new place, and calls
+`0x6a2070` for each group def. That poses every doodad def of the group's list (`+0xb0`, link offset `+0xa8`)
+with `0x6a81d0`: a def with a loaded model gets the position `+0x24` as its local translation
+(`+0x13c`) times the object matrix, the matrix `+0xcc` as its preserved local matrix `+0x10c` times it, and new
+bounds. The sun scale `+0xa4` is not touched.
+
+Addresses: `0x698f50`, `0x699146`, `0x6991a9`, `0x6991b8`, `0x6991ca`, `0x6991db`, `0x6991e4`, `0x6a2070`, `0x6a207b`, `0x6a209d`, `0x6a81d0`, `0x6a81dc`, `0x6a81f2`, `0x6a8215`, `0x6a8227`, `0x6a822c`, `0x6709a0`, `0x5f50a0`, `0x7bcc60`, `0x7bc6a0`
+Confidence: verified
+Proof: one
+Test: none
+
+`0x6a81d0` returns at once for a def without a model (`0x6a81dc`, `0x6a81e4`). `0x7bcc60` writes the transformed
+vector back through its input pointer, so `0x6a8215` leaves the world position in `+0x24`. `0x694e90` saved
+the local matrix at `+0x10c` before it multiplied by the object matrix, which is what `0x6a8227` reuses. The
+transport tick `0x5f50a0` reaches `0x698f50` through `0x6709a0` when the object's class bits `+0x8` hold 8.
+The sun scale stays what the pending drain set, so a moving map object keeps the verdict of its first frame.
 
 ## Pending doodads
 

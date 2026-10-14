@@ -90,11 +90,12 @@ Test: `terrain::clip_plane_negate_difftest`
 `0x6a8410` (a doodad def) and `0x69e4c0` (an entity) bake a map object group's vertex colour into the
 light. They trace down into the group (`0x6a4cc0`, or `0x6a4dc0` for a known face) and take the
 surface colour; `0x6a77e0` makes the directional `+0xa0` (largest channel raised to at least 0xa8) and
-the ambient (at most 0x60), at `+0x9c` for a def and the target `+0xf4` for an entity. The colour's
-alpha w is the sky weight: 255 copies the day light's colour, other nonzero w blends each channel
-toward `+0x174` and `+0x178` by w / 256. w is kept at `+0xa3` with `+0x90` bit 0x800.
+the ambient (at most 0x60), at `+0x9c` for a def and the target `+0xf4` for an entity. The sampler
+returns alpha 0xff always and a selector, bit 0 of the hit face's flag byte. With the selector set the
+day light's colours (`+0x174`, `+0x178`) replace both words, `+0xa3` becomes 0xff and `+0x90` bit 0x800
+is set; clear, the words stay and the bit is cleared. A sampler that fails leaves everything.
 
-Addresses: `0x6a8410`, `0x6a8420`, `0x6a8436`, `0x6a8475`, `0x6a84df`, `0x6a84e6`, `0x6a8517`, `0x6a8524`, `0x6a853f`, `0x6a8547`, `0x6a8574`, `0x6a85a8`, `0x6a85e8`, `0x6a860b`, `0x6a8647`, `0x6a8692`, `0x6a86a0`, `0x6a86b9`, `0x69e4c0`, `0x69e4e0`, `0x69e515`, `0x69e57d`, `0x69e5c2`, `0x69e5dd`, `0x69e5e2`, `0x69e61b`, `0x69e64b`, `0x69e6b3`, `0x69e6e5`, `0x69e745`, `0x69e758`, `0x6a77e0`, `0x6a4cc0`, `0x6a4dc0`, `0x69eb70`, `0x80308c`, `0x80c4e8`, `0x80fec8`
+Addresses: `0x6a8410`, `0x6b9a50`, `0x6b9c73`, `0x6b9d34`, `0x6a8420`, `0x6a8436`, `0x6a8475`, `0x6a84df`, `0x6a84e6`, `0x6a8517`, `0x6a8524`, `0x6a853f`, `0x6a8547`, `0x6a8574`, `0x6a85a8`, `0x6a85e8`, `0x6a860b`, `0x6a8647`, `0x6a8692`, `0x6a86a0`, `0x6a86b9`, `0x69e4c0`, `0x69e4e0`, `0x69e515`, `0x69e57d`, `0x69e5c2`, `0x69e5dd`, `0x69e5e2`, `0x69e61b`, `0x69e64b`, `0x69e6b3`, `0x69e6e5`, `0x69e745`, `0x69e758`, `0x6a77e0`, `0x6a4cc0`, `0x6a4dc0`, `0x69eb70`, `0x80308c`, `0x80c4e8`, `0x80fec8`
 Confidence: verified
 Proof: one
 Test: `terrain::cmapobj_skyocc_offsets_difftest`, `terrain::cmapobj_vert_offsets_difftest`, `terrain::wmo_mocv_normalize_alpha_difftest`
@@ -103,8 +104,9 @@ Test: `terrain::cmapobj_skyocc_offsets_difftest`, `terrain::cmapobj_vert_offsets
 (`0x80fec8`, `0x6a8475`); the entity's starts 1.0 above and ends 12.0 below (`0x80c4e8`,
 `0x69e515`). The pushes at `0x6a8524` to `0x6a853f` are `0x6a77e0`'s: source colour, directional
 output `+0xa0`, floor 0xa8, ambient output, cap 0x60 (entity `0x69e5c2` to `0x69e5dd`, output
-`+0xf4`). `0x6a8547` tests the sky flag; `0x6a8574` copies the RGB of the day colour for 255; the
-blend `(diff × w) >> 8 + cur` is `0x6a85a8` (and `0x69e64b`).
+`+0xf4`). `0x6a8547` tests the selector (`0x6b9d34 and dl,1` makes it; `0x6b9c73` stores the alpha 0xff); `0x6a8574`
+copies the RGB of the day colour for 255. The blend `(diff × w) >> 8 + cur` of `0x6a85a8` (and `0x69e64b`) is
+reached only for a w below 255, which the sampler never gives.
 
 ## Light colour packing
 
@@ -148,21 +150,47 @@ the intensity. `0x6a7bf5` copies 27 dwords (`rep movs`). In `0x69e1c0`, `0x69e1c
 
 ## Camera interior fog
 
-`0x69de20` evaluates the fog of the map object holding the camera (`0xc7b748`). For each of the
-claimed groups it reads the group's four fog indices (`+0x34`..`+0x37`), and for each nonzero index
-whose fog record is inside its larger radius and not flagged 1 puts (distance, index) into a
-min-ordered heap; it then blends the records nearest first by the falloff `0x69e1c0` into the output
-fog.
+`0x69de20(record, instance, byte, container)` evaluates the fog of the map object holding the camera.
+With no claim `0xc7b748`, no model or exactly one `MFOG` record (the count at model `+0x190`) it returns
+0 and writes nothing. Otherwise `byte` is 1 when at least one group of the camera set `0xc7cd88` is
+flagged without 0x48, and with `byte` set the claim goes to `instance` and `0xc7cd80` to `container`.
+Either way the 0x30-byte `record` then starts as `MFOG[0]` (flags, position, radii `+0x10` and `+0x14`,
+and the sub-records of end, start fraction and colour at `+0x18` dry and `+0x24` underwater) and
+the result is 1 (`Fog record blend`).
 
-Addresses: `0x69de20`, `0x69de26`, `0x69de4b`, `0x69de7d`, `0x69de8b`, `0x69dec4`, `0x69ded2`, `0x69df08`, `0x69df70`, `0x69df90`, `0x69dfac`, `0x69dfdc`, `0x69dfe6`, `0x69dffa`, `0x69e042`, `0x69e145`, `0x69e16c`, `0x69e19e`, `0x69e240`, `0x69efd0`, `0x69ea40`, `0x69e1c0`
-Confidence: inferred
-Proof: none
-Test: `terrain::light_distance_difftest`
+Addresses: `0x69de20`, `0x69de26`, `0x69de3a`, `0x69de4b`, `0x69de52`, `0x69de5c`, `0x69de70`, `0x69de7d`, `0x69de8b`, `0x69dea2`, `0x69deb2`, `0x69deb4`, `0x69dec4`, `0x69ded2`, `0x69df08`, `0x69e19e`, `0x69e1ac`, `0x69e240`, `0x6c3d1c`, `0x6c3d27`, `0xc7b748`, `0xc7cd80`, `0xc7cd84`, `0xc7cd88`
+Confidence: verified
+Proof: one
+Test: none
 
-`ret 8`. `0x69de26` returns 0 with no claim `0xc7b748` or a model flag `+0x190` equal to 1 (`0x69de4b`). The
-groups come from the window list (`0xc7cd84`); `0x69de8b` ORs a flag from each group's `+0x10 & 0x48`
-into the first output byte. The fog records are `+0x158`, 0x30 bytes each (`0x69dfa6`); the
-distance is from the camera moved into the object (`0x69dec4`); `0x69dfdc` compares it with the
-record's `+0x14` and `0x69dfe6` tests the record flag bit 0. The heap push is `0x69dffa` onward,
-the pops and blends `0x69e07d` to `0x69e195`. How the records blend and what the heap order is for
-are not read here.
+`ret 8`. The three bails jump to `0x69e1ac` (`xor eax,eax`). The model's record pointer is `+0x158` and its
+count `+0x190`, stored by the root parser (`0x6c3d1c` divides the chunk size by 0x30 and `0x6c3d27`
+stores it); `0x69de4b` is the only reader of the count. `0x69de8b` to `0x69de96` form `(flags & 0x48) == 0`
+by `and dl,0x48; neg dl; sbb dl,dl; inc dl` and OR it into `byte`. `0x69ded2` copies the record's
+flags, three position floats and the two radii, and `0x69df08` calls `0x69e240`, which copies the two
+12-byte sub-records. A group the set names that does not resolve adds nothing.
+
+## Fog record blend
+
+The candidates are the four fog indices of the first group of the camera set only. An index counts when it is nonzero, its `MFOG` record lies nearer to the camera, in the model's
+space, than the record's large radius (`+0x14`, strictly) and the record's flag 1 is clear; the
+distance and index enter a max-heap, which pops the farthest first. Each pop moves both
+sub-records of the output toward the popped record's, by lerp for end and start fraction and by the
+byte blend for colour, with weight 1 inside the small radius (`+0x10`) and falling to 0 at the large
+one. The nearest, popped last, also copies its flags. With no candidate the output stays `MFOG[0]`.
+
+Addresses: `0x69df65`, `0x69df70`, `0x69df90`, `0x69dfa6`, `0x69dfd1`, `0x69dfdc`, `0x69dfe6`, `0x69dffa`, `0x69e010`, `0x69e06d`, `0x69e0a4`, `0x69e0d8`, `0x69e133`, `0x69e147`, `0x69e16c`, `0x69e189`, `0x69e195`, `0x69efd0`, `0x69eb10`, `0x69ea40`, `0x69e1c0`, `0x690ae0`, `0xca7c20`, `0xca7c2c`, `0xca7c3c`
+Confidence: verified
+Proof: one
+Test: none
+
+The indices are the group's bytes `+0x34` to `+0x37`. The heap `0xca7c20` keeps its data at `+0xc` (`0xca7c2c`) and its count, one more than the entries, at
+`+0x1c` (`0xca7c3c`); entry `i` is the 8-byte pair (distance, index) at `data + 8·i`, and slot 0 is
+unused. `0x69dfdc` is `fcomp` with `test ah,5; jp`, which rejects a distance above, equal to or NaN
+against the large radius; `0x69dfe6` tests flag 1 of the record. The push sifts up while the new
+distance is not below the parent (`0x69e01d`, `test ah,1; jne` stops), and the pop sifts the last
+entry down past the larger child, so the root is the largest. `0x69e06d` returns for count 1 (empty).
+A pop removes the last entry (`0x69eb10`), then `0x69e147` takes the weight from `0x69e1c0` and
+`0x69e16c` calls `0x69efd0` for `+0x18` and `+0x24`: `x + (y − x)·w` for the two floats, and the colour
+through `0x690ae0` with the byte of f32(w·255 + 512) >> 14, skipped for 0. `0x69e189` copies the flags
+when the heap is then empty (`0x69e182`).
