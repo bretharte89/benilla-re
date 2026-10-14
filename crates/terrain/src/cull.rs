@@ -22,7 +22,7 @@ const EYE_ON_PLANE_EPS: f32 = f32::from_bits(0x3c23_d70a);
 /// `[0x801360]`: 0.001 (`0x3a83126f`), the least `|w|` divided by.
 const W_CLAMP_EPS: f32 = f32::from_bits(0x3a83_126f);
 
-/// 5e-6 (`0x3727c5ac`), the `w` used in place of a smaller one.
+/// 1e-5 (`0x3727c5ac`), the `w` used in place of a smaller one.
 const W_CLAMP_VAL: f32 = f32::from_bits(0x3727_c5ac);
 
 /// A vector of three components, each stored as `f32` before it is passed to `0x4549a0`.
@@ -191,10 +191,10 @@ pub struct PortalRect {
 /// rectangle. Each vertex `(x, y, z, 1)` goes through `TransformVector4` (`0x7bcb40`) with the
 /// matrix at `0xcbe2d8`, and `(x, y, w)` is clipped against the planes at `0xc7d0dc`
 /// (`ClipPortalPolygon`); nothing left culls it. The plane of the first three vertices, normalized,
-/// decides whether the eye is on it (`|n·eye − n·v0| < 0.01`) and inside the polygon
+/// decides whether the eye is on it (`|n·eye − n·v0| <= 0.01`) and inside the polygon
 /// (`IsPointInPolygon`, `0x7c23e0`, along `0x7bf680`'s axis): then the rectangle is the whole
 /// screen. Otherwise it is the bounds of `x/w`, `y/w` over the clipped vertices, `w` below 0.001 in
-/// size replaced by 5e-6. With SSE the normal is scaled by `rsqrtss`, which differs by CPU.
+/// size replaced by 1e-5. With SSE the normal is scaled by `rsqrtss`, which differs by CPU.
 #[allow(clippy::too_many_arguments)]
 pub fn portal_screen_rect(
     verts: &[V3],
@@ -218,39 +218,46 @@ pub fn portal_screen_rect(
         };
     };
 
-    // The normal `(v2 − v0) × (v1 − v0)` in the function's terms, each component stored.
+    // The normal `(v2 − v0) × (v1 − v0)` in the function's terms. `v2 − v0` in x and y is stored
+    // as `f32` (`0x6b4829`, `0x6b4832`); the other differences stay at 53 bits. Each component is
+    // stored.
     let v0 = verts[0];
     let v1 = verts[1];
     let v2 = verts[2];
-    let nx = (f64::from(v2[2]) - f64::from(v0[2])) * (f64::from(v1[1]) - f64::from(v0[1]))
-        - (f64::from(v1[2]) - f64::from(v0[2])) * (f64::from(v2[1]) - f64::from(v0[1]));
-    let ny = (f64::from(v1[2]) - f64::from(v0[2])) * (f64::from(v2[0]) - f64::from(v0[0]))
-        - (f64::from(v2[2]) - f64::from(v0[2])) * (f64::from(v1[0]) - f64::from(v0[0]));
-    let nz = (f64::from(v2[1]) - f64::from(v0[1])) * (f64::from(v1[0]) - f64::from(v0[0]))
-        - (f64::from(v1[1]) - f64::from(v0[1])) * (f64::from(v2[0]) - f64::from(v0[0]));
-    let (nxf, nyf, nzf) = (nx as f32, ny as f32, nz as f32);
-    let magsq = (f64::from(nxf) * f64::from(nxf)
-        + f64::from(nyf) * f64::from(nyf)
-        + f64::from(nzf) * f64::from(nzf)) as f32;
+    let d1x = f64::from(v1[0]) - f64::from(v0[0]);
+    let d1y = f64::from(v1[1]) - f64::from(v0[1]);
+    let d1z = f64::from(v1[2]) - f64::from(v0[2]);
+    let d2x = (f64::from(v2[0]) - f64::from(v0[0])) as f32 as f64;
+    let d2y = (f64::from(v2[1]) - f64::from(v0[1])) as f32 as f64;
+    let d2z = f64::from(v2[2]) - f64::from(v0[2]);
+    let nxf = (d2z * d1y - d1z * d2y) as f32;
+    let nyf = (d1z * d2x - d2z * d1x) as f32;
+    let nzf = (d2y * d1x - d1y * d2x) as f32;
+    // `(nz² + ny²) + nx²` at 53 bits, then `1/√` at 53 bits, nothing rounded to `f32` between
+    // (`0x6b4868` to `0x6b48aa`).
+    let magsq = (f64::from(nzf) * f64::from(nzf) + f64::from(nyf) * f64::from(nyf))
+        + f64::from(nxf) * f64::from(nxf);
     assert!(
         rsqrt_gate == 0,
         "the rsqrtss path (0xc9e388 set) differs by CPU and is not modelled"
     );
-    let inv = (f64::from(1.0f32) / f64::from(magsq).sqrt()) as f32;
+    let inv = 1.0f64 / magsq.sqrt();
     let (nxf, nyf, nzf) = (
-        (f64::from(nxf) * f64::from(inv)) as f32,
-        (f64::from(nyf) * f64::from(inv)) as f32,
-        (f64::from(nzf) * f64::from(inv)) as f32,
+        (f64::from(nxf) * inv) as f32,
+        (f64::from(nyf) * inv) as f32,
+        (f64::from(nzf) * inv) as f32,
     );
 
-    let d = (f64::from(nzf) * f64::from(eye[2])
-        + f64::from(nyf) * f64::from(eye[1])
-        + f64::from(nxf) * f64::from(eye[0])
-        - (f64::from(nyf) * f64::from(v0[1])
-            + f64::from(nzf) * f64::from(v0[2])
-            + f64::from(nxf) * f64::from(v0[0]))) as f32;
+    // `−((nx·v0x + nz·v0z) + ny·v0y)` is stored as `f32` (`0x6b48fe`); the eye's `(nz·ez + ny·ey) +
+    // nx·ex` and that store are summed at 53 bits and compared, unrounded, with 0.01f
+    // (`0x6b4901` to `0x6b4925`).
+    let plane = (-((f64::from(nxf) * f64::from(v0[0]) + f64::from(nzf) * f64::from(v0[2]))
+        + f64::from(nyf) * f64::from(v0[1]))) as f32;
+    let d = ((f64::from(nzf) * f64::from(eye[2]) + f64::from(nyf) * f64::from(eye[1]))
+        + f64::from(nxf) * f64::from(eye[0]))
+        + f64::from(plane);
     let d = d.abs();
-    if d < EYE_ON_PLANE_EPS {
+    if d <= f64::from(EYE_ON_PLANE_EPS) {
         let flat: Vec<f32> = verts.iter().flatten().copied().collect();
         if point_in_poly(eye, &flat, count, dominant_axis(&[nxf, nyf, nzf])) {
             return PortalRect {
