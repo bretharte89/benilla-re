@@ -115,7 +115,29 @@ dependencies = [
 ]
 
 [[package]]
+name = "benilla-re-console"
+version = "0.1.0"
+dependencies = [
+ "benilla-re-difftest",
+]
+
+[[package]]
 name = "benilla-re-core"
+version = "0.1.0"
+dependencies = [
+ "benilla-re-difftest",
+]
+
+[[package]]
+name = "benilla-re-dbc"
+version = "0.1.0"
+dependencies = [
+ "benilla-re-difftest",
+ "benilla-re-storm",
+]
+
+[[package]]
+name = "benilla-re-dbcache"
 version = "0.1.0"
 dependencies = [
  "benilla-re-difftest",
@@ -132,6 +154,13 @@ dependencies = [
 
 [[package]]
 name = "benilla-re-fastmath"
+version = "0.1.0"
+dependencies = [
+ "benilla-re-difftest",
+]
+
+[[package]]
+name = "benilla-re-ffxeffects"
 version = "0.1.0"
 dependencies = [
  "benilla-re-difftest",
@@ -185,7 +214,21 @@ dependencies = [
 ]
 
 [[package]]
+name = "benilla-re-loadingscreen"
+version = "0.1.0"
+dependencies = [
+ "benilla-re-difftest",
+]
+
+[[package]]
 name = "benilla-re-minigame"
+version = "0.1.0"
+dependencies = [
+ "benilla-re-difftest",
+]
+
+[[package]]
+name = "benilla-re-minimap"
 version = "0.1.0"
 dependencies = [
  "benilla-re-difftest",
@@ -210,6 +253,13 @@ dependencies = [
 ]
 
 [[package]]
+name = "benilla-re-playername"
+version = "0.1.0"
+dependencies = [
+ "benilla-re-difftest",
+]
+
+[[package]]
 name = "benilla-re-random"
 version = "0.1.0"
 dependencies = [
@@ -228,6 +278,14 @@ name = "benilla-re-spline"
 version = "0.1.0"
 dependencies = [
  "benilla-re-difftest",
+]
+
+[[package]]
+name = "benilla-re-storm"
+version = "0.1.0"
+dependencies = [
+ "benilla-re-difftest",
+ "wow-mpq",
 ]
 
 [[package]]

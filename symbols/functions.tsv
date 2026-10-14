@@ -394,25 +394,25 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x406640	443	BeginLoadingScreen		loadingscreen			Starts the loading screen for a map	inferred	none		
 0x406800	248	CreateLoadingScreen		loadingscreen			Creates the loading screen object	inferred	none		
 0x406900	28			loadingscreen			Runs its object file code that calls 0x406920, 0x406a60; not read here	inferred	none		
-0x406920	188			loadingscreen			Runs its object file code not read here	inferred	none		
+0x406920	188			loadingscreen			Runs its object file code not read here	inferred	none		loadingscreen::progress_fraction_difftest
 0x4069e0	111			loadingscreen			Runs its object file code that calls EventRegisterEx; not read here	inferred	none		
 0x406a50	3			loadingscreen			Runs its object file code not read here	inferred	none		
-0x406a60	611			loadingscreen			Runs its object file code that calls 0x58b060, 0x58af60, 0x58a970 and 9 more; not read here	inferred	none		
+0x406a60	611			loadingscreen			Runs its object file code that calls 0x58b060, 0x58af60, 0x58a970 and 9 more; not read here	inferred	none		loadingscreen::aspect_fit_ortho_difftest
 0x406cd0	20			loadingscreen			Runs its object file code that calls 0x406f20, 0x406cf0; not read here	inferred	none		
 0x406cf0	304			loadingscreen			Runs its object file code that calls 0x406e20, _atexit, 0x58a2a0 and 5 more; not read here	inferred	none		
 0x406e20	240			loadingscreen			Runs its object file code that calls 0x6548b0, CGxTexFlags::CGxTexFlags, TextureCreate and 1 more; not read here	inferred	none		
 0x406f10	1			loadingscreen			Runs its object file code not read here	inferred	none		
 0x406f20	142			loadingscreen			Runs its object file code that calls 0x58a2a0, GetTextureDeviceObject, 0x589e80 and 3 more; not read here	inferred	none		
 0x406fb0	410			loadingscreen			Runs its object file code that calls __alloca_probe, GetTextureDeviceObject, 0x589e80 and 4 more; not read here	inferred	none		
-0x407150	347			loadingscreen			Runs its object file code that calls _atexit, GxRsSet, 0x58a2a0 and 4 more; not read here	inferred	none		
+0x407150	347			loadingscreen			Runs its object file code that calls _atexit, GxRsSet, 0x58a2a0 and 4 more; not read here	inferred	none		loadingscreen::progress_bar_quad_difftest
 0x4072b0	1			loadingscreen			Runs its object file code not read here	inferred	none		
 0x4072c0	303			loadingscreen			Runs LoadingScreen.cpp code that calls ClntObjMgrGetActivePlayer, ClntObjMgrObjectPtr and 4 more; not read here	inferred	none		
 0x4073f0	29			loadingscreen			Runs LoadingScreen.cpp code that calls 0x4075a0, 0x4074b0, 0x407410; not read here	inferred	none		
 0x407410	151			loadingscreen			Runs LoadingScreen.cpp code that calls HandleClose, 0x408560, SMemFree; not read here	inferred	none		
 0x4074b0	236			loadingscreen			Runs LoadingScreen.cpp code that calls CGxTexFlags::CGxTexFlags, TextureCreate and 2 more; not read here	inferred	none		
-0x4075a0	818			loadingscreen			Runs LoadingScreen.cpp code that calls 0x407da0, 0x4a72b0, __alloca_probe and 11 more; not read here	inferred	none		
+0x4075a0	818			loadingscreen			Runs LoadingScreen.cpp code that calls 0x407da0, 0x4a72b0, __alloca_probe and 11 more; not read here	inferred	none		loadingscreen::route_tessellate_segs_difftest
 0x4078e0	22	SplatVector3		loadingscreen	orchestration	float * __thiscall (float *this, float v)	Stores one float in all three components	verified	one	camera#unprojection	models::portal_seg_normalize_difftest
-0x407900	895			loadingscreen			Runs LoadingScreen.cpp code not read here	inferred	none		
+0x407900	895			loadingscreen			Runs LoadingScreen.cpp code not read here	inferred	none		loadingscreen::route_endpoint_quads_difftest
 0x407c80	286			loadingscreen			Runs LoadingScreen.cpp code that calls EvaluateSplinePoint; not read here	inferred	none		
 0x407da0	59			loadingscreen			Runs LoadingScreen.cpp code not read here	inferred	none		
 0x407de0	139			loadingscreen			Runs LoadingScreen.cpp code that calls ClntObjMgrGetActivePlayer, ClntObjMgrObjectPtr and 3 more; not read here	inferred	none		
@@ -422,7 +422,7 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x407fa0	36			loadingscreen			Runs its object file code that calls 0x406900; not read here	inferred	none		
 0x407fd0	36			loadingscreen			Runs its object file code that calls 0x406900; not read here	inferred	none		
 0x408000	479			loadingscreen			Runs its object file code that calls 0x408b40, 0x408a30, 0x408510 and 4 more; not read here	inferred	none		
-0x4081e0	453			loadingscreen			Runs its object file code not read here	inferred	none		
+0x4081e0	453			loadingscreen			Runs its object file code not read here	inferred	none		loadingscreen::worldmap_tile_geometry_difftest
 0x4083b0	5			loadingscreen			Runs its object file code not read here	inferred	none		
 0x4083c0	58			unassigned	primitive		Runs code the arrival calls on a transport; not read here	inferred	none	objectlayer/players#arrival-in-the-world	
 0x408400	23			loadingscreen			Runs its object file code that calls SMemFree; not read here	inferred	none		
@@ -14639,7 +14639,7 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x569ba0	3			dbcache	unreached		Runs DBCache.cpp code not read here	inferred	none		
 0x569bb0	3			dbcache	unreached		Runs DBCache.cpp code not read here	inferred	none		
 0x569bc0	308			dbcache	unreached		Runs DBCache.cpp code that calls 0x569550, 0x56e210, 0x556690 and 2 more; not read here	inferred	none		
-0x569d00	476			dbcache			Runs DBCache.cpp code that calls CDataStore::GetUInt8, CDataStore::GetInt32, 0x569550 and 5 more; not read here	inferred	none		
+0x569d00	476			dbcache			Runs DBCache.cpp code that calls CDataStore::GetUInt8, CDataStore::GetInt32, 0x569550 and 5 more; not read here	inferred	none		dbcache::dbcache_item_text
 0x569ee0	293			dbcache	unreached		Runs DBCache.cpp code that calls 0x569550; not read here	inferred	none		
 0x56a010	236			dbcache	unreached		Runs DBCache.cpp code that calls 0x569550, ConsolePrintf, 0x556690 and 2 more; not read here	inferred	none		
 0x56a100	185			dbcache			Runs DBCache.cpp code that calls 0x556df0, SMemFree; not read here	inferred	none		
@@ -16507,7 +16507,7 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x58c580	189			gx			Runs its object file code that calls 0x59b850; not read here	inferred	none		
 0x58c640	137			gx			Runs its object file code that calls 0x58c0f0, 0x58ea00, 0x59f980 and 4 more; not read here	inferred	none		
 0x58c6d0	820			gx			Runs its object file code that calls 0x592220, 0x591200, 0x5911a0 and 6 more; not read here	inferred	none		
-0x58ca60	316			gx			Runs its object file code that calls 0x58c640, 0x58c140, 0x592330 and 4 more; not read here	inferred	none		
+0x58ca60	316			gx			Runs its object file code that calls 0x58c640, 0x58c140, 0x592330 and 4 more; not read here	inferred	none		gx::rect_b_smaller_matches_binary
 0x58cbb0	149			gx			Runs its object file code that calls 0x58cc50, 0x591f80; not read here	inferred	none		
 0x58cc50	130			gx			Runs its object file code not read here	inferred	none		
 0x58cce0	180			gx			Runs its object file code that calls 0x58c340, 0x591fa0; not read here	inferred	none		
@@ -16627,10 +16627,10 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x590ff0	12			gx			Runs its object file code that calls _atexit; not read here	inferred	none		
 0x591000	21			gx			Runs its object file code not read here	inferred	none		
 0x591020	115			gx			Runs its object file code that calls 0x5922e0, __ftol; not read here	inferred	none		
-0x5910a0	63			gx			Runs its object file code that calls __ftol; not read here	inferred	none		
-0x5910e0	61			gx			Runs its object file code that calls __ftol; not read here	inferred	none		
-0x591120	63			gx			Runs its object file code that calls __ftol; not read here	inferred	none		
-0x591160	61			gx			Runs its object file code that calls __ftol; not read here	inferred	none		
+0x5910a0	63			gx			Runs its object file code that calls __ftol; not read here	inferred	none		gx::aspect_fit_min_x_matches_binary
+0x5910e0	61			gx			Runs its object file code that calls __ftol; not read here	inferred	none		gx::aspect_fit_max_x_matches_binary
+0x591120	63			gx			Runs its object file code that calls __ftol; not read here	inferred	none		gx::aspect_fit_min_y_matches_binary
+0x591160	61			gx			Runs its object file code that calls __ftol; not read here	inferred	none		gx::aspect_fit_max_y_matches_binary
 0x5911a0	29			gx			Runs its object file code not read here	inferred	none		
 0x5911c0	28			gx			Runs its object file code not read here	inferred	none		
 0x5911e0	27			gx			Runs its object file code not read here	inferred	none		
@@ -16650,7 +16650,7 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x591540	87			gx			Runs its object file code that calls CGxTexFlags::CGxTexFlags, 0x591600; not read here	inferred	none		
 0x5915a0	96			gx			Runs its object file code that calls CGxTexFlags::CGxTexFlags, 0x591600; not read here	inferred	none		
 0x591600	113			gx			Runs its object file code not read here	inferred	none		
-0x591680	91			gx			Runs its object file code that calls __CIpow, __ftol; not read here	inferred	none		
+0x591680	91			gx			Runs its object file code that calls __CIpow, __ftol; not read here	inferred	none		gx::gamma_ramp_matches_binary
 0x5916e0	1456			gx			Runs its object file code that calls 0x5898d0, 0x5912f0, SetVector3 and 11 more; not read here	inferred	none		
 0x591c90	43			gx			Runs its object file code that calls 0x591d00, SMemFree; not read here	inferred	none		
 0x591cc0	61			gx			Runs its object file code not read here	inferred	none		
@@ -16662,7 +16662,7 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x591f80	25			gx			Runs its object file code not read here	inferred	none		
 0x591fa0	32			gx			Runs its object file code not read here	inferred	none		
 0x591fc0	11			gx			Runs its object file code not read here	inferred	none		
-0x591fd0	127			gx			Runs its object file code not read here	inferred	none		
+0x591fd0	127			gx			Runs its object file code not read here	inferred	none		gx::aspect_ratio_matches_binary
 0x592050	16			gx			Runs its object file code not read here	inferred	none		
 0x592060	22			gx			Runs its object file code that calls 0x591680; not read here	inferred	none		
 0x592080	31			gx			Runs its object file code not read here	inferred	none		
@@ -16698,7 +16698,7 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x592610	47			gx			Runs its object file code that calls 0x591440; not read here	inferred	none		
 0x592640	73			gx			Runs its object file code not read here	inferred	none		
 0x592690	43			gx			Runs its object file code not read here	inferred	none		
-0x5926c0	104			gx			Runs its object file code that calls QueryDevice; not read here	inferred	none		
+0x5926c0	104			gx			Runs its object file code that calls QueryDevice; not read here	inferred	none		gx::negate_z_row_matches_binary
 0x592730	56			gx			Runs its object file code not read here	inferred	none		
 0x592770	28			gx			Runs its object file code that calls 0x5913d0; not read here	inferred	none		
 0x592790	62			gx			Runs its object file code that calls 0x5913d0, 0x591440; not read here	inferred	none		
@@ -16723,8 +16723,8 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x592f70	28			gx			Runs its object file code not read here	inferred	none		
 0x592f90	57			gx			Runs its object file code not read here	inferred	none		
 0x592fd0	108			gx			Runs its object file code that calls 0x58a2a0, 0x58a350; not read here	inferred	none		
-0x593040	751			gx			Runs its object file code that calls CopyColor; not read here	inferred	none		
-0x593330	143			gx			Runs its object file code that calls 0x593040; not read here	inferred	none		
+0x593040	751			gx			Runs its object file code that calls CopyColor; not read here	inferred	none		gx::color_modulate_matches_binary
+0x593330	143			gx			Runs its object file code that calls 0x593040; not read here	inferred	none		gx::sub_vec3_matches_binary
 0x5933c0	419			gx	unreached		Runs its object file code that calls __ftol; not read here	inferred	none		
 0x593570	41			gx			Runs its object file code not read here	inferred	none		
 0x5935a0	33			gx			Runs its object file code not read here	inferred	none		
@@ -16797,7 +16797,7 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x5955f0	65			gx			Runs its object file code not read here	inferred	none		
 0x595640	130			gx			Runs its object file code that calls CGxTexFlags::CGxTexFlags, 0x58aa30; not read here	inferred	none		
 0x5956d0	30			gx			Runs its object file code that calls GxTexDestroy; not read here	inferred	none		
-0x5956f0	1256			gx			Runs its object file code that calls OsInputGetCursorPos, 0x5922e0, 0x589f40 and 15 more; not read here	inferred	none		
+0x5956f0	1256			gx			Runs its object file code that calls OsInputGetCursorPos, 0x5922e0, 0x589f40 and 15 more; not read here	inferred	none		gx::quad_corners_matches_binary
 0x595be0	35			gx			Runs its object file code not read here	inferred	none		
 0x595c10	7			gx	unreached		Runs its object file code not read here	inferred	none		
 0x595c20	16			gx			Runs its object file code not read here	inferred	none		
@@ -16988,12 +16988,12 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x59b910	242	GxClearGL		gx	host	void __thiscall (uint32_t mask)	Applies the viewport and scissor, then clears the colour and depth buffers the mask names	verified	one	ui/modelview#clip-and-depth-clear	
 0x59ba10	89			gx			Runs its object file code that calls 0x592430, 0x592140, 0x59b890; not read here	inferred	none		
 0x59ba70	40			gx			Runs its object file code not read here	inferred	none		
-0x59baa0	1422			gx			Runs its object file code not read here	inferred	none		
-0x59c100	1213			gx			Runs its object file code that calls 0x59baa0; not read here	inferred	none		
+0x59baa0	1422			gx			Runs its object file code not read here	inferred	none		gx::scale_neg_65536_matches_binary
+0x59c100	1213			gx			Runs its object file code that calls 0x59baa0; not read here	inferred	none		gx::color_norm_matches_binary
 0x59c610	185			gx			Runs its object file code that calls 0x59baa0; not read here	inferred	none		
 0x59c6d0	84	GxApplyDirtyStateGL		gx	host	void __thiscall ()	Applies the dirty device states through the GL applicators, the viewport among them	verified	one	ui/modelview#clip-and-depth-clear	
-0x59c730	232	GxApplyViewportGL		gx	host	void __thiscall ()	Passes the viewport as truncated pixels to glViewport and glScissor, and the depth range to glDepthRange	verified	one	ui/modelview#clip-and-depth-clear	
-0x59c820	461			gx			Runs its object file code that calls 0x5a0090; not read here	inferred	none		
+0x59c730	232	GxApplyViewportGL		gx	host	void __thiscall ()	Passes the viewport as truncated pixels to glViewport and glScissor, and the depth range to glDepthRange	verified	one	ui/modelview#clip-and-depth-clear	gx::viewport_matches_binary
+0x59c820	461			gx			Runs its object file code that calls 0x5a0090; not read here	inferred	none		gx::light_dir_negate_matches_binary
 0x59c9f0	100			gx			Runs its object file code that calls 0x5935d0; not read here	inferred	none		
 0x59ca60	828			gx			Runs its object file code that calls MultiplyMatrix4, 0x5a0090, 0x59baa0 and 2 more; not read here	inferred	none		
 0x59cda0	1			gx			Runs its object file code not read here	inferred	none		
@@ -17002,8 +17002,8 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x59d020	115			gx			Runs its object file code that calls 0x59baa0, 0x59f0f0, 0x59f5d0 and 1 more; not read here	inferred	none		
 0x59d0a0	53			gx			Runs its object file code that calls 0x59baa0; not read here	inferred	none		
 0x59d0e0	58			gx			Runs its object file code that calls 0x59baa0; not read here	inferred	none		
-0x59d120	529			gx			Runs its object file code that calls 0x59baa0, 0x591370, 0x591440 and 1 more; not read here	inferred	none		
-0x59d350	1606			gx			Runs its object file code that calls 0x59baa0, 0x59d020, 0x59d0a0 and 4 more; not read here	inferred	none		
+0x59d120	529			gx			Runs its object file code that calls 0x59baa0, 0x591370, 0x591440 and 1 more; not read here	inferred	none		gx::matrix_reorient_matches_binary
+0x59d350	1606			gx			Runs its object file code that calls 0x59baa0, 0x59d020, 0x59d0a0 and 4 more; not read here	inferred	none		gx::color_norm_at_0x59d350_matches_binary
 0x59da70	43			gx			Runs its object file code that calls 0x59dcf0, 0x59daa0; not read here	inferred	none		
 0x59daa0	560			gx			Runs its object file code that calls 0x595e70; not read here	inferred	none		
 0x59dcf0	871			gx			Runs its object file code that calls __alloca_probe, 0x59e070, 0x595e70; not read here	inferred	none		
@@ -17046,8 +17046,8 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x59fc90	332			gx			Runs its object file code that calls 0x590630, 0x592b00, 0x59c6d0; not read here	inferred	none		
 0x59fde0	17			gx			Runs its object file code not read here	inferred	none		
 0x59fe00	17			gx			Runs its object file code not read here	inferred	none		
-0x59fe20	480			gx			Runs its object file code that calls MultiplyMatrix4, GxCapsGet, 0x59baa0; not read here	inferred	none		
-0x5a0000	135			gx			Runs its object file code not read here	inferred	none		
+0x59fe20	480			gx			Runs its object file code that calls MultiplyMatrix4, GxCapsGet, 0x59baa0; not read here	inferred	none		gx::proj_matrix_load_matches_binary
+0x5a0000	135			gx			Runs its object file code not read here	inferred	none		gx::z_flip_matches_binary
 0x5a0090	167			gx			Runs its object file code that calls 0x5a0000, 0x59baa0; not read here	inferred	none		
 0x5a0140	30			gx			Runs its object file code that calls 0x5925e0, 0x59fe20; not read here	inferred	none		
 0x5a0160	30			gx			Runs its object file code that calls 0x592610; not read here	inferred	none		
@@ -22058,7 +22058,7 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x62f210	19	InitCombatLogCSquare17		objectlayer	primitive	void __cdecl (void)	Stores 40² = 1600 as a float in a global	verified	one	objectlayer/initializers#float-constants	
 0x62f230	5	InitCombatLogCSquare18Thunk		objectlayer	orchestration	void __cdecl (void)	Jumps to 0x62f240, a static initializer	verified	one	objectlayer/initializers#initializer-thunks	
 0x62f240	19	InitCombatLogCSquare18		objectlayer	primitive	void __cdecl (void)	Stores 1.5² = 2.25 as a float in a global	verified	one	objectlayer/initializers#float-constants	
-0x62f260	147	CGuildRecord::Read		objectlayer	primitive	void __thiscall (void *record, CDataStore *stream)	Reads a guild record: id, name, ten rank names and five emblem values	verified	one	objectlayer/party#the-guild-record	
+0x62f260	147	CGuildRecord::Read		objectlayer	primitive	void __thiscall (void *record, CDataStore *stream)	Reads a guild record: id, name, ten rank names and five emblem values	verified	one	objectlayer/party#the-guild-record	dbcache::dbcache_guild
 0x62f300	5	InitPlayerSoundCopy1Thunk		objectlayer	orchestration	void __cdecl (void)	Jumps to 0x62f310, a static initializer	verified	one	objectlayer/initializers#initializer-thunks	
 0x62f310	11	InitPlayerSoundCopy1		objectlayer	orchestration	void __cdecl (void)	Copies the dword 0x7f800000 (+inf as a float) into a global	verified	one	objectlayer/initializers#stored-constants	
 0x62f320	5	InitPlayerSoundDouble1Thunk		objectlayer	orchestration	void __cdecl (void)	Jumps to 0x62f330, a static initializer	verified	one	objectlayer/initializers#initializer-thunks	
@@ -22638,14 +22638,14 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x638ff0	41	RegenerateFontStrings	idb	console			Runs ConsoleClient.cpp code that calls GenerateNodeString; not read here	inferred	none		
 0x639020	145	GenerateNodeString	idb	console			Runs ConsoleClient.cpp code that calls TextBlockGetFontPtr, GxuFontDestroyString, GxuFontCreateString; not read here	inferred	none		
 0x6390c0	53	ConsoleCommand::CharSpacing	idb	console			Runs ConsoleClient.cpp code that calls SStrToFloat, RegenerateFontStrings; not read here	inferred	none		
-0x639100	307	ConsoleCommand_DefaultSettings	idb	console			Runs ConsoleClient.cpp code that calls NTempest::CImVector::Set, SStrCopy, HandleClose and 3 more; not read here	inferred	none		
+0x639100	307	ConsoleCommand_DefaultSettings	idb	console			Runs ConsoleClient.cpp code that calls NTempest::CImVector::Set, SStrCopy, HandleClose and 3 more; not read here	inferred	none		console::font_metrics_reset_difftest
 0x639240	13			console			Runs ConsoleClient.cpp code not read here	inferred	none		
 0x639250	170			console			Runs ConsoleClient.cpp code that calls SStrLen, __alloca_probe, SStrCopy and 2 more; not read here	inferred	none		
 0x639300	161	ConsoleCommand_CurrentSettings	idb	console			Runs ConsoleClient.cpp code that calls SStrPrintf, ConsoleWrite; not read here	inferred	none		
 0x6393b0	490			console			Runs ConsoleClient.cpp code that calls _sscanf, ConsoleWrite, ConsoleCommandWriteHelp and 3 more; not read here	inferred	none		
 0x6395a0	22			console			Runs ConsoleClient.cpp code not read here	inferred	none		
-0x6395c0	150	ConsoleCommandConsoleLines		console			Implements the console command consolelines: the console's height in lines	inferred	none		
-0x639660	150	ConsoleCommand_FontSize	idb	console			Runs ConsoleClient.cpp code that calls SStrToFloat, HandleClose, NDCToDDCHeight and 2 more; not read here	inferred	none		
+0x6395c0	150	ConsoleCommandConsoleLines		console			Implements the console command consolelines: the console's height in lines	inferred	none		console::line_spacing_set_difftest
+0x639660	150	ConsoleCommand_FontSize	idb	console			Runs ConsoleClient.cpp code that calls SStrToFloat, HandleClose, NDCToDDCHeight and 2 more; not read here	inferred	none		console::font_size_set_difftest
 0x639700	196	ConsoleCommand_Font	idb	console			Runs ConsoleClient.cpp code that calls SStrPack, NDCToDDCHeight, TextBlockGenerateFont and 3 more; not read here	inferred	none		
 0x6397d0	192			console			Runs ConsoleClient.cpp code that calls _sscanf, ConsoleWrite, ConsoleCommandWriteHelp and 1 more; not read here	inferred	none		
 0x639890	192			console			Runs ConsoleClient.cpp code that calls _sscanf, ConsoleWrite, ConsoleCommandWriteHelp and 1 more; not read here	inferred	none		
@@ -22663,7 +22663,7 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x63a220	1			console			Runs ConsoleClient.cpp code not read here	inferred	none		
 0x63a230	1260			console			Runs ConsoleClient.cpp code that calls 0x58b5e0, CVar::Register, 0x641260 and 29 more; not read here	inferred	none		
 0x63a720	725			console			Runs ConsoleClient.cpp code that calls CVar::Register, SStrPrintf; not read here	inferred	none		
-0x63aa00	936			console			Runs ConsoleClient.cpp code that calls _sscanf, 0x5899c0, 0x496d70 and 5 more; not read here	inferred	none		
+0x63aa00	936			console			Runs ConsoleClient.cpp code that calls _sscanf, 0x5899c0, 0x496d70 and 5 more; not read here	inferred	none		console::resolution_validate_difftest
 0x63adb0	139			console			Runs ConsoleClient.cpp code that calls 0x64ac60, ConsoleWrite; not read here	inferred	none		
 0x63ae40	139			console			Runs ConsoleClient.cpp code that calls 0x64ac60, ConsoleWrite; not read here	inferred	none		
 0x63aed0	263			console			Runs ConsoleClient.cpp code that calls 0x64ac60, SStrPrintf, ConsoleWrite; not read here	inferred	none		
@@ -22682,24 +22682,24 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x63b380	74			console			Runs ConsoleClient.cpp code not read here	inferred	none		
 0x63b3d0	99			console			Runs ConsoleClient.cpp code not read here	inferred	none		
 0x63b440	26			console			Runs ConsoleClient.cpp code that calls 0x589ba0; not read here	inferred	none		
-0x63b460	352	ConsoleScreenInitialize	idb	console			Initializes the console screen and installs the confirm-close callback 0x63c9a0	inferred	none	core/input#close-and-quit	
+0x63b460	352	ConsoleScreenInitialize	idb	console			Initializes the console screen and installs the confirm-close callback 0x63c9a0	inferred	none	core/input#close-and-quit	console::console_scale_init_difftest
 0x63b5c0	41			console			Runs ConsoleClient.cpp code that calls 0x63b5f0, 0x63b710; not read here	inferred	none		
 0x63b5f0	287			console			Runs ConsoleClient.cpp code that calls 0x589f40, GxRsSet, 0x589e30 and 4 more; not read here	inferred	none		
 0x63b710	230			console			Runs ConsoleClient.cpp code that calls 0x589f40, GxRsSet, 0x58a2a0 and 3 more; not read here	inferred	none		
-0x63b800	390	PaintText	idb	console			Runs ConsoleClient.cpp code that calls GetInputLine, 0x5c1f00, 0x5c2770 and 5 more; not read here	inferred	none		
-0x63b990	270	DrawCaret	idb	console			Runs ConsoleClient.cpp code that calls 0x589f40, GxRsSet, 0x589e30 and 4 more; not read here	inferred	none		
+0x63b800	390	PaintText	idb	console			Runs ConsoleClient.cpp code that calls GetInputLine, 0x5c1f00, 0x5c2770 and 5 more; not read here	inferred	none		console::paint_text_layout_difftest
+0x63b990	270	DrawCaret	idb	console			Runs ConsoleClient.cpp code that calls 0x589f40, GxRsSet, 0x589e30 and 4 more; not read here	inferred	none		console::draw_caret_difftest
 0x63baa0	296	GetInputLine	idb	console			Runs ConsoleClient.cpp code that calls SMemAlloc, SStrCopy, 0x638d10 and 2 more; not read here	inferred	none		
 0x63bbd0	187	EnforceMaxLines	idb	console			Runs ConsoleClient.cpp code that calls SMemFree, GxuFontDestroyString, 0x63cfb0 and 1 more; not read here	inferred	none		
 0x63bc90	177			console			Runs ConsoleClient.cpp code that calls EventRegisterEx; not read here	inferred	none		
-0x63bd50	317			console			Runs ConsoleClient.cpp code that calls ConsoleCommandExecute, ScrnLayerSetRect; not read here	inferred	none		
+0x63bd50	317			console			Runs ConsoleClient.cpp code that calls ConsoleCommandExecute, ScrnLayerSetRect; not read here	inferred	none		console::slide_animate_difftest
 0x63be90	79	OnChar	idb	console			Runs ConsoleClient.cpp code that calls EventIsKeyDown, PasteInInputLine, ResetHighlight; not read here	inferred	none		
 0x63bee0	397	PasteInInputLine	idb	console			Runs ConsoleClient.cpp code that calls SStrLen, GetInputLine, ReserveInputSpace and 6 more; not read here	inferred	none		
 0x63c070	51	ResetHighlight	idb	console			Runs ConsoleClient.cpp code not read here	inferred	none		
-0x63c0b0	368	OnMouseDown	idb	console			Runs ConsoleClient.cpp code that calls EventIsKeyDown, ResetHighlight, GetLineAtMousePosition and 3 more; not read here	inferred	none		
-0x63c220	99	GetLineAtMousePosition	idb	console			Runs ConsoleClient.cpp code that calls __ftol; not read here	inferred	none		
+0x63c0b0	368	OnMouseDown	idb	console			Runs ConsoleClient.cpp code that calls EventIsKeyDown, ResetHighlight, GetLineAtMousePosition and 3 more; not read here	inferred	none		console::mouse_down_drag_difftest
+0x63c220	99	GetLineAtMousePosition	idb	console			Runs ConsoleClient.cpp code that calls __ftol; not read here	inferred	none		console::line_at_mouse_difftest
 0x63c290	299	UpdateHighlight	idb	console			Runs ConsoleClient.cpp code that calls TextBlockGetFontPtr, SStrLen, GxuFontGetMaxCharsWithinWidth; not read here	inferred	none		
 0x63c3c0	50	OnMouseUp	idb	console			Runs ConsoleClient.cpp code that calls EventIsKeyDown; not read here	inferred	none		
-0x63c400	128	OnMouseMove	idb	console			Runs ConsoleClient.cpp code that calls EventIsKeyDown, UpdateHighlight; not read here	inferred	none		
+0x63c400	128	OnMouseMove	idb	console			Runs ConsoleClient.cpp code that calls EventIsKeyDown, UpdateHighlight; not read here	inferred	none		console::mouse_move_drag_difftest
 0x63c480	788	OnKeyDown	idb	console			Runs ConsoleClient.cpp code that calls ResetHighlight, EventIsKeyDown, GetInputLine and 17 more; not read here	inferred	none		
 0x63c7c0	149	MoveLinePtr	idb	console			Runs ConsoleClient.cpp code not read here	inferred	none		
 0x63c860	213	OnKeyDownRepeat	idb	console			Runs ConsoleClient.cpp code that calls EventIsKeyDown, GetInputLine, MoveLinePtr and 7 more; not read here	inferred	none		
@@ -28220,7 +28220,7 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x6c64a0	33			unassigned			Runs its object file code not read here	inferred	none		
 0x6c64d0	97			unassigned			Runs its object file code not read here	inferred	none		
 0x6c6540	29			unassigned			Runs its object file code not read here	inferred	none		
-0x6c6560	418			unassigned			Runs its object file code that calls 0x6c64a0, __ftol, 0x6c6540 and 8 more; not read here	inferred	none		
+0x6c6560	418			unassigned			Runs its object file code that calls 0x6c64a0, __ftol, 0x6c6540 and 8 more; not read here	inferred	none		playername::pn_swing_step_count
 0x6c6710	52			unassigned			Runs its object file code that calls CM2Model::SetDrawCallback, HandleClose2, CDataAllocator::PutData; not read here	inferred	none		
 0x6c6750	152			unassigned			Runs its object file code that calls GetBlockPoolData, CM2Model::SetDrawCallback, OsGetAsyncTimeMs; not read here	inferred	none		
 0x6c67f0	236			unassigned			Runs its object file code that calls CM2Model::HasEvent, 0x589f40, GxRsSet and 6 more; not read here	inferred	none		
@@ -28253,8 +28253,8 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x6c6d40	183			playername			Runs PlayerName.cpp code that calls ClntObjMgrObjectPtr, CM2Model::IsReady, 0x50d390 and 2 more; not read here	inferred	none		
 0x6c6e00	86			playername			Runs PlayerName.cpp code that calls ClntObjMgrObjectPtr, CM2Model::IsReady, 0x6c86d0; not read here	inferred	none		
 0x6c6e60	43			playername			Runs PlayerName.cpp code that calls 0x6c86a0; not read here	inferred	none		
-0x6c6e90	1363			playername			Runs PlayerName.cpp code that calls ClntObjMgrObjectPtr, CGUnit_C::ShouldShowName and 32 more; not read here	inferred	none		
-0x6c73f0	125			playername			Runs PlayerName.cpp code that calls ClntObjMgrObjectPtr, CGUnit_C::GetNamePosition, 0x6c8570; not read here	inferred	none		
+0x6c6e90	1363			playername			Runs PlayerName.cpp code that calls ClntObjMgrObjectPtr, CGUnit_C::ShouldShowName and 32 more; not read here	inferred	none		playername::pn_plate_render, playername::pn_plate_render_text_width_scale, playername::pn_plate_render_billboard_quad, playername::pn_plate_render_screen_y_accumulate, playername::pn_plate_render_accumulate2
+0x6c73f0	125			playername			Runs PlayerName.cpp code that calls ClntObjMgrObjectPtr, CGUnit_C::GetNamePosition, 0x6c8570; not read here	inferred	none		playername::pn_worldtext_anchor_lift
 0x6c7470	324	PlayerNameInitialize	idb	playername			Runs PlayerName.cpp code that calls PlayerNameShutdown, FrameScript::GetVariable and 6 more; not read here	inferred	none		
 0x6c75c0	98			playername			Runs PlayerName.cpp code that calls 0x64ac60; not read here	inferred	none		
 0x6c7630	105	PlayerNameShutdown	idb	playername			Runs PlayerName.cpp code that calls 0x5c1c00, 0x5c1f70, FreeBlockPoolBlocks and 2 more; not read here	inferred	none		
@@ -28288,13 +28288,13 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x6c7c70	23			unassigned			Runs its object file code not read here	inferred	none		
 0x6c7c90	12			unassigned			Runs its object file code that calls _atexit; not read here	inferred	none		
 0x6c7ca0	25			unassigned			Runs its object file code that calls SMemFree; not read here	inferred	none		
-0x6c7cc0	591			unassigned			Runs its object file code that calls 0x6c80b0, 0x6c82e0, 0x6c8070 and 8 more; not read here	inferred	none		
-0x6c7f10	345			unassigned			Runs its object file code that calls GxCapsWindowSize, 0x6c8eb0, 0x6c8ef0 and 1 more; not read here	inferred	none		
-0x6c8070	53			unassigned			Runs its object file code not read here	inferred	none		
-0x6c80b0	240			unassigned			Runs its object file code that calls 0x6c82c0; not read here	inferred	none		
-0x6c81a0	282			unassigned			Runs its object file code that calls GxuFontDestroyString, TextBlockGetFontPtr, 0x41ae50 and 6 more; not read here	inferred	none		
-0x6c82c0	31			unassigned			Runs its object file code that calls 0x6c81a0; not read here	inferred	none		
-0x6c82e0	397			unassigned			Runs its object file code that calls __ftol, 0x5c2750, 0x5c27a0; not read here	inferred	none		
+0x6c7cc0	591			unassigned			Runs its object file code that calls 0x6c80b0, 0x6c82e0, 0x6c8070 and 8 more; not read here	inferred	none		playername::pn_label_clip_quad, playername::pn_label_clip_quad_world_z
+0x6c7f10	345			unassigned			Runs its object file code that calls GxCapsWindowSize, 0x6c8eb0, 0x6c8ef0 and 1 more; not read here	inferred	none		playername::pn_glyph_quad_build, playername::pn_glyph_quad_build_deltas
+0x6c8070	53			unassigned			Runs its object file code not read here	inferred	none		playername::pn_interp_param
+0x6c80b0	240			unassigned			Runs its object file code that calls 0x6c82c0; not read here	inferred	none		playername::pn_keyframe_interp
+0x6c81a0	282			unassigned			Runs its object file code that calls GxuFontDestroyString, TextBlockGetFontPtr, 0x41ae50 and 6 more; not read here	inferred	none		playername::pn_string_measure_layout
+0x6c82c0	31			unassigned			Runs its object file code that calls 0x6c81a0; not read here	inferred	none		playername::pn_width_dirty_guard
+0x6c82e0	397			unassigned			Runs its object file code that calls __ftol, 0x5c2750, 0x5c27a0; not read here	inferred	none		playername::pn_time_alpha_fade
 0x6c8470	176	WorldTextInitialize	idb	unassigned			Runs its object file code that calls FrameScript_GetText, 0x41ae50, TextBlockGenerateFont and 4 more; not read here	inferred	none		
 0x6c8520	79			unassigned			Runs its object file code that calls HandleClose, FreeBlockPoolBlocks, 0x5c1f70; not read here	inferred	none		
 0x6c8570	223			unassigned			Runs its object file code that calls GetBlockPoolData, OsGetAsyncTimeMs, SStrCopy; not read here	inferred	none		
@@ -28311,8 +28311,8 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x6c87a0	81			unassigned			Runs its object file code not read here	inferred	none		
 0x6c8800	12			unassigned			Runs its object file code that calls _atexit; not read here	inferred	none		
 0x6c8810	1			unassigned			Runs its object file code not read here	inferred	none		
-0x6c8820	1244			unassigned			Runs its object file code that calls 0x5c1ef0, GetDeviceProjection, GetDeviceView and 22 more; not read here	inferred	none		
-0x6c8d00	424			unassigned			Runs its object file code that calls 0x58b060, GxCapsGet, GxCapsWindowSize and 4 more; not read here	inferred	none		
+0x6c8820	1244			unassigned			Runs its object file code that calls 0x5c1ef0, GetDeviceProjection, GetDeviceView and 22 more; not read here	inferred	none		playername::pn_render_driver
+0x6c8d00	424			unassigned			Runs its object file code that calls 0x58b060, GxCapsGet, GxCapsWindowSize and 4 more; not read here	inferred	none		playername::pn_matrix_scale
 0x6c8eb0	57			unassigned			Runs its object file code not read here	inferred	none		
 0x6c8ef0	202			unassigned			Runs its object file code that calls SMemReAlloc, SMemAlloc, SMemFree; not read here	inferred	none		
 0x6c8fc0	10			unassigned			Runs its object file code that calls 0x6c8fd0; not read here	inferred	none		
@@ -28412,17 +28412,17 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x6cafa0	43			unassigned			Runs its object file code that calls 0x6cafd0, SMemFree; not read here	inferred	none		
 0x6cafd0	42			unassigned			Runs its object file code that calls GxShaderRelease; not read here	inferred	none		
 0x6cb000	18			unassigned			Runs its object file code that calls 0x58b360; not read here	inferred	none		
-0x6cb020	460			unassigned			Runs its object file code that calls 0x6cd3c0, 0x6cd580, 0x589e80 and 9 more; not read here	inferred	none		
+0x6cb020	460			unassigned			Runs its object file code that calls 0x6cd3c0, 0x6cd580, 0x589e80 and 9 more; not read here	inferred	none		ffxeffects::ffx_glow_color_quantize_difftest
 0x6cb1f0	145			unassigned			Runs its object file code that calls 0x6cbcf0, GxCapsGet, 0x58b2e0 and 1 more; not read here	inferred	none		
 0x6cb290	43			unassigned			Runs its object file code that calls 0x6cb2c0, SMemFree; not read here	inferred	none		
 0x6cb2c0	42			unassigned			Runs its object file code that calls GxShaderRelease; not read here	inferred	none		
 0x6cb2f0	18			unassigned			Runs its object file code that calls 0x58b360; not read here	inferred	none		
-0x6cb310	1232			unassigned			Runs its object file code that calls 0x6cd3c0, 0x6cd810, 0x6cd580 and 18 more; not read here	inferred	none		
+0x6cb310	1232			unassigned			Runs its object file code that calls 0x6cd3c0, 0x6cd810, 0x6cd580 and 18 more; not read here	inferred	none		ffxeffects::ffx_glow_pass_render_difftest
 0x6cb7e0	174			unassigned			Runs its object file code that calls 0x6cde70, GxCapsGet, 0x58b2e0 and 1 more; not read here	inferred	none		
 0x6cb890	43			unassigned			Runs its object file code that calls 0x6cb8c0, SMemFree; not read here	inferred	none		
 0x6cb8c0	71			unassigned			Runs its object file code that calls GxShaderRelease; not read here	inferred	none		
 0x6cb910	18			unassigned			Runs its object file code that calls 0x58b360; not read here	inferred	none		
-0x6cb930	302			unassigned			Runs its object file code that calls 0x6cd3c0, 0x6cd580, 0x589e80 and 5 more; not read here	inferred	none		
+0x6cb930	302			unassigned			Runs its object file code that calls 0x6cd3c0, 0x6cd580, 0x589e80 and 5 more; not read here	inferred	none		ffxeffects::ffx_death_pass_pack_difftest
 0x6cba60	64			unassigned			Runs its object file code that calls 0x6cde70, 0x58b2b0; not read here	inferred	none		
 0x6cbaa0	43			unassigned			Runs its object file code that calls 0x6cbad0, SMemFree; not read here	inferred	none		
 0x6cbad0	25			unassigned			Runs its object file code that calls GxShaderRelease; not read here	inferred	none		
@@ -28443,7 +28443,7 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x6cbcf0	261			unassigned			Runs its object file code that calls 0x6cde70, CGxTexFlags::CGxTexFlags, GxCapsGet and 1 more; not read here	inferred	none		
 0x6cbe00	43			unassigned			Runs its object file code that calls 0x6cbe30, SMemFree; not read here	inferred	none		
 0x6cbe30	104			unassigned			Runs its object file code that calls GxTexDestroy; not read here	inferred	none		
-0x6cbea0	645			ffxeffects			Runs FFXEffects.cpp code that calls SMemFree, SMemAlloc, __ftol; not read here	inferred	none		
+0x6cbea0	645			ffxeffects			Runs FFXEffects.cpp code that calls SMemFree, SMemAlloc, __ftol; not read here	inferred	none		ffxeffects::ffx_glow_wave_lut_difftest
 0x6cc130	879	ConstructGlowEffect		ffxeffects			Constructs the glow full-screen effect	inferred	none		
 0x6cc4a0	43			ffxeffects			Runs FFXEffects.cpp code that calls 0x6cc4d0, SMemFree; not read here	inferred	none		
 0x6cc4d0	129			ffxeffects			Runs FFXEffects.cpp code that calls SMemFree; not read here	inferred	none		
@@ -28495,14 +28495,14 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x6cd1d0	441	FFXShutdown		ffxeffects			Shuts the full-screen effect system down	inferred	none		
 0x6cd390	46			ffxeffects			Runs its object file code not read here	inferred	none		
 0x6cd3c0	445			ffxeffects			Runs its object file code that calls GetDeviceProjection, BuildOrthoMatrix and 9 more; not read here	inferred	none		
-0x6cd580	455			ffxeffects			Runs its object file code that calls QueryDevice; not read here	inferred	none		
-0x6cd750	188			ffxeffects			Runs its object file code that calls 0x58a140, GxBufLock, GxBufUnlock and 1 more; not read here	inferred	none		
+0x6cd580	455			ffxeffects			Runs its object file code that calls QueryDevice; not read here	inferred	none		ffxeffects::ffx_fullscreen_quad_difftest
+0x6cd750	188			ffxeffects			Runs its object file code that calls 0x58a140, GxBufLock, GxBufUnlock and 1 more; not read here	inferred	none		ffxeffects::ffx_transform_quad_verts_difftest
 0x6cd810	44			ffxeffects			Runs its object file code that calls 0x58a140, 0x58a0c0; not read here	inferred	none		
 0x6cd840	73			ffxeffects			Runs its object file code that calls 0x589f50, SetDeviceView, SetDeviceProjection and 3 more; not read here	inferred	none		
 0x6cd890	472	BeginCurrentFfx		ffxeffects			Begins the current full-screen effect's pass	inferred	none		
 0x6cda70	149	EndCurrentFfx		ffxeffects			Ends the current full-screen effect's pass	inferred	none		
 0x6cdb10	45			ffxeffects			Runs its object file code that calls GxCapsGet; not read here	inferred	none		
-0x6cdb40	357			ffxeffects			Runs its object file code that calls GxCapsWindowSize, __ftol, 0x6cdb10 and 2 more; not read here	inferred	none		
+0x6cdb40	357			ffxeffects			Runs its object file code that calls GxCapsWindowSize, __ftol, 0x6cdb10 and 2 more; not read here	inferred	none		ffxeffects::ffx_compute_rt_dims_difftest
 0x6cdcb0	371			ffxeffects			Runs its object file code that calls GxCapsGet, CGxTexFlags::CGxTexFlags, 0x6cdb10 and 6 more; not read here	inferred	none		
 0x6cde30	42			ffxeffects			Runs its object file code that calls _atoi, ConsoleWrite; not read here	inferred	none		
 0x6cde60	12	SetCurrentFfx		ffxeffects			Makes an effect the current full-screen effect and returns the previous one	inferred	none		
@@ -28841,26 +28841,26 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x6d8e10	560	BuildBlipCandidates		minimap	orchestration	void __fastcall (uint32_t continent)	Collects the AreaPOI rows of a continent and the three static records into the candidate array	verified	one	ui/minimapblips#blip-candidates	
 0x6d9040	629			minimap			Runs its object file code that calls SStrPrintf, 0x6485f0, SStrTokenize and 13 more; not read here	inferred	none		
 0x6d92c0	215			minimap			Runs its object file code that calls 0x6db5d0; not read here	inferred	none		
-0x6d93a0	1770	UpdateMinimap		minimap	primitive		Runs the minimap's update, which expires and clears the gossip marker	inferred	none	ui/minimapblips#clearing-the-gossip-marker	
+0x6d93a0	1770	UpdateMinimap		minimap	primitive		Runs the minimap's update, which expires and clears the gossip marker	inferred	none	ui/minimapblips#clearing-the-gossip-marker	minimap::minimap_update_snap_difftest
 0x6d9a90	884	PlaceBlips		minimap	primitive	void __cdecl ()	Splits the candidates into in-range icons and at most 3 ranked direction arrows with bearings	verified	one	ui/minimapblips#placing-the-blips	
 0x6d9e10	31			minimap			Runs its object file code not read here	inferred	none		
-0x6d9e30	152			minimap			Runs its object file code not read here	inferred	none		
+0x6d9e30	152			minimap			Runs its object file code not read here	inferred	none		minimap::blip_lod_distance_difftest
 0x6d9ed0	633			minimap			Runs its object file code that calls 0x6da150, SStrPrintf, SStrHashHT and 8 more; not read here	inferred	none		
 0x6da150	48			minimap			Runs its object file code not read here	inferred	none		
-0x6da180	430			minimap			Runs its object file code that calls CWorld::GetEntityGroupBox, RotateMatrix; not read here	inferred	none		
+0x6da180	430			minimap			Runs its object file code that calls CWorld::GetEntityGroupBox, RotateMatrix; not read here	inferred	none		minimap::orientation_renormalize_difftest
 0x6da330	69			minimap			Runs its object file code that calls CWorld::GetEntityGroupName, SStrLen, SStrCopy and 1 more; not read here	inferred	none		
-0x6da380	445			minimap			Runs its object file code that calls 0x6d9a90, 0x6da540, 0x6da5e0 and 1 more; not read here	inferred	none		
-0x6da540	97			minimap			Runs its object file code that calls __ftol; not read here	inferred	none		
-0x6da5b0	44			minimap			Runs its object file code not read here	inferred	none		
+0x6da380	445			minimap			Runs its object file code that calls 0x6d9a90, 0x6da540, 0x6da5e0 and 1 more; not read here	inferred	none		minimap::world_to_screen_scale_difftest
+0x6da540	97			minimap			Runs its object file code that calls __ftol; not read here	inferred	none		minimap::world_to_tile_difftest
+0x6da5b0	44			minimap			Runs its object file code not read here	inferred	none		minimap::tile_to_world_difftest
 0x6da5e0	453			minimap			Runs its object file code that calls HandleClose, 0x6da7b0, SysMsgPrintf and 3 more; not read here	inferred	none		
 0x6da7b0	294			minimap			Runs its object file code that calls SStrPrintf, SStrHashHT, SStrCmpI and 1 more; not read here	inferred	none		
 0x6da8e0	158	SetZoomIndex		minimap	primitive	void __fastcall (uint32_t index)	Stores a zoom index of at most 5 in the active cell and its option	verified	one	ui/minimap#the-zoom-radius	
 0x6da980	20	GetZoomIndex		minimap	orchestration	uint32_t __cdecl ()	Returns the active zoom index, indoor or outdoor	verified	one	ui/minimap#the-zoom-radius	
 0x6da9a0	6	GetZoomLevelCount		minimap	orchestration	uint32_t __cdecl ()	Returns 6, the number of zoom levels	verified	one	ui/minimap#the-zoom-radius	
-0x6da9b0	73	GetZoomRadius		minimap	primitive	float __cdecl ()	Returns the zoom radius in yards for the active index and indoor state	verified	one	ui/minimap#the-zoom-radius	
+0x6da9b0	73	GetZoomRadius		minimap	primitive	float __cdecl ()	Returns the zoom radius in yards for the active index and indoor state	verified	one	ui/minimap#the-zoom-radius	minimap::zoom_to_scale_difftest
 0x6daa00	23			minimap			Runs its object file code not read here	inferred	none		
 0x6daa20	327	BuildArrowList		minimap	orchestration	uint32_t __fastcall (void *list)	Rebuilds the arrow records when dirty, else only refreshes their bearings, and reports a rebuild	verified	one	ui/minimapblips#the-arrow-list	
-0x6dab70	73	GetZoomRadiusDraw		minimap	primitive	float __cdecl ()	Returns the zoom radius in yards, the body the draw uses	verified	one	ui/minimap#the-zoom-radius	
+0x6dab70	73	GetZoomRadiusDraw		minimap	primitive	float __cdecl ()	Returns the zoom radius in yards, the body the draw uses	verified	one	ui/minimap#the-zoom-radius	minimap::zoom_to_scale_difftest
 0x6dabc0	78			minimap			Runs its object file code not read here	inferred	none		
 0x6dac10	155	SetStaticBlip		minimap	orchestration	void __fastcall (uint32_t slot, uint32_t flags, float x, float y, uint32_t icon, int32_t rank, const char *name)	Fills a static blip record, starts the gossip marker's lifetime and places the blips	verified	one	ui/minimapblips#setting-a-static-blip	
 0x6dacb0	28	SetQuestBlip		minimap	orchestration	void __fastcall (int32_t rank, const char *name, float x, float y)	Sets static blip 0, the selected quest's marker, with icon 5 and no flags	verified	one	ui/minimapblips#setting-a-static-blip	
@@ -28891,11 +28891,11 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x6dbaa0	316			minimap			Runs its object file code that calls 0x6dbbe0, 0x6db5d0, 0x6db7f0; not read here	inferred	none		
 0x6dbbe0	264			minimap			Runs its object file code that calls 0x6dba40, 0x6db5d0, SMemReAlloc and 3 more; not read here	inferred	none		
 0x6dbcf0	616			unassigned			Runs its object file code that calls CDataStore::PutUInt32, CDataStore::PutFloat, CDataStore::PutCString; not read here	inferred	none		
-0x6dbf60	536			unassigned			Runs its object file code that calls CDataStore::GetInt32, CDataStore::GetFloat, CDataStore::GetCString; not read here	inferred	none		
+0x6dbf60	536			unassigned			Runs its object file code that calls CDataStore::GetInt32, CDataStore::GetFloat, CDataStore::GetCString; not read here	inferred	none		dbcache::dbcache_quest
 0x6dc180	98			unassigned			Runs its object file code that calls CDataStore::PutGuid, CDataStore::PutCString, 0x4181f0; not read here	inferred	none		
-0x6dc1f0	98			unassigned			Runs its object file code that calls CDataStore::GetGuid, CDataStore::GetCString, CDataStore::GetUInt32; not read here	inferred	none		
+0x6dc1f0	98			unassigned			Runs its object file code that calls CDataStore::GetGuid, CDataStore::GetCString, CDataStore::GetUInt32; not read here	inferred	none		dbcache::dbcache_name
 0x6dc260	46			unassigned			Runs its object file code that calls 0x4181f0, CDataStore::PutCString; not read here	inferred	none		
-0x6dc290	48			unassigned			Runs its object file code that calls CDataStore::GetUInt32, CDataStore::GetCString; not read here	inferred	none		
+0x6dc290	48			unassigned			Runs its object file code that calls CDataStore::GetUInt32, CDataStore::GetCString; not read here	inferred	none		dbcache::dbcache_pet_name
 0x6dc2c0	259	IntersectSegments2D		unassigned	unreached		Returns 1 when two 2D segments cross, else writes where their lines meet	verified	one	cmath/solids#segments-in-the-plane	
 0x6dc3d0	5			unassigned			Runs its object file code not read here	inferred	none		
 0x6dc3e0	11			unassigned			Runs its object file code not read here	inferred	none		
@@ -36079,7 +36079,7 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x7c78d0	5	InitRecordInfinityThunk		unassigned	orchestration	void __cdecl (void)	Jumps to 0x7c78e0, a static initializer of the file	verified	one	collision/overview#object-files	
 0x7c78e0	11	InitRecordInfinity		unassigned	orchestration	void __cdecl (void)	Copies +∞ (0x7f800000) from a constant into its global	verified	one	collision/overview#object-files	
 0x7c78f0	308			unassigned	primitive		Writes a petition record to a data store	inferred	none	objectlayer/party#group-and-guild-messages-sent	
-0x7c7a30	313			unassigned			Runs its object file code that calls CDataStore::GetInt32, CDataStore::GetGuid and 3 more; not read here	inferred	none		
+0x7c7a30	313			unassigned			Runs its object file code that calls CDataStore::GetInt32, CDataStore::GetGuid and 3 more; not read here	inferred	none		dbcache::dbcache_petition
 0x7c7b70	5			unassigned			Runs its object file code not read here	inferred	none		
 0x7c7b80	15			unassigned			Runs its object file code not read here	inferred	none		
 0x7c7b90	5			unassigned			Runs its object file code not read here	inferred	none		
@@ -36137,7 +36137,7 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x7c8060	5			dbcache			Runs its object file code not read here	inferred	none		
 0x7c8070	11			dbcache			Runs its object file code not read here	inferred	none		
 0x7c8080	160			dbcache			Runs its object file code that calls CDataStore::PutCString, CDataStore::PutUInt32, CDataStore::PutInt8; not read here	inferred	none		
-0x7c8120	265			dbcache			Runs CreatureStats.cpp code that calls CDataStore::GetCString, SStrDupA, CDataStore::GetInt32 and 1 more; not read here	inferred	none		
+0x7c8120	265			dbcache			Runs CreatureStats.cpp code that calls CDataStore::GetCString, SStrDupA, CDataStore::GetInt32 and 1 more; not read here	inferred	none		dbcache::dbcache_creature
 0x7c8230	5			dbcache			Runs its object file code not read here	inferred	none		
 0x7c8240	15			dbcache			Runs its object file code not read here	inferred	none		
 0x7c8250	5			dbcache			Runs its object file code not read here	inferred	none		
@@ -36195,7 +36195,7 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x7c8720	5			dbcache			Runs its object file code not read here	inferred	none		
 0x7c8730	11			dbcache			Runs its object file code not read here	inferred	none		
 0x7c8740	119			dbcache			Runs its object file code that calls CDataStore::PutUInt32, CDataStore::PutCString; not read here	inferred	none		
-0x7c87c0	205			dbcache			Runs GameObjectStats.cpp code that calls CDataStore::GetInt32, CDataStore::GetCString, SStrDupA; not read here	inferred	none		
+0x7c87c0	205			dbcache			Runs GameObjectStats.cpp code that calls CDataStore::GetInt32, CDataStore::GetCString, SStrDupA; not read here	inferred	none		dbcache::dbcache_gameobject
 0x7c8890	5			dbcache			Runs its object file code not read here	inferred	none		
 0x7c88a0	15			dbcache			Runs its object file code not read here	inferred	none		
 0x7c88b0	5			dbcache			Runs its object file code not read here	inferred	none		
@@ -36253,7 +36253,7 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x7c8d80	5			dbcache			Runs its object file code not read here	inferred	none		
 0x7c8d90	11			dbcache			Runs its object file code not read here	inferred	none		
 0x7c8da0	18			dbcache			Runs its object file code that calls CDataStore::PutCString; not read here	inferred	none		
-0x7c8dc0	60			dbcache			Runs ItemName.cpp code that calls CDataStore::GetCString, SStrDupA; not read here	inferred	none		
+0x7c8dc0	60			dbcache			Runs ItemName.cpp code that calls CDataStore::GetCString, SStrDupA; not read here	inferred	none		dbcache::dbcache_item_name
 0x7c8e00	5			dbcache			Runs its object file code not read here	inferred	none		
 0x7c8e10	15			dbcache			Runs its object file code not read here	inferred	none		
 0x7c8e20	5			dbcache			Runs its object file code not read here	inferred	none		
@@ -36311,7 +36311,7 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x7c92f0	5			dbcache			Runs its object file code not read here	inferred	none		
 0x7c9300	11			dbcache			Runs its object file code not read here	inferred	none		
 0x7c9310	813			dbcache			Runs its object file code that calls CDataStore::PutUInt32, CDataStore::PutCString, CDataStore::PutFloat; not read here	inferred	none		
-0x7c9640	897			dbcache			Runs ItemStats.cpp code that calls CDataStore::GetInt32, CDataStore::GetCString, SStrDupA and 1 more; not read here	inferred	none		
+0x7c9640	897			dbcache			Runs ItemStats.cpp code that calls CDataStore::GetInt32, CDataStore::GetCString, SStrDupA and 1 more; not read here	inferred	none		dbcache::dbcache_itemstats
 0x7c99d0	5			dbcache			Runs its object file code not read here	inferred	none		
 0x7c99e0	15			dbcache			Runs its object file code not read here	inferred	none		
 0x7c99f0	5			dbcache			Runs its object file code not read here	inferred	none		
@@ -36369,7 +36369,7 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x7c9ec0	5			dbcache			Runs its object file code not read here	inferred	none		
 0x7c9ed0	11			dbcache			Runs its object file code not read here	inferred	none		
 0x7c9ee0	192			dbcache			Runs its object file code that calls CDataStore::PutFloat, CDataStore::PutCString, CDataStore::PutUInt32; not read here	inferred	none		
-0x7c9fa0	308			dbcache			Runs NPCText.cpp code that calls CDataStore::GetFloat, CDataStore::GetCString, SMemFree and 2 more; not read here	inferred	none		
+0x7c9fa0	308			dbcache			Runs NPCText.cpp code that calls CDataStore::GetFloat, CDataStore::GetCString, SMemFree and 2 more; not read here	inferred	none		dbcache::dbcache_npctext
 0x7ca0e0	5			dbcache			Runs its object file code not read here	inferred	none		
 0x7ca0f0	15			dbcache			Runs its object file code not read here	inferred	none		
 0x7ca100	5			dbcache			Runs its object file code not read here	inferred	none		
@@ -36484,7 +36484,7 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x7cab80	5			unassigned			Runs its object file code not read here	inferred	none		
 0x7cab90	11			unassigned			Runs its object file code not read here	inferred	none		
 0x7caba0	38			unassigned			Runs its object file code that calls CDataStore::PutCString, CDataStore::PutUInt32; not read here	inferred	none		
-0x7cabd0	43			unassigned			Runs its object file code that calls CDataStore::GetCString, CDataStore::GetInt32; not read here	inferred	none		
+0x7cabd0	43			unassigned			Runs its object file code that calls CDataStore::GetCString, CDataStore::GetInt32; not read here	inferred	none		dbcache::dbcache_page_text
 0x7cac00	5			unassigned			Runs its object file code not read here	inferred	none		
 0x7cac10	15			unassigned			Runs its object file code not read here	inferred	none		
 0x7cac20	5			unassigned			Runs its object file code not read here	inferred	none		
