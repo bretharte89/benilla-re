@@ -56,6 +56,12 @@ CCamera	0x0148	28	CBaseManaged	m_yawProperty	camera	Holds the yaw angle property
 CCamera	0x0164	4	float	m_yaw	camera	Holds the yaw angle	inferred	none	camera#properties
 CCamera	0x0168	4	float	m_yawCos	camera	Holds the cosine of the yaw angle, recomputed on every store	inferred	none	camera#angle-properties
 CCamera	0x016c	4	float	m_yawSin	camera	Holds the sine of the yaw angle, recomputed on every store	inferred	none	camera#angle-properties
+CDataStore	0x0000	4	void *	__vfptr	base	Points at the store's vtable, whose slots 2 and 3 move the window	verified	one	net/messages#data-store-reads
+CDataStore	0x0004	4	uint8_t *	m_buffer	base	Points at the window's bytes: position p is at m_buffer - m_base + p	verified	one	net/messages#data-store-reads
+CDataStore	0x0008	4	uint32_t	m_base	base	Holds the position of the window's first byte	verified	one	net/messages#data-store-reads
+CDataStore	0x000c	4	uint32_t	m_alloc	base	Holds the window's length in bytes	verified	one	net/messages#data-store-reads
+CDataStore	0x0010	4	uint32_t	m_size	base	Holds the count of bytes written	verified	one	net/messages#data-store-reads
+CDataStore	0x0014	4	uint32_t	m_read	base	Holds the read cursor, size + 1 once a read has failed	verified	one	net/messages#data-store-reads
 CEffect	0x0000	4	CM2Model *	m_model	objectlayer	Points at the effect model	verified	one	objectlayer/effects#the-effect-object
 CEffect	0x0004	4	CM2Model *	m_lineModel	objectlayer	Points at the fishing line model	verified	one	objectlayer/effects#the-effect-object
 CEffect	0x0008	8	uint64_t	m_owner	objectlayer	Holds the owner GUID	verified	one	objectlayer/effects#the-effect-object
@@ -1339,12 +1345,12 @@ WardenModuleHeader	0x0018	4	uint32_t	m_exportBase	warden	Holds the ordinal of th
 WardenModuleHeader	0x001c	4	uint32_t	m_importOffset	warden	Holds the offset of the import table	verified	two	warden/modules#the-module-image
 WardenModuleHeader	0x0020	4	uint32_t	m_importCount	warden	Holds the number of import libraries	verified	two	warden/modules#the-module-image
 WardenModuleHeader	0x0024	4	uint32_t	m_sectionCount	warden	Holds the number of 12-byte section entries after the header	verified	two	warden/modules#the-module-image
-WhoResult	0x0000	48	char[48]	m_name	net	Holds the player name	verified	one	net/friends#who-list-reply
-WhoResult	0x0030	96	char[96]	m_guild	net	Holds the guild name	verified	one	net/friends#who-list-reply
-WhoResult	0x0090	4	uint32_t	m_level	net	Holds the level	verified	one	net/friends#who-list-reply
-WhoResult	0x0094	4	uint32_t	m_race	net	Holds the race id	verified	one	net/friends#who-list-reply
-WhoResult	0x0098	4	uint32_t	m_class	net	Holds the class id	verified	one	net/friends#who-list-reply
-WhoResult	0x009c	4	uint32_t	m_zone	net	Holds the area id	verified	one	net/friends#who-list-reply
+WhoResult	0x0000	48	char[48]	m_name	net	Holds the player name	verified	one	net/who#who-list-reply
+WhoResult	0x0030	96	char[96]	m_guild	net	Holds the guild name	verified	one	net/who#who-list-reply
+WhoResult	0x0090	4	uint32_t	m_level	net	Holds the level	verified	one	net/who#who-list-reply
+WhoResult	0x0094	4	uint32_t	m_race	net	Holds the race id	verified	one	net/who#who-list-reply
+WhoResult	0x0098	4	uint32_t	m_class	net	Holds the class id	verified	one	net/who#who-list-reply
+WhoResult	0x009c	4	uint32_t	m_zone	net	Holds the area id	verified	one	net/who#who-list-reply
 WowConnection	0x0010	4	uint32_t	m_state	net	Holds the socket state: 5 connected, 6 closed, 7 closing	verified	one	net/wire#sending
 WowConnection	0x001c	4	uint8_t *	m_recvBuffer	net	Holds the receive buffer	verified	one	net/wire#receive-loop
 WowConnection	0x0020	4	uint32_t	m_recvFill	net	Holds the count of bytes in the receive buffer	verified	one	net/wire#receive-loop

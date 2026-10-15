@@ -42,7 +42,7 @@ at `+0xb0` and gets its vtable slot 3 (`+0x0c`). The handler returns 1.
 Addresses: `0x4651a0`, `0x418eb0`, `0x418cb0`, `0x4651b2`, `0x4651c1`, `0x4651dc`, `0x4651e1`, `0x4651e9`, `0x4651f7`, `0x46520e`, `0x465222`, `0x46522d`, `0x465290`, `0x4652ff`, `0x466010`, `0x465ec0`
 Confidence: verified
 Proof: one
-Test: none
+Test: `objectlayer::update_handler_dispatch`
 
 `0x4651b2` reads the count (`0x418eb0`), `0x4651c1` the flag into `ebx` (`0x418cb0`); the cursor `+0x14` is saved in
 `[ebp-0x8]`. `0x4651e1` compares the next byte with 4: equal calls `0x465ec0` and sets `edi` to 1;
@@ -68,7 +68,7 @@ consumes nothing more in either, so the next byte is read as the next block's ty
 Addresses: `0x466010`, `0x466084`, `0x465314`, `0x46524d`, `0x466044`, `0x465fd0`, `0x465ea0`
 Confidence: verified
 Proof: one
-Test: none
+Test: `objectlayer::update_handler_dispatch`
 
 The notify table `0x465314` holds `0x46526f`, `0x465266`, `0x465254`, `0x465254`, `0x46527e`,
 `0x46527e`; the pass table `0x466084` holds `0x466062`, `0x466057`, `0x46604b`, `0x46604b`,
@@ -89,7 +89,7 @@ skipped by every pass.
 Addresses: `0x4660d8`, `0x4660e6`, `0x4660f1`, `0x466105`, `0x467188`, `0x4671b5`, `0x467290`, `0x4672bf`
 Confidence: verified
 Proof: one
-Test: none
+Test: `objectlayer::update_out_of_range`, `objectlayer::update_near_objects`, `objectlayer::update_values_block`
 
 `0x4660d8` takes the GUID's high dword, `and eax,0xf0000000`, and compares it with `0x60000000`
 (`0x4660e6`) and `0x80000000` (`0x4660f1`); a match gives 1. `0x466105` XORs it with the pass flag
@@ -123,7 +123,7 @@ In any other position the notify pass skips the list and nothing is released.
 Addresses: `0x465ec0`, `0x465ee1`, `0x465f04`, `0x465f10`, `0x465f39`, `0x465f4f`, `0x465f69`, `0x465fa6`, `0x465fb3`, `0x464920`, `0x465fd0`
 Confidence: verified
 Proof: one
-Test: none
+Test: `objectlayer::update_out_of_range`
 
 `0x465ee1` reads the count. Each GUID (`0x465f04`, `0x642ed0`) whose high dword passes the
 top-nibble test at `0x465f10` counts one in
@@ -199,7 +199,7 @@ stays in the packet, out of step with the reader.
 Addresses: `0x466590`, `0x4665a7`, `0x4665c4`, `0x4665d5`, `0x466606`, `0x465a80`, `0x4666bb`, `0x4666e3`, `0x465550`, `0x465bb0`
 Confidence: verified
 Proof: one
-Test: `objectlayer::apply_update_fields_difftest`, `objectlayer::updatemask_test_bit_difftest`, `objectlayer::updatefield_count_difftest`
+Test: `objectlayer::apply_update_fields_difftest`, `objectlayer::updatemask_test_bit_difftest`, `objectlayer::updatefield_count_difftest`, `objectlayer::update_skip_values`
 
 `0x4665a7` reads `n` and `0x4665c4` the words into a local array; `cmp edi,0x29` at `0x4665d5`
 zero-fills up to 41 (`Mask words past 41`). `0x466606` gets the count from `0x465a80`, which maps the type mask
@@ -214,18 +214,20 @@ The three values readers, the create pass's, the skip and the notify pass's, rea
 into a stack array of 41 dwords, enough for 1282 fields, and bound the read only by the count
 byte. A count above 41 writes past the array. In the create pass's reader and the skip, the
 43rd word lands on the saved data store pointer, so a count of 43 or more sends the reads that
-follow through that word's value.
+follow through that word's value. In the skip the 42nd word is the slot each value is read into, so with a count of 42
+every value read replaces the last mask word while the walk is still testing it.
 
-Addresses: `0x466590`, `0x4665a4`, `0x4665b5`, `0x4665c0`, `0x4665d1`, `0x4666e0`, `0x465bb0`, `0x465bc0`, `0x465bd1`, `0x465bd7`, `0x465330`, `0x465395`, `0x4653b4`
+Addresses: `0x466590`, `0x4665a4`, `0x4665b5`, `0x4665c0`, `0x4665d1`, `0x4666e0`, `0x465bb0`, `0x465bc0`, `0x465bd1`, `0x465bd7`, `0x465c2b`, `0x465330`, `0x465395`, `0x4653b4`
 Confidence: verified
 Proof: one
-Test: `objectlayer::apply_update_fields_difftest`
+Test: `objectlayer::apply_update_fields_difftest`, `objectlayer::update_skip_values`
 
 `0x466590` reserves `0xc4` bytes, saves the store at `[ebp-0x1c]` (`0x4665a4`) and reads the words
 from `[ebp-0xc4]` (`0x4665b5`), so 41 fit below `[ebp-0x20]`; the loop's one bound is `cmp edi,ecx`
 against the count (`0x4665d1`), and word 42, counting from 0, lands on `[ebp-0x1c]`, reloaded at
 `0x4665c0` and `0x4666e0`. `0x465bb0` saves the store at `[ebp-0x8]` (`0x465bc0`) and fills from
-`[ebp-0xb0]` (`0x465bd1`): word 42 is `[ebp-0x8]`, reloaded at `0x465bd7`. `0x465330` fills from
+`[ebp-0xb0]` (`0x465bd1`): word 42 is `[ebp-0x8]`, reloaded at `0x465bd7`, and word 41 is
+`[ebp-0xc]`, where `0x465c2b` reads each value. `0x465330` fills from
 `[ebp-0xcc]` (`0x465395`) and zero-fills to 41 (`0x4653b4`); its overrun reaches other locals.
 
 ## Writing the values
@@ -239,7 +241,7 @@ manager does not know, live or released, is skipped.
 Addresses: `0x467160`, `0x4671e2`, `0x46720f`, `0x46721f`, `0x4666f0`, `0x466a00`, `0x6142e0`, `0x46664b`, `0x466686`, `0x4666cf`
 Confidence: verified
 Proof: one
-Test: `objectlayer::apply_update_fields_difftest`
+Test: `objectlayer::apply_update_fields_difftest`, `objectlayer::update_values_block`
 
 `0x467160` reads the GUID, applies the top-nibble test and looks the object up with `0x464530`
 (`0x4671e2`); none skips with `0x465bb0`. `0x46720f` calls `0x466590(object, store, guid, 0, 0)`,
@@ -319,7 +321,7 @@ reactivated one gets slot 2 and `0x464700`.
 Addresses: `0x467230`, `0x467257`, `0x467278`, `0x467283`, `0x4672c8`, `0x4644f0`, `0x464530`
 Confidence: verified
 Proof: one
-Test: none
+Test: `objectlayer::update_near_objects`
 
 `0x467257` reads the count; each GUID (`0x467278`) is compared with `0x468550` (`0x467283`), then
 tested by the top-nibble test against the pass flag; a match calls `0x4644f0` (`0x4672c8`). `0x4644f0`

@@ -7,22 +7,44 @@
 
 #![forbid(unsafe_code)]
 
+mod addresslist;
 mod cipher;
+mod connection;
+mod datastore;
 mod digest;
+mod download;
 mod framing;
+mod friends;
+mod grunt;
+mod initializers;
 mod login;
 mod login_proof;
+mod netclient;
 mod prng;
+mod realms;
 mod srp;
 mod srp_helpers;
 mod srp_session;
+mod telemetry;
+mod who;
 
+pub use addresslist::*;
 pub use cipher::*;
+pub use connection::*;
+pub use datastore::*;
 pub use digest::*;
+pub use download::*;
 pub use framing::*;
+pub use friends::*;
+pub use grunt::*;
+pub use initializers::*;
 pub use login::*;
 pub use login_proof::*;
+pub use netclient::*;
 pub use prng::*;
+pub use realms::*;
 pub use srp::*;
 pub use srp_helpers::*;
 pub use srp_session::*;
+pub use telemetry::*;
+pub use who::*;

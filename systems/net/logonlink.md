@@ -24,31 +24,36 @@ Test: none
 Addresses: `0x5ba8d0`, `0x5ba8fd`, `0x5ba9c9`, `0x5ba9e7`, `0x5ba9eb`, `0x5b2230`
 Confidence: verified
 Proof: one
-Test: none
+Test: `net::grunt_realm_list`
 
-`0x5ba8d0` needs 2 bytes, reads the size (`0x418db0`, `0x5ba903`) and needs that many more (`0x5ba90e`), returning 0, incomplete, otherwise. It reads the u32 and the count, then per record `0x418fb0`, `0x418cb0`, two `0x4191b0` with cap `0x100`, `0x419130` and three `0x418cb0` (`0x5ba950` to `0x5ba9b3`); `0x5ba9c9` reads the tail u16 and `0x5ba9e7` compares the distance from the saved cursor with the size. `0x5ba9eb` restores the cursor to the count byte, calls `[owner+0x34]` and restores the end.
+`0x5ba8d0` needs 2 bytes, reads the size (`0x418db0`, `0x5ba903`) and needs that many more (`0x5ba90e`), returning 0, incomplete, otherwise. It reads the u32 and the count, then per record `0x418fb0`, `0x418cb0`, two `0x4191b0` with cap `0x100`, `0x419130` and three `0x418cb0` (`0x5ba950` to `0x5ba9b3`); `0x5ba9c9` reads the tail u16 and `0x5ba9e7` compares the distance from the saved cursor with the size. `0x5ba9eb` restores the cursor to the count byte, calls `[owner+0x34]` and restores the end. A name of 256 characters or more poisons the store and returns 1. The test runs `0x5ba8d0` whole on lists of 0 to 5 records, names past the capacity, sizes off by one or two and every truncation.
 
 ## Realm record fill
 
 `0x5b2230` empties the holder, sizes it to the count, and for record `i` stores: `i` at `+0`, the u32 at `+4`, the byte at `+8`, the name at `+9` (256 bytes), the address at `+0x109` (32 bytes), the float at `+0x12c` and the three bytes at `+0x130`, `+0x131` and `+0x132` (`glue/realms` rewrites three population values). Each name is cleaned: a character of `"*/:<>?\|` becomes a space, and trailing such characters, spaces and dots are cut. It then reads a u16 into the holder's `+0x10` and calls the holder's slot 5 with 0 when the store was read exactly to its end; otherwise it empties the holder and passes 4. A null packet passes 4 through `0x5b2560`.
 
-Addresses: `0x5b2230`, `0x5b2274`, `0x5b2321`, `0x5b2370`, `0x5b23dd`, `0x5b23f4`, `0x5b2420`, `0x5b242b`, `0x5b3360`, `0x5b24b0`, `0x5b2560`
+Addresses: `0x5b2230`, `0x5b2274`, `0x5b2321`, `0x5b2370`, `0x5b23dd`, `0x5b23f4`, `0x5b2420`, `0x5b242b`, `0x5b3360`, `0x5b24b0`, `0x5b2560`, `0x5b2590`, `0x5b25b9`, `0x5b26f0`, `0x5b28c8`
 Confidence: verified
 Proof: one
-Test: none
+Test: `net::realm_list_fill`, `net::realm_list_result`, `net::realm_name_char`
 
-`0x5b227a` reads the count and `0x5b2286` calls `0x5b3360`; `0x5b22b9` to `0x5b2319` read the fields in the order above. `0x5b2321` `cmp ecx,[edi+0x10]; ja` stops on a read past the end. `0x5b2376` to `0x5b2396` classify each name byte: `byte - 0x20` indexes the table `0x5b2450` (up to `0x7c`) and the jump table `0x5b2444`; the characters `"*/:<>?\|` reach `0x5b2391`, which stores a space. `0x5b23a6` loops `0x5b24b0(char, 1)` from the end, which is 0 for those characters, for space and for dot. `0x5b23dd` reads the tail; `0x5b23f4` is the call of the store's end check (`[edi]+0x14`) and `0x5b2420` the success call.
+`0x5b227a` reads the count and `0x5b2286` calls `0x5b3360`; `0x5b22b9` to `0x5b2319` read the fields in the order above. `0x5b2321` `cmp ecx,[edi+0x10]; ja` stops on a read past the end. `0x5b2376` to `0x5b2396` classify each name byte: `byte - 0x20` indexes the table `0x5b2450` (up to `0x7c`) and the jump table `0x5b2444`; the characters `"*/:<>?\|` reach `0x5b2391`, which stores a space. `0x5b23a6` loops `0x5b24b0(char, 1)` from the end, which is 0 for those characters, for space and for dot. `0x5b23dd` reads the tail; `0x5b23f4` is the call of the store's end check (`[edi]+0x14`) and `0x5b2420` the success call. A record whose reads run past the end is left uncleaned, and the
+whole array is then emptied. With no byte left the count is stale stack. `0x5b2560(result, store)` empties the array and passes a nonzero result to slot 5
+(`0x5b2590`); for 0 it runs its own copy of the fill, trimming with inline tables
+(`0x5b26f0`). Its callers, `0x5b242b` and `0x5b28c8`, pass 4 and 2 with no store, so that copy
+never runs, and `0x5b25b9` is dead: the array is empty when it compares the count. The tests run
+the three functions whole but for `0x5b25b9`, and `0x5b24b0` over every byte.
 
 ## File transfer
 
 The logon server can offer a file to download: `0x30` is a name length byte, the name, a u64 size and a 16-byte digest; `0x31` is a u16 length and that many data bytes. The client replies `0x32` to accept from the start, `0x33` and a u64 offset to resume, or `0x34` to cancel. The name length is one byte, so the test of it against `0x103` never fires; the 272-byte name buffer holds the 255 name bytes at most and the NUL.
 
-Addresses: `0x5baf70`, `0x5bb050`, `0x5bbf20`, `0x5bc050`, `0x5b2050`, `0x5bafc4`, `0x5bafcc`, `0x5bafdf`, `0x5bb039`, `0x5bb0cb`
+Addresses: `0x5baf70`, `0x5bb050`, `0x5bbf20`, `0x5bc050`, `0x5b2050`, `0x5bafc4`, `0x5bafcc`, `0x5bafdf`, `0x5bb039`, `0x5bb0cb`, `0x5bb008`
 Confidence: verified
 Proof: one
-Test: none
+Test: `net::grunt_xfer_initiate`
 
-`0x5baf70` waits for 1 byte and then for `n + 0x18` (`0x5bafae`), compares `n` (a zero-extended byte, `0x5bafa7`) with `0x103` (`0x5bafc4`), a test that never passes because `n` is at most 255, so the `mov bl,3` at `0x5bafcc` is dead; it reads the name with `0x419400` into a 272-byte buffer and terminates it (`0x5bafdf`, `0x5baff0`), the size with `0x4190b0`, borrows the 16 digest bytes with `0x419ac0`, returns 1 past the end, and calls the owner's slot 9 with the name, the size and the digest (`0x5bb039`), returning 2. `0x5bb050` reads the length (`0x418db0`), waits for it, borrows the bytes and calls slot 12 with the pointer and length (`0x5bb0cb`). `0x5bbf20(accept, offset)` puts `0x34` for accept 0, `0x32` for a zero offset and `0x33` with `0x418370` otherwise; `0x5bc050` puts `0x34`; `0x5b2050` sends through the link.
+`0x5baf70` waits for 1 byte and then for `n + 0x18` (`0x5bafae`), compares `n` (a zero-extended byte, `0x5bafa7`) with `0x103` (`0x5bafc4`), a test that never passes because `n` is at most 255, so the `mov bl,3` at `0x5bafcc` is dead; it reads the name with `0x419400` into a 272-byte buffer and terminates it (`0x5bafdf`, `0x5baff0`), the size with `0x4190b0`, borrows the 16 digest bytes with `0x419ac0`, returns 1 past the end, and calls the owner's slot 9 with the name, the size and the digest (`0x5bb039`), returning 2. `0x5bb050` reads the length (`0x418db0`), waits for it, borrows the bytes and calls slot 12 with the pointer and length (`0x5bb0cb`). `0x5bbf20(accept, offset)` puts `0x34` for accept 0, `0x32` for a zero offset and `0x33` with `0x418370` otherwise; `0x5bc050` puts `0x34`; `0x5b2050` sends through the link. The test runs `0x5baf70` whole on names of 0 to 255 bytes and every truncation, but for the dead `0x5bafcc` and the return of 1 past the end (`0x5bb008`), which the byte count it waits for leaves unreachable.
 
 ## Logon checksum
 
@@ -76,10 +81,36 @@ Test: `net::pin_shuffle`
 
 `0x5b3120(count, positions)` turns the pin positions into ASCII digits, seeds a local random pool with the clock, draws a 16-byte client salt into `+0x1c8`, stores `SHA-1(client salt ‖ SHA-1(server salt ‖ digits))` at `+0x1d8`, and reports state 9. The logon proof sends the salt and the hash when the flag at `+0x1ac` is set, taking their addresses from `0x5b1f10`.
 
-Addresses: `0x5b3120`, `0x5b31e0`, `0x5b1f10`, `0x5b3147`, `0x5b3163`, `0x5b3177`, `0x5b318f`
+Addresses: `0x5b3120`, `0x5b31e0`, `0x5b1f10`, `0x5b3147`, `0x5b3163`, `0x5b3177`, `0x5b318f`, `0x5b3152`, `0x5b31cc`
 Confidence: verified
 Proof: one
-Test: `net::checksum_proof`
+Test: `net::checksum_proof`, `net::logon_pin_proof`
 
-`0x5b3147` adds `0x30` to each position; `0x5b3163` seeds with the clock `0x42c010`; `0x5b3177` draws 16 bytes with `0x5d1cf0`; `0x5b318f` calls `0x5b31e0`, whose two hashes are `0x5b31ef` to `0x5b3212` (inner: server salt, then digits) and `0x5b321a` to `0x5b323f` (outer: client salt, then the inner digest). `0x5b1f10` returns the flag and the addresses of `+0x1c8` and `+0x1d8`. `net::checksum_proof` runs `0x5b31e0` whole.
+`0x5b3147` adds `0x30` to each position; `0x5b3163` seeds with the clock `0x42c010`; `0x5b3177` draws 16 bytes with `0x5d1cf0`; `0x5b318f` calls `0x5b31e0`, whose two hashes are `0x5b31ef` to `0x5b3212` (inner: server salt, then digits) and `0x5b321a` to `0x5b323f` (outer: client salt, then the inner digest). `0x5b1f10` returns the flag and the addresses of `+0x1c8` and `+0x1d8`. `net::checksum_proof` runs `0x5b31e0` whole. The digits sit in a 12-byte stack buffer and
+`0x5b3152` puts their NUL at the count, so a count above 11 overruns it; a position of `0xd0`
+makes a NUL digit, and the hash stops there. `0x5b31cc` reports state 9 through the holder's slot
+4 with the names `LOGIN_STATE_CHECKSUM` and `LOGIN_OK`. `net::logon_pin_proof` runs `0x5b3120`
+whole for counts 0 to 11, the clock and the C runtime's time and `rand` stubbed.
 
+
+## Pending request expiry
+
+`ClientLink::ClientLink` builds a `Grunt::Pending` (`0x5b8490`): a timeout at `+4` and a list of 24-byte requests linked at their first bytes, each with a time at `+0x10`, 0 for none. `ClientLink::OnTimer` (`0x5bb3d0`) calls `0x5b8650(0)` each tick. The walk skips a time of 0, stops at the first request younger than the timeout, and moves the first older one to a local list; its link then ends the walk, so one request expires per call, going to slot 0 of the owner and then freed. With `force` the first request goes whatever its time. The only adder, `0x5b84e0`, is called from the unreached `ServerLink::ProveSession`, so the client's list stays empty.
+
+Addresses: `0x5bc426`, `0x5b8490`, `0x5bb3d0`, `0x5b8650`, `0x5b86a7`, `0x5b86b6`, `0x5b86e7`, `0x5b8719`, `0x5b874b`, `0x5b84e0`, `0x5ba000`
+Confidence: verified
+Proof: one
+Test: `net::grunt_pending_expire`
+
+`0x5b84c3` stores the link offset 0 and `0x5b84bb` to `0x5b84c0` make the empty list. In `0x5b8650`, `0x5b86a7` skips a zero time and `0x5b86b6` (`cmp ecx,[edi+4]; jb`) stops the walk; `0x5b86bd` unlinks the node and `0x5b86d9` to `0x5b86e4` link it at the local list's tail, at the same bytes. `0x5b86e7` reads the next node from those bytes, which now hold the local list's end, marked by bit 0. `0x5b8719` calls `[[edi]]` with the node and `0x5b874b` frees it. `0x5b84e0` has the one caller `0x5ba000`, and no stored address. `0x5b849f` zeroes the id counter `+8` and `0x5b84a6` builds the lock at `+0xc`. After the expiry `0x5bb3d0` takes the lock at `+0x130` and reads the state `+0x4c` (the link's `+0x80`): in state 2 it calls slot 4 of the owner `+0x164` (`0x5bb420`), and in state 6 slot 3 (`0x5bb400`), disconnecting through `0x5bb3b0` when that returns 0.
+
+## Server link commands
+
+The start-up initializer `0x5b88a0` fills the server's command table `0x85e2e8`: seven 16-byte entries of a command byte, a name, a handler and an offset added to `this`, like the client's `0x85e278`; entry 0's byte and name come from the file. Its one reader, `ServerLink::OnData` (`0x5b9b50`), is unreached (`layout`). `0x5b9630`, command 2 (`CMD_GRUNT_AUTH_VERIFY`), reads and drops a name under `0x20` bytes and 16 and 20 bytes: 0 while the store lacks them, 1 for a long name, else 2. `0x5b8c40`, command `0x20` (`CMD_GRUNT_HELLO`), stores a u32 at `+0x74` and, by the mode `+0x104`, replies `20 00` (mode 1) or `20 0e`, a u16 length and the record its realm source gives (mode 0), then sets the state `+0x90` to 3.
+
+Addresses: `0x5b88a0`, `0x85e2e8`, `0x5b9b50`, `0x5b9ba2`, `0x5b9bc2`, `0x5b9bcb`, `0x5b9630`, `0x5b9665`, `0x5b967c`, `0x5b96c4`, `0x5b8c40`, `0x5b8c8c`, `0x5b8ccd`, `0x5b8ce2`, `0x5b8d14`, `0x5b8e6e`, `0x5b8f67`
+Confidence: verified
+Proof: one
+Test: `net::grunt_auth_verify`, `net::grunt_hello`
+
+`0x5b9ba2` starts the scan at `0x85e2e8`, comparing each entry's byte with `cmp byte [ecx],dl` and stepping `0x10`; `0x5b9bc2` adds `[eax+0x85e2f4]` to `this` and `0x5b9bcb` calls `[eax+0x85e2f0]`. `0x5b88e9` and `0x5b88aa` pair the byte 2 (`0x85e2f8`) with `0x5b9630` (`0x85e300`); `0x5b892e` and `0x5b88c8` pair `0x20` (`0x85e328`) with `0x5b8c40` (`0x85e330`). In `0x5b9630`, `0x5b9642` and `0x5b967c` are `0x5b90d0` with 1 and the length plus `0x24`; `0x5b9665` returns 1 at `0x20` or more, and `0x5b96c4` returns 1 when the reads passed the size, else 2. In `0x5b8c40`, `0x5b8c72` reads the u32 and `0x5b8c8c` stores it; `0x5b8ccd` puts `0x20`; `0x5b8ce2` tests the mode; `0x5b8d14` calls slot 4 of `+0x108`; `0x5b8e6e` sets the length; `0x5b8f67` stores 3.

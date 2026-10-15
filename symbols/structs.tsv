@@ -3,6 +3,7 @@ AccountDataSection		44		net	Holds an account data section: scope, file names, pe
 BlizzardObject		324		spell	Holds an area shard emitter: link, model path, world object, position, radius, accumulator, rate and shard list	verified	one	spell/visuals#area-shard-emitter-creation
 CBaseManaged		28	0x81d7f0	camera	Holds a property's header: vtable, update-list link, type, flags and producer	verified	one	camera#property-updates
 CCamera		368	0x81d7c0	camera	Holds a camera: the property slots and update list, then nine properties	verified	one	camera#lifetime
+CDataStore		24	0x7ff9e4	base	Holds a packet buffer: a window onto its bytes, the size written and a read cursor	verified	one	net/messages#data-store-reads
 CEffect		144		objectlayer	Holds a spell effect model: model, GUIDs, spell, records, attachment, sound, flags, times, references and link	verified	one	objectlayer/effects#the-effect-object
 CFrameStrataNode		284		ui	Holds one level of a stratum: its frame lists, update cursor, five batches and dirty layers	verified	one	ui/strata#strata-records-and-level-nodes
 CGCharacterModelBase		1016	0x8084f8	ui	Holds a character pane: a CSimpleModel, the unit GUID, the turn latch and deadline and the display record	verified	one	ui/playermodel#pane-fields
@@ -128,6 +129,6 @@ WardenBuffer		8		warden	Holds a length and a data pointer; the record the module
 WardenClient		4	0x811434	warden	Holds the service table pointer that a module receives	verified	two	warden/wire#the-service-table
 WardenModule		12		warden	Holds a loaded module: its image base, its size and its count of libraries	verified	one	warden/modules#loading-an-image
 WardenModuleHeader		40		warden	Holds the ten dwords that open a decompressed module image	verified	two	warden/modules#the-module-image
-WhoResult		160		net	Holds a who result: name, guild, level, race, class and zone	verified	one	net/friends#who-list-reply
+WhoResult		160		net	Holds a who result: name, guild, level, race, class and zone	verified	one	net/who#who-list-reply
 WowConnection		304		net	Holds one socket connection: state, handler, receive buffer, send queue and header cipher	verified	one	net/wire#header-cipher
 luaL_reg		8		lua	Pairs a function's name with its C function in a Lua library table	inferred	none	
