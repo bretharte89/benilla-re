@@ -18,7 +18,7 @@ jobs:
   check:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6.1.0
       - name: Toolchain
         run: rustup toolchain install stable --profile minimal --component clippy,rustfmt
       - name: Format
@@ -31,3 +31,5 @@ jobs:
         run: cargo test --workspace
       - name: The check
         run: cargo xtask check
+      - name: The site builds
+        run: cargo xtask site "$RUNNER_TEMP/site"

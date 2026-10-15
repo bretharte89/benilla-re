@@ -9,6 +9,7 @@ mod fill;
 mod globals;
 mod listing;
 mod objfiles;
+mod site;
 mod tables;
 mod tree;
 
@@ -20,6 +21,7 @@ usage: cargo xtask check [--exe]
        cargo xtask census [--all | --write | --why <address> | --fill [--idb <names.tsv>]]
        cargo xtask cited <benilla checkout> [--write]
        cargo xtask listing <GNU objdump> <output>
+       cargo xtask site <output directory>
 
 check         the symbol table and the system docs against their formats; runs anywhere
 check --exe   also identifies WoW/WoW.exe (or $BENILLA_RE_WOW_EXE), checks every function
@@ -35,6 +37,8 @@ census --write
               tools/disasm.sh after it, and again until the census finds nothing new
 census --fill gives each row --write added its system, a name, a meaning and its class;
               --idb names the community names, address<TAB>func<TAB>name lines
+site          writes the address website into the directory, from the symbol table, the docs and
+              tables/; runs anywhere, with no exe
 cited         lists the client addresses a benilla tree cites that no row or doc here backs;
               --write adds a globals.tsv row for each such data address and code table
 listing       writes the disassembly of WoW/WoW.exe (or $BENILLA_RE_WOW_EXE) the findings
@@ -65,6 +69,7 @@ fn main() -> ExitCode {
         ["cited", benilla] => cited(&root, Path::new(benilla), false),
         ["cited", benilla, "--write"] => cited(&root, Path::new(benilla), true),
         ["listing", objdump, out] => listing(&root, Path::new(objdump), Path::new(out)),
+        ["site", out] => site(&root, Path::new(out)),
         _ => {
             eprint!("{USAGE}");
             return ExitCode::from(2);
@@ -217,4 +222,88 @@ fn listing(root: &Path, objdump: &Path, out: &Path) -> std::io::Result<bool> {
     let starts: Vec<u32> = exe::functions(&checked).iter().map(|f| f.address).collect();
     println!("{}", listing::write(&starts, &exe, objdump, out)?);
     Ok(true)
+}
+
+/// Empties `out` so no page of a deleted row survives, and refuses a folder that does not hold a
+/// previous site (an `index.html`, an `index.json` and a `.nojekyll`).
+fn clear_output(out: &Path) -> std::io::Result<bool> {
+    if out.exists() {
+        let empty = out.is_dir() && std::fs::read_dir(out)?.next().is_none();
+        let previous = ["index.html", "index.json", ".nojekyll"]
+            .iter()
+            .all(|f| out.join(f).is_file());
+        if !empty && !previous {
+            eprintln!(
+                "xtask: {} is not empty and does not look like a site output; give an empty or new folder",
+                out.display()
+            );
+            return Ok(false);
+        }
+        if !empty {
+            for entry in std::fs::read_dir(out)? {
+                let path = entry?.path();
+                if path.is_dir() {
+                    std::fs::remove_dir_all(&path)?;
+                } else {
+                    std::fs::remove_file(&path)?;
+                }
+            }
+        }
+    }
+    std::fs::create_dir_all(out)?;
+    Ok(true)
+}
+
+fn site(root: &Path, out: &Path) -> std::io::Result<bool> {
+    let tree = tree::Disk::new(root);
+    let checked = check::run(&tree)?;
+    if !checked.problems.is_empty() {
+        eprintln!(
+            "xtask: the check finds {} problems; fix them before writing the site",
+            checked.problems.len()
+        );
+        return Ok(false);
+    }
+    if !clear_output(out)? {
+        return Ok(false);
+    }
+    let report = site::build(&tree, &checked, &mut site::Sink::disk(out))?;
+    println!(
+        "{} pages, {} bytes of HTML, written to {}",
+        report.pages,
+        report.bytes,
+        out.display()
+    );
+    Ok(true)
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    fn scratch(name: &str) -> std::path::PathBuf {
+        let dir = std::env::temp_dir().join(format!("xtask-site-{name}-{}", std::process::id()));
+        let _ = std::fs::remove_dir_all(&dir);
+        dir
+    }
+
+    #[test]
+    fn a_previous_site_output_is_cleared_and_another_folder_is_refused() {
+        let dir = scratch("clear");
+        std::fs::create_dir_all(dir.join("a")).expect("a folder");
+        for f in ["index.html", "index.json", ".nojekyll", "a/old.html"] {
+            std::fs::write(dir.join(f), "x").expect("a file");
+        }
+        assert!(clear_output(&dir).expect("clears"));
+        assert!(dir.is_dir());
+        assert_eq!(std::fs::read_dir(&dir).expect("reads").count(), 0);
+
+        std::fs::write(dir.join("notes.txt"), "keep").expect("a file");
+        assert!(!clear_output(&dir).expect("refuses"));
+        assert!(dir.join("notes.txt").is_file());
+        std::fs::remove_dir_all(&dir).expect("removes");
+
+        assert!(clear_output(&dir).expect("makes a new folder"));
+        std::fs::remove_dir_all(&dir).expect("removes");
+    }
 }
