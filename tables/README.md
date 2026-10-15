@@ -24,6 +24,9 @@ reads other tables finds them), `-o PATH`.
 `cargo xtask check --exe` regenerates every derived table into a scratch directory and fails on
 any byte that differs from the committed one.
 
+`signatures.tsv` is the exception to the generators: `cargo xtask signatures` writes it, from
+the function rows, the exe and `dumps/disasm.txt`, and `cargo xtask check --exe` compares it.
+
 ## Conventions
 
 - **Addresses** are `0x` and six lowercase hex digits (`0x703e50`), virtual addresses in the exe,
@@ -396,3 +399,17 @@ With `--strict` it exits nonzero when any file differs or is missing, and when n
 table. A checkout with no `reference/PIN` is reported as having none, and the command exits
 cleanly. `.gitattributes` marks `tables/*.tsv` and `symbols/*.tsv` as `-text`, so a checkout never
 rewrites their line endings; a copy must not either.
+
+## signatures.tsv
+
+One masked byte pattern for each function row (37,967 rows). Written by `cargo xtask signatures`;
+`cargo xtask match` finds the rows in another build with it (`../README.md`, Other builds).
+
+| column | meaning |
+|---|---|
+| `address` | The function row. Sorted. |
+| `unique` | `yes` when the pattern occurs once in the executable sections of 5875; `no` when the whole body occurs more than once. |
+| `pattern` | Hex bytes separated by spaces, `??` for a wildcard: the rel32 of a branch that leaves the function (a rel8 too), every four-byte operand that is an address in the image and every jump-table entry. At least one fixed byte. The shortest prefix of the body that is unique, at least 16 bytes; the whole body when it is shorter or not unique. |
+| `size` | The row's size in 5875, decimal. |
+| `body` | The pattern format, the whole masked body through the end of the last `calls` instruction; empty when `pattern` already covers it. |
+| `calls` | The direct `call`, `jmp` and conditional jump with a rel32 that go from this body to another function row: each as the instruction's offset in the body and the target's 5875 address, both hex without `0x`, as `offset:target`, space-separated. Empty when none. |

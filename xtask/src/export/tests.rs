@@ -20,6 +20,7 @@ fn origin() -> Origin {
         exe_size: 1,
         exe_sha256: "0".repeat(64),
         commit: "test".to_string(),
+        rebased: false,
     }
 }
 
@@ -322,7 +323,9 @@ fn a_field_that_overlaps_or_overruns_is_an_error() {
 /// The export of this tree, built once.
 fn built() -> &'static Built {
     static BUILT: OnceLock<Built> = OnceLock::new();
-    BUILT.get_or_init(|| build(&read(&root()).expect("the tree reads")).expect("the tree exports"))
+    BUILT.get_or_init(|| {
+        build(&read(&root(), None).expect("the tree reads")).expect("the tree exports")
+    })
 }
 
 #[test]
@@ -345,7 +348,7 @@ fn a_bundle_of_the_tree_round_trips_to_its_rows() {
 
 #[test]
 fn the_same_tree_exports_the_same_bytes() {
-    let again = build(&read(&root()).unwrap()).unwrap();
+    let again = build(&read(&root(), None).unwrap()).unwrap();
     assert_eq!(&again.files, &built().files);
 }
 
