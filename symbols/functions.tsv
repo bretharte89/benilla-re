@@ -7165,7 +7165,7 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x49a850	23	GetChatHistoryTime		ui	primitive		Returns the time of line i of the 60-line chat history ring	verified	one	objectlayer/playermessages#gm-tickets	
 0x49a870	1904	AddChatLine		ui	primitive		Shows one chat line: rewrites, filters and decorates it, fires its event, bubbles it and logs it	verified	one	ui/chatevents#the-chat-line-function	
 0x49b0b0	250	FireChatEvent		ui	orchestration		Fires the CHAT_MSG event of a type with the ten arguments of a line	verified	one	ui/chatevents#the-ten-event-arguments	
-0x49b1b0	66			ui	orchestration		Runs ChatFrame.cpp code that calls SErrSetLastError, 0x49b0b0, SLogWrite; not read here	inferred	none		
+0x49b1b0	66	FireChatEventAndLog		ui	orchestration	void __fastcall (const char *text, int32_t type)	Fires the chat event of a type with only the text, then writes the text to the combat log file while logging	verified	one	ui/chatevents#sources-of-the-chat-type	
 0x49b200	761	ComposeTextEmote		ui	orchestration	void __fastcall (uint64_t *performer, int32_t textId, const char *targetName, uint32_t emoteNum)	Picks the template of a text emote and shows its sentence as an event line	verified	one	ui/chatemote#the-sentence-column	
 0x49b500	81			ui	primitive		Runs ChatFrame.cpp code not read here	inferred	none		
 0x49b560	837	RewriteInLanguage		ui	primitive		Rewrites each word the skill does not cover into a same-length word of the language, in the source's case	verified	one	ui/chatlanguage#when-a-line-is-rewritten	
@@ -19289,7 +19289,7 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x5de180	711	OnSkillValueChanged		objectlayer	primitive		Prints a skill's rise, shows the gained or skill-up message and refreshes the skill windows	verified	one	objectlayer/playerfields#skill-changes	
 0x5de450	25	OnSkillMaxChanged		objectlayer	orchestration		Calls 0x4d7d40, 0x4fca20(0) and 0x4d2cb0 when a skill's max or permanent bonus changes	verified	one	objectlayer/playerfields#skill-changes	
 0x5de470	56	OnSkillTempBonusChanged		objectlayer	orchestration		Signals the attack events through 0x5ed990 and calls 0x4d2cb0 when a skill's temporary bonus changes	verified	one	objectlayer/playerfields#skill-changes	
-0x5de4b0	34	SignalPlayerFieldEvent		objectlayer	orchestration		Signals the event given as its argument for the unit token player	verified	one	objectlayer/playerfields#watchers-on-the-active-player	
+0x5de4b0	34	SignalPlayerFieldEvent		objectlayer	orchestration	uint32_t __fastcall (uint32_t offset, uint32_t length, uint32_t guidLow, uint32_t guidHigh, const void *old, uint32_t eventId)	Signals the event id it is registered with, with the unit token player as arg1, and returns 1	verified	one	objectlayer/playerfields#watchers-on-the-active-player	
 0x5de4e0	113	OnRestStateChanged		objectlayer	orchestration		Signals UPDATE_EXHAUSTION and shows the rested or normal message and tutorial for the new state	verified	one	objectlayer/playerfields#rest-state	
 0x5de560	71	OnPlayerBytes2Changed		objectlayer	primitive		Refreshes every unit's aura visibility with the changed bits of PLAYER_FIELD_BYTES2 byte 1	verified	one	objectlayer/playerfields#rest-state	
 0x5de5b0	1037	CGPlayer_C::RemoveActiveWatchers		objectlayer	primitive		Removes the active player's object watchers, and one on +0x10ac that was never added	verified	one	objectlayer/playerfields#watchers-on-the-active-player	
