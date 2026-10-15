@@ -460,7 +460,7 @@ pub fn run(tree: &dyn Tree) -> io::Result<Checked> {
                     p.add(&place, "an unreached function has no test");
                 }
                 if !test.is_empty() && !test.split(", ").all(|t| TEST.is_match(t)) {
-                    p.add(&place, format!("test '{test}' is not crate::test_fn"));
+                    p.add(&place, format!("test '{test}' is not crate::test_fn names, bare and separated by ', ' (no backticks)"));
                 }
                 let signature = row.get("signature");
                 if signature.chars().count() > SIGNATURE {
@@ -683,6 +683,14 @@ pub fn run(tree: &dyn Tree) -> io::Result<Checked> {
             }
         }
     }
+
+    let mut texts = Vec::new();
+    for path in &markdown {
+        if let Some(text) = read(tree, path, &mut p)? {
+            texts.push((*path, text));
+        }
+    }
+    paths::check(&files, &texts, &mut p);
 
     p.0.extend(crate::tables::check_headers(tree, &files)?);
 
@@ -1212,7 +1220,7 @@ fn check_doc(
                     doc_tests.push((place(3), t.trim_matches('`').to_string()));
                 }
             } else {
-                p.add(place(3), "Test is none or a list of `crate::test_fn`");
+                p.add(place(3), "Test is none or `crate::test_fn` names, each in backticks, separated by ', ', as in Test: `cmath::a`, `cmath::b` (the test column takes them bare)");
             }
         }
         let (claim, derivation) = (&body[..whole.start()], &body[whole.end()..]);
@@ -1247,5 +1255,6 @@ fn check_doc(
     }
 }
 
+mod paths;
 #[cfg(test)]
 mod tests;

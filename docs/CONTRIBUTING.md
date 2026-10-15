@@ -54,6 +54,10 @@ no exe, no MPQ, no extracted file, no disassembly or decompiler dump (`dumps/` i
    already built. The log, with every row it could not apply, is `dumps/ghidra/setup.log`.
    `tools/ghidra/decompile.sh 0x514ae0` decompiles functions from it without opening Ghidra.
 
+6. Optional: to run the tests that read the game's file formats (archives, DBC, M2, WMO, ADT),
+   copy or link the install's `Data` folder to `WoW/Data` (or set `BENILLA_RE_WOW_DATA` to it).
+   Without it those tests skip, and `cargo xtask check --exe` says how many.
+
 `dumps/` is ignored by git and holds only what the scripts regenerate from your exe. Nothing in
 it is ever committed.
 
@@ -93,6 +97,19 @@ every pull request:
 cargo xtask check
 ```
 
+CI (`.github/workflows/ci.yml`) runs five things on every pull request and every push to main, and
+a pull request should pass the same five before it is opened:
+
+```
+cargo fmt --all -- --check
+cargo clippy --workspace --all-targets -- -D warnings
+cargo test --workspace
+cargo xtask check
+cargo xtask site "$RUNNER_TEMP/site"     # any empty folder: the site builds
+```
+
+`cargo xtask check --exe` is not in CI, as it needs a client; a reviewer runs it on their own.
+
 It checks the symbol table and every Markdown file against the formats in `symbols/README.md`
 and `systems/README.md` (columns, sorting, names, classes, confidence and proof, the text limits,
 every `finding` resolving to an entry that mentions its row's address, every cited address
@@ -112,12 +129,24 @@ a function and has its body's size. It regenerates every table into a
 scratch directory and requires each byte for byte. It runs
 `cargo test --workspace --profile exetest` with `BENILLA_RE_REQUIRE_EXE=1`, and requires every test that a row's `test` or an entry's `Test` line
 names to appear as passed. It needs GNU objdump (above), Python 3, bash for `tools/disasm.sh`, a
-POSIX `sh` for `tools/tables/regen.sh`, and Rust; not Ghidra or a JDK.
+POSIX `sh` for `tools/tables/regen.sh`, and Rust; not Ghidra or a JDK. The tests that read the
+install's `Data` folder skip when it is absent, and the summary counts them; set
+`BENILLA_RE_REQUIRE_DATA=1` to make a missing `Data` fail them instead.
 
 The tests build the Unicorn emulator from source, which needs CMake and a C compiler:
 `brew install cmake` on macOS, `sudo apt install cmake build-essential` on Linux. Without the exe
 `cargo test --workspace` builds and runs them, and each test that needs the exe skips with one
 line; CI runs it that way.
+
+To iterate on one test, run only it, in the same profile (a few seconds once built, against
+several minutes for the whole `check --exe`):
+
+```
+BENILLA_RE_REQUIRE_EXE=1 cargo test -p benilla-re-cmath --profile exetest --test mul_high
+```
+
+`-p` takes the package (`benilla-re-<crate>`) and `--test` the file under `crates/<crate>/tests/`
+without `.rs`. Run `check --exe` once before the pull request.
 
 A transcription can pass in a debug build and fail in an optimized one: the optimizer may fold a
 float compare so that `-0.0` or NaN comes out differently. `exetest` (in `Cargo.toml`) inherits
@@ -132,6 +161,23 @@ BENILLA_RE_REQUIRE_EXE=1 cargo test --workspace --profile exetest
 cites that has neither a row nor a mention in a doc here: a report. With `--strict` it exits
 nonzero when any address has neither, the standing check that everything benilla cites is
 backed here.
+
+## Report a gap or a wrong finding
+
+A gap (a function, a field or a behaviour the repo does not cover) or a finding you think is wrong
+goes in an issue at `https://github.com/samwhosung/benilla-re/issues`; the two forms there ask for
+what follows. No exe is needed to file one.
+
+- **The address or the behaviour.** A client address (`0x5e6853`) or, where you have no address,
+  what the client does that you want explained.
+- **What you expected**, and what the repo says instead, or that it says nothing.
+- **Where it shows**: the row, the entry and its anchor, the page on the site, or the behaviour of
+  a client or a server.
+- **Evidence for a finding that is wrong.** `METHOD.md` says what counts: the instruction that the
+  entry misreads, or a run of the client that contradicts it. A guess, a decompiler's output or
+  another project's name is a lead and is labelled so.
+
+One defect to an issue. A pull request that fixes it says `Fixes #N`.
 
 ## Adding a name
 
@@ -173,20 +219,46 @@ results bit for bit. A function whose row is `unreached` gets neither.
   entry's derivation says which.
 - Cover every regime the code distinguishes, with a deterministic probe at each threshold.
 - When the test passes against the exe, add it to the row's `test` column and the entry's `Test`
-  line as `crate::test_fn`: the crate's directory name and the function's name. That name only
+  line as `crate::test_fn`: the crate's directory name and the function's name. The `test` column
+  takes the names bare, separated by `, `: `cmath::mul_high32_difftest`. The `Test` line of an
+  entry takes each name in backticks, separated by `, ` (a doc is Markdown): ``Test:
+  `cmath::mul_high32_difftest`, `cmath::other_test` ``, or `Test: none`. That name only
   reaches a test that is a top-level function of a file in `crates/<crate>/tests/`, never one
   inside a module. The row's confidence and proof stay as the reading left them (`METHOD.md`,
   Confidence and proof).
 - `Wow::load()` finds the exe at `BENILLA_RE_WOW_EXE`, else at `WoW/WoW.exe`, and refuses any other
   build by its SHA-256. Without it a test prints one skip line and returns, unless
   `BENILLA_RE_REQUIRE_EXE` is set (to `1`): then it panics. `cargo xtask check --exe` sets it, so
-  a skip there fails the check and is never a pass. `data_dir()` finds the install the same way,
-  at `BENILLA_RE_WOW_DATA`, else `WoW/Data`.
+  a skip there fails the check and is never a pass. `data_dir()` finds the install's `Data` folder
+  at `BENILLA_RE_WOW_DATA`, else `WoW/Data`; a test without it prints a skip line and returns,
+  unless `BENILLA_RE_REQUIRE_DATA` is set (to `1`), and the test's name goes to the file
+  `BENILLA_RE_SKIP_LOG` names, which `check --exe` counts. A test that reads the install calls
+  `data_dir()` before anything else, so it skips whole.
 - A file from a client run or a third party is read with `fixture("BENILLA_RE_…")`, which skips
   without it even under `BENILLA_RE_REQUIRE_EXE`; no row or entry names such a test.
 
 The emulator is `unicorn-engine` (GPL-2.0), used as a test dependency only; nothing that ships
 links it.
+
+## Opening a pull request
+
+1. Fork the repo and branch from main. One branch is one piece of work: one system or one
+   mechanism (Review, below).
+2. Commit in logical pieces, and say in the message what changed and why.
+3. Run the five checks of CI (The check, above). With your exe, run `cargo xtask check --exe` too.
+4. Open the pull request. The description gives:
+   - the claim, in a sentence or two;
+   - the evidence: the addresses that decide it, with the instructions where they decide a point;
+   - the test, and that it bites: it fails when the reimplementation or the claim is wrong (a
+     deliberately wrong version failed it, and where);
+   - the check results: which of the five passed, and the last line of `check --exe`.
+5. If `check --exe` cannot be fully green with only the exe, say what is missing and what ran. The
+   tests that read the install's `Data` folder skip without it and the summary line counts them;
+   say that count, so the reviewer reruns those. A check you could not run at all (no GNU objdump,
+   no Rust toolchain for it) is named, never left out.
+6. If the claim spreads (Adding a finding, step 4), write `Second reading wanted` and give the
+   second reader the addresses and the question alone, not your derivation. A `two` proof is
+   claimed only after that reading.
 
 ## Review
 

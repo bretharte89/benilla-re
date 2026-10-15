@@ -320,7 +320,7 @@ fn plants() -> Vec<Plant> {
         plant(
             "a test's format",
             edit(F, "\tdemo::demo_advance\n", "\tdemo_advance\n"),
-            &["symbols/functions.tsv:4: test 'demo_advance' is not crate::test_fn"],
+            &["symbols/functions.tsv:4: test 'demo_advance' is not crate::test_fn names, bare and separated by ', ' (no backticks)"],
         ),
         plant(
             "a signature's length",
@@ -559,7 +559,7 @@ fn plants() -> Vec<Plant> {
         plant(
             "an entry's Test line",
             edit(DOC, CTOR_SHAPE, "Addresses: `0x402040`\nConfidence: verified\nProof: two\nTest: demo::demo_ctor\n"),
-            &["systems/demo.md:38: Test is none or a list of `crate::test_fn`"],
+            &["systems/demo.md:38: Test is none or `crate::test_fn` names, each in backticks, separated by ', ', as in Test: `cmath::a`, `cmath::b` (the test column takes them bare)"],
         ),
         plant(
             "a claim's length",
@@ -617,6 +617,21 @@ fn plants() -> Vec<Plant> {
             edit("README.md", "`0x500018`", "`0xe00000`"),
             &["README.md:4: 0xe00000 is not an address inside the image"],
         ),
+        plant(
+            "a link to a file that is not there",
+            edit("README.md", "A clean tree", "See [the contributing guide](../CONTRIBUTING.md). A clean tree"),
+            &["README.md:3: links to ../CONTRIBUTING.md, which is no file here"],
+        ),
+        plant(
+            "a backticked path that is not there",
+            edit("README.md", "A clean tree", "See `docs/CONTRIBUTING.md`. A clean tree"),
+            &["README.md:3: `docs/CONTRIBUTING.md` is no file here"],
+        ),
+        plant(
+            "a backticked path that is there",
+            edit("README.md", "A clean tree", "See `docs/METHOD.md` and `systems/README`. A clean tree"),
+            &[],
+        ),
         // A test is not a proof, and anchors.
         plant(
             "a row with proof test",
@@ -655,7 +670,10 @@ fn plants() -> Vec<Plant> {
         plant(
             "a link to an entry that does not exist",
             edit(DOC, "returns the sum.\n", "returns the sum ([there](../other/demo.md#state-advance)).\n"),
-            &["systems/demo.md:12: ../other/demo.md#state-advance links to no entry"],
+            &[
+                "systems/demo.md:12: ../other/demo.md#state-advance links to no entry",
+                "systems/demo.md:12: links to ../other/demo.md, which is no file here",
+            ],
         ),
         // The tables' headers.
         plant(
