@@ -8461,16 +8461,16 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x4bf220	5	LeaveWorldCancelTrade		ui	orchestration	void __cdecl ()	Jumps to the trade module's leave-world hook 0x5d4310	verified	one	ui/trade#starting-a-trade	
 0x4bf230	73	CGTradeInfo::PlayerAccept	idb	ui	orchestration	void __thiscall (CGTradeInfo *this)	Sets the player's accept flag, signals TRADE_ACCEPT_UPDATE on a change and sends accept or unaccept	verified	one	ui/trade#accept-flags	
 0x4bf280	40	CGTradeInfo::TargetAccept	idb	ui	orchestration	void __thiscall (CGTradeInfo *this)	Sets the partner's accept flag and signals TRADE_ACCEPT_UPDATE on a change	verified	one	ui/trade#accept-flags	
-0x4bf2b0	556	TradeInfoSetTargetItems		ui	orchestration		Takes the partner's trade item records for the interface	inferred	none		
+0x4bf2b0	556	TradeInfoSetTargetItems		ui	primitive	void __thiscall (void *this)	Clears both accept flags, caches the partner slot records, header words and money and signals each change	verified	one	ui/trade#the-partners-offer	
 0x4bf4e0	563	CGTradeInfo::SetTradePartner	idb	ui	primitive	void __thiscall (CGTradeInfo *this, uint64_t guid)	Opens the trade window for a partner GUID or closes it for 0, signals TRADE_SHOW or TRADE_CLOSED, sends the cancel	verified	one	ui/trade#opening-and-closing-the-window	
 0x4bf720	743	CGTradeInfo::HandleTradeMessage	idb	ui	orchestration	void __fastcall (uint32_t status, uint32_t inventoryResult, uint32_t sideByte, uint32_t unused, uint32_t slotByte)	Answers a trade request, prints the status message and opens, closes or updates the trade window	verified	one	ui/trade#answering-a-trade-request	
-0x4bfa70	160			ui	primitive		Runs TradeFrame.cpp code that calls TradeClearItem, TradeSetItem, FrameScript_SignalEvent2; not read here	inferred	none		
-0x4bfb10	71			ui	primitive		Runs TradeFrame.cpp code that calls 0x4bfa70; not read here	inferred	none		
-0x4bfb60	99			ui	primitive		Runs TradeFrame.cpp code that calls 0x4bfa70; not read here	inferred	none		
+0x4bfa70	160	TradeInfoSetPlayerItem		ui	primitive	uint32_t __fastcall (uint32_t slot, uint8_t bagSlot, uint64_t item, uint64_t container)	Sends the set or clear of an own trade slot, stores its item, container and slot byte and signals the change	verified	one	ui/trade#the-own-offer	
+0x4bfb10	71	TradeInfoRemovePlayerItem		ui	orchestration	void __stdcall (uint64_t item)	Clears the own trade slot that holds an item	verified	one	ui/trade#placing-and-finding-offered-items	
+0x4bfb60	99	TradeInfoRefreshPlayerItem		ui	orchestration	void __stdcall (uint64_t item)	Places an offered item again in its own trade slot from the stored container and slot byte	verified	one	ui/trade#placing-and-finding-offered-items	
 0x4bfbd0	121	TradeInfoClearPlayerItem		ui	orchestration	void __thiscall (void *this)	Clears the own offer slot, or the offered money for 0xff, and signals the change	verified	one	ui/trade#a-refused-offer-slot	
-0x4bfc50	153			ui	primitive		Runs TradeFrame.cpp code that calls 0x494c80, 0x4bfa70, 0x495190; not read here	inferred	none		
+0x4bfc50	153	TradeInfoAddCursorItem		ui	orchestration	void __fastcall (uint32_t bound)	Offers the cursor item in slot 6 when bound, else in the first empty of slots 0 to 5, and clears the cursor	verified	one	ui/trade#placing-and-finding-offered-items	
 0x4bfcf0	37	CGTradeInfo::UnlockTradeItems	idb	ui	primitive	void __cdecl ()	Unlocks each item GUID of the own offer without clearing it	verified	one	ui/trade#opening-and-closing-the-window	
-0x4bfd20	77			ui	primitive		Runs TradeFrame.cpp code not read here	inferred	none		
+0x4bfd20	77	TradeInfoIsPlayerItem		ui	orchestration	uint32_t __stdcall (uint64_t item)	Returns 1 when a trade window is open and an own trade slot holds the item, else 0	verified	one	ui/trade#placing-and-finding-offered-items	
 0x4bfd70	65	CGTradeInfo::GetGameError	idb	ui	primitive	uint32_t __fastcall (uint32_t inventoryResult, uint32_t sideByte)	Maps a trade refusal result and wire byte to a message id	verified	one	ui/trade#inventory-refusals	
 0x4bfdc0	33	Script::CloseTrade	idb	ui	orchestration	int __fastcall (lua_State *L)	Signals PLAYER_TRADE_MONEY unless the trade completed, then closes the trade window	verified	one	ui/trade#opening-and-closing-the-window	
 0x4bfdf0	644	Script::ClickTradeButton	idb	ui	primitive	int __fastcall (lua_State *L)	Adds cursor money to the offer or puts the cursor item in a trade slot	verified	one	ui/tradelootverbs#clicking-a-trade-slot	
@@ -8720,31 +8720,31 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x4c3d00	5	InitInfinity4c3d10Thunk		ui	orchestration	void __cdecl (void)	Jumps to 0x4c3d10, a static initializer	verified	one	ui/initthunks#jump-thunks	
 0x4c3d10	11	InitInfinity4c3d10		ui	orchestration	void __cdecl (void)	Copies the dword 0x7f800000 (+inf as a float) into a global	verified	one	ui/initstores#infinity-copies	
 0x4c3d20	35	InitLotteryHandlers	idb	ui	orchestration		Registers the handlers for opcodes 0x335 and 0x337	verified	one	ui/gameui#start-up-services-and-events	
-0x4c3d50	260	HandleLotteryQueryResultPacket	idb	ui	primitive	uint32_t __fastcall (void *param, uint32_t opcode, uint32_t time, CDataStore *msg)	Runs its object file code that calls CDataStore::GetInt32, OsGetCachedUnixTime, FrameScript_SignalEvent; not read here	inferred	none		
-0x4c3e60	5	HandleLotteryResultPacket	idb	ui	orchestration	uint32_t __fastcall (void *param, uint32_t opcode, uint32_t time, CDataStore *msg)	Runs its object file code not read here	inferred	none		
+0x4c3d50	260	HandleLotteryQueryResultPacket	idb	ui	primitive	uint32_t __fastcall (void *param, uint32_t opcode, uint32_t time, CDataStore *msg)	Reads the lottery query result into the vendor, prize and draw globals and signals LOTTERY_SHOW	verified	one	ui/lottery#query-result	
+0x4c3e60	5	HandleLotteryResultPacket	idb	ui	orchestration	uint32_t __fastcall (void *param, uint32_t opcode, uint32_t time, CDataStore *msg)	Returns 0 without reading the lottery result message	verified	one	ui/lottery#query-result	
 0x4c3e70	13	ClearLotteryKioskGuid		ui	orchestration	void __cdecl ()	Zeroes the two dwords that hold the lottery kiosk GUID	verified	one	ui/loot#no-walk-away-leash	
 0x4c3e80	7	CloseLootWindowThunk		ui	orchestration		Loads 1 into cl and jumps to the loot window close 0x4c3f40	verified	one	ui/gameui#interaction-close	
 0x4c3e90	20	ClearLotteryHandlers		ui	orchestration		Clears the handlers for opcodes 0x335 and 0x337	verified	one	ui/gameui#start-up-services-and-events	
 0x4c3eb0	132	SendLotteryQuery		ui	unreached	void __stdcall (uint32_t guid_lo, uint32_t guid_hi)	Sets the interaction target to the kiosk GUID, stores it and sends opcode 0x334; nothing reaches it	verified	one	ui/lottery#buying	
 0x4c3f40	1	CloseLootWindow		ui	orchestration		Returns at once	verified	one	ui/gameui#interaction-close	
-0x4c3f50	394	GetPrizeItem		ui	primitive		Reads the n-th nonzero prize id and fetches the item record for it	verified	one	ui/lottery#prizes	
+0x4c3f50	394	GetPrizeItem		ui	primitive		Fills the name, icon, count, quality and usability of the prize slot an index selects	verified	one	ui/lottery#prizes	
 0x4c40e0	81			ui	orchestration		Runs its object file code that calls DBCache_ItemStats_C_int_HASHKEY_INT_::GetRecord and 1 more; not read here	inferred	none		
-0x4c4140	32	GetVendorActive		ui	orchestration		Returns the vendor-active dword once the clock has passed the vendor time, else 0	verified	one	ui/lottery#prizes	
+0x4c4140	32	GetVendorActive		ui	orchestration		Returns the vendor dword once the clock has passed the vendor time, else 0	verified	one	ui/lottery#prizes	
 0x4c4160	25	CountPrizes		ui	primitive		Counts the nonzero entries of the prize array	verified	one	ui/lottery#prizes	
 0x4c4180	25	CountDrawRecords		ui	primitive		Counts the draw records whose first word is nonzero	verified	one	ui/lottery#draws	
-0x4c41a0	105	GetDrawRecord		ui	primitive		Copies the four numbers of the n-th used draw record and the seconds since its time stamp	verified	one	ui/lottery#draws	
+0x4c41a0	105	GetDrawRecord		ui	primitive		Copies the four numbers and the age of the draw record an index selects	verified	one	ui/lottery#draws	
 0x4c4210	3	Script::CloseLottery	idb	ui	orchestration	int __fastcall (lua_State *L)	Does nothing	verified	one	ui/lottery#buying	
 0x4c4220	100	Script::GetLastLotteryNumbers	idb	ui	orchestration	int __fastcall (lua_State *L)	Asks the server for the last lottery numbers	verified	one	ui/lottery#buying	
 0x4c4290	307	Script::SubmitNumbers	idb	ui	primitive	int __fastcall (lua_State *L)	Sends four chosen lottery numbers as a bit mask	verified	one	ui/lottery#buying	
-0x4c43d0	38	Script::IsVendorActive	idb	ui	orchestration	int __fastcall (lua_State *L)	Returns the lottery vendor value once its deadline has passed	inferred	none	ui/lottery#prizes	
+0x4c43d0	38	Script::IsVendorActive	idb	ui	orchestration	int __fastcall (lua_State *L)	Pushes the vendor value 0x4c4140 returns and returns no values	verified	one	ui/lottery#prizes	
 0x4c4400	171	Script::BuyRandomPicks	idb	ui	orchestration	int __fastcall (lua_State *L)	Buys a number of random lottery picks	verified	one	ui/lottery#buying	
-0x4c44b0	36	Script::GetNumLotteryPrizes	idb	ui	orchestration	int __fastcall (lua_State *L)	Returns the number of lottery prizes	inferred	none	ui/lottery#prizes	
-0x4c44e0	232	Script::GetLotteryPrizeInfo	idb	ui	orchestration	int __fastcall (lua_State *L)	Returns the name, icon, count, quality and usability of a lottery prize	inferred	none	ui/lottery#prizes	
-0x4c45d0	20	Script::GetJackpotAmount	idb	ui	orchestration	int __fastcall (lua_State *L)	Returns the lottery jackpot	inferred	none	ui/lottery#prizes	
-0x4c45f0	62	Script::GetMoneyPrizes	idb	ui	orchestration	int __fastcall (lua_State *L)	Returns the three lottery money prizes	inferred	none	ui/lottery#prizes	
-0x4c4630	46	Script::GetNextDrawTime	idb	ui	primitive	int __fastcall (lua_State *L)	Returns the seconds until the next lottery draw	inferred	none	ui/lottery#draws	
-0x4c4660	36	Script::GetNumPastDrawResults	idb	ui	orchestration	int __fastcall (lua_State *L)	Returns the number of past lottery draw records	inferred	none	ui/lottery#draws	
-0x4c4690	154	Script::GetPastDrawResult	idb	ui	primitive	int __fastcall (lua_State *L)	Returns the numbers and age of a past lottery draw	inferred	none	ui/lottery#draws	
+0x4c44b0	36	Script::GetNumLotteryPrizes	idb	ui	orchestration	int __fastcall (lua_State *L)	Pushes the count of nonzero prize ids and returns no values	verified	one	ui/lottery#prizes	
+0x4c44e0	232	Script::GetLotteryPrizeInfo	idb	ui	orchestration	int __fastcall (lua_State *L)	Returns the name, icon, count 1, quality and usability of the prize slot an index selects	verified	one	ui/lottery#prizes	
+0x4c45d0	20	Script::GetJackpotAmount	idb	ui	orchestration	int __fastcall (lua_State *L)	Pushes the lottery jackpot and returns no values	verified	one	ui/lottery#prizes	
+0x4c45f0	62	Script::GetMoneyPrizes	idb	ui	orchestration	int __fastcall (lua_State *L)	Pushes the three lottery money prizes and returns no values	verified	one	ui/lottery#prizes	
+0x4c4630	46	Script::GetNextDrawTime	idb	ui	primitive	int __fastcall (lua_State *L)	Pushes the seconds until the next lottery draw and returns no values	verified	one	ui/lottery#draws	
+0x4c4660	36	Script::GetNumPastDrawResults	idb	ui	orchestration	int __fastcall (lua_State *L)	Pushes the number of used lottery draw records and returns no values	verified	one	ui/lottery#draws	
+0x4c4690	154	Script::GetPastDrawResult	idb	ui	primitive	int __fastcall (lua_State *L)	Returns the four numbers and age of the draw record an index selects	verified	one	ui/lottery#draws	
 0x4c4730	30	RegisterLotteryFunctions		ui	orchestration	void __cdecl ()	Registers the 12 lottery Lua functions from their name and function table	verified	one	ui/scriptapi#registrars	
 0x4c4750	24	UnregisterLotteryFunctions		ui	orchestration	void __cdecl ()	Unregisters the 12 lottery Lua functions	verified	one	ui/scriptapi#unregistrars	
 0x4c4770	5	InitDouble4c4780Thunk		ui	orchestration	void __cdecl (void)	Jumps to 0x4c4780, a static initializer	verified	one	ui/initthunks#jump-thunks	
@@ -8805,9 +8805,9 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x4c4cf0	40	HandleMinigameStatePacket	idb	ui	orchestration	uint32_t __fastcall (void *param, uint32_t opcode, uint32_t time, CDataStore *msg)	Runs its object file code that calls FrameScript_SignalEvent; not read here	inferred	none		
 0x4c4d20	20	MinigameMove		ui	orchestration		Calls MinigameMakeMove on the minigame object with its two arguments when the object exists	verified	one	ui/lottery#the-minigame	
 0x4c4d40	16	GetMinigameKind		ui	orchestration		Returns the kind at +8 of the minigame object	verified	one	ui/lottery#the-minigame	
-0x4c4d50	43	Script::GetMinigameType	idb	ui	orchestration	int __fastcall (lua_State *L)	Returns the name of the active minigame, or nil	verified	one	ui/lottery#the-minigame	
+0x4c4d50	43	Script::GetMinigameType	idb	ui	orchestration	int __fastcall (lua_State *L)	Pushes nil for every minigame kind, the name slot of kind 1 being null	verified	one	ui/lottery#the-minigame	
 0x4c4d80	109	Script::MakeMinigameMove	idb	ui	primitive	int __fastcall (lua_State *L)	Makes a move in the active minigame	verified	one	ui/lottery#the-minigame	
-0x4c4df0	21	Script::GetMinigameState	idb	ui	orchestration	int __fastcall (lua_State *L)	Returns the state of the active minigame	verified	one	ui/lottery#the-minigame	
+0x4c4df0	21	Script::GetMinigameState	idb	ui	orchestration	int __fastcall (lua_State *L)	Returns the result count of the minigame object's virtual +8, or 0 with no game	verified	one	ui/lottery#the-minigame	
 0x4c4e10	30	RegisterMinigameFunctions		ui	orchestration	void __cdecl ()	Registers the 3 minigame Lua functions from their name and function table	verified	one	ui/scriptapi#registrars	
 0x4c4e30	24	UnregisterMinigameFunctions		ui	orchestration	void __cdecl ()	Unregisters the 3 minigame Lua functions	verified	one	ui/scriptapi#unregistrars	
 0x4c4e50	5	InitDouble4c4e60Thunk		ui	orchestration	void __cdecl (void)	Jumps to 0x4c4e60, a static initializer	verified	one	ui/initthunks#jump-thunks	
@@ -23326,25 +23326,25 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x6471b0	34			storm	boundary		Runs SFile2.cpp code not read here	inferred	none		
 0x6471e0	12			storm	boundary		Runs SFile2.cpp code that calls _atexit; not read here	inferred	none		
 0x6471f0	145			storm	boundary		Runs SFile2.cpp code not read here	inferred	none		
-0x647290	61			storm	boundary		Runs SFile2.cpp code that calls SCritSect::SCritSect; not read here	inferred	none		
-0x6472d0	120			storm	boundary		Runs SFile2.cpp code that calls 0x732320, SMemFree; not read here	inferred	none		
+0x647290	61	ConstructFileObject		storm	orchestration	void * __thiscall (SFileObject *this, uint32_t kind)	Stores a file object's kind, constructs its lock and zeroes its other fields but +0x14, +0x20 and +0x44	verified	two	storm/bz#the-file-object	
+0x6472d0	120	DestroyFileObject		storm	orchestration	void __thiscall (SFileObject *this)	Ends a file object's inflate and frees its stream, path and name copies and input buffer, leaving the file open	verified	two	storm/bz#the-file-object	
 0x647350	377			storm	boundary		Runs SFile2.cpp code that calls SCritSect::Enter, _ftell, _fseek and 11 more; not read here	inferred	none		
 0x6474e0	242			storm	boundary		Runs SFile2.cpp code that calls SEventWait, SCritSect::Enter, SCritSect::Leave and 4 more; not read here	inferred	none		
 0x6475e0	36			storm	boundary		Runs SFile2.cpp code that calls SThread::Create; not read here	inferred	none		
 0x647610	203			storm	boundary		Runs SFile2.cpp code that calls SCritSect::Enter, 0x6475e0, SMemAlloc and 2 more; not read here	inferred	none		
-0x6476e0	191			storm	boundary		Runs SFile2.cpp code that calls 0x740c97, 0x730ea0; not read here	inferred	none		
+0x6476e0	191	ReadBzFile		storm	orchestration	uint32_t __fastcall (SFileObject *file, void *buffer, uint32_t size, uint32_t *read)	Inflates up to a size of a .bz file, refilling 4 KiB of input, and returns 1 when it delivered bytes	verified	two	storm/bz#reading-a-bz-file	storm::bz_read_difftest, storm::bz_damaged_difftest
 0x6477a0	24	SFile::Open	idb	storm	boundary		Runs SFile2.cpp code that calls SFile::OpenEx; not read here	inferred	none		
-0x6477c0	1498	SFile::OpenEx	idb	storm	boundary		Runs SFile2.cpp code that calls 0x647e60, SMemAlloc, 0x647290 and 18 more; not read here	inferred	none		
+0x6477c0	1498	SFile::OpenEx	idb	storm	orchestration		Opens a name by its resolved kind; a .bz file is checked for BZ00 and set up to inflate	verified	two	storm/bz#opening-a-bz-file	storm::bz_open_header_difftest
 0x647db0	163			storm	boundary		Runs SFile2.cpp code that calls SUniConvertUTF8to16, 0x646e50, __wfopen and 1 more; not read here	inferred	none		
 0x647e60	796	SFileResolveOpen		storm	orchestration	int32_t __fastcall (const char *name, char *out, uint32_t size, uint32_t flags, uint32_t *kind, void **archive)	Resolves an open name through the disk-path builder, or the loose-file index and then the archives	verified	two	storm/mount#loose-files	storm::resolve_matches_index, storm::index_hit_has_no_fallback
 0x648180	725			storm	boundary		Runs SFile2.cpp code that calls SStrCopy, SStrPack, 0x646d90 and 3 more; not read here	inferred	none		
-0x648460	373	SFile::Read	idb	storm	boundary		Reads bytes from an open archive file	inferred	none		
+0x648460	373	SFile::Read	idb	storm	orchestration	uint32_t __stdcall (SFileObject *file, void *buffer, uint32_t size, uint32_t *read, void *overlapped, uint32_t unused)	Reads from an open file by its kind, the .bz inflater for kind 1, or queues an overlapped read	verified	one	storm/bz#reading-a-bz-file	
 0x6485f0	36	SFile::LoadByName		storm	boundary	uint32_t __stdcall (const char *name, void **buffer, uint32_t *size, uint32_t extra, void *overlapped)	Calls SFile::Load with no archive and open flags 0	verified	one	storm/format#loading-a-whole-file	
 0x648620	210	SFile::Load	idb	storm	boundary	uint32_t __stdcall (void *archive, const char *name, void **buffer, uint32_t *size, uint32_t extra, uint32_t flags, void *overlapped)	Reads a whole file into a new buffer with extra zero bytes after it, closing it unless overlapped	verified	one	storm/format#loading-a-whole-file	
 0x648700	33	SFile::Unload		storm	boundary	int __stdcall (void *buffer)	Frees a buffer that SFile::Load returned and returns 1	verified	one	storm/format#freeing-a-loaded-file	
-0x648730	126	SFile::Close	idb	storm	boundary		Runs SFile2.cpp code that calls _fclose, 0x653900, 0x668610 and 3 more; not read here	inferred	none		
+0x648730	126	SFile::Close	idb	storm	orchestration	uint32_t __stdcall (SFileObject *file)	Closes an open file's FILE, archive file and kind-4 handle, destroys the object and frees it	verified	one	storm/bz#the-file-object	
 0x6487b0	59	SFileGetFileName		storm	orchestration		Copies an open file's name into a buffer	inferred	none	models/cache#shared-model-lookup	
-0x6487f0	129	SFile::GetFileSize	idb	storm	boundary		Runs SFile2.cpp code that calls __fstat, SFileGetFileSize, ZipFileGetFileSize; not read here	inferred	none		
+0x6487f0	129	SFile::GetFileSize	idb	storm	orchestration	uint32_t __stdcall (SFileObject *file, uint32_t *sizeHigh)	Returns an open file's size by its kind: fstat, a .bz header's size, or the archive or kind-4 size	verified	one	storm/bz#size-and-seeking	storm::bz_read_difftest
 0x648890	30	SFile::GetBasePath	idb	storm	boundary		Runs SFile2.cpp code that calls SStrCopy; not read here	inferred	none		
 0x6488b0	106	SFileSetBasePath		storm	orchestration	int32_t __stdcall (const char *path)	Stores the base path with a trailing backslash and passes the path to 0x6571d0	verified	two	storm/mount#loose-file-index	
 0x648920	98	SFileSetDataPath		storm	orchestration	int32_t __stdcall (const char *path)	Stores the data folder name with a trailing backslash	verified	two	storm/mount#loose-file-index	
@@ -23352,7 +23352,7 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x6489a0	98	SFileSetExtraIndexPath		storm	unreached	int32_t __stdcall (const char *path)	Stores a third folder for the loose-file index; nothing calls it	verified	two	storm/mount#loose-file-index	
 0x648a10	18	SFileExists		storm	orchestration	int32_t __stdcall (const char *name)	Resolves a name with open flags 0, the archives only, and returns 1 when it resolves	verified	two	storm/mount#which-opens-ask-the-index	
 0x648a30	44	SFileExistsEx		storm	orchestration	int32_t __stdcall (const char *name, uint32_t flags)	Resolves a name with open flags without opening it and returns 1 when it resolves	verified	two	storm/mount#which-opens-ask-the-index	
-0x648a60	359			storm	boundary		Runs SFile2.cpp code that calls __alloca_probe, SCritSect::Enter, _fseek and 7 more; not read here	inferred	none		
+0x648a60	359	SFile::SetFilePointer		storm	orchestration	uint32_t __stdcall (SFileObject *file, int32_t distance, int32_t *distanceHigh, uint32_t method)	Moves an open file's position by its kind; a .bz file skips by reading and restarts its stream to go back	verified	one	storm/bz#size-and-seeking	storm::bz_seek_difftest, storm::bz_damaged_difftest
 0x648be0	56	SFileSetExtraOpenFlags		storm	orchestration	int32_t __stdcall (uint32_t flags)	Sets the flags every resolve adds from argument bits 0 and 1, then passes the argument to 0x654850	verified	two	storm/mount#loose-files	
 0x648c20	8	SFileClearKeepLooseFlags		storm	orchestration	void __cdecl (void)	Clears the byte that lets the archive walk keep open flag bits 0 and 1	verified	two	storm/mount#loose-files	
 0x648c30	59			storm	boundary		Runs SFile2.cpp code that calls SMemAlloc, 0x659a70; not read here	inferred	none		
@@ -23365,7 +23365,7 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x648e80	106	SFileOpenChild		storm	orchestration		Creates a child archive record for a prefix under a parent archive	verified	one	storm/mount#base-and-speech-archives	
 0x648ef0	57			storm	boundary		Runs SFile2.cpp code that calls 0x668440, 0x653780, SMemFree; not read here	inferred	none		
 0x648f30	38			storm	unreached		Runs SFile2.cpp code that calls 0x6550b0; not read here	inferred	none		
-0x648f60	67			storm	unreached		Runs SFile2.cpp code not read here	inferred	none		
+0x648f60	67	GetFileObjectExtraBytes		storm	unreached	uint32_t __stdcall (SFileObject *file, uint8_t *out)	Copies the 16 bytes at +0x44 of a kind 1 to 4 file object when +0x54 is set; nothing reaches it	verified	one	storm/bz#the-file-object	
 0x648fb0	239	EnumerateArchiveListfile		storm	boundary		Calls a callback for each line of an archive's (listfile) not ending in .md5	verified	one	ui/addons#finding-add-ons	
 0x6490a0	23			storm	unreached		Runs SFile2.cpp code that calls 0x655010; not read here	inferred	none		
 0x6490c0	114			storm	boundary		Runs SFile2.cpp code that calls SMemFree, 0x41c120, 0x649380 and 1 more; not read here	inferred	none		
@@ -30763,7 +30763,7 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x729dd0	1068	LcdInitialize		ui	host		Starts the LCD layer	inferred	none		
 0x72a200	231	LcdShutdown		ui	host		Shuts the LCD layer down	inferred	none		
 0x72a2f0	87	LcdFindElement		ui	orchestration	void * __thiscall (void *this)	Returns the element with an id from the element tree when the LCD is ready, or 0	verified	one	ui/lcd#ready-test-and-element-lookup	
-0x72a350	20	LcdIsModeValid		ui	orchestration	uint8_t __cdecl ()	Answers 1 when the cvar value at 0xc0e080 lies in 0 to 3	verified	one	ui/lcd#ready-test-and-element-lookup	
+0x72a350	20	LcdIsLocaleSupported		ui	orchestration	uint8_t __cdecl ()	Answers 1 when the locale index 0xc0e080 is 0 to 3: enUS, koKR, frFR or deDE	verified	one	ui/lcd#ready-test-and-element-lookup	
 0x72a370	200	LcdEnterWorld		ui	orchestration	void __cdecl ()	Shows screen 1, sets the in-world flag, caches the player and sets flags on elements 0x14 and 0x2a by class	verified	one	ui/lcd#entering-and-leaving-the-world	
 0x72a450	71	LcdLeaveWorld		ui	orchestration	void __cdecl ()	Clears the in-world and battlefield flags and the player, shows screen 0 and updates the display	verified	one	ui/lcd#entering-and-leaving-the-world	
 0x72a4a0	61	LcdShowBattlefield		ui	orchestration	void __cdecl ()	Sets the battlefield flag and time, fills the battlefield screen and shows screen 3	verified	one	ui/lcd#entering-and-leaving-the-world	
@@ -31129,11 +31129,11 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x730c50	149			unassigned	unreached		Runs its object file code that calls 0x732a50, 0x733040, 0x733650; not read here	inferred	none		
 0x730cf0	17			unassigned	unreached		Runs its object file code not read here	inferred	none		
 0x730d10	76			unassigned	unreached		Runs its object file code not read here	inferred	none		
-0x730d60	277			unassigned			Runs its object file code not read here	inferred	none		
-0x730e80	22			unassigned			Runs its object file code that calls 0x730d60; not read here	inferred	none		
-0x730ea0	4816			unassigned			Runs its object file code that calls 0x7327a0, 0x735160, 0x734d50 and 2 more; not read here	inferred	none		
+0x730d60	277	inflateInit2_		zlib	boundary	int32_t __fastcall (void *strm, int32_t windowBits, const char *version, int32_t streamSize)	Checks the version and stream size, allocates the 0x1ba8-byte inflate state and sets its wrapper and window	verified	one	storm/bz#the-zlib-it-links	
+0x730e80	22	inflateInit_		zlib	boundary	int32_t __fastcall (void *strm, const char *version, int32_t streamSize)	Starts an inflate with 15 window bits through inflateInit2_	verified	one	storm/bz#the-zlib-it-links	
+0x730ea0	4816	inflate		zlib	boundary	int32_t __fastcall (void *strm, int32_t flush)	Inflates a zlib stream as zlib 1.2.2 does: its entry checks match and the bz tests run it	inferred	none	storm/bz#the-zlib-it-links	storm::bz_read_difftest, storm::bz_damaged_difftest
 0x732200	288			unassigned			Runs its object file code not read here	inferred	none		
-0x732320	60			unassigned			Runs its object file code not read here	inferred	none		
+0x732320	60	inflateEnd		zlib	boundary	int32_t __fastcall (void *strm)	Frees an inflate state and its window through the stream's zfree	verified	one	storm/bz#the-zlib-it-links	
 0x732360	231			unassigned	unreached		Runs its object file code that calls 0x735160, 0x732200; not read here	inferred	none		
 0x732450	452			unassigned	unreached		Runs its object file code not read here	inferred	none		
 0x732620	38			unassigned	unreached		Runs its object file code not read here	inferred	none		

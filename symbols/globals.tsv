@@ -1919,7 +1919,7 @@ address	type	name	name_from	system	meaning	confidence	proof	finding
 0x85544c	const char[38]	s_errCraftSpell		ui	Holds the error text Invalid craft in SetCraftSpell(index) of SetCraftSpell	verified	one	ui/tooltipbuff#craft-spells
 0x855808	int32_t	s_physicalResistIndex		ui	Holds the index of the damage class row marked physical, −1 until the table is checked	verified	one	ui/tooltipunitstatus#the-studied-creature-lines
 0x85580c	char[23]	s_pathWowClientDbH		dbc	Holds ..\..\DB/WowClientDB.h, the tag of the allocations in the table loaders	verified	one	dbc#the-loader
-0x8558a4	uint32_t			unassigned	Holds a dword that InitializeGlobal, Script::GetLocale read; not read here	inferred	none	
+0x8558a4	char *[8]	s_localeNames		unassigned	Holds the eight locale tags enUS to xxYY the locale index counts through	verified	one	dbc#localized-strings
 0x855ec8	const char[58]	s_nameCacheHashTypeName		dbcache	Holds the type name of the name cache node, the tag of its allocations	verified	one	dbcache#name-cache-node
 0x856450	uint32_t			unassigned	Holds a dword that SendBugReport reads; not read here	inferred	none	
 0x85645c	uint32_t			unassigned	Holds a dword its object file's code reads; not read here	inferred	none	
@@ -3035,16 +3035,28 @@ address	type	name	name_from	system	meaning	confidence	proof	finding
 0xb714a8	uint32_t	s_petExpiryTick		ui	Holds the tick when the pet's possession ends, 0 for none	verified	one	ui/petbar#pet-state
 0xb714b0	uint32_t	s_petAttackLatch		ui	Holds 1 while the pet attack command is active, 0 at load	verified	one	ui/petbar#pet-state
 0xb714b8	uint32_t[7]	s_targetTradeSuffixIds		ui	Holds the random suffix ids of the partner's seven trade slot items	verified	one	ui/tradelootverbs#describing-a-trade-slot
+0xb714d8	uint32_t[7]	s_targetTradeRecordWord28		ui	Holds the dword +0x28 of the partner trade slot records	verified	one	ui/trade#the-partners-offer
 0xb714f4	uint32_t[6]	s_targetTradeEntries		ui	Holds the item entries of the partner's first six trade slots, 0 for empty	verified	one	ui/tradelootverbs#describing-a-trade-slot
 0xb7150c	uint32_t	s_targetTradeSlot7Entry		ui	Holds the item entry of the partner's seventh trade slot, which the trade will not carry out	verified	one	ui/tradelootverbs#describing-a-trade-slot
+0xb71520	uint32_t[7]	s_targetTradeRecordWord38		ui	Holds the dword +0x38 of the partner trade slot records	verified	one	ui/trade#the-partners-offer
+0xb7153c	uint32_t[7]	s_targetTradeRecordWord18		ui	Holds the dword +0x18 of the partner trade slot records	verified	one	ui/trade#the-partners-offer
+0xb71558	uint64_t[7]	s_targetTradeRecordQword20		ui	Holds the qword +0x20 of the partner trade slot records	verified	one	ui/trade#the-partners-offer
+0xb71590	uint8_t[7]	s_tradeOfferBagSlots		ui	Holds the bag-relative slot byte of each own trade slot item	verified	one	ui/trade#the-own-offer
 0xb715a0	uint32_t[7]	s_targetTradeUniqueIds		ui	Holds the unique ids of the partner's seven trade slot items	verified	one	ui/tradelootverbs#trade-links-and-money
 0xb715c0	uint32_t[6]	s_targetTradeEnchantIds		ui	Holds the permanent enchant ids of the partner's first six trade slot items	verified	one	ui/tradelootverbs#trade-links-and-money
 0xb715d8	uint32_t	s_targetTradeEnchantId		ui	Holds the enchantment id of the item in the target's seventh trade slot	verified	one	ui/popups#the-trade-enchant-clash
+0xb715e8	uint64_t[7]	s_tradeOfferContainers		ui	Holds the container GUID of each own trade slot item	verified	one	ui/trade#the-own-offer
+0xb71628	uint32_t[7]	s_targetTradeRecordWord34		ui	Holds the dword +0x34 of the partner trade slot records	verified	one	ui/trade#the-partners-offer
+0xb71650	uint32_t[7]	s_targetTradeRecordWord3c		ui	Holds the dword +0x3c of the partner trade slot records	verified	one	ui/trade#the-partners-offer
+0xb71680	uint64_t[7]	s_targetTradeRecordQword10		ui	Holds the qword +0x10 of the partner trade slot records	verified	one	ui/trade#the-partners-offer
 0xb716d0	uint64_t[7]	s_tradeOfferGuids		ui	Holds the GUIDs of the items the player has offered, one per trade slot	verified	one	ui/trade#a-refused-offer-slot
 0xb71708	uint32_t[7]	s_targetTradeCounts		ui	Holds the item counts of the partner's seven trade slots	verified	one	ui/tradelootverbs#describing-a-trade-slot
 0xb71728	uint64_t	s_tradeWindowPartner		ui	Holds the GUID of the player the open trade window belongs to, 0 for none	verified	one	ui/trade#opening-and-closing-the-window
 0xb71730	uint32_t[2]	s_tradeAccepted		ui	Holds the accept flags of the trade: the player's, then the partner's	verified	one	ui/trade#accept-flags
+0xb71738	int32_t	s_tradeOwnHeaderCache		ui	Holds the own side header word last signalled as partner slot 7	verified	one	ui/trade#the-partners-offer
+0xb7173c	int32_t	s_tradeTargetHeaderCache		ui	Holds the partner side header word last signalled as own slot 7	verified	one	ui/trade#the-partners-offer
 0xb71740	uint32_t	s_tradeOwnMoney		ui	Holds the copper the player has put into the trade window	verified	one	ui/trade#a-refused-offer-slot
+0xb71744	uint32_t	s_tradeTargetMoney		ui	Holds the partner money offer last signalled as TRADE_MONEY_CHANGED	verified	one	ui/trade#the-partners-offer
 0xb71748	uint32_t	s_tradeDone		ui	Holds 1 when the closing trade completed	verified	one	ui/trade#opening-and-closing-the-window
 0xb71760	uint32_t	s_screenFadeLayer		ui	Holds the handle of the fade layer	verified	one	ui/screenfade#fade-state
 0xb71770	void *	s_screenFadeTexture		ui	Holds the 8 by 8 texture of the fade quad	verified	one	ui/screenfade#fade-state
@@ -3064,14 +3076,19 @@ address	type	name	name_from	system	meaning	confidence	proof	finding
 0xb71ba0	int32_t	s_lootMoney		ui	Holds the loot window's money in copper, 0 for none and -1 once the coin row is taken	verified	one	ui/loot#loot-state
 0xb71bbc	uint32_t	s_lootType		ui	Holds the loot type of the open window, 3 for fishing loot	verified	one	ui/loot#loot-state
 0xb71bc4	uint32_t	s_lootCoinShown		ui	Holds 1 once the auto-loot sweep has handled the coin row of this source	verified	one	ui/loot#auto-loot
-0xb71bd4	uint32_t	s_lotteryVendorClock		ui	Holds the clock value IsVendorActive waits to pass before it returns the vendor dword	inferred	none	ui/lottery#prizes
-0xb71bdc	uint32_t	s_lotteryNextDrawTime		ui	Holds the time of the next lottery draw, which GetNextDrawTime reports as seconds from now	inferred	none	ui/lottery#draws
-0xb71be8	int32_t[3]	s_lotteryMoneyPrizes		ui	Holds the three money prizes of the lottery window	inferred	none	ui/lottery#prizes
-0xb71bf4	int32_t	s_lotteryJackpot		ui	Holds the jackpot of the lottery window	inferred	none	ui/lottery#prizes
-0xb71bf8	uint32_t[4]	s_lotteryPrizeItems		ui	Holds up to four prize item ids of the lottery window	inferred	none	ui/lottery#prizes
-0xb71c38	uint32_t			ui	Holds the range argument that 0x4c3eb0 passes to SetInteractionTarget	verified	one	ui/lottery#buying
-0xb71c50	uint32_t[24]	s_lotteryDrawRecords		ui	Holds the four past draw records of 0x18 bytes	inferred	none	ui/lottery#draws
-0xb71df0	uint32_t	s_lotteryVendorActive		ui	Holds the dword IsVendorActive returns once the clock has passed 0xb71bd4	inferred	none	ui/lottery#prizes
+0xb71bd0	uint32_t	s_lotteryVendorDelay		ui	Holds the vendor delay of the lottery query result; zero ends the read	verified	one	ui/lottery#query-result
+0xb71bd4	uint32_t	s_lotteryVendorClock		ui	Holds now plus the vendor delay, the time IsVendorActive waits to pass	verified	one	ui/lottery#query-result
+0xb71bd8	uint32_t	s_lotteryDrawDelay		ui	Holds the seconds to the next draw as the lottery query result gives them	verified	one	ui/lottery#query-result
+0xb71bdc	uint32_t	s_lotteryNextDrawTime		ui	Holds the time of the next lottery draw, which GetNextDrawTime reports as seconds from now	verified	one	ui/lottery#query-result
+0xb71be0	uint32_t	s_lotteryResultWord5		ui	Holds the fifth word of the lottery query result, which no code reads	verified	one	ui/lottery#query-result
+0xb71be4	uint32_t	s_lotteryResultWord6		ui	Holds the sixth word of the lottery query result, which no code reads	verified	one	ui/lottery#query-result
+0xb71be8	int32_t[3]	s_lotteryMoneyPrizes		ui	Holds the first three money words of the lottery prize slots	verified	one	ui/lottery#query-result
+0xb71bf4	int32_t	s_lotteryJackpot		ui	Holds the jackpot, the fourth money word of the lottery prize slots	verified	one	ui/lottery#query-result
+0xb71bf8	uint32_t[4]	s_lotteryPrizeItems		ui	Holds the prize item ids of the four lottery prize slots	verified	one	ui/lottery#query-result
+0xb71c08	uint32_t[4]	s_lotteryPrizeDisplayIds		ui	Holds the display ids of the four lottery prize slots	verified	one	ui/lottery#query-result
+0xb71c38	float			ui	Holds 30.864195, the squared range 0x4c3eb0 passes to SetInteractionTarget	verified	one	ui/lottery#buying
+0xb71c48	uint32_t[24]	s_lotteryDrawRecords		ui	Holds four draw records of 0x18 bytes: age, stamp, then four numbers	verified	one	ui/lottery#query-result
+0xb71df0	uint32_t	s_lotteryVendorActive		ui	Holds the vendor dword IsVendorActive pushes once the clock has passed 0xb71bd4	verified	one	ui/lottery#query-result
 0xb71e5c	void *	s_minigameObject		ui	Points to the active minigame object, or null	verified	one	ui/lottery#the-minigame
 0xb71e74	uint32_t[4]	s_worldStateUiList		ui	Holds the always-visible world state row ids: capacity, count, data and chunk size	verified	one	ui/worldstate#the-list-builder
 0xb71e84	uint32_t			ui	Holds a signed value the defence channel refresh tests before it updates the world states; not read here	inferred	none	ui/chatchannels#defence-channel-state
@@ -3651,7 +3668,7 @@ address	type	name	name_from	system	meaning	confidence	proof	finding
 0xc0e054	uint32_t[5]	s_areaPoiStore		dbc	Holds the AreaPOI.dbc store: records of 0x74 bytes, count, id map, max id and loaded flag	verified	one	ui/worldmap#the-landmarks
 0xc0e070	void *	s_animationDataRows		dbc	Holds the animation table's rows indexed by id	verified	one	models/animation#animation-id-resolution
 0xc0e074	uint32_t	s_animationDataMaxId		dbc	Holds the highest id of the animation table	verified	one	models/animation#animation-id-resolution
-0xc0e080	uint32_t	s_localeIndex		client	Holds the locale index that picks a localized string column	inferred	none	spell/handlers#channel-start-and-update
+0xc0e080	uint32_t	s_localeIndex		client	Holds the locale index, the position of the Wow.ini Language and Country tag among the locale names	verified	one	dbc#localized-strings
 0xc0e084	uint8_t[60]	s_wowCache		dbcache	Holds the wow cache object: nodes, hash buckets, file tag and name, opcode and flags	verified	one	dbcache#caches-that-are-saved
 0xc0e0c0	uint32_t	s_itemTextCache		ui	Holds the item text record cache	verified	one	ui/mail#reading-a-mails-text
 0xc0e0fc	uint8_t[60]	s_petitionCache		dbcache	Holds the petition cache object: nodes, hash buckets, file tag and name, opcode and flags	verified	one	dbcache#caches-that-are-not-saved
@@ -3745,7 +3762,7 @@ address	type	name	name_from	system	meaning	confidence	proof	finding
 0xc2a128	void *	s_whoThresholdSource		net	Holds a pointer nothing writes; when set, its +0x28 dword replaces the threshold of 3	verified	one	net/who#who-list-reply
 0xc2a12c	uint32_t	s_whoToUI		net	Holds the SetWhoToUI flag that sends who replies to the frame	verified	one	net/who#who-list-reply
 0xc2a1a0	uint8_t[24]	s_downloadLock		net	Holds the lock a download file's release and feed take	verified	one	net/download#releasing-a-download
-0xc2a2a4	uint32_t	s_localeTag		dbc	Holds the four bytes of the configured country and language packed into a dword	verified	one	dbc#localized-strings
+0xc2a2a4	uint32_t	s_localeTag		dbc	Holds the Wow.ini Language and Country tag packed into a dword, first byte highest	verified	one	dbc#localized-strings
 0xc2a2d0	uint32_t[3]	s_netClientList		net	Holds the list of NetClients the poll walks; its head word is at +8	verified	one	net/dispatch#main-thread-drain
 0xc2a314	uint8_t[24]	s_netClientListLock		net	Holds the critical section around the NetClient list	inferred	none	net/dispatch#main-thread-drain
 0xc2a354	uint8_t[24]	s_socketBitmapLock		net	Holds the lock over the open-socket bitmap	verified	one	net/threads#socket-bitmap-and-callback-bracket
