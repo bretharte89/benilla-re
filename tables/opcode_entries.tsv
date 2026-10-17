@@ -372,8 +372,8 @@ opcode	name	role	site	function	entries	basis
 0x192	SMSG_QUESTGIVER_QUEST_FAILED	handler	0x5e324d	0x5e59b0	objectlayer/quests#quest-giver-messages	opcode
 0x194	CMSG_QUESTLOG_REMOVE_QUEST	send	0x5eaf82	0x5eaf40	objectlayer/quests#quest-messages-sent	opcode
 0x195	SMSG_QUESTLOG_FULL	handler	0x5e326f	0x5e59b0	objectlayer/quests#quest-giver-messages	opcode
-0x196	SMSG_QUESTUPDATE_FAILED	handler	0x5e34e4	0x5e5ad0	objectlayer/quests#quest-updates|objectlayer/quests#status-query-triggers	opcode
-0x197	SMSG_QUESTUPDATE_FAILEDTIMER	handler	0x5e34f5	0x5e5ad0	objectlayer/quests#quest-updates|objectlayer/quests#status-query-triggers	opcode
+0x196	SMSG_QUESTUPDATE_FAILED	handler	0x5e34e4	0x5e5ad0	objectlayer/quests#quest-updates|objectlayer/quests#status-query-triggers|ui/questtimers#where-the-two-lists-split	opcode
+0x197	SMSG_QUESTUPDATE_FAILEDTIMER	handler	0x5e34f5	0x5e5ad0	objectlayer/quests#quest-updates|objectlayer/quests#status-query-triggers|ui/questtimers#where-the-two-lists-split	opcode
 0x198	SMSG_QUESTUPDATE_COMPLETE	handler	0x5e3506	0x5e5ad0	objectlayer/quests#quest-updates|objectlayer/quests#status-query-triggers	opcode
 0x199	SMSG_QUESTUPDATE_ADD_KILL	handler	0x5e3517	0x5e5ad0	objectlayer/quests#quest-updates|objectlayer/quests#status-query-triggers	opcode
 0x19a	SMSG_QUESTUPDATE_ADD_ITEM	handler	0x5e3528	0x5e5ad0	objectlayer/quests#quest-updates|objectlayer/quests#status-query-triggers	opcode
@@ -425,8 +425,8 @@ opcode	name	role	site	function	entries	basis
 0x1cb	SMSG_NOTIFICATION	handler	0x401734	0x401800	collision/teleport#neighbouring-handlers	opcode
 0x1cc	CMSG_PLAYED_TIME	send	0x48a936	0x48a900	ui/groupverbs#small-sends	opcode
 0x1cd	SMSG_PLAYED_TIME	handler	0x401745	0x401850	collision/teleport#neighbouring-handlers	opcode
-0x1ce	CMSG_QUERY_TIME	send	0x4de488	0x4de430	ui/questtimers#the-time-sync	opcode
-0x1ce	CMSG_QUERY_TIME	send	0x4de85f	0x4de510	ui/questtimers#the-time-sync	opcode
+0x1ce	CMSG_QUERY_TIME	send	0x4de488	0x4de430	ui/questtimers#the-time-sync|ui/questtimers#where-the-two-lists-split	opcode
+0x1ce	CMSG_QUERY_TIME	send	0x4de85f	0x4de510	ui/questtimers#the-time-sync|ui/questtimers#where-the-two-lists-split	opcode
 0x1cf	SMSG_QUERY_TIME_RESPONSE	handler	0x4de3ef	0x4de400	ui/questtimers#the-time-sync	opcode
 0x1d0	SMSG_LOG_XPGAIN	handler	0x637e1c	0x637e30	objectlayer/combatlogmessages#experience	opcode
 0x1d2	CMSG_RECLAIM_CORPSE	send	0x48d2ab	0x48d260	ui/deathui#retrievecorpse	opcode
