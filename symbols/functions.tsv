@@ -187,15 +187,15 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x4048f0	50			unassigned	unreached		Runs its object file code that calls sgetu8; not read here	inferred	none		
 0x404930	55			unassigned	unreached		Runs its object file code that calls sgetu8, 0x4048f0; not read here	inferred	none		
 0x404970	97			unassigned	unreached		Runs its object file code that calls sgetu8, 0x4048f0; not read here	inferred	none		
-0x4049e0	115	RegisterPlayerCommands		unassigned		void __cdecl (void)	Registers the console commands port, worldport, setrawpos, showplayer, togglehelm and togglecloak	verified	one	console/commands#teleport-commands	
+0x4049e0	115	RegisterPlayerCommands		unassigned		void __cdecl (void)	Registers the console commands port, worldport, setrawpos, showplayer, togglehelm and togglecloak	verified	one	console/commands#player-command-lifetime	
 0x404a60	685	PortCommand		unassigned		uint32_t __fastcall (const char *name, const char *args)	Sends a cheat teleport to x y [z] [facing], or a teleport to the unit an argument names	verified	one	console/commands#teleport-commands	
 0x404d10	170	IsWorldPositionInRange		unassigned		uint32_t __stdcall (float x, float y, float z, float margin)	Returns whether x, y and z are finite and x and y lie within the map square less a margin	verified	one	console/commands#position-range-test	
-0x404dc0	570	CCommand_WorldTeleport	idb	unassigned		uint32_t __fastcall (const char *name, const char *args)	Runs its object file code that calls ClntObjMgrGetActivePlayer, ClntObjMgrObjectPtr and 12 more; not read here	inferred	none		
+0x404dc0	570	CCommand_WorldTeleport	idb	unassigned	primitive	uint32_t __fastcall (const char *name, const char *args)	Sends CMSG_WORLD_TELEPORT for a map, with x, y, z and facing defaulting to the active player's	verified	one	console/commands#world-port-command	console::worldport_whole_difftest
 0x405000	533	SetRawPosCommand		unassigned		uint32_t __fastcall (const char *name, const char *args)	Sends a raw position x y [z] [facing] for the active player	verified	one	console/commands#teleport-commands	
 0x405220	41	ShowPlayerCommand		unassigned		uint32_t __fastcall (const char *name, const char *args)	Toggles the active player's model flag and prints player visible or player hidden	verified	one	console/commands#show-player-command	
 0x405250	147	ToggleHelmCommand		unassigned		uint32_t __fastcall (const char *name, const char *args)	Sends opcode 0x2b9 with no body and returns 1	verified	one	console/commands#helm-and-cloak-commands	
 0x4052f0	147	ToggleCloakCommand		unassigned		uint32_t __fastcall (const char *name, const char *args)	Sends opcode 0x2ba with no body and returns 1	verified	one	console/commands#helm-and-cloak-commands	
-0x405390	60			unassigned			Runs its object file code that calls 0x63fb40; not read here	inferred	none		
+0x405390	60	UnregisterPlayerCommands		unassigned		void __cdecl (void)	Unregisters port, worldport, setrawpos, showplayer, togglehelm and togglecloak	verified	one	console/commands#player-command-lifetime	
 0x4053d0	5			unassigned			Runs its object file code not read here	inferred	none		
 0x4053e0	19			unassigned			Runs its object file code not read here	inferred	none		
 0x405400	5			unassigned			Runs its object file code not read here	inferred	none		
@@ -3915,7 +3915,7 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x457490	59	EnableMusicHandler	idb	sound	orchestration		Pauses the zone music by the inverse of EnableMusic, then restarts or stops the glue music; returns 1	verified	one	sound/interface#cvar-handlers	
 0x4574d0	37	SoundReverbHandler	idb	sound	orchestration		Stores the SoundReverb byte and applies the default reverb when it is 0; returns 1	verified	one	sound/interface#cvar-handlers	
 0x457500	31	MasterSoundEffectsHandler	idb	sound	primitive		Passes MasterSoundEffects being 0 to the engine's sound-effects switch; returns 1	verified	one	sound/interface#cvar-handlers	
-0x457520	38	GetSoundBufferSizeDefault		sound	orchestration		Returns "50" if 0xc4ec54 is set and the detection record has 1 at +0x18, else "100"	verified	one	sound/interface#sound-cvars	
+0x457520	38	GetSoundBufferSizeDefault		sound	orchestration	const char * __cdecl (void)	Returns "50" for processor class 1, else "100"; the flag 0xc4ec54 is set before it runs	verified	one	console/hardware#processor-class	
 0x457550	25	SoundGetParamValueInt		sound	orchestration		Stores a named CVar's integer value; returns false for an unknown name	verified	one	sound/interface#start-up	
 0x457570	25	SoundGetParamValueFloat		sound	orchestration		Stores a named CVar's float value; returns false for an unknown name	verified	one	sound/interface#start-up	
 0x457590	25	SoundGetParamValueString	idb	sound	orchestration		Stores a named CVar's string; returns false for an unknown name	verified	one	sound/interface#start-up	
@@ -17501,7 +17501,7 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x5adf60	499	OnWhoList	idb	net	orchestration	uint32_t __fastcall (void *param, uint32_t opcode, uint32_t time, CDataStore *msg)	Stores opcode 0x63 results, sorts them, then fires WHO_LIST_UPDATE or prints them to chat	verified	one	net/who#who-list-reply	
 0x5ae160	336	PrintWhoResultLine		net	orchestration	void __fastcall (const char *name, const char *guild, uint32_t level, uint32_t classId, uint32_t raceId, uint32_t zoneId)	Adds one who result to chat as WHO_LIST_FORMAT, or WHO_LIST_GUILD_FORMAT when it has a guild	verified	one	net/who#who-list-reply	
 0x5ae2b0	31	OnIgnoreList	idb	net	orchestration	uint32_t __fastcall (void *param, uint32_t opcode, uint32_t time, CDataStore *msg)	Passes opcode 0x6b message to 0x5af530 when the friend list exists	verified	one	net/friends#ignore-list-packet	
-0x5ae2d0	124	ShutdownFriendList		net	orchestration	void __cdecl (void)	Clears the six social message handlers and the whois command, then destroys the friend list	inferred	none		
+0x5ae2d0	124	ShutdownFriendList		net	orchestration	void __cdecl (void)	Clears, when the list exists, the six social message handlers and the whois command, then destroys the list	verified	one	net/friends#friend-list-object	
 0x5ae350	319	FriendList::ReadFriendList		net	primitive	void __thiscall (FriendList *this, CDataStore *msg)	Replaces the friend slots from opcode 0x67 list and requests each name	verified	one	net/friends#friend-list-packet	net::friends_read_list
 0x5ae490	22	FriendList::CountFriends		net	orchestration	uint32_t __thiscall (FriendList *this)	Returns the number of friend slots before the first empty one	verified	one	net/friends#friend-script-functions	
 0x5ae4b0	26	FriendList::GetFriendSlot		net	orchestration	void * __thiscall (FriendList *this, uint32_t index)	Returns the friend slot at an index of at most 50, else null	verified	one	net/friends#friend-script-functions	
@@ -23417,10 +23417,10 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x64aaa0	434	SStrToFloat	idb	storm	primitive	float __stdcall (const char *string)	Reads a decimal float: an optional minus, digits, a fraction and an exponent at 53 bits; 0.0 and error 0x57 for null	verified	one	storm/strings#float-grammar	storm::sstrtofloat_whole
 0x64ac60	98	SStrToInt	idb	storm	primitive	int32_t __stdcall (const char *string)	Reads an optional minus and decimal digits in wrapping 32-bit arithmetic; 0 and error 0x57 for null	verified	one	storm/strings#string-to-integer	net::who_string_helpers, storm::sstrtoint_whole
 0x64acd0	269			storm	unreached		Runs its object file code that calls SErrSetLastError, __CIpow, __ftol and 1 more; not read here	inferred	none		
-0x64ade0	70	SStrToUnsigned	idb	storm	boundary		Runs its object file code that calls SErrSetLastError; not read here	inferred	none		
+0x64ade0	70	SStrToUnsigned	idb	storm	primitive	uint32_t __stdcall (const char *string)	Reads leading decimal digits as a wrapping 32-bit value; 0 for no digit, and error 0x57 for null	verified	one	storm/strings#string-to-unsigned	storm::sstrtounsigned_whole
 0x64ae30	5			storm	boundary		Runs its object file code not read here	inferred	none		
 0x64ae40	11			storm	boundary		Runs its object file code not read here	inferred	none		
-0x64ae50	320	SStrTokenize	idb	storm	boundary		Runs its object file code that calls SErrSetLastError, SStrChr; not read here	inferred	none		
+0x64ae50	320	SStrTokenize	idb	storm	primitive	void __stdcall (const char **cursor, char *out, uint32_t size, const char *delims, int32_t *quoted)	Copies the next token of a string cursor into a buffer, split at delimiters and quotes, and advances the cursor	verified	one	storm/strings#tokenizer	storm::sstrtokenize_whole
 0x64af90	199	SStrHash	idb	storm	boundary		Runs its object file code that calls SErrSetLastError; not read here	inferred	none		
 0x64b060	362			storm	unreached		Runs its object file code that calls SErrSetLastError, __allmul; not read here	inferred	none		
 0x64b1d0	493	bjhash	idb	storm	primitive	uint32_t __fastcall (const uint8_t *key, uint32_t length, uint32_t initval)	Hashes bytes with Bob Jenkins' lookup2 from an initial value	verified	two	storm/mount#hash-table-string-hash	storm::str_hash_ht

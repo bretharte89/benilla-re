@@ -378,6 +378,7 @@ address	type	name	name_from	system	meaning	confidence	proof	finding
 0x7ff9c8	const float	s_floatbce38e39		unassigned	Holds the float -0.027777778 (0xbce38e39)	inferred	none	
 0x7ff9d0	const float	s_float3ce38e39		unassigned	Holds the float 0.027777778 (0x3ce38e39)	inferred	none	
 0x7ff9d8	const float	s_float3f800000		unassigned	Holds the float 1 (0x3f800000)	inferred	none	
+0x7ff9dc	void *[2]	s_playerCommandsVtable		unassigned	Holds the player commands module vtable: register 0x4049e0, unregister 0x405390	verified	one	console/commands#player-command-lifetime
 0x7ff9e4	void *[11]	CDataStore::vftable		base	Holds the plain data store's vtable: slot 2 refuses a read outside the window, slot 3 grows the buffer	verified	one	net/messages#data-store-writes
 0x7ffa10	uint8_t[20]	CStatus::vftable		client	Holds the vtable of CStatus	inferred	none	
 0x7ffa24	const float	s_half		ui	Holds 0.5, the factor of the layout's centre arithmetic	verified	one	ui/anchors#edge-resolution-from-size
@@ -859,7 +860,7 @@ address	type	name	name_from	system	meaning	confidence	proof	finding
 0x80e1dc	void *[4]	s_cvarTableVtable		cvar	Holds the four slots of the CVar table: free node, allocate node, deleting destructor, clear	verified	one	cvar/containers#records-and-virtual-slots
 0x80e268	void *[4]	s_commandTableVtable		console	Holds the four slots of the command table: free node, allocate node, deleting destructor, clear	verified	one	console/commands#command-records
 0x80e2c4	char[25]	s_keyWowClient		unassigned	Holds the registry key World of Warcraft\Client	verified	one	console/hardware#hardware-change-check
-0x80e2e0	const float	s_fastCpuMhz		unassigned	Holds 1500.0, the processor frequency in MHz above which the processor class is 1	verified	one	console/hardware#detection-record
+0x80e2e0	const float	s_fastCpuMhz		unassigned	Holds 1500.0, the processor frequency in MHz above which the processor class is 1	verified	one	console/hardware#processor-class
 0x80e2e4	const float	s_epsilon1e6		unassigned	Holds 1e-6, a pooled tolerance; the ray triangle test bounds its determinant with it	verified	one	models/scene#ray-triangle-test
 0x80e448	float	s_timeScaleMax		gametime	Holds 60.0, the clock's highest time scale	verified	one	gametime/overview#time-scale
 0x80e44c	void *[4]	s_gameTimeTableVtable		gametime	Holds the vtable of the clock's callback table: entry free at 0x643bb0, then three more slots	verified	one	gametime/overview#clock-state
@@ -1308,10 +1309,14 @@ address	type	name	name_from	system	meaning	confidence	proof	finding
 0x82e994	char[6]	s_textMouseSpeedFormat		unassigned	Holds the string "%1.1f"	verified	one	cvar/defaults#formatted-defaults
 0x82e99c	char[18]	s_checkAddonVersionName		client	Holds checkAddonVersion, the CVar that refuses out-of-date add-ons	verified	one	ui/addons#whether-an-add-on-may-load
 0x82e9d8	char[14]	s_textMovieSubtitle		client	Holds the string "movieSubtitle"	inferred	none	
+0x82ecc8	char[6]	s_argDelimiters		unassigned	Holds the tokenizer delimiters tab, CR, LF, quote and space, with no comma	verified	one	console/commands#world-port-command
 0x82edbc	char[12]	s_textPatchMPQ		client	Holds a string of 11 characters	inferred	none	
 0x82edfc	uint16_t			unassigned	Holds a word that RunPrepatchList, CVarLoadFile, TopLevelExceptionFilter read; not read here	inferred	none	
 0x82ee00	char[2]			unassigned	Holds the string " "	inferred	none	
 0x82ef08	char[6]	s_textSS		unassigned	Holds the string "%s %s"	inferred	none	
+0x82ef90	char[7]	s_argDelimitersComma		unassigned	Holds the delimiters of 0x82ecc8 and a comma, which port and setrawpos split with	verified	one	console/commands#teleport-commands
+0x82ef98	char[22]	s_badWorldNumberFormat		unassigned	Holds the format "Bad world number: %i" and a line feed	verified	one	console/commands#world-port-command
+0x82efb0	char[48]	s_worldportUsage		unassigned	Holds the text "Usage: worldport <continentID> [x y z] [facing]"	verified	one	console/commands#world-port-command
 0x82f00c	int32_t	s_loadingMapId		loadingscreen	Holds the map the plain screen shows art for, -1 for none	verified	one	loadingscreen/screen#plain-screen
 0x82f010	const uint16_t[4]	s_loadingQuadIndices		loadingscreen	Holds the indices 0, 1, 2, 3 of a four-corner strip	verified	one	loadingscreen/screen#plain-screen
 0x82f018	const char *[8]	s_loadingFontPaths		loadingscreen	Holds the tip font file for each locale index	verified	one	loadingscreen/screen#tip-text
@@ -1384,8 +1389,8 @@ address	type	name	name_from	system	meaning	confidence	proof	finding
 0x835c6c	char[2]	s_textFour		unassigned	Holds "4", the default of SoundRolloffFactor and SoundMemoryCache	verified	one	sound/interface#sound-cvars
 0x835d38	char[3]	s_textTwelve		sound	Holds "12", the default of the two channel count CVars	verified	one	sound/interface#sound-cvars
 0x835dd4	char[3]	s_textMinusOne		sound	Holds "-1", the default of four device CVars	verified	one	sound/interface#sound-cvars
-0x835e0c	char[4]	s_text100		sound	Holds the string "100"	inferred	none	
-0x835e10	char[3]	s_text50		sound	Holds the string "50"	inferred	none	
+0x835e0c	char[4]	s_text100		sound	Holds the string "100"	verified	one	console/hardware#processor-class
+0x835e10	char[3]	s_text50		sound	Holds the string "50"	verified	one	console/hardware#processor-class
 0x835e14	char[28]	s_nameCombatMiss2H		sound	Holds "(DONOTRENAME)Combat Miss 2H"	verified	one	sound/interface#named-sounds
 0x835e30	char[28]	s_nameCombatMiss1H		sound	Holds "(DONOTRENAME)Combat Miss 1H"	verified	one	sound/interface#named-sounds
 0x835e4c	char[29]	s_nameWrappedItemDrop		sound	Holds "(DONOTRENAME)WrappedItemDrop"	verified	one	sound/interface#named-sounds
@@ -2543,6 +2548,7 @@ address	type	name	name_from	system	meaning	confidence	proof	finding
 0x883fd0	uint8_t[20]	s_eventRegPool		core	Holds the pool of event registrations	inferred	none	core/events#static-initializers
 0x883ffc	uint8_t[20]	s_callbackRegPool		core	Holds the pool of callback registrations	inferred	none	core/events#static-initializers
 0x884048	uint64_t	s_cachedUnixTime		core	Holds the GetTickCount and time(NULL) pair 0x429580 caches	verified	one	core/time#calendar-time
+0x884058	uint64_t	s_lastCpuTicksPerSecond		core	Holds the counter rate the calibration copied from 0x8332c0 last	verified	one	core/time#processor-frequency
 0x884060	uint64_t	s_maxCpuTicksPerSecond		core	Holds the largest counter rate the calibration has stored	verified	one	core/time#processor-frequency
 0x884800	uint32_t	s_textSectionStart		os	Holds the start address of the exe .text section, 0 until 0x42a380 runs	verified	one	ui/luastate#the-c-function-contract
 0x884c00	uint32_t	s_textSectionEnd		os	Holds the end address of the exe .text section, 0 until 0x42a380 runs	verified	one	ui/luastate#the-c-function-contract
@@ -2551,6 +2557,8 @@ address	type	name	name_from	system	meaning	confidence	proof	finding
 0x884c78	void *	s_timeManager		core	Holds the time manager while it lives	verified	one	core/time#time-manager-lifetime
 0x884c80	uint32_t	s_clockMode		core	Holds the clock counter: 0 GetTickCount, 1 the time-stamp counter	verified	one	core/time#the-millisecond-clock
 0x884c88	double	s_clockOffset		core	Holds the clock's offset in milliseconds; 0 at startup	verified	one	core/time#the-millisecond-clock
+0x884c90	uint32_t	s_cpuMaxHzQueried		core	Holds 1 once the maximum frequency query has run	verified	one	core/time#processor-frequency
+0x884c94	uint32_t	s_cpuMaxHzQueryOk		core	Holds the query result, 1 when it stored a frequency in 0x884c70	verified	one	core/time#processor-frequency
 0x884ca0	uint32_t			os	Holds a dword its object file's code reads and writes; not read here	inferred	none	core/input#static-initializers
 0x884ca8	uint32_t			os	Holds a dword its object file's code reads and writes; not read here	inferred	none	core/input#static-initializers
 0x884cb0	uint32_t	s_savedMouseSpeed		core	Holds the Windows mouse speed saved at startup	verified	one	core/input#mouse-speed-and-num-lock
@@ -3771,7 +3779,7 @@ address	type	name	name_from	system	meaning	confidence	proof	finding
 0xc28130	void *	s_realmNameCVar		net	Holds the handle of the realmName CVar once registered	verified	one	net/connection#realm-selection
 0xc28134	uint8_t	s_realmSelected		net	Holds the byte that says the selected-realm copy is valid	verified	one	net/connection#realm-selection
 0xc28135	uint8_t	s_telemetryPresent		net	Holds the byte set once telemetry.dat has been read	verified	one	net/connection#telemetry-record
-0xc28168	FriendList *	s_friendList		net	Holds the one FriendList object, created once at start-up	verified	one	net/friends#friend-list-object
+0xc28168	FriendList *	s_friendList		net	Holds the FriendList object, created at each world entry and freed at teardown	verified	one	net/friends#friend-list-object
 0xc2817c	uint32_t[14]	s_whoSortChain		net	Holds seven pairs of sort key and direction for the who results	verified	one	net/who#who-sort-keys
 0xc281b8	WhoResult[50]	s_whoResults		net	Holds the 50 who result records of 160 bytes	verified	one	net/who#who-list-reply
 0xc2a120	uint32_t	s_whoResultCount		net	Holds the number of who results kept, at most 50	verified	one	net/who#who-list-reply
