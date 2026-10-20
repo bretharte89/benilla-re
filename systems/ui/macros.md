@@ -44,7 +44,7 @@ and 18 to 35 character macros, each group sorted by name without case, unused en
 macro is its position plus 1, so the first character macro is index 19 however few account macros there are.
 Any create, edit or delete rebuilds the table and signals `UPDATE_MACROS` (393).
 
-Addresses: `0x4f0d30`, `0x4f0e10`, `0x4f0e40`, `0x4f0eb0`, `0x4f0ec0`, `0x4f0fa0`, `0x4f0fd0`, `0x84c988`, `0xbdcc60`
+Addresses: `0x4f0d30`, `0x4f0e10`, `0x4f0e40`, `0x4f0eb0`, `0x4f0ec0`, `0x4f0fa0`, `0x4f0fd0`, `0x4f0ff3`, `0x4f0ffa`, `0x4f17c1`, `0x84c988`, `0xbdcc60`
 Confidence: verified
 Proof: one
 Test: none
@@ -54,7 +54,8 @@ Test: none
 arguments. `0x4f0e40(position)` returns the record or null for 36 and up. `0x4f0eb0(position)` returns the id
 or 0. `0x4f0ec0(id)` returns the position or -1; the id 0 matches the first empty entry. `0x4f0fa0(name)` returns
 the position of the first named record or -1. `0x4f0fd0(id, dest, size)` formats `"%s%s"` of the icon directory
-string and the record's basename, or leaves an empty string.
+string and the record's basename, and leaves an empty string only for an id with no record: a record with an
+empty basename gives the directory alone (`0x4f0ff3` to `0x4f0ffa`), where `GetMacroInfo` answers nil for it.
 
 ## Macro functions
 
@@ -223,14 +224,15 @@ levels below it, each scope in two files: `macros-local.txt` for macros whose lo
 body line, and `END`, each ended by a carriage return and line feed. The save runs when the save flag
 `0xbdcbf8` is set.
 
-Addresses: `0x4f0aa0`, `0x4f0c60`, `0x5afed0`, `0x5af6b0`, `0x64a7f0`, `0xbdcbf8`
+Addresses: `0x4f0aa0`, `0x4f0b61`, `0x4f0c60`, `0x5afed0`, `0x5af6b0`, `0x64a7f0`, `0x84cb60`, `0xbdcbf8`
 Confidence: verified
 Proof: one
 Test: none
 
 `0x4f0c60` clears the save flag and calls `0x5afed0` for file kinds 4 (account) and 5 (character) with the
 callback `0x4f0aa0`; the callback gets the local file's handle in `ecx` and the cache file's in `edx`, and a macro
-goes to the first when `+0x20` is set. The block is built with the format `MACRO %d "%s" %s` plus CRLF, each
+goes to the first when `+0x20` is set. The block is built with the format `MACRO %d "%s" %s` plus CRLF (`0x84cb60`, pushed
+at `0x4f0b61` with the id `[rec+0x18]`, the name `+0x24` and the icon `+0x64`), each
 body line from the tokenizer with CRLF, then `END` with CRLF.
 
 ## Loading macro files

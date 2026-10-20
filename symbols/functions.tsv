@@ -7013,7 +7013,7 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x494e10	6	GetCursorSpell		ui	orchestration		Returns a ui global dword the unlearn compares with the spell	verified	one	objectlayer/playercombat#unlearning-a-spell	
 0x494e20	285	SetCursorPetAction		ui	primitive	void __thiscall (void *this)	Puts a pet action on the cursor with its icon as the picture	verified	one	ui/cursor#payload-pictures-by-kind	
 0x494f60	22			ui	unreached		Runs GameUI.cpp code not read here	inferred	none		
-0x494f80	107	SetCursorMacro		ui	orchestration	void __fastcall (uint32_t macroId)	Puts a macro on the cursor when it has an icon	verified	one	ui/cursor#payload-pictures-by-kind	
+0x494f80	107	SetCursorMacro		ui	orchestration	void __fastcall (uint32_t macroId)	Puts a macro on the cursor with its icon path, returning for an id with no macro	verified	one	ui/cursor#payload-pictures-by-kind	
 0x494ff0	22			ui	unreached		Runs GameUI.cpp code not read here	inferred	none		
 0x495010	190	SetCursorStablePet		ui	primitive	void __fastcall (int32_t stableIndex)	Puts a stabled pet on the cursor with its family icon	verified	one	ui/cursor#payload-pictures-by-kind	
 0x4950d0	22			ui	unreached		Runs GameUI.cpp code not read here	inferred	none		
@@ -10744,7 +10744,7 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x4f0ee0	91	FindMacroByName		ui	orchestration	MACRONODE * __fastcall (const char *name)	Returns the first macro in list order whose name matches without case	verified	one	ui/macros#macro-records	
 0x4f0f40	84	FindMacroById		ui	primitive	MACRONODE * __fastcall (uint32_t id)	Returns the macro with an id from the hash table, null for none	verified	one	ui/macros#macro-records	
 0x4f0fa0	35	GetMacroPositionByName		ui	primitive	int __fastcall (const char *name)	Returns the position of the first macro of a name, -1 for none	verified	one	ui/macros#macro-order	
-0x4f0fd0	55	FormatMacroIconPath		ui	primitive	void __fastcall (uint32_t id, char *dest, uint32_t size)	Formats the icon directory and a macro's basename into a buffer	verified	one	ui/macros#macro-order	
+0x4f0fd0	55	FormatMacroIconPath		ui	primitive	void __fastcall (uint32_t id, char *dest, uint32_t size)	Formats the icon directory and a macro's basename into a buffer, empty for an id with no macro	verified	one	ui/macros#macro-order	
 0x4f1010	613	CreateMacroRecord		ui	primitive	uint32_t __fastcall (const char *name, const char *icon, const char *body, uint32_t local, uint32_t scope)	Creates a macro and returns its id, 0 when refused	verified	one	ui/macros#macro-records	
 0x4f1280	186	EditMacroRecord		ui	primitive	void __fastcall (uint32_t id, const char *name, const char *icon, const char *body, uint32_t local)	Replaces the given fields of a macro and sets its local flag	verified	one	ui/macros#editing-a-macro	
 0x4f1340	281	DeleteMacroRecord		ui	primitive	void __fastcall (uint32_t id)	Removes a macro, clears the action slots holding it and rebuilds the order	verified	one	ui/macros#macro-functions	
@@ -14346,7 +14346,7 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x5566d0	633	CreatureCacheSave		dbcache	primitive	void __thiscall (void *this)	Writes the Creature cache to its file as header, entries and a zero pair, then empties the cache; runs at exit	verified	one	dbcache#the-wdb-file	
 0x556950	256			dbcache	primitive		Runs its object file code that calls 0x556640; not read here	inferred	none		
 0x556a50	77			dbcache	primitive		Runs its object file code not read here	inferred	none		
-0x556aa0	515			dbcache	primitive		Runs its object file code that calls 0x556670, 0x56d190, SMemAlloc and 5 more; not read here	inferred	none		
+0x556aa0	515	CreatureCacheGetRecord		dbcache	orchestration	void * __thiscall (void *this, uint32_t key, uint64_t *owner, void *callback, void *data, bool dedupe)	Returns a creature record by id, or keeps a callback and sends the cache query on a miss	verified	one	dbcache#asking-for-a-record	
 0x556cb0	3			dbcache	unreached		Runs its object file code not read here	inferred	none		
 0x556cc0	3			dbcache	unreached		Runs its object file code not read here	inferred	none		
 0x556cd0	288			dbcache	unreached		Runs its object file code that calls 0x556670, 0x56d190, 0x556690 and 2 more; not read here	inferred	none		
@@ -14374,7 +14374,7 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x558180	642			dbcache	primitive		Runs DBCache.cpp code that calls OsCreateDirectory, SStrPrintf, 0x42a460 and 14 more; not read here	inferred	none		
 0x558410	256			dbcache	primitive		Runs DBCache.cpp code that calls 0x558130; not read here	inferred	none		
 0x558510	77			dbcache	primitive		Runs DBCache.cpp code not read here	inferred	none		
-0x558560	534			dbcache	primitive		Runs DBCache.cpp code that calls 0x558160, 0x56d310, SMemAlloc and 5 more; not read here	inferred	none		
+0x558560	534	GameObjectCacheGetRecord		dbcache	orchestration	void * __thiscall (void *this, uint32_t key, uint64_t *owner, void *callback, void *data, bool dedupe)	Returns a game object record by id, or keeps a callback and sends the cache query on a miss	verified	one	dbcache#asking-for-a-record	
 0x558780	3			dbcache	unreached		Runs DBCache.cpp code not read here	inferred	none		
 0x558790	3			dbcache	unreached		Runs DBCache.cpp code not read here	inferred	none		
 0x5587a0	308			dbcache	unreached		Runs DBCache.cpp code that calls 0x558160, 0x56d310, 0x556690 and 2 more; not read here	inferred	none		
@@ -14400,7 +14400,7 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x559c10	633			dbcache	primitive		Runs DBCache.cpp code that calls OsCreateDirectory, SStrPrintf, 0x42a460 and 14 more; not read here	inferred	none		
 0x559e90	256			dbcache	primitive		Runs DBCache.cpp code that calls 0x559bc0; not read here	inferred	none		
 0x559f90	77			dbcache	primitive		Runs DBCache.cpp code not read here	inferred	none		
-0x559fe0	515			dbcache	primitive		Runs DBCache.cpp code that calls 0x559bf0, 0x56d490, SMemAlloc and 5 more; not read here	inferred	none		
+0x559fe0	515	ItemNameCacheGetRecord		dbcache	orchestration	void * __thiscall (void *this, uint32_t key, uint64_t *owner, void *callback, void *data, bool dedupe)	Returns an item name record by id, or keeps a callback and sends the cache query on a miss	verified	one	dbcache#asking-for-a-record	
 0x55a1f0	3			dbcache	unreached		Runs DBCache.cpp code not read here	inferred	none		
 0x55a200	3			dbcache	unreached		Runs DBCache.cpp code not read here	inferred	none		
 0x55a210	249			dbcache	unreached		Runs DBCache.cpp code that calls 0x559bf0, 0x56d490, 0x556690 and 2 more; not read here	inferred	none		
@@ -14426,7 +14426,7 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x55b650	642			dbcache	primitive		Runs DBCache.cpp code that calls OsCreateDirectory, SStrPrintf, 0x42a460 and 14 more; not read here	inferred	none		
 0x55b8e0	256			dbcache	primitive		Runs DBCache.cpp code that calls 0x55b600; not read here	inferred	none		
 0x55b9e0	77			dbcache	primitive		Runs DBCache.cpp code not read here	inferred	none		
-0x55ba30	534	DBCache_ItemStats_C_int_HASHKEY_INT_::GetRecord	idb	dbcache	primitive		Returns a cached item record by id, or requests it with an optional callback	inferred	none	spell/cooldowns#reading-a-cooldown	
+0x55ba30	534	DBCache_ItemStats_C_int_HASHKEY_INT_::GetRecord	idb	dbcache	orchestration	void * __thiscall (void *this, uint32_t key, uint64_t *owner, void *callback, void *data, bool dedupe)	Returns an item record by id, or keeps a callback and sends the cache query on a miss	verified	one	dbcache#asking-for-a-record	
 0x55bc50	3			dbcache	unreached		Runs DBCache.cpp code not read here	inferred	none		
 0x55bc60	3	ItemCacheNoOp		dbcache	orchestration		Returns at once, dropping three stack arguments	verified	one	objectlayer/players#arrival-in-the-world	
 0x55bc70	308	ItemCacheReceive		dbcache	unreached		Stores an arrived item record and calls each pending callback with its stored argument	inferred	none	spell/go#pending-item-cooldowns	
@@ -14452,7 +14452,7 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x55d3b0	255			dbcache	primitive		Runs DBCache.cpp code that calls 0x55d500; not read here	inferred	none		
 0x55d4b0	77			dbcache	primitive		Runs DBCache.cpp code not read here	inferred	none		
 0x55d500	41			dbcache	primitive		Runs DBCache.cpp code not read here	inferred	none		
-0x55d530	534			dbcache	primitive		Runs DBCache.cpp code that calls 0x55d100, 0x56d790, SMemAlloc and 5 more; not read here	inferred	none		
+0x55d530	534	NpcCacheGetRecord		dbcache	orchestration	void * __thiscall (void *this, uint32_t key, uint64_t *owner, void *callback, void *data, bool dedupe)	Returns an NPC text record by id, or keeps a callback and sends the cache query on a miss	verified	one	dbcache#asking-for-a-record	
 0x55d750	3			dbcache	unreached		Runs DBCache.cpp code not read here	inferred	none		
 0x55d760	3			dbcache	unreached		Runs DBCache.cpp code not read here	inferred	none		
 0x55d770	308			dbcache	unreached		Runs DBCache.cpp code that calls 0x55d100, 0x56d790, 0x556690 and 2 more; not read here	inferred	none		
@@ -14584,7 +14584,7 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x565e70	636			dbcache	primitive		Runs DBCache.cpp code that calls OsCreateDirectory, SStrPrintf, 0x42a460 and 14 more; not read here	inferred	none		
 0x5660f0	256			dbcache	primitive		Runs DBCache.cpp code that calls 0x565e20; not read here	inferred	none		
 0x5661f0	77			dbcache	primitive		Runs DBCache.cpp code not read here	inferred	none		
-0x566240	515			dbcache	primitive		Runs DBCache.cpp code that calls 0x565e50, 0x56df10, SMemAlloc and 5 more; not read here	inferred	none		
+0x566240	515	PetNameCacheGetRecord		dbcache	orchestration	void * __thiscall (void *this, uint32_t key, uint64_t *owner, void *callback, void *data, bool dedupe)	Returns a pet name record by id, or keeps a callback and sends the cache query on a miss	verified	one	dbcache#asking-for-a-record	
 0x566450	3			dbcache	unreached		Runs DBCache.cpp code not read here	inferred	none		
 0x566460	3			dbcache	unreached		Runs DBCache.cpp code not read here	inferred	none		
 0x566470	252			dbcache	primitive		Runs DBCache.cpp code that calls 0x565e50, 0x56df10, SStrCopy and 2 more; not read here	inferred	none		
@@ -14610,7 +14610,7 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x567980	642			dbcache	primitive		Runs DBCache.cpp code that calls OsCreateDirectory, SStrPrintf, 0x42a460 and 14 more; not read here	inferred	none		
 0x567c10	256			dbcache	primitive		Runs DBCache.cpp code that calls 0x567930; not read here	inferred	none		
 0x567d10	77			dbcache	primitive		Runs DBCache.cpp code not read here	inferred	none		
-0x567d60	534			dbcache	primitive		Runs DBCache.cpp code that calls 0x567960, 0x56e090, SMemAlloc and 5 more; not read here	inferred	none		
+0x567d60	534	PetitionCacheGetRecord		dbcache	orchestration	void * __thiscall (void *this, uint32_t key, uint64_t *owner, void *callback, void *data, bool dedupe)	Returns a petition record by id, or keeps a callback and sends the cache query on a miss	verified	one	dbcache#asking-for-a-record	
 0x567f80	3			dbcache	unreached		Runs DBCache.cpp code not read here	inferred	none		
 0x567f90	3			dbcache	unreached		Runs DBCache.cpp code not read here	inferred	none		
 0x567fa0	538			dbcache	primitive		Runs DBCache.cpp code that calls 0x567960, 0x56e090, SStrCopy and 2 more; not read here	inferred	none		
@@ -14636,7 +14636,7 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x569800	255			dbcache	primitive		Runs DBCache.cpp code that calls 0x569950; not read here	inferred	none		
 0x569900	77			dbcache	primitive		Runs DBCache.cpp code not read here	inferred	none		
 0x569950	41			dbcache	primitive		Runs DBCache.cpp code not read here	inferred	none		
-0x569980	534			dbcache	primitive		Runs DBCache.cpp code that calls 0x569550, 0x56e210, SMemAlloc and 5 more; not read here	inferred	none		
+0x569980	534	ItemTextCacheGetRecord		dbcache	orchestration	void * __thiscall (void *this, uint32_t key, uint64_t *owner, void *callback, void *data, bool dedupe)	Returns an item text record by id, or keeps a callback and sends the cache query on a miss	verified	one	dbcache#asking-for-a-record	
 0x569ba0	3			dbcache	unreached		Runs DBCache.cpp code not read here	inferred	none		
 0x569bb0	3			dbcache	unreached		Runs DBCache.cpp code not read here	inferred	none		
 0x569bc0	308			dbcache	unreached		Runs DBCache.cpp code that calls 0x569550, 0x56e210, 0x556690 and 2 more; not read here	inferred	none		
@@ -28342,8 +28342,8 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x6c96c0	939	ValidateNameText		unassigned			Validates a UTF-8 name against its charset and three word lists; returns a code from 0 to 0xd	verified	one	glue/enterworld#character-name-check	
 0x6c9a70	100			unassigned			Runs its object file code not read here	inferred	none		
 0x6c9ae0	80	ValidateCharacterName		unassigned			Validates a character name with no extra characters and all word lists on; code 2 when over 12, 8 or 6 units	verified	one	glue/enterworld#character-name-check	
-0x6c9b30	63			unassigned	unreached		Runs its object file code that calls 0x6c96c0; not read here	inferred	none		
-0x6c9b70	61			unassigned			Runs its object file code that calls 0x6c96c0; not read here	inferred	none		
+0x6c9b30	63	ValidateCharacterNameTwoCaps		unassigned	unreached		Validates a character name with no extra characters and all word lists on; code 2 when over 12 or 8 units	verified	one	glue/enterworld#character-name-check	
+0x6c9b70	61	ValidateGuildName		unassigned	orchestration	uint32_t __fastcall (int32_t locale, const char *name)	Validates a guild name: a space is the extra character, both profanity lists are on, code 2 over 24 units	verified	one	ui/petition#guild-name-check	
 0x6c9bb0	86			unassigned	unreached		Runs its object file code that calls 0x6c9c50, 0x6c9d80, 0x6c9d10; not read here	inferred	none		
 0x6c9c10	24			unassigned	unreached		Runs its object file code that calls 0x6c9bb0; not read here	inferred	none		
 0x6c9c30	21	IsAsciiDigit		unassigned			Returns whether a 16-bit code is an ASCII digit	verified	one	ui/chatlanguage#splitting-a-line-into-words	
@@ -29610,7 +29610,7 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x6f1a90	53	ParseFontFlags		ui	orchestration		Reads font flags as substrings: OUTLINE 1, THICKOUTLINE 4, MONOCHROME 2	verified	one	ui/fontstring#setfont	
 0x6f1ad0	85	FormatFontFlags		ui	primitive	const char * __fastcall (uint32_t flags)	Joins the names of the font flags set, OUTLINE, THICKOUTLINE and MONOCHROME in that order, with comma and space	verified	one	ui/fontmethods#font-flags-text	ui::format_font_flags_6f1ad0
 0x6f1b30	130	ParseXMLBool		ui	primitive	int __fastcall (const char *text)	Reads a flag: 1 to 9, t, T, y, Y, on or enabled is true, anything else false	verified	one	ui/addons#toc-directives	
-0x6f1c10	213	GetScriptFlagArg		ui	primitive	bool __fastcall (lua_State *L, int index, bool defaultValue)	Reads a script argument as a flag: nil 0, boolean itself, number truncated, string by first letter or keyword	verified	one	ui/actionuse#reading-a-script-flag	
+0x6f1c10	213	GetScriptFlagArg		ui	primitive	int32_t __fastcall (lua_State *L, int index, int32_t defaultValue)	Reads a script argument as a flag: nil 0, boolean itself, number truncated whole, string by first letter or keyword	verified	one	ui/actionuse#reading-a-script-flag	
 0x6f1d60	328	XmlReadValue		ui	primitive		Converts a length attribute of an XML element and stores it, or a relative value unconverted	verified	one	ui/backdrop#the-xml-element	ui::glue_6f1_metric_scale_divide
 0x6f1eb0	486	XmlReadDimension		ui	primitive	uint32_t __fastcall (XmlNode *node, float *x, float *y, void *report)	Reads x and y from a node's attributes or its AbsDimension child, in layout units	verified	one	ui/modelview#model-unit-to-pixel	ui::glue_6f1_metric_scale_divide
 0x6f20a0	806	XmlReadInset		ui	primitive		Reads four length attributes of an XML element into out values	verified	one	ui/backdrop#the-xml-element	ui::glue_6f1_metric_scale_divide
@@ -33522,8 +33522,8 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x770720	98	CSimpleTexture::GetWidth		ui	primitive	float __thiscall (CSimpleTexture *this)	Returns the authored width, or for 0.0 the image width in texels as interface units	verified	one	ui/regions#a-textures-size	ui::glue_unit_convert_1024
 0x770790	99	CSimpleTexture::GetHeight		ui	primitive	float __thiscall (CSimpleTexture *this)	Returns the authored height, or for 0.0 the image height in texels as interface units	verified	one	ui/regions#a-textures-size	ui::glue_unit_convert_1024
 0x770800	265	CSimpleFontString::ApplyFontBlock		ui	orchestration		Applies a font's changed font, justify, colour, shadow and spacing to a FontString under its masks	verified	one	ui/fontstring#following-a-font	
-0x770910	434	FontBlockMergeMasked		ui	primitive	void __thiscall (void *this, FontBlock *dest, uint32_t mask)	Copies the set, masked groups of a font block into another block where they differ	verified	one	ui/fonttext#merging-font-blocks	ui::glue_settled_eps
-0x770ad0	396	FontBlockMerge		ui	primitive	FontBlock * __thiscall (void *this, FontBlock *source)	Copies the set groups of a font block into this one where they differ and returns it	verified	one	ui/fonttext#merging-font-blocks	ui::glue_settled_eps
+0x770910	434	FontBlockMergeMasked		ui	primitive	void __thiscall (void *this, FontBlock *dest, uint32_t mask)	Copies the set, changed and masked groups of a font block into another where they differ or are unset	verified	one	ui/fonttext#merging-font-blocks	ui::glue_settled_eps
+0x770ad0	396	FontBlockMerge		ui	primitive	FontBlock * __thiscall (void *this, FontBlock *source)	Copies the set groups of a font block into this one where they differ or are unset, and returns it	verified	one	ui/fonttext#merging-font-blocks	ui::glue_settled_eps
 0x770c60	193	LinkFontFollower		ui	orchestration	void __thiscall (void *this, CSimpleFont *font)	Moves a follower to another font's list and applies all five style groups to it at once	verified	one	ui/fontstring#following-a-font	
 0x770d30	226	CSimpleFontString::CSimpleFontString		ui	orchestration		Builds a FontString with CENTER and MIDDLE justify and the one-to-one size bit	verified	one	ui/fontstring#construction	
 0x770e20	43	CSimpleFontString::DeletingDestructor		ui	orchestration	void * __thiscall (CSimpleFontString *this, uint32_t free_flag)	Runs the font string destructor body and returns the object to its pool when bit 0 is set	verified	one	ui/fonttext#creating-and-freeing-a-string	
