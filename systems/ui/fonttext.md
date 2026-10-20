@@ -256,7 +256,7 @@ Test: none
 ## The Font object
 
 A `Font` object (`CSimpleFont`, vtable `0x81cb28`, layout part `0x81cb20`) holds a font block at `+0x38`, a justify word `+0x54` (0x212 when built), a colour word
-`+0x58` (−1), its inherit mask `+0x6c`, the font it follows `+0x28` and the list of its own followers `+0x74` with their link offset `+0x70` (0xc). `0x783a40` builds one:
+`+0x58` (−1), its inherit mask `+0x2c` (0x1f), the word `+0x6c` (0) that `SetFontObject` copies, the font it follows `+0x28` and the list of its own followers `+0x74` with their link offset `+0x70` (0xc). `0x783a40` builds one:
 it constructs the script object part (`0x701ae0`), clears the block and the follow fields, makes `+0x74` an empty list and counts the object in `0xcf4e78`. `0x783b20` destroys one: it clears its
 name, detaches every follower (`0x770c60(0)` until the list is empty), decrements the count, unlinks itself from its own font and ends in the script object destructor (`0x701b40`).
 
@@ -268,14 +268,73 @@ Test: none
 `0x783a40` stores 0x212 at `+0x54` (`0x783a87`), −1 at `+0x58` (`0x783a8e`), 0x1f at `+0x2c` (`0x783a98`), the list sentinel at `+0x74` with its tag (`0x783ab5` to `0x783ac4`), the vtables
 `0x81cb28` and `0x81cb20` (`0x783acd`, `0x783ad3`) and increments `0xcf4e78` (`0x783adf`). `0x783b40` loops `0x770c60(follower, 0)` while the list head is not tagged.
 
-## Font object SetFontObject
+## Font tables
 
-`0x7841d0(source)` is a `Font`'s `SetFontObject`: it takes the source's mask, merges the source's block into its own with `FontBlockMerge` and keeps only the masked bits, follows the
-font the source follows, unless that chain reaches itself, moves itself between the two followers' lists and runs its slot 5.
+A `Font`'s constructor stores two tables: the pair `0x81cb20` at `+0x24` and the vtable `0x81cb28` in
+`[this]`. The pair is the thunk `0x784f80`, which steps `this` back 0x24 into the deleting destructor,
+and the block merge `0x77e4b0`. The vtable has eight slots: 0 the deleting destructor `0x783af0`, 1
+`0x77e4a0` (the dword at `+0x68`), 2 `0x7a1100` (a script method lookup), 3 `0x702590` (the OnEvent
+script by name), 4 `0x77e4e0` (a type id test), 5 `0x784180` (`PushChanges`), 6 `0x77e500` (a type name
+test) and 7 `0x77e520` (the name Font). The three floats from `0x81cb48` are the check button's constants.
 
-Addresses: `0x7841d0`, `0x7841e7`, `0x7841ea`, `0x7841f4`, `0x78420b`, `0x7842cc`, `0x770ad0`
+Addresses: `0x81cb20`, `0x81cb28`, `0x81cb48`, `0x783acd`, `0x783ad3`, `0x784f80`, `0x77e4b0`, `0x783af0`, `0x77e4a0`, `0x7a1100`, `0x702590`, `0x77e4e0`, `0x784180`, `0x77e500`, `0x77e520`, `0x785000`, `0x785590`, `0x7855f0`, `0x7842d0`, `0x81c8b4`, `0x81c8bc`
 Confidence: verified
 Proof: one
 Test: none
 
-The chain walk from the source's `+0x28` (`0x78420b`) clears the new font when it reaches `this`, and slot 5 is `call [eax+0x14]` (`0x7842d0`).
+`0x783acd` and `0x783ad3` store `0x81cb28` and `0x81cb20`. The dwords from `0x81cb28` are code addresses
+through `0x81cb44`; `0x81cb48` holds `0x7f800000`, `0x81cb4c` `0x40490fdb` and `0x81cb50` `0x41200000`,
+which `0x785000` (+∞), `0x785590` (π + π) and `0x7855f0` (10 × 10) read. `0x7842d0` calls slot 5.
+`0x784f80` is `sub ecx,0x24; jmp 0x783af0`; `0x77e4a0` loads `[ecx+0x68]`; `0x702590` compares its
+argument with OnEvent (`0x872a20`) and answers `this + 0xc`; `0x77e4e0` compares with `[0xcf4ea8]`;
+`0x77e500` compares a name with `[0x87a450]`, the string Font, and `0x77e520` returns it. The edit box's own
+font keeps the same shape, `0x81c8b4` and `0x81c8bc`, and differs in slots 0 (`0x77e550`) and 5 (`0x77e530`).
+
+## Font object SetFontObject
+
+`0x7841d0(source)` is a `Font`'s `SetFontObject`, the call under `CopyFontObject`. In order it copies
+the source's `+0x6c` into its own, merges the source's block into its own with `FontBlockMerge`,
+ANDs its block word with that `+0x6c`, copies the source's follow mask `+0x2c`, follows the font the
+source follows (`+0x28`), or none when that chain reaches itself, moving between the two fonts'
+follower lists, and runs slot 5, `PushChanges`. `+0x6c` is 0 in every font (Writers of Font +0x6c), so the copy keeps the
+merged values under a block word of 0: `PushChanges` sends nothing, and a follower that links to the
+copy later takes nothing either, until a setter or a push from its new font sets a group again.
+
+Addresses: `0x7841d0`, `0x7841d8`, `0x7841e7`, `0x7841ea`, `0x7841f4`, `0x7841fb`, `0x78420b`, `0x7842cc`, `0x7842d0`, `0x770ad0`, `0x783aca`, `0x784180`, `0x78418c`, `0x77e4b0`, `0x770c60`, `0x770d0c`, `0x81cb3c`
+Confidence: verified
+Proof: one
+Test: none
+
+`0x7841e7` stores the source's `+0x6c` (`0x7841d8`), and `0x7841f4` ANDs the word after `0x770ad0`
+(`0x7841ea`); `0x7841fb` stores `+0x2c`. The chain walk from the source's `+0x28` (`0x78420b`) clears
+the new font when it reaches `this`; slot 5 is `call [eax+0x14]` (`0x7842d0`), `0x784180` at
+`0x81cb3c`, which returns at once for a block word of 0 (`0x78418c`). Neither merge stores past the
+block, and the follower slot `0x77e4b0` merges under `+0x2c`. `0x770c60` ORs only the changed bits 0x1f
+into the font's word before its follower reads it (`0x770d0c`).
+
+## Writers of Font +0x6c
+
+The word `+0x6c` of a `Font` is 0 from construction (`0x783aca`), and the one later store to it is
+`SetFontObject` copying another font's (`0x7841e7`), so it is 0 in every font. A font exists only through the
+constructor `0x783a40`, the one place that stores its vtable `0x81cb28` outside the destructor. The census is the
+destination operand `[reg+0x6c]`, with or without a scaled index, of `mov`, `fst`, `fstp` and `movq` over the whole
+listing: 112 stores in 89 functions; and the same at `+0x3a8`, `+0x424` and `+0x4a0`, where a Button's three
+embedded fonts (`+0x33c`, `+0x3b8`, `+0x434`) keep it: 18 stores in 15 functions. Within the `ui` rows `lea` and
+`rep movs` add no writer.
+
+Addresses: `0x783a40`, `0x783aca`, `0x783acd`, `0x783b27`, `0x7841e7`, `0x7786e6`, `0x757b04`, `0x757f5c`, `0x72dd78`, `0x72df59`, `0x4eb9d7`, `0x7676c2`, `0x788079`, `0x767733`, `0x76d6a1`, `0x7786a0`, `0x5adf60`, `0x6d30e0`, `0x81cb28`
+Confidence: verified
+Proof: one
+Test: none
+
+The 112 are 95 `mov`, 13 `fstp`, 2 `fst` and 2 `movq`; six are `[esp+0x6c]` locals, the `movq` pair (`0x757b04`,
+`0x757f5c`) among them. The constructor's and `SetFontObject`'s stores are in the count, its control. No arithmetic or
+logic instruction has such a destination. Seven holders are `ui` rows: the two font writers, `CLayoutFrame`'s constructor
+(`0x7676c2`), `MinimapBuildBlipQuad` (`0x4eb9d7`), the scroll frame's array pointer (`0x788079`) and two LCD objects
+(`0x72dd78`, `0x72df59`). The 82 others are movement, model, lighting, record, sound, network, terrain, text and C-runtime
+code (one in a `__finally` block with no row); `OnWhoList` and `OverblendAreaLight` call `ui` code, none a font function.
+The 18 at `+0x3a8`, `+0x424` and `+0x4a0` are in other classes' constructors and in image, storm and cache code, none a
+Button or built on its constructor (`0x7786a0`). The `ui` rows' `lea` of the four offsets is two, `CLayoutFrame`'s own list
+(`0x767733`) and a model's field (`0x76d6a1`); their 76 `rep movs` (58 `DWORD`, 18 `BYTE`) copy into globals, locals,
+array and text buffers and the fields of the world frame, the top frame, models and the LCD, none a font. `0x783a40` has 8
+callers: the Button's three (`0x7786e6` to `0x7786fc`) and five on heap blocks.

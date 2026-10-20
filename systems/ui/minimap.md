@@ -147,28 +147,69 @@ function.
 The minimap's constructor makes nine model frames with the minimap as their parent before its XML children exist,
 so the first nine entries of `GetChildren()` are these, in the order they are made, and the XML children follow in
 declaration order. Five are kept in a group at `+0x320`, three at `+0x314` and one at `+0x338`; the ninth is the
-player arrow. `minimapArrowModel` names the model of the eight in the two groups and `minimapPlayerModel` the model
-of the ninth alone. A missing attribute takes `Interface\Minimap\Rotating-MinimapArrow.mdx` and
-`Interface\Minimap\MinimapArrow.mdx`, and a model that does not load logs `Invalid minimapArrowModel in Minimap.xml`
-or `Invalid minimapPlayerModel in Minimap.xml`.
+player arrow. Each takes the minimap's level L plus 1 from its parent, and the constructor raises the five to L + 2.
 
-Addresses: `0x4edbc0`, `0x4ede3f`, `0x4ede48`, `0x4ede8b`, `0x4ede9e`, `0x4edeaf`, `0x4edece`, `0x4edee0`, `0x4edf38`, `0x4edf7b`, `0x4edfd1`, `0x4ede4e`, `0x4ede66`, `0x4ede72`, `0x4edef5`, `0x4edefb`, `0x4edf1f`, `0x4edfa2`, `0x4edfae`, `0x76c8e0`, `0x4ee170`, `0x4ee1b7`, `0x4ee204`, `0x4ee260`, `0x4ee269`, `0x4ee2b0`, `0x4ee2c5`, `0x4ee2d5`, `0x4ee2f6`, `0x4ee306`, `0x707350`, `0x6f2cf0`
+Addresses: `0x4edbc0`, `0x4ede3f`, `0x4ede48`, `0x4ede8b`, `0x4ede9e`, `0x4edeaf`, `0x4edece`, `0x4edee0`, `0x4edf38`, `0x4edf7b`, `0x4edfd1`, `0x4ede4e`, `0x4ede66`, `0x4ede72`, `0x4edef5`, `0x4edefb`, `0x4edf1f`, `0x4edfa2`, `0x4edfae`, `0x76c8e0`, `0x76ab10`, `0x76ab6d`
 Confidence: verified
 Proof: one
 Test: none
 
 The constructor runs `0x6462e0` with the size 0x3dc and `MinimapFrame.cpp` at three sites (`0x4ede66`, loop count 5 at
 `0x4ede4e`; the three-loop from `0x4edefb`; `0x4edfa2`), each followed by the model frame constructor `0x76c8e0` with
-the minimap as parent (`0x4ede72`, `0x4edf1f`, `0x4edfae`). `0x4ee2b0` reads each attribute with `0x6f2cf0` (`0x4ee2cc`,
-`0x4ee2fd`) and falls back to the default string (`0x4ee2d5`, `0x4ee306`). `0x4ee170` creates a model from the file with
-`0x707350` and loops over the five and the three (`0x4ee1b7`, `0x4ee204`); `0x4ee260` sets the file on the single child
-at `+0x338` (`0x4ee269`).
+the minimap as parent (`0x4ede72`, `0x4edf1f`, `0x4edfae`), whose `SetParent` (`0x76ab10`) gives the parent's level
+plus 1 (`0x76ab6d`).
 
 The constructor stores the minimap's level plus 3 at `+0x334` (`0x4ede3f` to `0x4ede48`) and relevels each of the five of the first group to
 that minus 1, the minimap's level plus 2, with `0x76a4f0(level, 0)` (`0x4edee0`); the three of the second group are not relevelled. Each of those
 eight is anchored CENTER to the minimap's CENTER with offsets 0 and 0 through `0x767c70(4, minimap, 4, 0, 0, 1)` (`0x4ede8b`, `0x4edf38`),
 given the size `[0xbc7970]` through slots 5 and 6 (`0x4ede9e`, `0x4edeaf`), and hidden through slot 0x84 (`0x4edece`, `0x4edf7b`). The
 ninth is anchored the same way with offsets 0.001 and 0.001 (`0x3a83126f`, `0x4edfd1`) and the constructor makes no hide call on it.
+
+## Arrow model loading
+
+`minimapArrowModel` names the model of the eight in the two groups and `minimapPlayerModel` the model of the
+ninth alone. A missing attribute takes `Interface\Minimap\Rotating-MinimapArrow.mdx` and
+`Interface\Minimap\MinimapArrow.mdx`. A file that does not open, or a name without the extension `.m2`, `.mdl` or
+`.mdx`, stands `Spells\ErrorCube.mdx` in its place and logs nothing. `Invalid minimapArrowModel in Minimap.xml` or
+`Invalid minimapPlayerModel in Minimap.xml` is logged only when no model is created: the create itself fails, or
+the player arrow's name is empty. Loading the arrow model stores the minimap's level plus 3 at `+0x334` again.
+
+Addresses: `0x4ee2b0`, `0x4ee2c5`, `0x4ee2d5`, `0x4ee2e4`, `0x4ee2f6`, `0x4ee306`, `0x4ee315`, `0x6f2cf0`, `0x4ee170`, `0x4ee18e`, `0x4ee1a3`, `0x4ee1b7`, `0x4ee204`, `0x4ee260`, `0x4ee269`, `0x4ee284`, `0x76cce0`, `0x76ccf0`, `0x707350`, `0x707400`
+Confidence: verified
+Proof: one
+Test: none
+
+`0x4ee2b0` reads each attribute with `0x6f2cf0` (`0x4ee2cc`, `0x4ee2fd`) and falls back to the default string
+(`0x4ee2d5`, `0x4ee306`). `0x4ee170` creates the model with `0x707350` (flags 4, `0x4ee181` to `0x4ee187`), which
+substitutes the error cube itself (`models/scene#model-creation`), and returns 0 only when that returns 0 (`0x4ee18e`
+to `0x4ee197`). It stores `[+0xc4] + 3` at `+0x334` (`0x4ee1a3`) and gives each of the five and the three
+(`0x4ee1b7`, `0x4ee204`) its own instance from `0x707400` through slot 0x90, with sequence 165 or 166. `0x4ee260`
+sets the file on the child at `+0x338` through slot 0x94 (`0x4ee269`), `0x76cce0`, which skips the create for an
+empty name (`0x76ccf0`) and otherwise calls `0x707350`; it returns 0 when the child's `+0x318` is then 0
+(`0x4ee284`). `0x4ee2b0` logs on a 0 from either (`0x4ee2e4`, `0x4ee315`).
+
+## Draw order against the children
+
+The minimap draws its map, icons and dots in one render callback that its layer hook adds to the layer-0 batch of its
+own level L, after that batch's quads and text. Its nine model frames sit above L: the player arrow at L + 1, the five
+of `+0x320` at L + 2, and the three rim arrows of `+0x314` from L + 1 to L + 5, set by the render. Each draws its model
+as a callback of its own layer 2. A stratum's levels are submitted in ascending order, so everything the render
+callback draws lies under every arrow at these levels.
+
+Addresses: `0x807ac4`, `0x4ebe70`, `0x4ebe80`, `0x4ebe87`, `0x4ebe91`, `0x4ebea0`, `0x4ec950`, `0x4ed7b7`, `0x4ebc00`, `0x773110`, `0x76fc2e`, `0x4edee0`, `0x76ab6d`, `0x4ed335`, `0x4ed344`, `0x76d160`, `0x81c64c`, `0x7657d0`
+Confidence: verified
+Proof: one
+Test: none
+
+Slot 0x44 of the vtable `0x807a80`, at `0x807ac4`, is `0x4ebe70(batch, layer)`: it emits the frame's regions of the
+layer through `0x76b3a0` (`0x4ebe80`) and, for layer 0 alone (`0x4ebe87`), adds `0x4ebea0` with the frame as its
+context through `0x773110` (`0x4ebe91`). `0x4ebea0` jumps to `0x4ec950` for a nonzero context, and `0x4ec950` calls
+the dot draw `0x4ebc00` last (`0x4ed7b7`). The census is every call, jump and stored address of each, with
+`0x4ee170` as the control: `0x4ec950` is reached only from `0x4ebea0`, and `0x4ebea0` only from the push in
+`0x4ebe70`. A batch calls its callbacks after its quads and text (`0x76fc2e`), and `0x7657d0` submits levels
+ascending (`draworder#layer-batches`). The levels come from `SetParent` (`0x76ab6d`), the constructor's relevel
+(`0x4edee0`) and the render's `[+0x334]` plus the slot, −2 to 2 (`0x4ed335` to `0x4ed344`). The model frame's slot
+0x44, `0x81c64c`, is `0x76d160`, which adds its draw on layer 2 (`ui/model#where-the-scene-draws`).
 
 ## Two small helpers
 

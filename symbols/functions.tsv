@@ -3601,7 +3601,7 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x44d340	18	TextBlockGetFontPtr	idb	unassigned			Runs its object file code that calls SErrSetLastError; not read here	inferred	none		
 0x44d360	18			unassigned			Runs its object file code that calls SErrSetLastError; not read here	inferred	none		
 0x44d380	38			unassigned	unreached		Runs its object file code that calls GxuFontGetOneToOneHeight, ScaleScreenDelta; not read here	inferred	none		
-0x44d3b0	73			unassigned			Runs its object file code that calls SErrSetLastError, 0x41ade0, 0x5c27a0; not read here	inferred	none		
+0x44d3b0	73	TextBlockSetShadow		unassigned	orchestration	void __fastcall (void *block, const float *offset, uint32_t color)	Sets a text block's shadow colour and its offset divided by the screen scales; error 0x57 for no block	verified	one	ui/fontstring#shadow-default-and-units	
 0x44d400	20			unassigned			Runs its object file code that calls SErrSetLastError; not read here	inferred	none		
 0x44d420	401	TextBlockCreate		unassigned		void * __fastcall (void *font, const char *text, const void *colour, const float *position, float size, float width, float height, uint32_t word, float extra, float spacing)	Creates an HTEXTBLOCK handle on an engine string, unscaling its geometry and splitting its word into flags	verified	one	ui/fonttext#text-block-creation	
 0x44d5c0	54			unassigned			Runs its object file code that calls GxuFontDestroyString, SMemFree; not read here	inferred	none		
@@ -10615,8 +10615,8 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x4ebc00	589			ui	primitive		Runs MinimapFrame.cpp code that calls _atexit, GetTextureDeviceObject, 0x589e80 and 3 more; not read here	inferred	none	ui/minimapblips#dots-cadence-and-tooltip	ui::glue_4ebc00_gradient
 0x4ebe50	1			ui	orchestration		Runs MinimapFrame.cpp code not read here	inferred	none		
 0x4ebe60	1			ui	orchestration		Runs MinimapFrame.cpp code not read here	inferred	none		
-0x4ebe70	45			ui	orchestration		Runs MinimapFrame.cpp code that calls SimpleFrameRegisterLayer, RegisterLayerCallback; not read here	inferred	none		
-0x4ebea0	10			ui	orchestration		Runs MinimapFrame.cpp code not read here	inferred	none		
+0x4ebe70	45	CGMinimapFrame::RegisterLayer		ui	orchestration	void __thiscall (CGMinimapFrame *this, void *batch, uint32_t layer)	Registers the frame's layer and, for layer 0, the minimap render callback 0x4ebea0	verified	one	ui/minimap#draw-order-against-the-children	
+0x4ebea0	10	MinimapFrameRenderCallback		ui	orchestration	void __thiscall (void *this)	Runs the minimap render 0x4ec950 for a nonzero context	verified	one	ui/minimap#draw-order-against-the-children	
 0x4ebeb0	108	SortInteriorTiles		ui	primitive	void __thiscall (void *this)	Links the drawable interior tile records into a list by ascending distance	verified	one	minimap/draw#tile-order	
 0x4ebf20	367	DrawInteriorTile		ui	primitive	void __fastcall (void *record, const uint32_t *colour)	Draws one interior tile as a strip on its box corners with texture coordinates inset by half a texel	verified	one	minimap/draw#interior-tile-quad	
 0x4ec090	929	CompositeInteriorTiles		ui	primitive	void __thiscall (void *this)	Renders the sorted interior tiles into the bound target through an orthographic view of 1.5 radii	verified	one	minimap/draw#composite-pass	
@@ -10636,9 +10636,9 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x4ee0a0	43	DeletingDestructor4ee0a0		ui	orchestration		Destroys the object through 0x4ee0d0 and frees it when bit 0 of the argument is set	verified	one	ui/containers#deleting-destructors	
 0x4ee0d0	36			ui	orchestration		Runs its object file code not read here	inferred	none		
 0x4ee100	104			ui	primitive		Runs its object file code not read here	inferred	none		ui::glue_4dc_4ee100_half_pair
-0x4ee170	230	CGMinimapFrame::LoadArrowModel		ui	primitive		Creates a model from a file and sets it on the eight arrow children, or answers 0 when it does not load	verified	one	ui/minimap#the-engine-children	
-0x4ee260	77	CGMinimapFrame::LoadPlayerModel		ui	orchestration		Sets a model file on the player arrow child	verified	one	ui/minimap#the-engine-children	
-0x4ee2b0	126	CGMinimapFrame::PostLoadXML		ui	orchestration		Reads the arrow and player model attributes with their defaults and loads both	verified	one	ui/minimap#the-engine-children	
+0x4ee170	230	CGMinimapFrame::LoadArrowModel		ui	primitive		Sets a model of a file, the error cube when it fails to open, on the eight arrow children; 0 only when the create fails	verified	one	ui/minimap#arrow-model-loading	
+0x4ee260	77	CGMinimapFrame::LoadPlayerModel		ui	orchestration		Sets a model file on the player arrow child, answering 0 when the child holds no model after it	verified	one	ui/minimap#arrow-model-loading	
+0x4ee2b0	126	CGMinimapFrame::PostLoadXML		ui	orchestration		Reads the arrow and player model attributes with their defaults and loads both	verified	one	ui/minimap#arrow-model-loading	
 0x4ee330	364	MinimapApplyPing		ui	primitive	void __fastcall (void *guid, float *point)	Stores a world point as the ping and signals MINIMAP_PING with the pinger's token and the offset over the zoom diameter	verified	one	ui/minimap#the-ping	ui::glue_4ea_4ee330_scale
 0x4ee4a0	411	Minimap::SetMaskTexture	idb	ui	primitive	int __fastcall (lua_State *L)	Implements the Minimap method SetMaskTexture, its pair in the table 0x84c538	verified	one	ui/minimap#lua-methods	
 0x4ee640	411	Minimap::SetIconTexture	idb	ui	primitive	int __fastcall (lua_State *L)	Implements the Minimap method SetIconTexture, its pair in the table 0x84c538	verified	one	ui/minimap#lua-methods	
@@ -12892,7 +12892,7 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x523bf0	25	RestoreCursorModePicture		ui	orchestration	void __cdecl (void)	Ends the payload picture and sends the mode's image again	verified	one	ui/cursor#clearing-the-cursor	
 0x523c10	6	GetCursorMode		ui	unreached	uint32_t __cdecl (void)	Returns the shown cursor mode	verified	one	ui/worldcursor#setting-the-mode	
 0x523c20	20	SetCursorMode		ui	orchestration	void __fastcall (uint32_t mode)	Shows a cursor mode and sends its image when it changes	verified	one	ui/worldcursor#setting-the-mode	
-0x523c40	207	SetCustomCursor		ui	orchestration	uint32_t __fastcall (const char *name)	Loads a named 32 by 32 cursor as mode 41, returning 1 when it is shown	verified	one	ui/worldcursor#custom-cursors	
+0x523c40	207	SetCustomCursor		ui	orchestration	uint32_t __fastcall (const char *name)	Loads the 32 by 32 texture at a path, as given, as the mode 41 cursor, returning 1 when it is shown	verified	one	ui/worldcursor#custom-cursors	
 0x523d10	6	GetBaseCursorMode		ui	orchestration	uint32_t __cdecl (void)	Returns the base cursor mode	verified	one	ui/worldcursor#setting-the-mode	
 0x523d20	7	SetBaseCursorMode		ui	orchestration	void __fastcall (uint32_t mode)	Stores the base cursor mode	verified	one	ui/worldcursor#setting-the-mode	
 0x523d30	11	ShowBaseCursor		ui	orchestration	void __cdecl (void)	Shows the base cursor mode	verified	one	ui/worldcursor#setting-the-mode	
@@ -18367,7 +18367,7 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x5c2190	42	GxuFontGetMaxCharsWithinWidth	idb	unassigned			Runs its object file code that calls InternalGetMaxCharsWithinWidth; not read here	inferred	none		
 0x5c21c0	339	GxuFontGetMaxCharsWithinHeight		unassigned	primitive	int __fastcall (void *arg1, const char *text, float size, float width, float height, float gap, int *broke, uint32_t flags, uint32_t arg9)	Counts the characters that fit a height	verified	one	font/measure#block-height-and-fit	font::font_height_fit_difftest
 0x5c2320	259	GxuFontGetCharsFittingWidth		unassigned	primitive	int __fastcall (void *arg1, const char *text, float size, float width, int count, float *out, uint32_t flags, uint32_t arg8, uint32_t arg9)	Counts the characters from the end that fit a width	verified	one	font/measure#fitting-characters-to-a-width	font::font_width_fit_difftest
-0x5c2430	263	GxuFontEnumerateLines		unassigned	primitive	int __fastcall (void *arg1, const char *text, float size, float width, uint32_t flags, uint32_t *offsets, int count, uint32_t arg8, uint32_t arg9, uint32_t arg10)	Fills the byte offset at which each line starts	verified	one	font/markup#line-starts	font::line_break_enumerate_difftest
+0x5c2430	263	GxuFontEnumerateLines		unassigned	primitive	int __fastcall (void *font, const char *text, uint32_t length, float size, float width, uint32_t *offsets, uint32_t count, uint32_t arg8, uint32_t arg9, uint32_t flags)	Writes the byte offset each line starts at, up to a count, and returns the number of lines	verified	one	font/markup#line-starts	font::line_break_enumerate_difftest
 0x5c2540	67	GxuFontGetOneToOneHeight	idb	unassigned	primitive	float __thiscall (void *this)	Returns the font pixel size over the viewport height	verified	one	font/metrics#screen-and-pixel-units	font::one_to_one_height_difftest
 0x5c2590	329	GxuStripControlCodes		unassigned	primitive	int __fastcall (void *arg1, int length, uint32_t mask, char *out, int capacity)	Removes or normalizes markup codes from a text	verified	one	font/markup#stripping	font::strip_control_codes_difftest
 0x5c2700	66			unassigned	unreached		Runs its object file code that calls SStrPrintf; not read here	inferred	none		
@@ -18466,9 +18466,9 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x5c7010	99	ScreenToPixelWidth		font	primitive	float __fastcall (int raw, float fraction)	Converts a width fraction to rounded pixels	verified	one	font/metrics#screen-and-pixel-units	font::screen_to_pixel_width_difftest
 0x5c7080	34	PixelToScreenHeight		font	primitive	float __fastcall (int pixels)	Converts pixels to a fraction of the viewport height	verified	one	font/metrics#screen-and-pixel-units	font::pixel_to_screen_height_difftest
 0x5c70b0	424	SnapViewportRect		font	primitive	void __cdecl (void)	Rounds the viewport rectangle to pixels and installs its orthographic matrix	verified	one	font/measure#viewport-rectangle	
-0x5c7260	148	MeasureLineStep		font	orchestration	void __fastcall (void *arg1, const char *text, float size, float box, uint32_t flags, float extra, int *bytes, float *width, const char **next, uint8_t *broke)	Measures one line by the fixed or proportional run	verified	one	font/measure#steps-along-a-line	
-0x5c7300	343	MeasureRunFixed		font	primitive	void __fastcall (void *arg1, const char *text, float size, float extra, int *bytes, float *width, const char **next)	Measures a fixed-width run to the next newline	verified	one	font/measure#steps-along-a-line	font::measure_run_fixedwidth_difftest
-0x5c7470	753	MeasureRunProportional		font	primitive	void __fastcall (void *arg1, const char *text, float size, float box, uint32_t flags, float extra, int *bytes, float *width, const char **next, uint8_t *broke)	Measures how much of a text fits one line with break opportunities	verified	one	font/measure#steps-along-a-line	font::measure_run_proportional_difftest
+0x5c7260	148	MeasureLineStep		font	orchestration	void __fastcall (void *arg1, const char *text, float size, float box, int *bytes, float *width, const char **next, float extra, uint32_t flags, uint8_t *broke)	Measures one line by the fixed or proportional run	verified	one	font/measure#steps-along-a-line	
+0x5c7300	343	MeasureRunFixed		font	primitive	void __fastcall (void *arg1, const char *text, float size, int *bytes, float *width, const char **next, uint32_t flags)	Measures a fixed-width run to the next newline	verified	one	font/measure#steps-along-a-line	font::measure_run_fixedwidth_difftest
+0x5c7470	753	MeasureRunProportional		font	primitive	void __fastcall (void *arg1, const char *text, float size, float box, int *bytes, float *width, const char **next, float extra, uint32_t flags, uint8_t *broke)	Measures how much of a text fits one line with break opportunities	verified	one	font/measure#steps-along-a-line	font::measure_run_proportional_difftest
 0x5c7780	684	LineBreakClass		font	primitive	int __fastcall (uint32_t cur, uint32_t next)	Returns whether a line may break between two characters	verified	one	font/markup#break-opportunities	font::line_break_class_ascii_difftest, font::line_break_class_cjk_difftest
 0x5c7d90	5	InitFontUtilTwoPiThunk		font	orchestration		Jumps to 0x5c7da0; a static initializer	verified	one	font/overview#object-files	
 0x5c7da0	15	InitFontUtilTwoPi		font	primitive	void __cdecl (void)	Stores π + π as a float in 0xc2b9ac	verified	one	font/overview#object-files	
@@ -18697,9 +18697,9 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x5d0ff0	264			unassigned			Runs its object file code that calls 0x5d0df0, 0x5d0660, SMemReAlloc and 3 more; not read here	inferred	none		
 0x5d1100	5	InitFontGlyphInfinityThunk		gx	orchestration	void __cdecl ()	Jumps to 0x5d1110; a static initializer	verified	one	gx/glyphs#static-initializers	
 0x5d1110	11	InitFontGlyphInfinity		gx	orchestration	void __cdecl ()	Copies +inf into the object file's infinity global	verified	one	gx/glyphs#static-initializers	
-0x5d1120	475	GlyphBitmapLoad		gx	orchestration	uint8_t __fastcall (void *face, uint32_t maxRows, uint32_t ch, uint32_t maxWidth, void *out, uint32_t flag, uint32_t pad)	Loads and renders a glyph through the font engine and copies its bitmap into a record under a new buffer	verified	one	gx/glyphs#glyph-bitmap-load	font::rasterize_glyph_difftest
+0x5d1120	475	GlyphBitmapLoad		gx	primitive	uint8_t __fastcall (void *face, uint32_t em, uint32_t ch, int32_t ascender, void *out, uint32_t flag, uint32_t pad)	Loads and renders a glyph through the font engine and copies its bitmap into a record under a new buffer	verified	one	gx/glyphs#glyph-bitmap-load	font::rasterize_glyph_difftest
 0x5d1300	88	GlyphLoadRender		gx	orchestration	uint32_t __fastcall (void *face, uint32_t unused, uint32_t flag)	Loads a glyph with the flag's load flags and renders it, returning 1 when both calls succeed	verified	one	gx/glyphs#glyph-bitmap-load	
-0x5d1360	111	GlyphClipOffsets		gx	primitive	void __fastcall (void *arg1, uint32_t *a, uint32_t *b, uint32_t top, uint32_t maxWidth, uint32_t maxRows)	Computes how far a glyph bitmap extends past the line and the width and writes the two clip offsets	inferred	none	gx/glyphs#glyph-bitmap-load	font::glyph_vplace_difftest
+0x5d1360	111	GlyphClipOffsets		gx	primitive	void __fastcall (void *face, int32_t *gap, int32_t *pad, uint32_t cellHeight, int32_t ascender, uint32_t rows)	Seats a glyph bitmap in its cell: the gap and top pad from the bitmap top, the ascender, the cell height and the rows	verified	one	font/glyphs#placing-the-bitmap	font::glyph_vplace_difftest
 0x5d13d0	5	InitFontGlyphTwoPiThunk		gx	orchestration	void __cdecl (void)	Jumps to 0x5d13e0; a static initializer	verified	one	net/layout#object-files	
 0x5d13e0	15	InitFontGlyphTwoPi		gx	primitive	void __cdecl (void)	Stores 3.14159 + 3.14159 as a float in a global	verified	one	net/layout#object-files	
 0x5d13f0	5	InitFontGlyphInvTwoPiThunk		gx	orchestration	void __cdecl (void)	Jumps to 0x5d1400; a static initializer	verified	one	net/layout#object-files	
@@ -23405,7 +23405,7 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x64a5a0	123	SStrCopy	idb	storm	boundary		Copies a string up to a length	inferred	none	collision/mover#initialisation-and-teardown	
 0x64a620	75	SStrDupA	idb	storm	boundary		Runs its object file code that calls SErrSetLastError, SStrLen, SMemAlloc; not read here	inferred	none		
 0x64a670	16	BuildPow10TableOnce		storm	boundary		Runs 0x64a680 once and sets its guard	verified	one	core/threads#string-conversion-table	
-0x64a680	88	BuildPow10Table		storm	boundary		Fills a table of 20 by 10 doubles with k times 10 to the power -(r+1)	verified	one	core/threads#string-conversion-table	
+0x64a680	88	BuildPow10Table		storm	primitive		Fills a table of 20 by 10 doubles with k times 10 to the power -(r+1)	verified	one	core/threads#string-conversion-table	storm::sstrtofloat_whole
 0x64a6e0	1			storm	boundary		Runs its object file code not read here	inferred	none		
 0x64a6f0	46	SStrLen	idb	storm	boundary	uint32_t __stdcall (const char *text)	Returns the length of a C string	inferred	none		
 0x64a720	49			storm	boundary		Runs its object file code that calls SErrSetLastError; not read here	inferred	none		
@@ -23413,9 +23413,9 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x64a7f0	43	SStrPrintf	idb	storm	orchestration		Formats into a buffer of a given size, raising error 0x57 for a null buffer or format	verified	one	core/threads#allocator-and-error-calls	
 0x64a820	140	ISStrVPrintf	idb	storm	boundary		Runs its object file code that calls vsnoprintf, __vsnprintf, vsoprintf and 1 more; not read here	inferred	none		
 0x64a8b0	43	SStrVPrintf	idb	storm	boundary		Runs its object file code that calls SErrSetLastError, ISStrVPrintf; not read here	inferred	none		
-0x64a8e0	434			storm	unreached		Runs its object file code that calls SErrSetLastError, 0x64a670, __CIpow and 1 more; not read here	inferred	none		
-0x64aaa0	434	SStrToFloat	idb	storm	boundary		Runs its object file code that calls SErrSetLastError, 0x64a670, __CIpow and 1 more; not read here	inferred	none		
-0x64ac60	98	SStrToInt	idb	storm	boundary		Converts a decimal string to an integer	verified	one	net/who#who-query-packet	net::who_string_helpers
+0x64a8e0	434	ParseDecimalDouble		storm	unreached		Reads a decimal float as SStrToFloat does, with the double 0.0 for null; nothing reaches it	verified	one	storm/strings#unreached-functions	
+0x64aaa0	434	SStrToFloat	idb	storm	primitive	float __stdcall (const char *string)	Reads a decimal float: an optional minus, digits, a fraction and an exponent at 53 bits; 0.0 and error 0x57 for null	verified	one	storm/strings#float-grammar	storm::sstrtofloat_whole
+0x64ac60	98	SStrToInt	idb	storm	primitive	int32_t __stdcall (const char *string)	Reads an optional minus and decimal digits in wrapping 32-bit arithmetic; 0 and error 0x57 for null	verified	one	storm/strings#string-to-integer	net::who_string_helpers, storm::sstrtoint_whole
 0x64acd0	269			storm	unreached		Runs its object file code that calls SErrSetLastError, __CIpow, __ftol and 1 more; not read here	inferred	none		
 0x64ade0	70	SStrToUnsigned	idb	storm	boundary		Runs its object file code that calls SErrSetLastError; not read here	inferred	none		
 0x64ae30	5			storm	boundary		Runs its object file code not read here	inferred	none		
@@ -25289,7 +25289,7 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x6889f0	19	InitOptInvTwoPi		cvar	primitive	void __cdecl (void)	Stores 1 / 2π as a float in the object file's 1/2π global	verified	one	cvar/overview#shared-header-constants	
 0x688a10	95	HandleDoodadAnimOption		cvar	orchestration	uint8_t __stdcall (const char *value, void *arg)	Sets or clears the doodad animation bit of the world flags, inverted	verified	one	cvar/options#switch-settings	
 0x688a70	64	HandleMapShadowsOption		cvar	orchestration	uint8_t __stdcall (const char *value, void *arg)	Sets or clears the terrain shadow bit of the world flags	verified	one	cvar/options#switch-settings	
-0x688ab0	88	HandleLodDistOption		cvar	primitive	uint8_t __stdcall (const char *value, void *arg)	Accepts a terrain LOD distance from 50 to 250 and passes it on, else writes a line and uses 77	verified	one	cvar/options#float-range-settings	
+0x688ab0	88	HandleLodDistOption		cvar	orchestration	uint8_t __stdcall (const char *value, void *arg)	Passes a terrain LOD distance from 50 to 250 on, else writes a line and uses 77; either way it keeps the set	verified	one	cvar/options#float-range-settings	
 0x688b10	89	HandleSmallCullOption		cvar	primitive	uint8_t __stdcall (const char *value, void *arg)	Accepts a size culling value from 0.001 to 2 and stores it	verified	one	cvar/options#float-range-settings	
 0x688b70	83	HandleDistCullOption		cvar	primitive	uint8_t __stdcall (const char *value, void *arg)	Accepts a distance culling value from 1 to 888.888916 and stores it	verified	one	cvar/options#float-range-settings	
 0x688bd0	56	HandleMaxLightsOption		cvar	primitive	uint8_t __stdcall (const char *value, void *arg)	Accepts a light count from 1 to 4 and stores it	verified	one	cvar/options#integer-range-settings	
@@ -25309,7 +25309,7 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x689050	50	HandleWaterLodOption		cvar	primitive	uint8_t __stdcall (const char *value, void *arg)	Zeroes the water LOD global and rejects any nonzero value	verified	one	cvar/options#integer-range-settings	
 0x689090	124	HandleBaseMipOption		cvar	primitive	uint8_t __stdcall (const char *value, void *arg)	Accepts a base mip level of 0 or 1 and sets it on the device	verified	one	cvar/options#integer-range-settings	
 0x689110	219	ValidateAnisotropy		terrain	orchestration		Accepts an anisotropy from 1 to 16 within the device limit, sets or clears world flag 0x80000000 and stores it	verified	one	terrain/render#texture-detail-bias	
-0x6891f0	88	ValidateTextureLodDistance		terrain	orchestration		Accepts a texture detail distance from 80 to 777, else prints the range and stores 80	verified	one	terrain/world#distance-settings	
+0x6891f0	88	ValidateTextureLodDistance		terrain	orchestration		Passes a texture detail distance from 80 to 777 on, else prints the range and uses 80; either way it keeps the set	verified	one	terrain/world#distance-settings	
 0x689250	141	ValidateHorizonFarClip		terrain	orchestration		Accepts a horizon far clip from the far clip plus 528 to 2112 and stores it, else prints the range	verified	one	terrain/world#distance-settings	
 0x6892e0	70	HandleFootprintsOption		cvar	orchestration	uint8_t __stdcall (const char *value, void *arg)	Sets or clears the footprint bit of the world flags	verified	one	cvar/options#switch-settings	
 0x689330	203	HandleBspCacheOption		cvar	orchestration	uint8_t __stdcall (const char *value, void *arg)	Creates, clears or frees the BSP leaf cache, always accepting	verified	one	cvar/options#distance-and-texture-settings	
@@ -29606,9 +29606,9 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x6f19f0	11	InitInfinity6f19f0		ui	orchestration	void __cdecl (void)	Copies the dword 0x7f800000 (+inf as a float) into a global	verified	one	ui/initstores#infinity-copies	
 0x6f1a00	31	GetJustifyName		ui	orchestration		Answers the name of the first justify bit set, else UNKNOWN	verified	one	ui/fontstring#justify	
 0x6f1a20	69	ParseOrientation		ui	orchestration		Maps HORIZONTAL or VERTICAL, ignoring case, to 0 or 1	verified	one	ui/slider#construction	
-0x6f1a70	31			unassigned	primitive		Runs its object file code not read here	inferred	none		
+0x6f1a70	31			ui	primitive		Runs its object file code not read here	inferred	none		
 0x6f1a90	53	ParseFontFlags		ui	orchestration		Reads font flags as substrings: OUTLINE 1, THICKOUTLINE 4, MONOCHROME 2	verified	one	ui/fontstring#setfont	
-0x6f1ad0	85			unassigned	primitive		Runs its object file code that calls SStrPack; not read here	inferred	none		
+0x6f1ad0	85	FormatFontFlags		ui	primitive	const char * __fastcall (uint32_t flags)	Joins the names of the font flags set, OUTLINE, THICKOUTLINE and MONOCHROME in that order, with comma and space	verified	one	ui/fontmethods#font-flags-text	ui::format_font_flags_6f1ad0
 0x6f1b30	130	ParseXMLBool		ui	primitive	int __fastcall (const char *text)	Reads a flag: 1 to 9, t, T, y, Y, on or enabled is true, anything else false	verified	one	ui/addons#toc-directives	
 0x6f1c10	213	GetScriptFlagArg		ui	primitive	bool __fastcall (lua_State *L, int index, bool defaultValue)	Reads a script argument as a flag: nil 0, boolean itself, number truncated, string by first letter or keyword	verified	one	ui/actionuse#reading-a-script-flag	
 0x6f1d60	328	XmlReadValue		ui	primitive		Converts a length attribute of an XML element and stores it, or a relative value unconverted	verified	one	ui/backdrop#the-xml-element	ui::glue_6f1_metric_scale_divide
@@ -34069,8 +34069,8 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x785b80	48	CSimpleMessageFrame::SetInsets		ui	orchestration	void __thiscall (CSimpleMessageFrame *this, float a, float b, float c, float d)	Stores the four insets at +0x330 to +0x33c and lays the lines out	verified	one	ui/messagemembers#message-frame-setters	
 0x785bb0	75	CSimpleMessageFrame::SetFixedLength		ui	unreached	void __thiscall (CSimpleMessageFrame *this, uint32_t length)	Stores a length at +0x340 and sets it on each line's FontString; nothing reaches it	verified	one	ui/messagemembers#message-frame-setters	
 0x785c00	24	CSimpleMessageFrame::RelayoutOnFlags		ui	orchestration	void __thiscall (CSimpleMessageFrame *this, uint32_t a, uint32_t flags)	Lays the lines out when bit 0 or 4 of the flags is set	verified	one	ui/messagemembers#message-frame-setters	
-0x785c20	94	CSimpleMessageFrame::SetTimeVisible		ui	primitive	void __thiscall (CSimpleMessageFrame *this, float seconds)	Stores the visible time and copies it into every line whose own time is 0	verified	one	ui/messagemembers#message-frame-setters	
-0x785c80	94	CSimpleMessageFrame::SetFadeDuration		ui	primitive	void __thiscall (CSimpleMessageFrame *this, float seconds)	Stores the fade time and copies it into every line whose own fade time is 0	verified	one	ui/messagemembers#message-frame-setters	
+0x785c20	94	CSimpleMessageFrame::SetTimeVisible		ui	orchestration	void __thiscall (CSimpleMessageFrame *this, float seconds)	Stores the visible time and copies it into every line whose own time is not 0	verified	one	ui/messagemembers#message-frame-setters	
+0x785c80	94	CSimpleMessageFrame::SetFadeDuration		ui	orchestration	void __thiscall (CSimpleMessageFrame *this, float seconds)	Stores the fade time and copies it into every line whose own fade time is not 0	verified	one	ui/messagemembers#message-frame-setters	
 0x785ce0	21	CSimpleMessageFrame::SetInsertMode		ui	orchestration		Stores the insert mode of a message frame and redraws its lines	verified	one	ui/fontmethods#message-frame-insert-mode	
 0x785d00	177	CSimpleMessageFrame::AddMessage		ui	orchestration		Queues a message frame line, copying its text and colour	verified	one	ui/messageframe#a-message-frames-addmessage	
 0x785dc0	61	CSimpleMessageFrame::ClearLines		ui	orchestration	void __thiscall (CSimpleMessageFrame *this)	Deactivates every line and frees the queued messages	verified	one	ui/messagemembers#message-frame-setters	
@@ -34778,7 +34778,7 @@ address	size	name	name_from	system	class	signature	meaning	confidence	proof	find
 0x79f730	466	FontMethods::SetShadowColor		ui	primitive		Sets the shadow colour of a font object from clamped red, green, blue and alpha arguments	verified	one	ui/fontmethods#setting-colours	
 0x79f910	175	FontMethods::GetShadowColor		ui	primitive		Returns the red, green, blue and alpha of the shadow colour as unrounded doubles	verified	one	ui/fontmethods#reading-colours	
 0x79f9c0	261	FontMethods::SetShadowOffset		ui	primitive		Stores the shadow offset converted from Lua units to layout units	verified	one	ui/fontmethods#alpha-spacing-and-offsets	
-0x79fad0	106	FontMethods::GetShadowOffset		ui	primitive		Returns the shadow offset converted from layout units to Lua units	verified	one	ui/fontmethods#alpha-spacing-and-offsets	
+0x79fad0	106	FontMethods::GetShadowOffset		ui	primitive		Returns the shadow offset converted from layout units to Lua units	verified	one	ui/fontmethods#alpha-spacing-and-offsets	ui::get_scaled_pair_79fad0, ui::shadow_offset_default_79fad0
 0x79fb40	157	FontMethods::SetSpacing		ui	primitive		Stores the line spacing converted from Lua units to layout units	verified	one	ui/fontmethods#alpha-spacing-and-offsets	
 0x79fbe0	58	FontMethods::GetSpacing		ui	primitive		Returns the line spacing converted from layout units to Lua units	verified	one	ui/fontmethods#shadow-offsets-and-spacing	
 0x79fc20	136			ui	primitive		Runs its object file code that calls lua_isstring, lua_tostring, 0x6f1990 and 1 more; not read here	inferred	none		
