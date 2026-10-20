@@ -167,8 +167,9 @@ state.
 
 A spell with `Attributes` bit 12 (0x1000) refuses with 0x51 when `0x60a050` returns 0, and one with bit 13
 (0x2000) refuses with 0x54 when it returns nonzero. `0x60a050` decides whether the game clock `0xce8538`
-lies between 5:30 and 21:00. So 0x1000 allows a cast by day only (0x51 is `SPELL_FAILED_ONLY_DAYTIME`) and 0x2000
-by night only (0x54, `SPELL_FAILED_ONLY_NIGHTTIME`); the client's name switch `0x6e23e0` returns their keys at `0x6e25dc` and `0x6e25ee`.
+lies from 5:30 up to, not including, 21:00 (`gametime/overview#time-range-test`). So 0x1000 allows a cast by
+day only (0x51 is `SPELL_FAILED_ONLY_DAYTIME`) and 0x2000 by night only (0x54, `SPELL_FAILED_ONLY_NIGHTTIME`); the
+client's name switch `0x6e23e0` returns their keys at `0x6e25dc` and `0x6e25ee`.
 
 Addresses: `0x609cd3`, `0x609cd6`, `0x609cdb`, `0x609ce2`, `0x609cee`, `0x609d03`, `0x609d06`, `0x609d0b`, `0x609d12`, `0x609d1e`, `0x60a050`, `0x60a067`, `0x60a072`, `0x60a08b`, `0x60a0a8`, `0xce8538`, `0x642ae0`, `0x642710`
 Confidence: verified
@@ -178,8 +179,8 @@ Test: none
 `0x609cd6 test ah,0x10` and `0x609d06 test ah,0x20` are bits 12 and 13. The two rungs differ only in
 the branch after the call: `0x609ce2 jne` passes the day rung and `0x609d12 je` passes the night rung.
 `0x60a050` encodes the times 21:00 (`push 0x15`) and 5:30 (`push 5`, `edx` 0x1e) through `0x642ae0`, decodes
-both with `0x642c30` and returns `0x642710` on the clock with the two times (`0x60a0a8`). The comparison
-function is in `base`; both rungs reload `edi` afterwards.
+both with `0x642c30` and returns `0x642710` on the clock with the two times (`0x60a0a8`). Both rungs reload
+`edi` afterwards.
 
 ## Moving rung
 
@@ -234,23 +235,47 @@ Test: none
 `[esi+0x2a8]`; `0x609f29` calls `0x4d6370` and `0x609f34 cmp eax,[ecx*4+0x80928c]` with `ecx` from
 `[esi+0x2ac]`; `jge` passes.
 
-## Place and taming rungs
+## Indoors and outdoors rungs
 
-A spell with `Attributes` bit 14 (0x4000) or 15 (0x8000) tests the caster's world node (`0x612cc0`). Bit 14 refuses with 0x52 when the test returns nonzero. Bit 15 refuses when it returns 0: with 0x4b when
-one of the three effects applies an aura of type 78 (`Effect` 6), else 0x55. A spell with `AttributesEx2`
-bit 16 (0x10000) refuses with 0x17 when the caster is the active player and `PLAYER_FIELD_BYTES` byte 0 has
-bit 0, after showing the taming failure for reason 2 (`0x6e6a20`).
+A spell with `Attributes` bit 14 (0x4000) or 15 (0x8000) asks one question, once: `0x612cc0`, the
+outdoors test of the caster's world node (`terrain/world#entity-outdoors-test`). An outdoors answer
+(`al` nonzero) refuses bit 14 with 0x52, `SPELL_FAILED_ONLY_INDOORS`. An indoors answer refuses bit 15
+with 0x4b, `SPELL_FAILED_NO_MOUNTS_ALLOWED`, when one of the three effects applies aura 78, mounted
+(`Effect` 6), else with 0x55, `SPELL_FAILED_ONLY_OUTDOORS`. A spell with both bits is refused on
+either answer; with neither the question is not asked. An item cast takes the rungs too. They follow
+the stealth, combat, caster aura state and reputation rungs and precede the taming rung.
 
-Addresses: `0x609f59`, `0x609f63`, `0x609f6f`, `0x609f7c`, `0x609f90`, `0x609f94`, `0x609fa1`, `0x609fa6`, `0x609fb4`, `0x609fd0`, `0x609fd7`, `0x609fe0`, `0x609ffb`, `0x60a00b`, `0x60a018`, `0x60a01e`, `0x60a02b`, `0x612cc0`, `0x6e6a20`
+Addresses: `0x609f59`, `0x609f5c`, `0x609f63`, `0x609f6d`, `0x609f6f`, `0x609f7c`, `0x609f90`, `0x609fa1`, `0x609fa6`, `0x609fb4`, `0x609fd0`, `0x609fd7`, `0x609fd4`, `0x609f72`, `0x609f92`, `0x609f5f`, `0x609fde`, `0x609fec`, `0x60a01a`, `0x609f27`, `0x609f3b`, `0x60952b`, `0x609543`, `0x612cc0`, `0x6706f0`, `0x6e1a00`, `0x739368`
+Confidence: verified
+Proof: one
+Test: `objectlayer::cast_place_rung_difftest`
+
+`0x609f5c test ah,0xc0` selects bits 14 and 15 and `0x609f5f je` skips to `0x609fd7`. `0x609f63`
+calls `0x612cc0`, which is `mov ecx,[ecx+0xe0]; jmp 0x6706f0` on the caster in `edi`; `0x609f68 test
+al,al` reads `al` alone. `0x609f6d je` sends a zero to `0x609f90`, `test ah,ah; jns`, bit 15 clear
+passing; a nonzero answer reaches `0x609f6f test ah,0x40`, `dl` 0x52 at `0x609f7c`. The scan at
+`0x609f94` compares `[esi+0xf4+4i]` (`Effect`) with 6 at `0x609fa1` and `[esi+0x16c+4i]`
+(`EffectApplyAuraName`) with 0x4e at `0x609fa6` for i in 0 to 2; `0x609fd0 mov dl,0x4b` joins the 0x55
+report at `0x609fb6`. A scan of the listing for `mov dl,0x4b`, `0x52` and `0x55` finds one site each
+(control: `mov dl,0x53` finds `0x609c20`, `0x609c56` and `0x739368`, outside the validator). The
+only branches to `0x609fd4`, `0x609fd7` and `0x60a03f` are `0x609f72`, `0x609f92`, `0x609f5f`,
+`0x609fde`, `0x609fec` and `0x60a01a`, all in the slice, and the only branches into `0x609f59` are
+`0x609f27` and `0x609f3b`, the reputation rung. The item argument is read once, at `0x60952b`, so an
+item cast, which skips the cooldown and power rungs (`0x609543`), runs these. The test runs the slice
+`0x609f59` to the pass exit `0x60a049`, with `0x612cc0` and `0x6e1a00` stubbed.
+
+## Taming rung
+
+A spell with `AttributesEx2` bit 16 (0x10000) refuses with 0x17 when the caster is the active player
+and `PLAYER_FIELD_BYTES` byte 0 has bit 0, after showing the taming failure for reason 2 (`0x6e6a20`).
+
+Addresses: `0x609fd7`, `0x609fe0`, `0x609ffb`, `0x60a00b`, `0x60a018`, `0x60a01e`, `0x60a02b`, `0x468550`, `0x6e6a20`
 Confidence: verified
 Proof: one
 Test: none
 
-`0x612cc0` is `mov ecx,[ecx+0xe0]; jmp 0x6706f0`, the world node test. `0x609f5c test ah,0xc0` selects
-bits 14 and 15; `0x609f6d je` is the zero-result case. The scan at `0x609f94` compares `[esi+0x16c+4i]` with
-0x4e and `[esi+0xf4+4i]` with 6 for i in 0 to 2, and `0x609fd0 mov dl,0x4b` joins the 0x55 report at
-`0x609fb6`. `0x609fe0` takes the object's type word bit 4 and compares its guid with `0x468550`; `0x60a018
-test al,1` is `PLAYER_FIELD_BYTES` byte 0, and `0x60a01e` is `call 0x6e6a20` with `cl` 2.
+`0x609fe0` takes the object's type word bit 4 and compares its guid with `0x468550`; `0x60a018 test
+al,1` is `PLAYER_FIELD_BYTES` byte 0, and `0x60a01e` is `call 0x6e6a20` with `cl` 2.
 
 ## Rung order
 
