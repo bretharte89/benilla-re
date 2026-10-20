@@ -179,3 +179,93 @@ fn gametime_643ad0_advance_offset() {
     }
     eprintln!("gametime_643ad0_advance_offset: {total} bit-exact (fild + fadd offset)");
 }
+
+/// A NaN scale poisons the minute fraction: `0x6435a0` stores NaN in `[+0x30]` and advances no
+/// minute, scales that are valid afterwards leave it NaN, and `0x643a70` returns NaN for the NaN
+/// scale and a finite phase for a valid one until a minute step stamps the NaN fraction into
+/// `+0x3c`. The functions run whole, `0x643ad0` recording its calls (and running, in the last
+/// part) and the tick fixed.
+#[test]
+fn gametime_6435a0_nan_accumulator() {
+    let Some(wow) = Wow::load() else {
+        return;
+    };
+    let mut emu = Emu::new(&wow);
+    emu.stub(0x643ad0, 0, 0);
+    emu.stub(0x42c010, 1000, 0);
+    let this = emu.alloc(0x80);
+    let mut total = 0u32;
+    for pending in [0u32, 5] {
+        emu.clear_calls();
+        emu.write_u32(this + 0x2c, 0x7fc0_0000);
+        emu.write_u32(this + 0x30, 0.3f32.to_bits());
+        emu.write_u32(this + 0x34, pending);
+        emu.call(0x6435a0, this as u32, 0, &[1.0f32.to_bits()]);
+        assert!(
+            emu.read_f32(this + 0x30).is_nan(),
+            "NaN scale, pending {pending}"
+        );
+        for scale in [1.0f32, 60.0, 1.0 / 60.0, 0.0] {
+            emu.write_u32(this + 0x2c, scale.to_bits());
+            emu.call(0x6435a0, this as u32, 0, &[5.0f32.to_bits()]);
+            assert!(
+                emu.read_f32(this + 0x30).is_nan(),
+                "scale {scale}, pending {pending}"
+            );
+            assert_eq!(
+                emu.read_u32(this + 0x34),
+                pending,
+                "the skip count is untouched"
+            );
+            total += 1;
+        }
+        assert!(
+            emu.calls().iter().all(|c| c.addr != 0x643ad0),
+            "no minute advances while the fraction is NaN"
+        );
+        emu.write_u32(this + 0x2c, 0x7fc0_0000);
+        emu.write_u32(this + 0x38, 0);
+        emu.write_u32(this + 0x3c, 0.0f32.to_bits());
+        assert!(
+            emu.call_f64(0x643a70, this as u32, 0, &[]).is_nan(),
+            "day phase"
+        );
+        // With a valid scale again, the phase follows the stamp `+0x3c`, which is finite.
+        emu.write_u32(this + 0x2c, 1.0f32.to_bits());
+        emu.write_u32(this + 0x3c, 100.0f32.to_bits());
+        assert!(
+            emu.call_f64(0x643a70, this as u32, 0, &[]).is_finite(),
+            "phase, valid scale"
+        );
+        total += 2;
+    }
+    // A minute step on the NaN fraction stamps NaN into `+0x3c`: `0x643ad0` runs whole, its
+    // callback run, day step and tick replaced, and the phase is NaN under a valid scale.
+    let mut emu = Emu::new(&wow);
+    emu.stub(0x643b30, 0, 1);
+    emu.stub(0x6423c0, 0, 2);
+    emu.stub(0x42c010, 1000, 0);
+    let this = emu.alloc(0x80);
+    for (i, v) in [10i32, 5, 0, 0, 0, 0, 0].iter().enumerate() {
+        emu.write_u32(this + 4 * i as u64, *v as u32);
+    }
+    emu.write_u32(this + 0x2c, 1.0f32.to_bits());
+    emu.write_u32(this + 0x30, 0x7fc0_0000);
+    emu.write_u32(this + 0x38, 0);
+    emu.write_u32(this + 0x3c, 100.0f32.to_bits());
+    assert!(
+        emu.call_f64(0x643a70, this as u32, 0, &[]).is_finite(),
+        "phase before the step"
+    );
+    emu.call(0x643ad0, this as u32, 0, &[]);
+    assert!(
+        emu.read_f32(this + 0x3c).is_nan(),
+        "the stamp takes the NaN fraction"
+    );
+    assert!(
+        emu.call_f64(0x643a70, this as u32, 0, &[]).is_nan(),
+        "phase after the step"
+    );
+    total += 3;
+    eprintln!("gametime_6435a0_nan_accumulator: {total} checks (NaN scale and fraction)");
+}
