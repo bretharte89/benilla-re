@@ -3,7 +3,8 @@
 The loot window's data: the list the server sends, the 16-row array the window reads, the Lua functions over it, the
 row widget, how a row is taken and when the window closes. This is `LootFrame.cpp` (`0x4c1880` to `0x4c3450`). The
 wire parse of `SMSG_LOOT_RESPONSE` is `objectlayer/inventory#loot`; the group roll is `objectlayer/lootroll`; master
-loot is `ui/masterloot`; the loot tooltips are `ui/tooltipenchant` and `ui/tooltipitem`.
+loot is `ui/masterloot`; the loot tooltips are `ui/tooltipenchant` and `ui/tooltipitem`; the auto-loot sweep, what it leaves
+and the full-bag case are `ui/autoloot`.
 
 Roots: `0x4c1cb0`, `0x4c1880`, `0x4c1820`, `0x4c2790`, `0x4c2c30`, `0x4c2c60`, `0x4c2e70`, `0x4c2ec0`, `0x4c3450`
 
@@ -72,20 +73,28 @@ random property, `0x4c1e49` stores the slot byte. The wire slot type is not copi
 
 ## Late item records
 
-`0x4c2ac0(entry, ok)` is the item-cache callback. A failed fetch does nothing. Otherwise it clears the pending flag
-of every row with that entry and subtracts one from the pending count; at 0 it does what the end of `0x4c1cb0` does:
-the auto-loot sweep, or `LOOT_OPENED`. So the window is not shown until every item record has arrived, and its one
-`LOOT_OPENED` is raised on the last arrival. The stock window shows itself on that event and does not repaint on a
-second one.
+`0x4c2ac0(entry, ok)` is the item-cache callback. Each row whose record is missing registers it once, with data 0 and the dedupe flag off, so it runs once per such row, in the order the rows registered (`dbcache/callbacks#callback-order`). A failed fetch does nothing. Otherwise it clears the pending flag of every row with that entry and subtracts one from the pending count; at 0 it does what the end of `0x4c1cb0` does: the auto-loot sweep, or `LOOT_OPENED`. So the window is not shown until every item record has arrived, and its one `LOOT_OPENED` is raised on the last arrival. The stock window shows itself on that event and does not repaint on a second one.
 
-Addresses: `0x4c2ac0`, `0x4c2ac3`, `0x4c2ae2`, `0x4c2af6`, `0x4c2afc`, `0x4c2b29`, `0x4c2b37`, `0x55bdb0`
+Addresses: `0x4c2ac0`, `0x4c2ac3`, `0x4c2ae2`, `0x4c2af6`, `0x4c2afc`, `0x4c2b1d`, `0x4c2b29`, `0x4c2b37`, `0x55bdb0`, `0x4c1e63`, `0x4c1e65`, `0x4c1e67`
 Confidence: verified
 Proof: one
 Test: none
 
 `0x4c2ac3 mov al,[ebp+0xc]; test al,al; je` drops a failed arrival. `0x4c2ae2` clears the flag, `0x4c2af6 dec` and `0x4c2afc jne`
 leave until the last, and `0x4c2b37` signals 267. The fetch completion `0x55bdb0` runs each pending callback with the success byte 1. The
-callback address is pushed at `0x4c1e67`, `0x4c1d4f` and `0x4c1f47` only.
+callback address is pushed at `0x4c1e67`, `0x4c1d4f` and `0x4c1f47` only. `0x4c1e63` and `0x4c1e65` push the dedupe flag and the data, both 0,
+before the registration at `0x4c1e67`. Two rows with one missing entry register twice and count twice.
+
+## Pending records that never arrive
+
+A fetch that fails, or a row cleared while its record is pending, leaves the pending count above 0 for the rest of the session, so neither the item-cache callback nor the sweep signals for it. A failed fetch returns `0x4c2ac0` before it clears a flag or lowers the count. A cleared row cancels the callbacks of every row with that entry (`dbcache/callbacks#cancelling-a-callback`) and does not lower the count, which has three writers: `0x4c1def` stores 0 at the start of a session, `0x4c1e94` adds one per missing record and `0x4c2af6` subtracts one per callback.
+
+Addresses: `0x4c2ac0`, `0x4c2ac3`, `0x4c2ac8`, `0x4c2b3c`, `0x4c1f00`, `0x4c1f34`, `0x4c1f3d`, `0x4c1f52`, `0x4c1f59`, `0x4c1d4f`, `0x4c1def`, `0x4c1e94`, `0x4c2af6`, `0x55c0c0`, `0xb71b44`
+Confidence: verified
+Proof: one
+Test: none
+
+`0x4c2ac8 je 0x4c2b3c` leaves for a zero success byte before `0x4c2ae2` and `0x4c2af6`. `0x4c1f34` tests the row's pending flag (`0x4c1f3d je`) and `0x4c1f52` calls `0x55c0c0` with the entry, `0x4c2ac0` and data 0, then `0x4c1f59` clears the row; the code between has no store to `0xb71b44`, whose stores in the image are the three above (a scan of the absolute operand). `0x4c1cb0` cancels each pending row the same way when a session ends (`0x4c1d4f`).
 
 ## Taking a row out
 
@@ -278,24 +287,6 @@ Test: `ui::luabind_533470_set_loot_item`
 entry, `&0xb71b48`, `&{0, 0}`, 0, 0, 1 for the block flag (`0x5335c5 push 1`) and zeros.
 
 Bit-exact coverage: `ui::luabind_533470_set_loot_item` covers `0x53353c` to `0x533547` of `0x533470`.
-
-## Auto-loot
-
-`0x4c1fa0(flag)` is the auto-loot sweep, run when a session ends fetching and the player's auto-loot byte is set (it
-follows the Shift key at interaction, `objectlayer/interaction#looting`). Without a player it signals `LOOT_OPENED`.
-It sends the coin request when there is money, plays the coin sound, and prints the money line for a player in no
-group. It then walks the rows: a type-0 bind-on-pickup item of quality 2 or more raises the confirmation for the first
-such row only; any other type-0 row is sent as in a click. It clears the auto-loot byte; if loot remains and `flag` is
-0 it signals `LOOT_OPENED`, and if nothing remains it closes the loot with release.
-
-Addresses: `0x4c1fa0`, `0x4c1fb3`, `0x4c1ff4`, `0x4c1ffc`, `0x4c2020`, `0x4c2170`, `0x4c2180`, `0x4c2196`, `0x4c21c2`, `0x4c21d4`, `0x4c21ff`, `0x4c2219`, `0x4c221e`, `0x4c2240`, `0x4c224f`, `0x5df460`, `0xb71bc4`
-Confidence: verified
-Proof: one
-Test: none
-
-`0x4c1fb3 jne` returns while fetches are pending. `0x4c1ffc` sends the coin request, and `0x4c2001` to `0x4c2020` play the sound
-only when `0xb71bc4` is 0. `0x4c2196 test eax,eax; jne` selects loot type 0; `0x4c21c2 test ebx,ebx` keeps one
-confirmation. `0x4c2219` calls `0x5df460(0)`, which clears the byte, and `0x4c221e` stores 1 in `0xb71bc4`.
 
 ## No walk-away leash
 

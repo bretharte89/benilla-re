@@ -29,22 +29,22 @@ opcode	name	role	site	function	entries	basis
 0x04e	CMSG_LOGOUT_CANCEL	send	0x5aafb9	0x5aaf80	core/close#no-logout-request|net/connection#logout|ui/popups#logout-and-quit	opcode
 0x04f	SMSG_LOGOUT_CANCEL_ACK	handler	0x5b3b33	0x5b3ea0	net/dispatch#realm-connection-messages	opcode
 0x050	CMSG_NAME_QUERY	send	0x55f1fa	0x55f080	net/server#cache-query-opcodes	opcode
-0x051	SMSG_NAME_QUERY_RESPONSE	handler	0x555062	0x5551a0	dbcache#handlers|dbcache#name-cache-writers	opcode
+0x051	SMSG_NAME_QUERY_RESPONSE	handler	0x555062	0x5551a0	dbcache/overview#handlers|dbcache/overview#name-cache-writers	opcode
 0x052	CMSG_PET_NAME_QUERY	send	0x566372	0x566240	net/server#cache-query-opcodes	opcode
-0x053	SMSG_PET_NAME_QUERY_RESPONSE	handler	0x5550a6	0x555480	dbcache#handlers	opcode
+0x053	SMSG_PET_NAME_QUERY_RESPONSE	handler	0x5550a6	0x555480	dbcache/overview#handlers	opcode
 0x054	CMSG_GUILD_QUERY	send	0x560f68	0x560e30	net/server#cache-query-opcodes|ui/guild#the-guild-cache	opcode
-0x055	SMSG_GUILD_QUERY_RESPONSE	handler	0x555073	0x555290	dbcache#handlers|ui/guild#the-guild-cache	opcode
+0x055	SMSG_GUILD_QUERY_RESPONSE	handler	0x555073	0x555290	dbcache/overview#handlers|ui/guild#the-guild-cache	opcode
 0x056	CMSG_ITEM_QUERY_SINGLE	send	0x55bb68	0x55ba30	net/server#cache-query-opcodes|spell/failures#item-power-and-form-arms	opcode
-0x058	SMSG_ITEM_QUERY_SINGLE_RESPONSE	handler	0x55502f	0x555140	dbcache#handlers	opcode
-0x059	SMSG_ITEM_QUERY_MULTIPLE_RESPONSE	handler	0x555040	0x555160	dbcache#handlers	opcode
+0x058	SMSG_ITEM_QUERY_SINGLE_RESPONSE	handler	0x55502f	0x555140	dbcache/overview#handlers	opcode
+0x059	SMSG_ITEM_QUERY_MULTIPLE_RESPONSE	handler	0x555040	0x555160	dbcache/overview#handlers	opcode
 0x05a	CMSG_PAGE_TEXT_QUERY	send	0x564868	0x564730	net/server#cache-query-opcodes	opcode
-0x05b	SMSG_PAGE_TEXT_QUERY_RESPONSE	handler	0x555095	0x555460	dbcache#handlers	opcode
+0x05b	SMSG_PAGE_TEXT_QUERY_RESPONSE	handler	0x555095	0x555460	dbcache/overview#handlers	opcode
 0x05c	CMSG_QUEST_QUERY	send	0x562b78	0x562a40	net/server#cache-query-opcodes|ui/questlog#the-rebuild	opcode
-0x05d	SMSG_QUEST_QUERY_RESPONSE	handler	0x555084	0x555300	dbcache#handlers|ui/questlog#when-the-templates-arrive|ui/questrewardspell#quest-log-reward-spell	opcode
+0x05d	SMSG_QUEST_QUERY_RESPONSE	handler	0x555084	0x555300	dbcache/overview#handlers|ui/questlog#when-the-templates-arrive|ui/questrewardspell#quest-log-reward-spell	opcode
 0x05e	CMSG_GAMEOBJECT_QUERY	send	0x558698	0x558560	net/server#cache-query-opcodes	opcode
-0x05f	SMSG_GAMEOBJECT_QUERY_RESPONSE	handler	0x55500d	0x555100	dbcache#handlers	opcode
+0x05f	SMSG_GAMEOBJECT_QUERY_RESPONSE	handler	0x55500d	0x555100	dbcache/overview#handlers	opcode
 0x060	CMSG_CREATURE_QUERY	send	0x556bd2	0x556aa0	net/server#cache-query-opcodes	opcode
-0x061	SMSG_CREATURE_QUERY_RESPONSE	handler	0x554ffc	0x5550e0	dbcache#handlers	opcode
+0x061	SMSG_CREATURE_QUERY_RESPONSE	handler	0x554ffc	0x5550e0	dbcache/overview#handlers	opcode
 0x062	CMSG_WHO	send	0x5af168	0x5aebb0	net/who#who-query-packet	opcode
 0x063	SMSG_WHO	handler	0x5adc98	0x5adf60	net/who#who-list-reply	opcode
 0x064	CMSG_WHOIS	send	0x5adf1f	0x5adee0	net/server#formats-vmangos-reads|net/server#social-messages	opcode
@@ -241,14 +241,14 @@ opcode	name	role	site	function	entries	basis
 0x104	CMSG_TEXT_EMOTE	send	0x5ef713	0x5ef560	objectlayer/interaction#text-emotes|objectlayer/standstate#the-emote-checks-in-front	opcode
 0x105	SMSG_TEXT_EMOTE	handler	0x49864a	0x49dbe0	ui/chatemote#the-message	opcode
 0x107	CMSG_AUTOSTORE_GROUND_ITEM	send	0x5d9dd5	0x5d9d60	objectlayer/items#item-slots	opcode
-0x108	CMSG_AUTOSTORE_LOOT_ITEM	send	0x5e1b12	0x5e1ad0	objectlayer/inventory#moving-items|objectlayer/sounds#loot-and-auto-equip-item-sounds|ui/loot#taking-a-slot	opcode
+0x108	CMSG_AUTOSTORE_LOOT_ITEM	send	0x5e1b12	0x5e1ad0	objectlayer/inventory#moving-items|objectlayer/sounds#loot-and-auto-equip-item-sounds|ui/autoloot#auto-loot|ui/loot#taking-a-slot	opcode
 0x109	CMSG_STORE_LOOT_IN_SLOT	send	0x5e1ba9	0x5e1b40	objectlayer/inventory#moving-items|ui/bags#pickup-of-a-container-item	opcode
 0x10b	CMSG_AUTOSTORE_BAG_ITEM	send	0x5e137c	0x5e12e0	objectlayer/inventory#moving-items|ui/bags#putting-an-item-in-a-bag	opcode
 0x10c	CMSG_SWAP_ITEM	send	0x5e0fdb	0x5e0c40	objectlayer/inventory#moving-items|ui/bags#putting-an-item-in-a-bag	opcode
 0x10d	CMSG_SWAP_INV_ITEM	send	0x5e0ba4	0x5e0b50	objectlayer/overview#unreached-functions	function
 0x10e	CMSG_SPLIT_ITEM	send	0x5e12af	0x5e1210	objectlayer/inventory#moving-items|ui/bags#putting-an-item-in-a-bag	opcode
 0x111	CMSG_DESTROYITEM	send	0x4898a3	0x4897b0	ui/cursor#delete_item_confirm	opcode
-0x112	SMSG_INVENTORY_CHANGE_FAILURE	handler	0x5e303e	0x5e38c0	objectlayer/playermessages#inventory-change-failures	opcode
+0x112	SMSG_INVENTORY_CHANGE_FAILURE	handler	0x5e303e	0x5e38c0	objectlayer/playermessages#inventory-change-failures|ui/autoloot#auto-loot-with-full-bags	opcode
 0x113	SMSG_OPEN_CONTAINER	handler	0x5e304f	0x5e38c0	objectlayer/playermessages#the-notice-handler|objectlayer/playermessages#notices	opcode
 0x114	CMSG_INSPECT	send	0x5ded10	0x5decc0	objectlayer/interaction#other-units	opcode
 0x115	SMSG_INSPECT	handler	0x5e32d5	0x5e7d70	objectlayer/playermessages#other-small-handlers	opcode
@@ -314,9 +314,9 @@ opcode	name	role	site	function	entries	basis
 0x15a	CMSG_REPOP_REQUEST	send	0x5e0b1f	0x5e0ae0	objectlayer/players#death	opcode
 0x15b	SMSG_RESURRECT_REQUEST	handler	0x5e32b3	0x5e7bc0	objectlayer/playermessages#resurrection-and-summoning	opcode
 0x15c	CMSG_RESURRECT_RESPONSE	send	0x5dede9	0x5ded80	objectlayer/playermessages#resurrection-and-summoning	opcode
-0x15d	CMSG_LOOT	send	0x5df249	0x5df130	objectlayer/interaction#looting	opcode
-0x15d	CMSG_LOOT	send	0x5df403	0x5df2a0	objectlayer/interaction#looting	opcode
-0x15e	CMSG_LOOT_MONEY	send	0x5ea904	0x5ea8c0	objectlayer/inventory#loot|ui/loot#taking-a-slot	opcode
+0x15d	CMSG_LOOT	send	0x5df249	0x5df130	objectlayer/interaction#looting|ui/autoloot#looting-with-a-window-open	opcode
+0x15d	CMSG_LOOT	send	0x5df403	0x5df2a0	objectlayer/interaction#looting|ui/autoloot#looting-with-a-window-open	opcode
+0x15e	CMSG_LOOT_MONEY	send	0x5ea904	0x5ea8c0	objectlayer/inventory#loot|ui/autoloot#auto-loot|ui/loot#taking-a-slot	opcode
 0x15f	CMSG_LOOT_RELEASE	send	0x48f311	0x48f200	core/close#leave-world-cascade|core/close#packets-sent-in-the-world|ui/loot#no-walk-away-leash	opcode
 0x15f	CMSG_LOOT_RELEASE	send	0x5eb9a7	0x5eb900	objectlayer/inventory#loot	opcode
 0x160	SMSG_LOOT_RESPONSE	handler	0x5e30b5	0x5e6010	objectlayer/inventory#loot	opcode
@@ -352,7 +352,7 @@ opcode	name	role	site	function	entries	basis
 0x17d	SMSG_GOSSIP_MESSAGE	handler	0x4e1efc	0x4e26e0	ui/gossip#the-gossip-message	opcode
 0x17e	SMSG_GOSSIP_COMPLETE	handler	0x4e1f0d	0x4e2800		unread
 0x17f	CMSG_NPC_TEXT_QUERY	send	0x55d668	0x55d530	net/server#cache-query-opcodes|ui/gossip#the-greeting	opcode
-0x180	SMSG_NPC_TEXT_UPDATE	handler	0x555051	0x555180	dbcache#handlers	opcode
+0x180	SMSG_NPC_TEXT_UPDATE	handler	0x555051	0x555180	dbcache/overview#handlers	opcode
 0x182	CMSG_QUESTGIVER_STATUS_QUERY	send	0x5eaff8	0x5eafb0	objectlayer/quests#quest-giver-status-refresh|objectlayer/quests#quest-messages-sent	opcode
 0x183	SMSG_QUESTGIVER_STATUS	handler	0x5e325e	0x5e59b0	objectlayer/quests#quest-giver-messages	opcode
 0x184	CMSG_QUESTGIVER_HELLO	send	0x501526	0x5013f0	ui/questshare#accepting-and-declining	opcode
@@ -390,7 +390,7 @@ opcode	name	role	site	function	entries	basis
 0x1a5	SMSG_BUY_FAILED	handler	0x5e3082	0x5e5910	objectlayer/inventory#vendors	opcode
 0x1a9	SMSG_SHOWTAXINODES	handler	0x5e332a	0x5e38c0	ui/taxi#the-show-nodes-message	opcode
 0x1aa	CMSG_TAXINODE_STATUS_QUERY	send	0x5eb1bb	0x5eb170	objectlayer/interaction#taxis	opcode
-0x1ab	SMSG_TAXINODE_STATUS	handler	0x5e3319	0x5e38c0	objectlayer/interaction#the-loot-target|objectlayer/playermessages#the-notice-handler|objectlayer/playermessages#notices|objectlayer/playermessages#error-notices|objectlayer/playermessages#inventory-change-failures|objectlayer/playermessages#item-push-bank-and-binding|objectlayer/playermessages#level-up-and-exploration|objectlayer/playermessages#dice-rolls|objectlayer/playermessages#gm-tickets|objectlayer/quests#shared-quests|spell/cancel#who-cancels-a-cast|ui/auradisplay#the-duration-packet|ui/chatserver#chat-restricted|ui/gossip#the-innkeeper-bind|ui/inventory#failure-messages|ui/inventory#wrong-bag-type|ui/minimap#the-ping|ui/popups#the-instance-boot-countdown|ui/popups#pet-unlearn|ui/questshare#the-sharers-answers|ui/taxi#the-show-nodes-message|ui/taxiroute#activation-replies|ui/taxiroute#new-flight-path|ui/tutorials#where-tutorials-fire	function
+0x1ab	SMSG_TAXINODE_STATUS	handler	0x5e3319	0x5e38c0	objectlayer/interaction#the-auto-loot-byte|objectlayer/interaction#the-loot-target|objectlayer/playermessages#the-notice-handler|objectlayer/playermessages#notices|objectlayer/playermessages#error-notices|objectlayer/playermessages#inventory-change-failures|objectlayer/playermessages#item-push-bank-and-binding|objectlayer/playermessages#level-up-and-exploration|objectlayer/playermessages#dice-rolls|objectlayer/playermessages#gm-tickets|objectlayer/quests#shared-quests|spell/cancel#who-cancels-a-cast|ui/auradisplay#the-duration-packet|ui/autoloot#auto-loot-with-full-bags|ui/chatserver#chat-restricted|ui/gossip#the-innkeeper-bind|ui/inventory#failure-messages|ui/inventory#wrong-bag-type|ui/minimap#the-ping|ui/popups#the-instance-boot-countdown|ui/popups#pet-unlearn|ui/questshare#the-sharers-answers|ui/taxi#the-show-nodes-message|ui/taxiroute#activation-replies|ui/taxiroute#new-flight-path|ui/tutorials#where-tutorials-fire	function
 0x1ac	CMSG_TAXIQUERYAVAILABLENODES	send	0x5ed068	0x5ed020	objectlayer/interaction#talking-to-an-npc|objectlayer/interaction#taxis|ui/taxiroute#taking-a-node	opcode
 0x1ad	CMSG_ACTIVATETAXI	send	0x5ed0fe	0x5ed0a0	objectlayer/interaction#taxis|ui/taxiroute#taking-a-node	opcode
 0x1ae	SMSG_ACTIVATETAXIREPLY	handler	0x5e333b	0x5e38c0	ui/taxiroute#activation-replies	opcode
@@ -418,7 +418,7 @@ opcode	name	role	site	function	entries	basis
 0x1c4	CMSG_TURN_IN_PETITION	send	0x5ef4f3	0x5ef2b0	objectlayer/party#petitions	opcode
 0x1c5	SMSG_TURN_IN_PETITION_RESULTS	handler	0x5e3407	0x5e5050	objectlayer/party#petitions	opcode
 0x1c6	CMSG_PETITION_QUERY	send	0x567e98	0x567d60	net/server#cache-query-opcodes	opcode
-0x1c7	SMSG_PETITION_QUERY_RESPONSE	handler	0x5550b7	0x555500	dbcache#handlers	opcode
+0x1c7	SMSG_PETITION_QUERY_RESPONSE	handler	0x5550b7	0x555500	dbcache/overview#handlers	opcode
 0x1c8	SMSG_FISH_NOT_HOOKED	handler	0x5e3605	0x5e38c0	objectlayer/playermessages#error-notices	opcode
 0x1c9	SMSG_FISH_ESCAPED	handler	0x5e3616	0x5e38c0	objectlayer/playermessages#the-notice-handler|objectlayer/playermessages#error-notices	opcode
 0x1ca	CMSG_BUG	send	0x5ac560	0x5abe10	net/layout#unreached-functions	function
@@ -493,7 +493,7 @@ opcode	name	role	site	function	entries	basis
 0x21e	SMSG_SET_REST_START	handler	0x5e36f3	0x5e38c0	objectlayer/playermessages#the-notice-handler|objectlayer/playermessages#error-notices	opcode
 0x21f	CMSG_SKILL_BUY_STEP	send	0x4d3fef	0x4d3e50	tradeskill/skills#skill-points	opcode
 0x220	CMSG_SKILL_BUY_RANK	send	0x4d3df3	0x4d3d40	tradeskill/skills#skill-points	opcode
-0x222	SMSG_SPIRIT_HEALER_CONFIRM	handler	0x5e3704	0x5e38c0	objectlayer/interaction#the-loot-target|objectlayer/playermessages#the-notice-handler|objectlayer/playermessages#notices|objectlayer/playermessages#error-notices|objectlayer/playermessages#inventory-change-failures|objectlayer/playermessages#item-push-bank-and-binding|objectlayer/playermessages#level-up-and-exploration|objectlayer/playermessages#dice-rolls|objectlayer/playermessages#gm-tickets|objectlayer/quests#shared-quests|spell/cancel#who-cancels-a-cast|ui/auradisplay#the-duration-packet|ui/chatserver#chat-restricted|ui/gossip#the-innkeeper-bind|ui/inventory#failure-messages|ui/inventory#wrong-bag-type|ui/minimap#the-ping|ui/popups#the-instance-boot-countdown|ui/popups#pet-unlearn|ui/questshare#the-sharers-answers|ui/taxi#the-show-nodes-message|ui/taxiroute#activation-replies|ui/taxiroute#new-flight-path|ui/tutorials#where-tutorials-fire	function
+0x222	SMSG_SPIRIT_HEALER_CONFIRM	handler	0x5e3704	0x5e38c0	objectlayer/interaction#the-auto-loot-byte|objectlayer/interaction#the-loot-target|objectlayer/playermessages#the-notice-handler|objectlayer/playermessages#notices|objectlayer/playermessages#error-notices|objectlayer/playermessages#inventory-change-failures|objectlayer/playermessages#item-push-bank-and-binding|objectlayer/playermessages#level-up-and-exploration|objectlayer/playermessages#dice-rolls|objectlayer/playermessages#gm-tickets|objectlayer/quests#shared-quests|spell/cancel#who-cancels-a-cast|ui/auradisplay#the-duration-packet|ui/autoloot#auto-loot-with-full-bags|ui/chatserver#chat-restricted|ui/gossip#the-innkeeper-bind|ui/inventory#failure-messages|ui/inventory#wrong-bag-type|ui/minimap#the-ping|ui/popups#the-instance-boot-countdown|ui/popups#pet-unlearn|ui/questshare#the-sharers-answers|ui/taxi#the-show-nodes-message|ui/taxiroute#activation-replies|ui/taxiroute#new-flight-path|ui/tutorials#where-tutorials-fire	function
 0x224	SMSG_GOSSIP_POI	handler	0x4e1f1e	0x4e2840	ui/gossip#the-gossip-point-of-interest	opcode
 0x225	CMSG_CHAT_IGNORED	send	0x49d50b	0x49d4b0	ui/chatevents#the-chat-tag	function
 0x22f	CMSG_GM_REQUEST_PLAYER_INFO	handler	0x48f4cf	0x48f690	ui/gameui#game-start-up	opcode
@@ -512,7 +512,7 @@ opcode	name	role	site	function	entries	basis
 0x23d	SMSG_BATTLEFIELD_LIST	handler	0x4a9c4f	0x4aa6c0	ui/battlefield#the-list-message	opcode
 0x23e	CMSG_BATTLEFIELD_JOIN	send	0x4aa057	0x4a9f60	ui/battlefield#joining-and-leaving	opcode
 0x243	CMSG_ITEM_TEXT_QUERY	send	0x569ab8	0x569980	net/server#cache-query-opcodes	opcode
-0x244	SMSG_ITEM_TEXT_QUERY_RESPONSE	handler	0x5550c8	0x5555e0	dbcache#handlers	opcode
+0x244	SMSG_ITEM_TEXT_QUERY_RESPONSE	handler	0x5550c8	0x5555e0	dbcache/overview#handlers	opcode
 0x245	CMSG_MAIL_TAKE_MONEY	send	0x4af8a1	0x4af7d0	ui/mail#mail-packets	opcode
 0x246	CMSG_MAIL_TAKE_ITEM	send	0x4afa16	0x4af8e0	ui/mail#mail-packets	opcode
 0x247	CMSG_MAIL_MARK_AS_READ	send	0x4add54	0x4adcd0	ui/mail#mail-packets|ui/mail#opening-the-inbox	opcode
@@ -661,7 +661,7 @@ opcode	name	role	site	function	entries	basis
 0x2c2	SMSG_INIT_WORLD_STATES	handler	0x48f51f	0x48f690	ui/gameui#game-start-up|ui/questtext#world-state-numbers|ui/worldstate#the-packets	opcode
 0x2c3	SMSG_UPDATE_WORLD_STATE	handler	0x48f52f	0x48f690	ui/gameui#game-start-up|ui/questtext#world-state-numbers|ui/worldstate#the-packets	opcode
 0x2c4	CMSG_ITEM_NAME_QUERY	send	0x55a112	0x559fe0	net/server#cache-query-opcodes	opcode
-0x2c5	SMSG_ITEM_NAME_QUERY_RESPONSE	handler	0x55501e	0x555120	dbcache#handlers	opcode
+0x2c5	SMSG_ITEM_NAME_QUERY_RESPONSE	handler	0x55501e	0x555120	dbcache/overview#handlers	opcode
 0x2c6	SMSG_PET_ACTION_FEEDBACK	handler	0x4bc6d6	0x4bdb70	ui/petbar#pet-mode-and-feedback-messages	opcode
 0x2c7	CMSG_CHAR_RENAME	send	0x46b40b	0x46b340	glue/flow#rename-request-and-reply	opcode
 0x2c8	SMSG_CHAR_RENAME	handler	0x46aa4e	0x46b440	glue/flow#rename-request-and-reply	opcode
@@ -747,7 +747,7 @@ opcode	name	role	site	function	entries	basis
 0x318	CMSG_SET_WATCHED_FACTION	send	0x4d62b4	0x4d6240	ui/reputationlua#watched-faction|ui/reputationwire#faction-requests	opcode
 0x319	MSG_MOVE_TIME_SKIPPED	handler	0x6035e0	0x603b40	collision/timeskip#skipped-time-received|objectlayer/unitmovement#movement-message-handlers	opcode
 0x31a	SMSG_SPLINE_MOVE_ROOT	handler	0x603780	0x603c80	objectlayer/unitmovement#movement-message-handlers	opcode
-0x31c	SMSG_INVALIDATE_PLAYER	handler	0x5550d9	0x555600	dbcache#handlers	opcode
+0x31c	SMSG_INVALIDATE_PLAYER	handler	0x5550d9	0x555600	dbcache/overview#handlers	opcode
 0x31d	CMSG_RESET_INSTANCES	send	0x48a6e6	0x48a6b0	ui/groupverbs#instances	opcode
 0x31e	SMSG_INSTANCE_RESET	handler	0x4986aa	0x49e470	ui/groupverbs#instances	function
 0x31f	SMSG_INSTANCE_RESET_FAILED	handler	0x4986ba	0x49e540		unread
