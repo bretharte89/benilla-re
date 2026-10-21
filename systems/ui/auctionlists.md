@@ -66,16 +66,17 @@ past deadline and `0x4cf569 cmp edi,0x2710; jbe` guards the removal `0x4cdfe0`. 
 `SetSelectedAuctionItem("type", index)` stores the id of the indexed record in a cell per list (`0x849058` browse,
 `0x84905c` owner, `0x849060` bidder), or -1 when the index is outside the list, and returns nothing.
 `GetSelectedAuctionItem("type")` scans the list for that id and returns its 1-based position, or 0 when it is gone, so
-sorting never moves the selection. The cells start at -1 and the reset sets them to 0.
+sorting never moves the selection. The cells start at -1 and the reset sets them to -1: a cell below 0 skips the scan, so the getter answers 0 until a selection is made. A type that is none of the three makes the getter return the number 1.
 
-Addresses: `0x4cfda0`, `0x4cfec0`, `0x849058`, `0x84905c`, `0x849060`, `0x4cfe13`, `0x4cfe53`, `0x4cfe92`, `0x4cff35`, `0x4cc2d5`
+Addresses: `0x4cfda0`, `0x4cfec0`, `0x849058`, `0x84905c`, `0x849060`, `0x4cfe13`, `0x4cfe53`, `0x4cfe92`, `0x4cff35`, `0x4cc280`, `0x4cc2d2`, `0x4cc2d5`, `0x4cc2da`, `0x4cc2df`, `0x4cff15`, `0x4cff70`, `0x4cffcf`, `0x4cffc5`, `0x4d0013`
 Confidence: verified
 Proof: one
 Test: none
 
 The stores are `0x4cfe13`, `0x4cfe53` and `0x4cfe92`, their -1 forms at `0x4cfe1e`, `0x4cfe5d` and `0x4cfe9c`. The getter's scan
-is `0x4cff21` to `0x4cff30`, and `0x4cff32 or eax,-1` then `inc eax` gives 0 when not found. The reset stores 0 at
-`0x4cc2d5`. The usage lines are `Usage: SetSelectedAuctionItem("type", index)` and `Usage: GetSelectedAuctionItem("type")`.
+is `0x4cff21` to `0x4cff30`, and `0x4cff32 or eax,-1` then `inc eax` gives 0 when not found. The reset `0x4cc280`
+loads -1 with `or eax,-1` (`0x4cc2d2`) and stores it at `0x4cc2d5`, `0x4cc2da` and `0x4cc2df`, and the cells' bytes in the
+file are -1. The getter's `test edx,edx; jl` (`0x4cff15`, `0x4cff70`, `0x4cffcf`) skips the scan for a negative cell. The third type test, `0x4cffc5 jne`, goes to `0x4d0013`, which pushes 1.0 (`push 0x3ff00000`, `push 0`) and returns one value. The usage lines are `Usage: SetSelectedAuctionItem("type", index)` and `Usage: GetSelectedAuctionItem("type")`.
 
 ## Sorting
 
@@ -95,9 +96,71 @@ Test: `ui::sortcmp_4cd940`
 Each driver searches the stack (`0x4cd852`), toggles with `sete` (`0x4cd876`) at slot 0 or shifts with the loop `0x4cd887`
 to `0x4cd895`, stores the column and flag (`0x4cd899`, `0x4cd89f`) and falls into the sort tail. The adapters
 compare the pointers' records slot by slot (`0x4cd8f0` to `0x4cd91d`) with `0x4cd940(a, b, mode)` and negate when
-`[slot+4]` is nonzero. Ties on all eight keys return 0, and `qsort` does not promise to keep their order.
+`[slot+4]` is nonzero. Ties on all eight keys return 0, and the C runtime's `qsort` leaves them in the order its steps give (`The C runtime qsort`, below).
 
 Bit-exact coverage: `ui::sortcmp_4cd940` covers `0x4cd940` to `0x4cdb4f`, `0x4cdb5c` to `0x4cdc42` of `0x4cd940`.
+
+## The C runtime qsort
+
+`qsort(base, num, width, comp)` (`0x73f727`, `__cdecl`) reads only the sign of `comp`'s `int`. It returns at once for
+`num` below 2 or a `width` of 0. A range from `lo` to `hi` of 8 elements or fewer goes to the short sort. A larger one swaps
+the element `size / 2` places above `lo` with `lo`, the pivot. `loguy` steps up from `lo` while `loguy <= hi` and `comp(loguy, lo) <= 0`;
+`higuy` steps down from `hi + width` while `higuy > lo` and `comp(higuy, lo) >= 0`. While `higuy >= loguy` they swap and the
+scans resume; then `lo` swaps with `higuy`. The pivot is every partition call's second argument. Equal elements are not kept in order.
+
+Addresses: `0x73f727`, `0x73f739`, `0x73f743`, `0x73f772`, `0x73f77d`, `0x73f7a6`, `0x73f7b0`, `0x73f7bd`, `0x73f7ca`, `0x73f7cb`, `0x73f7cc`, `0x73f7d3`, `0x73f7d5`, `0x73f7dc`, `0x73f7dd`, `0x73f7de`, `0x73f7e5`, `0x73f7ea`, `0x73f7f3`, `0x73f7fe`, `0x73f87b`, `0x73f8c9`, `0x73f8f5`
+Confidence: verified
+Proof: one
+Test: `ui::crt_qsort_difftest`
+
+`0x73f739` and `0x73f743` end the call for `num < 2` and a zero width. `0x73f772 cmp eax,8; ja` sends a range of
+`(hi - lo) / width + 1` elements above 8 on; else `0x73f77d` calls `0x73f87b`. `0x73f7a6` to `0x73f7b0` halve the size,
+multiply by the width, add `lo` and call `0x73f8c9` on that element and `lo`. The comparator is `call [ebp+0x14]`
+(`0x73f7cc`, `0x73f7de`), and the pushes before it are `lo` then `loguy` (`0x73f7ca`, `0x73f7cb`) and `lo` then `higuy`
+(`0x73f7dc`, `0x73f7dd`), so its first argument is the scanned element and its second `lo`. `jle` (`0x73f7d3`) and `jge`
+(`0x73f7e5`) after `test eax,eax` are signed. `0x73f7ea cmp edi,[ebp-8]; jb` leaves the loop when `higuy < loguy`, unsigned;
+else `0x73f7f3` swaps and `0x73f7bd` resumes. `0x73f7fe` swaps `lo` and `higuy`. The test runs all three whole, the comparator
+stubbed at the padding `0x73f8f5`, over arrays of 0 to 1200 records of 1 to 32 bytes and every array of 9 and 10 keys from
+three values, comparing each comparator call in order and the result's bytes.
+
+## The qsort split order
+
+After the pivot swap the range splits into the left part, `lo` to `higuy - width`, and the right part, `loguy` to `hi`. When
+`higuy - 1 - lo >= hi - loguy` (signed, in bytes; the left part has at least as many elements as the right) the left part is
+pushed and the loop goes on with the right; otherwise the right is pushed and the loop goes on with the left. A part is
+kept only with two elements or more (left `lo + width < higuy`, right `loguy < hi`). With
+nothing to continue it pops the last pair, and an empty stack ends it. The stacks hold 30 pairs, unchecked.
+
+Addresses: `0x73f727`, `0x73f785`, `0x73f790`, `0x73f79d`, `0x73f7a2`, `0x73f808`, `0x73f80f`, `0x73f810`, `0x73f812`, `0x73f814`, `0x73f81e`, `0x73f833`, `0x73f835`, `0x73f839`, `0x73f83f`, `0x73f846`, `0x73f848`, `0x73f854`, `0x73f85d`, `0x73f866`, `0x73f86c`, `0x73f86f`
+Confidence: verified
+Proof: one
+Test: `ui::crt_qsort_difftest`
+
+`0x73f812` compares `higuy - lo - 1` with `hi - loguy` and `0x73f814 jl` takes the right-part branch. With `L` and `R` the
+elements of the left and right part, the bytes are `L * width - 1` and `(R - 1) * width`, and the first is at least the second
+exactly when `L >= R`. The left-part branch pushes at `0x73f833` and `0x73f835` after `0x73f81e jae`; `0x73f839 jae 0x73f785`
+pops when `loguy >= hi`, else `0x73f83f` sets `lo = loguy`. The other branch pushes at `0x73f854` and `0x73f85d` after
+`0x73f848 jae`; `0x73f866 jae 0x73f785` pops when `lo + width >= higuy`, else `0x73f86c` and `0x73f86f` set `hi = higuy - width`.
+The pop `0x73f785` lowers both stack pointers and reloads `lo` and `hi` from the top entries (`0x73f79d`, `0x73f7a2`), and
+`0x73f790 jl` ends the sort when the count falls below 0. The stacks are `[ebp-0xf8]` and `[ebp-0x80]`, 30 dwords each.
+
+## The qsort short sort
+
+`shortsort(lo, hi, width, comp)` (`0x73f87b`) is a selection sort. While `hi > lo` it sets `max` to `lo` and scans `p` from
+`lo + width` to `hi`, setting `max` to `p` when `comp(p, max) > 0`, so of equal elements the first stays the maximum. It then
+swaps `max` with `hi` and lowers `hi` by `width`. The first argument of every call is the scanned element. `swap(a, b, width)`
+(`0x73f8c9`) exchanges `width` bytes one at a time, and does nothing when `a == b` or `width` is 0.
+
+Addresses: `0x73f87b`, `0x73f885`, `0x73f899`, `0x73f89d`, `0x73f89e`, `0x73f89f`, `0x73f8a6`, `0x73f8a8`, `0x73f8b4`, `0x73f8bf`, `0x73f8c9`, `0x73f8d1`, `0x73f8dd`, `0x73f8e5`, `0x73f8f0`
+Confidence: verified
+Proof: one
+Test: `ui::crt_qsort_difftest`
+
+`0x73f885 cmp edi,eax; jbe` is the outer test, unsigned. The pushes before the comparator call (`0x73f89f`) are `max` then `p`
+(`0x73f89d`, `0x73f89e`); `0x73f8a6 jle` keeps `max` for a result of 0 or less and `0x73f8a8 mov ebx,esi` replaces it.
+`0x73f8b4` swaps `max` and `hi`, and `0x73f8bf cmp edi,[ebp+8]; ja` repeats while `hi > lo`. `0x73f8d1 cmp eax,ecx; je` and
+`0x73f8dd test esi,esi; je` leave `swap` for equal pointers and a zero width; `0x73f8e5` to `0x73f8f0` exchange one byte of
+each per pass.
 
 ## Sort columns
 
@@ -123,16 +186,27 @@ Bit-exact coverage: `ui::sortcmp_4cd940` covers `0x4cd940` to `0x4cdb4f`, `0x4cd
 
 ## Reversed flag
 
-`IsAuctionSortReversed("type", "sort")` returns the reversed flag of the column's slot in that list's key stack, as a
-number; the string tests match `SortAuctionItems`. The sort state lives only in the three key stacks.
+`IsAuctionSortReversed("type", "sort")` pushes the number 1 when the reversed flag of the sort column in that list's key
+stack is set, else nil, and returns one value. The sort name is matched first, with the names and columns of
+`SortAuctionItems`, and one that matches none returns nothing. A type that matches none returns nil. An argument that is
+neither a string nor a number raises `Usage: IsAuctionSortReversed("type", "sort")`. The sort state lives only in the
+three key stacks.
 
-Addresses: `0x4d0030`, `0xb725b0`, `0xb72420`, `0xb72548`
-Confidence: inferred
-Proof: none
+Addresses: `0x4d0030`, `0x4d003a`, `0x4d004e`, `0x4d0082`, `0x4d0145`, `0x4d014c`, `0x4d0152`, `0x4d0162`, `0x4d0179`, `0x4d0198`, `0x4d01a5`, `0x4d01aa`, `0x4d01c5`, `0x4d01dc`, `0x4d0206`, `0x4d020d`, `0x4d021d`, `0x4d0230`, `0x4d0232`, `0x4d0240`, `0x4d024e`, `0xb725b0`, `0xb72420`, `0xb72548`
+Confidence: verified
+Proof: one
 Test: none
 
-`0x4d0030` repeats the column and type tests of `0x4cfc00` and reads the key stack's second dword; its body past those tests
-is not derived. The stacks are set only by the initialization (`0x4cc238` to `0x4cc274`) and by the three drivers.
+`0x4d003a` and `0x4d004e` test both arguments with `lua_isstring`, and a failure reaches the usage call at `0x4d0240`. The
+sort name is compared in turn with `quality` (`0x4d0082`, column 1), `level` (0), `duration` (3), `buyout` (4), `status` (5),
+`bid` (2), `name` (6) and `seller` (`0x4d0145`, column 7); the last miss, `0x4d014c jne`, goes to `0x4d024e` and returns 0
+values. The type is then compared with `owner` (`0x4d0162`), `bidder` (`0x4d01c5`) and `list` (`0x4d0206`), each scanning
+its stack's eight pairs for the column (`0x4d0179`, `0x4d01dc`, `0x4d021d`); a type that matches none, `0x4d020d jne`,
+goes to `0x4d0230` and pushes nil. A hit loads the flag at `+4` (`0x4d0198`): zero pushes nil (`0x4d0232`), and nonzero
+pushes 1.0 (`push 0x3ff00000`, `push 0` at `0x4d01a5`, `0x4d01aa`). A column the stack lacks also pushes nil, from each scan (`0x4d0188`, `0x4d01eb`, `0x4d0230`). The stacks are written by the initialization (`0x4cc246` to `0x4cc269`)
+and the three drivers, whose shift loops store through the bases 0xb725ac, 0xb7241c and 0xb72544, one dword below each stack (`0x4cd87f`,
+`0x4cdc9f`, `0x4cdd8f`). An image scan for the dwords of the stacks and those bases finds them, the three comparators, this
+function and two float stores to the globals at 0xb72544 and 0xb725ac (`0x4d049c`, `0x4d05bc`).
 
 ## Filter menus
 
